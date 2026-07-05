@@ -1,6 +1,7 @@
 """
-    selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, graph = true, 
-        step = 2, xlabel = "Index", ylabel = "Value", title = "Score")
+    selwold(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; smooth::Bool = true, npoint::Int = 5, 
+        alpha::Q = .05, digits::Int = 3, graph::Bool = true, step::Int = 2, xlabel::String = "Index", 
+        ylabel::String = "Value", title::String = "Score") where Q <: Float
 Wold's criterion to select dimensionality in LV models (e.g., PLSR).
 * `indx` : A variable representing the model parameter(s), e.g., nb. LVs if PLSR models.
 * `r` : A vector of error rates (n), e.g., RMSECV.
@@ -84,8 +85,9 @@ zres = selwold(res.nlv, res.y1; smooth = true, graph = true) ;
 zres.f
 ```
 """ 
-function selwold(indx, r; smooth = true, npoint = 5, alpha = .05, digits = 3, graph = true, 
-        step = 2, xlabel = "Index", ylabel = "Value", title = "Score")
+function selwold(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; smooth::Bool = true, npoint::Int = 5, 
+        alpha::Q = .05, digits::Int = 3, graph::Bool = true, step::Int = 2, xlabel::String = "Index", 
+        ylabel::String = "Value", title::String = "Score") where Q <: Float
     n = length(r)
     ## below, length = n - 1
     zdiff = -diff(r) 

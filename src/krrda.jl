@@ -1,10 +1,10 @@
 """
     krrda(; kwargs...)
     krrda(X, y; kwargs...)
-    krrda(X, y, weights::ProbabilityWeights; kwargs...)
+    krrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on kernel ridge regression (KRR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
@@ -13,7 +13,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Same as function `rrda` (RR-DA) except that a kernel RR (function `krr`), instead of a RR (function `rr`), 
 is run on the Y-dummy table. 
@@ -41,7 +42,7 @@ tab(ytest)
 
 lb = 1e-5
 kern = :krbf ; gamma = .001 
-scal = true
+scal = :std
 model = krrda(; lb, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -70,17 +71,19 @@ predict(model, Xtest, [.1, .001]).pred
 krrda(; kwargs...) = JchemoModel(krrda, nothing, kwargs)
 
 function krrda(X, y; kwargs...)
-    par = recovkw(ParKrrda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParKrrda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     krrda(X, y, weights; kwargs...)
 end
 
-function krrda(X, y, weights::ProbabilityWeights; kwargs...)  
-    par = recovkw(ParKrrda, kwargs).par
-    res = dummy(y)
+function krrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
+    par = recovkw(ParKrrda{Q}, kwargs).par
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = krr(X, res.Y, weights; kwargs...)
     Rrda(fitm_emb, ni, priors, res.lev, par)
 end

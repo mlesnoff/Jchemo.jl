@@ -1,11 +1,15 @@
 """
-    plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
+    plotxy(x, y; 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", kwargs...)
-    plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
+        xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
+        xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q <: Real
+    plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+        size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", 
-        leg::Bool = true, leg_title = "Group", kwargs...)
+        xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
+        xlabel::String = "", ylabel::String = "", title::String = "", 
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Real
 2-D scatter plot of x-y data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -39,7 +43,7 @@ X = dat.X
 y = dat.Y.tbc
 year = dat.Y.year
 tab(year)
-lev = mlev(year)
+lev = mlev(string.(year))
 nlev = length(lev)
 
 model = pcasvd(nlv = 5)  
@@ -57,10 +61,10 @@ plotxy(T[:, i], T[:, i + 1], year; color = colm, xlabel = string("PC", i), ylabe
 
 plotxy(T[:, 1], T[:, 2], year).lev
 
-plotxy(1:5, 1:5).f
+plotxy(collect(1:5), collect(1:5)).f
 
 y = reshape(rand(5), 5, 1)
-plotxy(1:5, y).f
+plotxy(collect(1:5), y).f
 
 ## Several layers can be added
 ## (same syntax as in Makie)
@@ -71,9 +75,11 @@ hlines!(ax, 0.5; color = :red, linestyle = :dot)
 f
 ```
 """ 
-function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false, 
+function plotxy(x, y; 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", kwargs...)
+        xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
+        xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q <: Real
     x = vec(x)
     y = vec(y)
     f = Figure(; size)
@@ -119,15 +125,17 @@ function plotxy(x, y; size = (500, 300), color = nothing, ellipse::Bool = false,
     f[1, 1] = ax
     (f = f, ax)
 end
-
-function plotxy(x, y, group; size = (600, 350), color = nothing, ellipse::Bool = false, 
+2
+function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+        size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
-        xticks = nothing, yticks = nothing, xlabel = "", ylabel = "", title = "", 
-        leg::Bool = true, leg_title = "Group", kwargs...)
+        xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
+        xlabel::String = "", ylabel::String = "", title::String = "", 
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Real
     x = vec(x)
     y = vec(y)
     group = vec(group)
-    lev = mlev(group)
+    lev = sort(unique(group))
     lab = string.(lev)
     f = Figure(; size)
     ## Ticks (to improve)

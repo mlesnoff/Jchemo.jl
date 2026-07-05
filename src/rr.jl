@@ -1,15 +1,16 @@
 """
     rr(; kwargs...)
     rr(X, Y; kwargs...)
-    rr(X, Y, weights::ProbabilityWeights; kwargs...)
-    rr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Ridge regression (RR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
 centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.values`), the function finds 
@@ -72,33 +73,33 @@ res = predict(model, Xtest, [.1; .01])
 rr(; kwargs...) = JchemoModel(rr, nothing, kwargs)
 
 function rr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     rr(X, Y, weights; kwargs...)
 end
 
-function rr(X, Y, weights::ProbabilityWeights; kwargs...)
-    rr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function rr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function rr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParRr, kwargs).par
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
+function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParRr{Q}, kwargs).par
     p = nco(X)
-    par.lb = Q(par.lb)
-    sqrtw = sqrt.(weights.values)
+    ## Centering/scaling X, Y
+    ## No need to scale Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
-    xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
-    end
+    fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
+    xscales = ones(Q, p)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
+    end
+    ## End
+    sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
     res = LinearAlgebra.svd!(X)
@@ -109,14 +110,14 @@ end
 
 """
     coef(object::Rr)
-    coef(object::Rr, lb::T) where T <: AbstractFloat
+    coef(object::Rr, lb::T) where T <: Float
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
 coef(object::Rr) = coef(object::Rr, object.par.lb)
 
-function coef(object::Rr, lb::T) where T <: AbstractFloat
+function coef(object::Rr, lb::T) where T <: Float
     Q = eltype(object.sv)
     eig = object.sv.^2
     z = 1 ./ (eig .+ Q(lb)^2)
@@ -129,7 +130,7 @@ end
 
 """
     predict(object::Rr, X)
-    predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+    predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -142,7 +143,7 @@ function predict(object::Rr, X)
     (pred = pred, lb = object.par.lb)
 end
 
-function predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+function predict(object::Rr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
     X = ensure_mat(X)
     Q = eltype(object.sv)
     le_lb = length(lb)

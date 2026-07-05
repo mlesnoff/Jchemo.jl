@@ -1,8 +1,8 @@
 """
     rasvd(; kwargs...)
     rasvd(X, Y; kwargs...)
-    rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
-    rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    rasvd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -11,8 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Boolean. If `true`, each column of blocks `X` and `Y` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
  
 See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y.hat be the fitted values of the regression 
 of `Y` on `X`. The scores `Ty` are the PCA scores of Y.hat. The scores `Tx` are the fitted values of the 
@@ -79,39 +79,39 @@ res.cory2ty
 rasvd(; kwargs...) = JchemoModel(rasvd, nothing, kwargs)
 
 function rasvd(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     rasvd(X, Y, weights; kwargs...)
 end
 
-function rasvd(X, Y, weights::ProbabilityWeights; kwargs...)
-    rasvd!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function rasvd(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rasvd!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParRasvd, kwargs).par 
+function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParRasvd{Q}, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     @assert 0 <= par.tau <= 1 "tau must be in [0, 1]"
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    tau = Q(par.tau)
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
+    ## End
     if par.bscal == :none
         bscales = ones(Q, 2)
     elseif par.bscal == :frob
@@ -127,14 +127,14 @@ function rasvd!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
     # End
-    if tau == 0       
+    if par.tau == 0       
         invCx = inv(X' * X)
     else
         Ix = Diagonal(ones(Q, p)) 
-        if tau == 1   
+        if par.tau == 1   
             invCx = Ix
         else
-            invCx = inv((1 - tau) * X' * X + tau * Ix)
+            invCx = inv((1 - par.tau) * X' * X + par.tau * Ix)
         end
     end
     Bx = invCx * X' * Y 
@@ -194,7 +194,6 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Rasvd, X, Y)
-    Q = eltype(X[1, 1])
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
@@ -218,12 +217,12 @@ function Base.summary(object::Rasvd, X, Y)
     explvary = nothing 
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
-    cortx2ty = DataFrame(lv = 1:nlv, cor = z)
+    cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
     ## RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
-    z = zeros(Q, 1, nlv)
+    z = similar(X, 1, nlv)
     for a = 1:nlv
-        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+        z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
     end
     rvx2tx = DataFrame(z, nam)
     for a = 1:nlv

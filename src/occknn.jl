@@ -12,7 +12,8 @@ Keyword arguments:
 * `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 OCC using outlierness `d` as defined in function `outknn`.
 
@@ -112,13 +113,14 @@ f
 occknn(; kwargs...) = JchemoModel(occknn, nothing, kwargs)
 
 function occknn(X; kwargs...)
-    par = recovkw(ParOccknn, kwargs).par
     X = ensure_mat(X)
+    n, p = size(X)    
     Q = eltype(X)
-    n, p = size(X)
+    par = recovkw(ParOccknn{Q}, kwargs).par
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     nsamp = min(par.nsamp, n)

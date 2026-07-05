@@ -1,8 +1,8 @@
 """
     plswold(; kwargs...)
     plswold(X, Y; kwargs...)
-    plswold(X, Y, weights::ProbabilityWeights; kwargs...)
-    plswold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial Least Squares Regression (PLSR) with the Wold algorithm 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -11,7 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
     
@@ -27,35 +28,35 @@ Computing 5, 735–743. https://doi.org/10.1137/0905052
 plswold(; kwargs...) = JchemoModel(plswold, nothing, kwargs)
 
 function plswold(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plswold(X, Y, weights; kwargs...)
 end
 
-function plswold(X, Y, weights::ProbabilityWeights; kwargs...)
-    plswold!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plswold(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plswold!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plswold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlswold, kwargs).par
-    Q = eltype(X)
+function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPlswold{Q}, kwargs).par
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     # Row metric
     sqrtw = sqrt.(weights.values)
@@ -79,7 +80,7 @@ function plswold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         ty .= vcol(Y, 1)
         cont = true
         iter = 1
-        wx .= rand(p)
+        wx .= rand(Q, p)
         while cont
             w0 = copy(wx)
             wx .= X' * ty   # .../ dot(ty, ty) [not needed here since normalization]   
@@ -110,5 +111,5 @@ function plswold!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     end
     fweightr!(Tx, 1 ./ sqrtw) 
     Rx = Wx * inv(Vx' * Wx)
-    Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
+    Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end

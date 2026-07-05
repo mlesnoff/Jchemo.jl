@@ -1,8 +1,8 @@
 
 """
-    eposvd(D; nlv = 1)
+    eposvd(D::AbstractMatrix{Q}; nlv::Int = 1) where Q <: Float
 Compute an orthogonalization matrix for calibration transfer of spectral data.
-* `D` : Data (m, p) containing the detrimental information on which spectra (rows of a matrix X) have 
+* `D` : A matrix (m, p) containing the detrimental information on which spectra (rows of a matrix X) have 
     to be orthogonalized.
 Keyword arguments:
 * `nlv` : Nb. of first loadings vectors of `D` considered for the orthogonalization.
@@ -82,7 +82,7 @@ axislegend(ax2, position = :cb, framevisible = false)
 f
 ```
 """ 
-function eposvd(D; nlv = 1)
+function eposvd(D::AbstractMatrix{Q}; nlv::Int = 1) where Q <: Float
     D = ensure_mat(D)
     n, p = size(D)
     nlv = min(nlv, n, p)

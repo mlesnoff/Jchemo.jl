@@ -1,6 +1,7 @@
 """
-    rd(X, Y; typ = :cor)
-    rd(X, Y, weights::ProbabilityWeights; typ = :cor)
+    rd(X, Y; typ::Symbol = :cor)
+    rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
+        weights::ProbabilityWeights{Q}; typ::Symbol = :cor) where Q <: Float
 Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -27,26 +28,28 @@ Y = rand(5, 3)
 rd(X, Y)
 ```
 """ 
-function rd(X, Y; typ = :cor)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
-    rd(X, Y, weights; typ)
+function rd(X, Y; typ::Symbol = :cor)
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
+    rd(X, ensure_mat(Y), weights; typ)
 end
 
-function rd(X, Y, weights::ProbabilityWeights; typ = :cor)
+function rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
+        weights::ProbabilityWeights{Q}; typ::Symbol = :cor) where Q <: Float
     @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
     if typ == :cor
         A = corm(X, Y, weights).^2
     elseif typ == :cov
         A = covm(X, Y, weights).^2
     end    
-    mean(A; dims = 1)  # keep matrix format
+    mean(A; dims = 1)  # use 'mean' since keep matrix format
 end
 
 """
-    rv(X, Y; centr = true)
-    rv(Xbl::Vector; centr = true)
+    rv(X, Y; centr::Bool = true)
+    rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
+        weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: Float
+    rv(Xbl::Vector; centr::Bool = true)
 Compute RV coefficients.
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -93,14 +96,14 @@ Xbl = mblock(X, listbl)
 rv(Xbl)
 ```
 """ 
-function rv(X, Y; centr = true)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
-    rv(X, Y, weights; centr)
+function rv(X, Y; centr::Bool = true)
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
+    rv(X, ensure_mat(Y), weights; centr)
 end
 
-function rv(X, Y, weights::ProbabilityWeights; centr = true)
+function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
+        weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: Float
     X = copy(ensure_mat(X))
     Y = copy(ensure_mat(Y))
     n, p = size(X)
@@ -131,9 +134,10 @@ function rv(X, Y, weights::ProbabilityWeights; centr = true)
     rv
 end
 
-function rv(Xbl::Vector; centr = true)
+function rv(Xbl; centr::Bool = true)
+    Q = eltype(ensure_mat(Xbl[1]))
     nbl = length(Xbl)
-    mat = zeros(eltype(Xbl[1]), nbl, nbl)
+    mat = Array{Q}(undef, nbl, nbl)
     for i = 1:nbl, j = 1:nbl
         mat[i, j] = rv(Xbl[i], Xbl[j]; centr) 
     end

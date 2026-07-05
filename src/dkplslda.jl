@@ -1,10 +1,10 @@
 """
     dkplslda(; kwargs...)
     dkplslda(X, y; kwargs...)
-    dkplslda(X, y, weights::ProbabilityWeights; kwargs...)
+    dkplslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 DKPLS-LDA.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
@@ -14,7 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Eventual keyword arguments of function `dmkern` (bandwidth definition).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Same as function `plslda` (PLS-LDA) except that a direct kernel PLSR (function `dkplsr`), instead of a PLSR 
 (function `plskern`), is run on the Y-dummy table. 
@@ -78,18 +79,20 @@ predict(model, Xtest, 1:2).pred
 dkplslda(; kwargs...) = JchemoModel(dkplslda, nothing, kwargs)
 
 function dkplslda(X, y; kwargs...)
-    par = recovkw(ParKplsda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParKplsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     dkplslda(X, y, weights; kwargs...)
 end
 
-function dkplslda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKplsda, kwargs).par
+function dkplslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParKplsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = dkplsr(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     fitm_da = list(Lda, par.nlv)

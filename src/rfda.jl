@@ -1,9 +1,9 @@
 """ 
     rfda(; kwargs...)
-    rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
+    rfda(X, y::Vector{String}; kwargs...)
 Random forest discrimination with DecisionTree.jl.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `n_trees` : Nb. trees built for the forest. 
 * `partial_sampling` : Proportion of sampled observations for each tree.
@@ -12,7 +12,8 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a random forest discrimnation model.
 In DecisionTree.jl, 'y' component must have type `Int` or `String`.
@@ -82,18 +83,18 @@ plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 """ 
 rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
 
-function rfda(X, y::Union{Array{Int}, Array{String}}; kwargs...)
+function rfda(X, y::Vector{String}; kwargs...)
     ## For DA in DecisionTree.jl, y must be Int or String
-    par = recovkw(ParRf, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
     n, p = size(X)
+    Q = eltype(X)
+    par = recovkw(ParRf{Q}, kwargs).par
     taby = tab(y)
     priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     n_subfeatures = round(Int, par.n_subfeatures)

@@ -1,5 +1,6 @@
 """
-    isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, rep = 1)
+    isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector{Q} = Q.(collect(1:nco(X))); 
+        score::Function = rmsep, psamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
 Interval variable selection.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
@@ -63,7 +64,7 @@ ytest = Ytest[:, nam]
 
 model = plskern(nlv = 5)
 nint = 10
-res = isel!(model, Xtrain, ytrain, wl; nint, rep = 50) ;
+res = isel!(model, Matrix(Xtrain), ytrain, wl; nint, rep = 100) ;
 dat = res.dat
 res.imp 
 res.res_rep
@@ -79,12 +80,11 @@ hlines!(ax, [0]; color = :grey)
 f
 ```
 """
-function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, rep = 1)
+function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector{Q} = Q.(collect(1:nco(X))); 
+        score::Function = rmsep, psamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
     X = ensure_mat(X)
-    Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    nint = Int(nint)
     z = collect(round.(range(1, p + 1; length = nint + 1)))
     itv = [z[1:nint] z[2:(nint + 1)] .- 1]
     itv = hcat(itv, round.(rowmean(itv)))
@@ -96,8 +96,8 @@ function isel!(model, X, Y, wl = 1:nco(X); score = rmsep, psamp = .3, nint = 5, 
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
     pred = similar(Yval)
-    resref = zeros(1, q)   
-    vres = list(Matrix{Float64}, nint)
+    resref = zeros(Q, 1, q)   
+    vres = list(Matrix{Q}, nint)
     res_rep = zeros(nint, q, rep)
     @inbounds for i = 1:rep
         s = samprand(n, nval)

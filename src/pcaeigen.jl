@@ -1,14 +1,15 @@
 """
     pcaeigen(; kwargs...)
     pcaeigen(X; kwargs...)
-    pcaeigen(X, weights::ProbabilityWeights; kwargs...)
-    pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 PCA by Eigen factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing an Eigen factorization of X' * D * X. 
@@ -18,30 +19,30 @@ See function `pcasvd` for examples.
 pcaeigen(; kwargs...) = JchemoModel(pcaeigen, nothing, kwargs)
 
 function pcaeigen(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcaeigen(X, weights; kwargs...)
 end
 
-function pcaeigen(X, weights::ProbabilityWeights; kwargs...)
-    pcaeigen!(copy(ensure_mat(X)), weights; kwargs...)
+function pcaeigen(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaeigen!(copy(X), weights; kwargs...)
 end
 
-function pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par 
-    Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    xmeans = colmean(X, weights) 
+    ## Centering/scaling X
+    xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
+    ## End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 
@@ -51,6 +52,6 @@ function pcaeigen!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     sv = sqrt.(eig)
     T = X * V
     fweightr!(T, 1 ./ sqrtw)
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, par) 
 end
 

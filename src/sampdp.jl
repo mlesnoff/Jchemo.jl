@@ -1,5 +1,5 @@
 """
-    sampdp(X, k::Int; metric = :eucl)
+    sampdp(X, k::Int; metric::Symbol = :eucl)
 Build training vs. test sets by DUPLEX sampling.  
 * `X` : X-data (n, p).
 * `k` : Nb. pairs (training/test) of observations to sample. Must be <= n / 2. 
@@ -37,37 +37,38 @@ k = 3
 sampdp(X, k)
 ```
 """ 
-function sampdp(X, k::Int; metric = :eucl)
+function sampdp(X, k::Int; metric::Symbol = :eucl)
     @assert in([:eucl, :mah, :sam, :cos, :cor])(metric) "Wrong value for argument 'metric'."
+    X = ensure_mat(X)
     if metric == :eucl
         D = eucl2(X, X)
     else
         D = mah2chol(X, X)
     end
-    n = size(D, 1)
-    zn = 1:n
+    n = nro(D)
+    vn = 1:n
     ## Initial selection of 2 pairs of obs.
     s = findall(D .== maximum(D)) 
     s1 = [s[1][1] ; s[1][2]]
-    zD = copy(D)
-    zD[s1, :] .= -Inf ;
-    zD[:, s1] .= -Inf ;
-    s = findall(D .== maximum(zD)) 
+    vD = copy(D)
+    vD[s1, :] .= -Inf ;
+    vD[:, s1] .= -Inf ;
+    s = findall(D .== maximum(vD)) 
     s2 = [s[1][1] ; s[1][2]]
     ## Candidates
-    can = zn[setdiff(1:end, [s1 ; s2])]
+    candidat = vn[setdiff(1:end, [s1 ; s2])]
     @inbounds for i = 1:(k - 2)
-        u = vec(minimum(D[s1, can], dims = 1))
-        zs = can[findall(u .== maximum(u))[1]]
+        u = vec(minimum(D[s1, candidat], dims = 1))
+        zs = candidat[findall(u .== maximum(u))[1]]
         s1 = [s1 ; zs]
-        can = zn[setdiff(1:end, s1)]
-        u = vec(minimum(D[s2, can], dims = 1))
-        zs = can[findall(u .== maximum(u))[1]]
+        candidat = vn[setdiff(1:end, s1)]
+        u = vec(minimum(D[s2, candidat], dims = 1))
+        zs = candidat[findall(u .== maximum(u))[1]]
         s2 = [s2 ; zs]
-        can = zn[setdiff(1:end, [s1 ; s2])]
+        candidat = vn[setdiff(1:end, [s1 ; s2])]
     end
     sort!(s1)
     sort!(s2)
-    (train = s1, test = s2, remain = can)
+    (train = s1, test = s2, remain = candidat)
 end
     

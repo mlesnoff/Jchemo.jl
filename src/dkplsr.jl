@@ -1,8 +1,8 @@
 """
     dkplsr(; kwargs...)
     dkplsr(X, Y; kwargs...)
-    dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    dkplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    dkplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 2003).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -11,7 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster (but not equivalent) to the 
 "true" KPLSR (Nipals) algorithm (function `kplsr`) described in Rosipal & Trejo (2001).
@@ -42,8 +43,8 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-kern = :krbf ; gamma = 1e-1 ; scal = false
-#gamma = 1e-4 ; scal = true
+kern = :krbf ; gamma = 1e-1 ; scal = :none
+#gamma = 1e-4 ; scal = :std
 model = dkplsr(; nlv, kern, gamma, scal) ;
 fit!(model, Xtrain, ytrain)
 @names model
@@ -90,31 +91,32 @@ f
 dkplsr(; kwargs...) = JchemoModel(dkplsr, nothing, kwargs)
 
 function dkplsr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     dkplsr(X, Y, weights; kwargs...)
 end
 
-function dkplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    dkplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function dkplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    dkplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function dkplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKplsr, kwargs).par
+function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
     q = nco(Y)
+    ## ScalingX, Y
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
+    ## End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)     
     fitm = plskern!(K, Y, weights; kwargs...)

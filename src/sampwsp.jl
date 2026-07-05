@@ -1,5 +1,5 @@
 """
-    sampwsp(X, dmin; recod = false, maxit = nro(X))
+    sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where Q <: Float
 Build training vs. test sets by WSP sampling.  
 * `X` : X-data (n, p).
 * `dmin` : Distance "dmin" (Santiago et al. 2012).
@@ -43,59 +43,58 @@ s = sampwsp(X, dmin)
 plotxy(X[s.test, 1], X[s.test, 2]).f
 ```
 """ 
-function sampwsp(X, dmin; recod = false, maxit = nro(X))
+function sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where Q <: Float
     X = ensure_mat(X)
     n, p = size(X)
     indX = collect(1:n)
     indXtot = copy(indX)
     x = similar(X, 1, p)
     if recod
-        zX = recodwsp(X) 
+        vX = recodwsp(X) 
         xmeans = fill(.5, p)
     else
-        zX = copy(X)
-        xmeans = colmean(zX)
+        vX = copy(X)
+        xmeans = colmean(vX)
         #xmeans = fill(.5, p)
     end
     ## First reference point is set as the closest from the domain center
-    s = getknn(zX, xmeans'; k = 1).ind[1][1]
-    x .= vrow(zX, s:s)
+    s = getknn(vX, xmeans'; k = 1).ind[1][1]
+    x .= vrow(vX, s:s)
     ind = [indX[s]]
     ## Start
     iter = 1
     while (n > 1) && (iter < maxit) 
-        res = getknn(zX, x; k = n)
+        res = getknn(vX, x; k = n)
         s = res.d[1] .> dmin
         v = res.ind[1][s]  # new {reference point + candidates}
         if length(v) > 0
             s1 = v[1]
             s2 = v[2:end]
-            x .= vrow(zX, s1:s1)  # reference point
-            zX = vrow(zX, s2)     # candidates
+            x .= vrow(vX, s1:s1)  # reference point
+            vX = vrow(vX, s2)     # candidates
             push!(ind, indX[s1])
             indX = indX[s2]
-            n = nro(zX)
+            n = nro(vX)
         else
             train = rmrow(indXtot, ind)
             return (train, test = ind, niter = iter)
         end
         iter += 1
     end
-    train = rmrow(indXtot, ind)
-    (train, test = ind, niter = iter)
+    (train = rmrow(indXtot, ind), test = ind, niter = iter)
 end
 
 function recodwsp(X)
     X = ensure_mat(X)
     p = nco(X) 
-    zX = similar(X)
+    vX = similar(X)
     for j = 1:p
         x = vcol(X, j)
         vmin = minimum(x)
         vmax = maximum(x)
         vdiff = vmax - vmin
-        zX[:, j] .=  0.5 .+ (x .- (vdiff / 2 + vmin)) / vdiff
+        vX[:, j] .=  0.5 .+ (x .- (vdiff / 2 + vmin)) / vdiff
     end
-    zX
+    vX
 end
 

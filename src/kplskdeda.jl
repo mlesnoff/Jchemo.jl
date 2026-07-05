@@ -1,10 +1,10 @@
 """
     kplskdeda(; kwargs...)
     kplskdeda(X, y; kwargs...)
-    kplskdeda(X, y, weights::ProbabilityWeights; kwargs...)
+    kplskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 KPLS-KDEDA.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1. 
@@ -14,8 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Eventual keyword arguments of function `dmkern` (bandwidth definition).
-* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation
-    in the PLS computation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Same as function `plskdeda` (PLS-KDEDA) except that a kernel PLSR (function `kplsr`), instead of a  PLSR (function `plskern`), 
 is run on the Y-dummy table. 
@@ -25,18 +25,20 @@ See function `kplslda` for examples.
 kplskdeda(; kwargs...) = JchemoModel(kplskdeda, nothing, kwargs)
 
 function kplskdeda(X, y; kwargs...)
-    par = recovkw(ParKplskdeda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParKplskdeda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     kplskdeda(X, y, weights; kwargs...)
 end
 
-function kplskdeda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKplskdeda, kwargs).par
+function kplskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParKplskdeda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = kplsr(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     fitm_da = list(Kdeda, par.nlv)

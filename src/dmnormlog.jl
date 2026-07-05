@@ -1,9 +1,9 @@
 """
     dmnormlog(; kwargs...)
     dmnormlog(X; kwargs...)
-    dmnormlog!(X::Matrix; kwargs...)
+    dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: Float
     dmnormlog(mu, S; kwargs...)
-    dmnormlog!(mu::Vector, S::Matrix; kwargs...)
+    dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
 Logarithm of the normal probability density estimation.
     * `X` : X-data (n, p) used to estimate the mean `mu` and the covariance matrix `S`. If `X` is not given, 
         `mu` and `S` must be provided in `kwargs`.
@@ -52,17 +52,17 @@ function dmnormlog(X; kwargs...)
     dmnormlog!(copy(ensure_mat(X)); kwargs...)
 end
 
-function dmnormlog!(X::Matrix; kwargs...)
+function dmnormlog!(X::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
     if par.simpl 
-        logcst = 0
-        logdetS = 0
+        logcst = Q(0)
+        logdetS = Q(0)
     else
         p = nro(S)
-        logcst = -p / 2 * log(2 * pi)
-        logdetS = logdet(S)
+        logcst = Q(-p / 2 * log(2 * pi))
+        logdetS = Q(logdet(S))
     end
     U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
     LinearAlgebra.inv!(U)
@@ -73,16 +73,16 @@ function dmnormlog(mu, S; kwargs...)
     dmnormlog!(copy(vec(mu)), copy(ensure_mat(S)); kwargs...) 
 end
 
-function dmnormlog!(mu::Vector, S::Matrix; kwargs...)
+function dmnormlog!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
-        logcst = 0
-        logdetS = 0
+        logcst = Q(0)
+        logdetS = Q(0)
     else
         p = nro(S)
-        logcst = -p / 2 * log(2 * pi)
-        logdetS = logdet(S)
+        logcst = Q(-p / 2 * log(2 * pi))
+        logdetS = Q(logdet(S))
     end
     LinearAlgebra.inv!(U)
     Dmnormlog(mu, U, logdetS, logcst, par)

@@ -1,8 +1,10 @@
 """
     mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
-    mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    mbplsr!(Xbl::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -10,8 +12,8 @@ Multiblock PLSR (MBPLSR).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal concatenation of the blocks in `Xbl`. The function 
 returns the same global LVs and predictions as function `mbplswest`, but is much faster.
@@ -118,26 +120,25 @@ predict(model, Xbltest).pred
 mbplsr(; kwargs...) = JchemoModel(mbplsr, nothing, kwargs)
 
 function mbplsr(Xbl, Y; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Y = ensure_mat(Y)
     n = nro(Xbl[1])
-    weights = pweight(ones(Q, n))
-    mbplsr(Xbl, Y, weights; kwargs...)
+    mbplsr(Xbl, Y, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function mbplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    mbplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    mbplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function mbplsr!(Xbl::Vector, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbplsr, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
+function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    par = recovkw(ParMbplsr{Q}, kwargs).par
     n, q = size(Y)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv)
@@ -146,15 +147,17 @@ function mbplsr!(Xbl::Vector, Y::AbstractMatrix, weights::ProbabilityWeights; kw
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
+    ## Centering/scaling of Y
     ymeans = colmean(Y, weights)
+    fcenter!(Y, ymeans)
     yscales = ones(Q, q)
-    if par.scal 
-        yscales .= colstd(Y, weights)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        yscales .= colscal(Y, weights)
+        fscale!(Y, yscales)
     end
-    fitm = plskern(X, Y, weights; nlv, scal = false)
+    ## End
+    fitm = plskern(X, Y, weights; nlv, scal = :none)
     Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)
 end
 
@@ -167,14 +170,14 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Mbplsr, Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)    
-    fconcat(zXbl) * object.fitm.R 
+    vXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(vXbl) * object.fitm.R 
 end
 
 function transf(object::Mbplsr, Xbl, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    zXbl = transf(object.fitm_bl, Xbl)    
-    fconcat(zXbl) * vcol(object.fitm.R, 1:nlv) 
+    vXbl = transf(object.fitm_bl, Xbl)    
+    fconcat(vXbl) * vcol(object.fitm.R, 1:nlv) 
 end
 
 """
@@ -220,12 +223,12 @@ function Base.summary(object::Mbplsr, Xbl)
     n, nlv = size(object.fitm.T)
     nbl = length(Xbl)
     ## Block scaling
-    zXbl = transf(object.fitm_bl, Xbl)
-    X = fconcat(zXbl)
+    vXbl = transf(object.fitm_bl, Xbl)
+    X = fconcat(vXbl)
     ## Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
-        ssk[k] = frob2(zXbl[k], object.weights)
+        ssk[k] = frob2(vXbl[k], object.weights)
     end
     tt = object.fitm.TT
     tt_adj = (colnorm(object.fitm.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]
@@ -237,13 +240,13 @@ function Base.summary(object::Mbplsr, Xbl)
     nam = string.("lv", 1:nlv)
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
-        z[k, a] = rv(zXbl[k], object.fitm.T[:, a], object.weights) 
+        z[k, a] = rv(vXbl[k], object.fitm.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
     ## Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
-        z[k, :] = rd(zXbl[k], object.fitm.T, object.weights) 
+        z[k, :] = rd(vXbl[k], object.fitm.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
     ## Correlation between the X-variables and the global LVs 

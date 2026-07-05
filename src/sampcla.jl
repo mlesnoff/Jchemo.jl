@@ -1,7 +1,7 @@
 """
-    sampcla(x, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing, Int} = nothing)
+    sampcla(x::Vector{String}, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing, Int} = nothing)
 Build training vs. test sets using a stratified sampling.  
-* `x` : Class membership (n) of the observations.
+* `x` : Class membership (n) of the observations. Must be a `Vector{String}`.
 * `k` : Nb. test observations to sample in each class. If `k` is a single value, the nb. of sampled observations 
     is the same for each class. Alternatively, `k` can be a vector of length equal to the nb. of classes in `x`.
 * `y` : Quantitative variable (n) used if systematic sampling.
@@ -40,14 +40,15 @@ x[res.test]
 tab(x[res.test])
 ```
 """ 
-function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing, Int} = nothing)
-    x = vec(x)
+function sampcla(x::Vector{String}, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing, Int} = nothing)
     n = length(x)
     tabx = tab(x)
     lev = tabx.keys
     ni = tabx.vals
     nlev = length(lev)
-    if length(k) == 1 ; k = fill(k, nlev) ; end
+    if length(k) == 1
+        k = fill(k, nlev)
+    end
     s = list(Vector{Int}, nlev)
     @inbounds for i in eachindex(lev)
         k[i] = min(k[i], ni[i])
@@ -62,8 +63,7 @@ function sampcla(x, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing
     end
     s = reduce(vcat, s)
     zn = collect(1:n)
-    train = zn[setdiff(1:end, s)]
-    (train = train, test = s, ni, lev, k)
+    (train = zn[setdiff(1:end, s)], test = s, ni, lev, k)
 end
 
 

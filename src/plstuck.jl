@@ -1,8 +1,8 @@
 """
     plstuck(; kwargs...)
     plstuck(X, Y; kwargs...)
-    plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
-    plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Tucker's inter-battery method of factor analysis
 * `X` : First block of data.
 * `Y` : Second block of data.
@@ -71,37 +71,38 @@ res.cory2ty
 plstuck(; kwargs...) = JchemoModel(plstuck, nothing, kwargs)
 
 function plstuck(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plstuck(X, Y, weights; kwargs...)
 end
 
-function plstuck(X, Y, weights::ProbabilityWeights; kwargs...)
-    plstuck!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plstuck(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plstuck!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plstuck!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPls2bl, kwargs).par 
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
+    ## End
     if par.bscal == :none
         bscales = ones(Q, 2)
     elseif par.bscal == :frob
@@ -158,7 +159,6 @@ Summarize the fitted model.
 * `Y` : The Y-data that was used to fit the model.
 """ 
 function Base.summary(object::Plstuck, X, Y)
-    Q = eltype(X[1, 1])
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
@@ -178,12 +178,12 @@ function Base.summary(object::Plstuck, X, Y)
     explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     ## Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
-    cortx2ty = DataFrame(lv = 1:nlv, cor = z)
+    cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
     ## RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
-    z = zeros(Q, 1, nlv)
+    z = similar(X, 1, nlv)
     for a = 1:nlv
-        z[1, a] = rv(X, object.Tx[:, a], object.weights) 
+        z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
     end
     rvx2tx = DataFrame(z, nam)
     for a = 1:nlv

@@ -1,7 +1,7 @@
 """
     xfit(object)
     xfit(object, X, nlv::Int)
-    xfit!(object, X::Matrix, nlv::Int)
+    xfit!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
 Fit a matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted bilinear model.
 * `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
@@ -28,8 +28,8 @@ ynew = Ynew[:, 1]
 weights = pweight(rand(n))
 
 nlv = 2 
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = pcasvd(; nlv, scal) ;
 fit!(model, X)
 fitm = model.fitm ;
@@ -54,8 +54,8 @@ fitm = model.fitm ;
 @head xresid(fitm, X)
 
 nlv = 3
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = plskern(; nlv, scal)
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
@@ -88,13 +88,14 @@ function xfit(object)
     X
 end
 
-xfit(object, X) = xfit(object, X, object.par.nlv) 
+xfit(object, X) = xfit(object, X, object.par.nlv)
 
-function xfit(object, X, nlv::Int)
-    xfit!(object, copy(ensure_mat(X)), nlv)
+function xfit(object, X, nlv::Int) 
+    X = ensure_mat(X) 
+    xfit!(object, copy(X), nlv)
 end
 
-function xfit!(object, X::Matrix, nlv::Int)
+function xfit!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     if nlv == 0

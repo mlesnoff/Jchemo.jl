@@ -107,7 +107,7 @@ model = dmkern()
 #model = dmkern(a = .5) 
 #model = dmkern(h = .3) 
 fit!(model, x) 
-pred_grid = predict(model, grid).pred 
+pred_grid = predict(model, collect(grid)).pred 
 f = Figure()
 ax = Axis(f[1, 1])
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -118,26 +118,29 @@ f
 dmkern(; kwargs...) = JchemoModel(dmkern, nothing, kwargs)
 
 function dmkern(X; kwargs...)
-    par = recovkw(ParDmkern, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
-    h = par.h
-    a = par.a
+    Q = eltype(X)
+    par = recovkw(ParDmkern{Q}, kwargs).par
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
     if n == 1
-        H = diagm(fill(a * n^(-1/(p + 4)), p))
+        H = diagm(fill(par.a * n^(-1 / (p + 4)), p))
     end
     ## End
-    if isnothing(h)
-        h = a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
+    if isnothing(par.h)
+        h = par.a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
         H = diagm(h)
     else 
-        H = isa(h, Real) ? diagm(fill(h, p)) : diagm(h)
+        if isa(par.h, Real)
+            H = diagm(fill(par.h, p))
+        else 
+            H = diagm(par.h)
+        end
     end
     Hinv = inv(H)
     detH = det(H)
-    if detH == 0 ; detH = 1e-20 ; end
+    if detH == 0 ; detH = Q(1e-20) ; end
     Dmkern(X, H, Hinv, detH, par)
 end
 

@@ -1,10 +1,10 @@
 """
     rda(; kwargs...)
     rda(X, y; kwargs...)
-    rda(X, y, weights::ProbabilityWeights; kwargs...)
+    rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -13,7 +13,8 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `simpl` : Boolean. See function `dmnorm`. 
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Let us note W the (corrected) pooled within-class covariance matrix and Wi the (corrected) within-class 
 covariance matrix of class i. The regularization is done by the two following successive steps (for each class i):
@@ -84,41 +85,40 @@ conf(res.pred, ytest).cnt
 rda(; kwargs...) = JchemoModel(rda, nothing, kwargs)
 
 function rda(X, y; kwargs...)
-    par = recovkw(ParRda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParRda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     rda(X, y, weights; kwargs...)
 end
 
-function rda(X, y, weights::ProbabilityWeights; kwargs...)  
-    par = recovkw(ParRda, kwargs).par
+function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
+    par = recovkw(ParRda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
-    X = ensure_mat(X)
-    y = vec(y)    # for findall
-    Q = eltype(X)
     n, p = size(X)
-    alpha = Q(par.alpha)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
     nlev = length(lev)
-    priors = aggsumv(weights.values, vec(y)).val 
+    priors = aggsumv(weights.values, y).val 
     fitm = list(nlev)
     ct = similar(X, nlev, p)
     Id = I(p)
-    fitm = list(nlev)
+    fitm = list(Dmnorm, nlev)
     res.W .*= n / (n - nlev)    # unbiased estimate
     A = par.lb * Id
-    @inbounds for i in eachindex(lev)
-        s = findall(y .== lev[i]) 
+    @inbounds for i in eachindex(lev) 
+        s = findall(y .== lev[i])
         ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))   
-        @. res.Wi[i] = (1 - alpha) * res.Wi[i] + alpha * res.W
+        @. res.Wi[i] = (1 - par.alpha) * res.Wi[i] + par.alpha * res.W
         @. res.Wi[i] = res.Wi[i] + A
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 
     end
@@ -126,7 +126,7 @@ function rda(X, y, weights::ProbabilityWeights; kwargs...)
 end
 
 """
-    predict(object::Qda, X)
+    predict(object::Rda, X)
 Compute y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -140,11 +140,10 @@ function predict(object::Rda, X)
     @inbounds for i in eachindex(lev)
         dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.xscales)).pred)
     end
-    A = object.priors' .* dens
-    v = sum(A, dims = 2)
-    posterior = fscale(A', v)'  # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(z, lev), m, 1)
+    A = object.priors' .* dens 
+    posterior = fscale(A', rowsum(A))'    # Could be replaced by similar as in fscale! 
+    v =  mapslices(argmax, posterior; dims = 2)  # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(vec(v), lev), m, 1)
     (pred = pred, dens, posterior)
 end
 

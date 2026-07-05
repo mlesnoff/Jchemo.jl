@@ -1,5 +1,5 @@
 """
-    gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function, 
+    gridscore_lb(Xtrain, Ytrain, X, Y; algo::Function, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
         lb::Union{Float64, AbstractVector{Float64}}, verbose::Bool = false)
 Working function for `gridscore`.
@@ -9,12 +9,16 @@ Argument `pars` must not contain `lb`.
 
 See function `gridscore` for examples.
 """
-function gridscore_lb(Xtrain, Ytrain, X, Y; algo, score::Function, 
+function gridscore_lb(Xtrain, Ytrain, X, Y; algo::Function, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
-        lb::Union{T, AbstractVector{T}}, verbose::Bool = false) where T <: AbstractFloat
-    Q = eltype(Xtrain[1, 1])
+        lb::Union{T, AbstractVector{T}}, verbose::Bool = false) where T <: Float
+    Xtrain = ensure_mat(Xtrain)
+    Ytrain = ensure_mat(Ytrain)
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
     q = nco(Ytrain)
-    lb = mlev(lb)
+    Q = eltype(Xtrain)
+    lb = sort(unique(lb))
     le_lb = length(lb)
     if isnothing(pars)    # e.g.: case of RR
         if verbose ; println("-- Nb. combinations = 0.") ; end

@@ -1,14 +1,15 @@
 """
     pcasph(; kwargs...)
     pcasph(X; kwargs...)
-    pcasph(X, weights::ProbabilityWeights; kwargs...)
-    pcasph!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Spherical PCA.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). Matrix `X` is centered by the spatial 
 median computed by function`Jchemo.colmedspa`.
@@ -37,6 +38,7 @@ n = nro(X)
 
 nlv = 3
 model = pcasph(; nlv)  
+#model = pcasph(; nlv, scal = :mad) 
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -52,29 +54,28 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), ylabel = st
 pcasph(; kwargs...) = JchemoModel(pcasph, nothing, kwargs)
 
 function pcasph(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcasph(X, weights; kwargs...)
 end
 
-function pcasph(X, weights::ProbabilityWeights; kwargs...)
-    pcasph!(copy(ensure_mat(X)), weights; kwargs...)
+function pcasph(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcasph!(copy(X), weights; kwargs...)
 end
 
-function pcasph!(X::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPca, kwargs).par 
-    Q = eltype(X)
+function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPca, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X
     xmeans = Jchemo.colmedspa(X, delta = 0.001)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colmad(X)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
     ## Sphere
     Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)
@@ -88,6 +89,6 @@ function pcasph!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     T .= T[:, s]
     V .= V[:, s]
     sv .= sv[s]
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, par) 
 end
 

@@ -10,7 +10,8 @@ Keyword arguments:
     the `Distances.jl` package, including user-defined types. Default is `Distances.Euclidean()`.
 * `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional space.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
     
 The function fits a UMAP dimension reduction using package `UMAP.jl'.
 
@@ -30,10 +31,7 @@ https://pair-code.github.io/understanding-umap/
 
 ## Examples
 ```julia
-using Jchemo, JLD2, DataFrames, GLMakie
-using Distances
-
-using JchemoData
+using Jchemo, JchemoData, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "challenge2018.jld2") 
 @load db dat
@@ -66,13 +64,13 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 tab(string.(ycla, "-", Y.label))
-##### End
+##### End data
 
 psamp = .2  # to decrease the computation time for the example
 #psamp = 1  # all samples
 nlv = 3
-metric = Distances.Euclidean()
-#metric = Distances.CosineDist()
+metric = Jchemo.Euclidean()
+#metric = Jchemo.CosineDist()
 #metric = Jchemo.SamDist()
 n_neighbors = 20 ; min_dist = .4 
 model = umap(; psamp, nlv, metric, n_neighbors, min_dist)  
@@ -97,10 +95,13 @@ f
 """ 
 umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
 
-function umap(X; kwargs...)
-    par = recovkw(ParUmap, kwargs).par
+function umap(X; kwargs...)  # Q is forced to be Float32
+    Q = Float32
     X = ensure_mat(X)
-    Q = eltype(X)
+    ## UMAP.jl 0.3.0 seems force object embedding to be Float32.
+    ## Therefore, the computations below are also forced to be Float32.
+    X = Q.(X)
+    par = recovkw(ParUmap{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
@@ -112,14 +113,16 @@ function umap(X; kwargs...)
     else
         s = collect(1:n)
     end
+    ## Scaling of X
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     ## Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
     fitm = UMAP.fit(Matrix(X'), nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
-    T = reduce(vcat, transpose.(fitm.embedding))
+    T = Matrix(fitm.embedding')
     Umap(fitm, T, xscales, s, par)
 end
 
@@ -130,7 +133,8 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 """
 function transf(object::Umap, X)
-    res = UMAP.transform(object.fitm, Matrix(fscale(X, object.xscales)'))
-    reduce(vcat, transpose.(res.embedding)) 
+    Q = Float32  # see above
+    X = Q.(ensure_mat(X))
+    Matrix(UMAP.transform(object.fitm, Matrix(fscale(X, object.xscales)')).embedding')
 end
 

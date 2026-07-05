@@ -1,9 +1,9 @@
 """
     knnda(; kwargs...)
-    knnda(X, y; kwargs...) 
+    knnda(X, y::Vector{String}; kwargs...) 
 k-Nearest-Neighbours weighted discrimination (kNN-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights (see function `getknn`). 
     Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), `:sam` (spectral angular distance), 
@@ -12,8 +12,8 @@ Keyword arguments:
     See function `winvs` for details (keyword arguments `criw` and `squared` of `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before the distance 
-     and weight computations.
+* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 This function has the same principle as function `knnr` except that a discrimination replaces the regression. A weighted vote 
 is done over the neighborhood, and the prediction corresponds to the most frequent class.
@@ -39,7 +39,7 @@ ntest = nro(Xtest)
 tab(ytrain)
 tab(ytest)
 
-metric = :eucl ; h = 2 ; k = 10
+metric = :eucl ; h = 2. ; k = 10
 model = knnda(; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -72,16 +72,17 @@ errp(pred, ytest)
 """ 
 knnda(; kwargs...) = JchemoModel(knnda, nothing, kwargs)
 
-function knnda(X, y; kwargs...) 
-    par = recovkw(ParKnn, kwargs).par
+function knnda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    y = ensure_mat(y)
-    Q = eltype(X)
     p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParKnn{Q}, kwargs).par
     taby = tab(y)    
     xscales = ones(Q, p)
-    if par.scal && isnothing(fitm)
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
     end
     Knnda(X, y, xscales, taby.vals, taby.keys, par)
 end
@@ -93,17 +94,17 @@ Compute the y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Knnda, X)
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
+    h = object.par.h
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    tolw = object.par.tolw
+    criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)
@@ -115,17 +116,12 @@ function predict(object::Knnda, X)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w
-        ## New
-        #wpr = pweightcla(object.y[res.ind[i]]; prior = object.par.prior).values 
-        #listw[i] = wpr
-        #listw[i] = sqrt.(w .* wpr)
-        ## End
     end
     ## End
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]
-        pred[i, :] .= findmax_cla(object.y[s], pweight(listw[i]))
+        pred[i, :] .= findmax_cla(object.y[s], pweight(listw[i]).values)
     end
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end

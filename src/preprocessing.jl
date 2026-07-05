@@ -1,87 +1,4 @@
 """
-    detrend_lo(; kwargs...)
-    detrend_lo(X; kwargs...)
-Baseline correction of each row of X-data by LOESS regression.
-* `X` : X-data (n, p).
-Keyword arguments:
-* `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
-    within [0, 1].
-* `degree` : Polynomial degree for the local fitting.
-
-De-trend transformation: The function fits a baseline by LOESS regression (function `loessr`) for each 
-observation and returns the residuals (= signals corrected from the baseline).
-
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-@names dat
-X = dat.X
-year = dat.Y.year
-s = year .<= 2012
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
-plotsp(X, wl; nsamp = 20).f
-
-model = detrend_lo(span = .8)
-fit!(model, Xtrain)
-Xptrain = transf(model, Xtrain)
-Xptest = transf(model, Xtest)
-plotsp(Xptrain, wl).f
-plotsp(Xptest, wl).f
-
-## Example on 1 spectrum
-i = 2
-zX = Matrix(X)[i:i, :]
-model = detrend_lo(span = .75)
-fit!(model, zX)
-zXc = transf(model, zX)   # = corrected spectrum 
-B = zX - zXc              # = estimated baseline
-f, ax = plotsp(zX, wl)
-lines!(wl, vec(B); color = :blue)
-lines!(wl, vec(zXc); color = :black)
-f
-```
-""" 
-detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
-
-function detrend_lo(X; kwargs...)
-    par = recovkw(ParDetrendlo, kwargs).par
-    Detrendlo(par)
-end
-
-""" 
-    transf(object::Detrendlo, X)
-    transf!(object::Detrendlo, X)
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-""" 
-function transf(object::Detrendlo, X)
-    X = copy(ensure_mat(X))
-    transf!(object, X)
-    X
-end
-
-function transf!(object::Detrendlo, X::Matrix)
-    Q = eltype(X)
-    p = nco(X)
-    span = object.par.span
-    degree = object.par.degree
-    x = Q.(collect(1:p))
-    @inbounds for i in axes(X, 1)
-    ## Not faster: @Threads.threads
-        y = vec(vrow(X, i))
-        fitm = loessr(x, y; span, degree)
-        X[i, :] .= y - vec(predict(fitm, x).pred)
-    end
-end
-
-"""
     detrend_pol(; kwargs...)
     detrend_pol(X; kwargs...)
 Baseline correction of each row of X-data by polynomial linear regression.
@@ -137,7 +54,7 @@ end
 
 """ 
     transf(object::Detrendpol, X)
-    transf!(object::Detrendpol, X)
+    transf!(object::Detrendpol, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -148,16 +65,15 @@ function transf(object::Detrendpol, X)
     X
 end
 
-function transf!(object::Detrendpol, X::Matrix)
+function transf!(object::Detrendpol, X::Matrix{Q}) where Q <: Float
     par = object.par
-    Q = eltype(X)
     p = nco(X)
-    degree = par.degree
     wls = Q.(collect(1:p))
-    mu = meanv(wls) ; s = stdv(wls)
-    @. wls = (wls - mu) / s
-    P = similar(X, p, degree + 1)
-    @inbounds for j = 0:degree
+    mu = meanv(wls)
+    sigma = stdv(wls)
+    @. wls = (wls - mu) / sigma
+    P = similar(X, p, par.degree + 1)
+    @inbounds for j = 0:par.degree
         P[:, j + 1] .= wls.^j
     end
     if par.degree >= 2
@@ -170,6 +86,87 @@ function transf!(object::Detrendpol, X::Matrix)
     ## Not faster: @Threads.threads
         y = vrow(X, i)
         X[i, :] .= y - P * A * y
+    end
+end
+
+"""
+    detrend_lo(; kwargs...)
+    detrend_lo(X; kwargs...)
+Baseline correction of each row of X-data by LOESS regression.
+* `X` : X-data (n, p).
+Keyword arguments:
+* `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
+    within [0, 1].
+* `degree` : Polynomial degree for the local fitting.
+
+De-trend transformation: The function fits a baseline by LOESS regression (function `loessr`) for each 
+observation and returns the residuals (= signals corrected from the baseline).
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+model = detrend_lo(span = .8)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
+plotsp(Xptrain, wl).f
+plotsp(Xptest, wl).f
+
+## Example on 1 spectrum
+i = 2
+zX = Matrix(X)[i:i, :]
+model = detrend_lo(span = .75)
+fit!(model, zX)
+zXc = transf(model, zX)   # = corrected spectrum 
+B = zX - zXc              # = estimated baseline
+f, ax = plotsp(zX, wl)
+lines!(wl, vec(B); color = :blue)
+lines!(wl, vec(zXc); color = :black)
+f
+```
+""" 
+detrend_lo(; kwargs...) = JchemoModel(detrend_lo, nothing, kwargs)
+
+function detrend_lo(X; kwargs...)
+    X = ensure_mat(X)
+    par = recovkw(ParDetrendlo{eltype(X)}, kwargs).par
+    Detrendlo(par)
+end
+
+""" 
+    transf(object::Detrendlo, X)
+    transf!(object::Detrendlo, X::Matrix{Q}) where Q <: Float
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::Detrendlo, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Detrendlo, X::Matrix{Q}) where Q <: Float
+    p = nco(X)
+    x = Q.(collect(1:p))
+    @inbounds for i in axes(X, 1)
+    ## Not faster: @Threads.threads
+        y = vec(vrow(X, i))
+        fitm = loessr(x, y; object.par.span, object.par.degree)
+        X[i, :] .= y - vec(predict(fitm, x).pred)
     end
 end
 
@@ -218,7 +215,7 @@ end
 
 """ 
     transf(object::Fdif, X)
-    transf!(object::Fdif, X::Matrix, M::Matrix)
+    transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -234,7 +231,7 @@ function transf(object::Fdif, X)
     M
 end
 
-function transf!(object::Fdif, X::Matrix, M::Matrix)
+function transf!(object::Fdif, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
     p = nco(X)
     npoint = object.par.npoint
     pc = p - npoint + 1
@@ -242,93 +239,6 @@ function transf!(object::Fdif, X::Matrix, M::Matrix)
         M[:, j] .= vcol(X, j + npoint - 1) .- vcol(X, j)
     end
 end
-
-""" 
-    interpl(; kwargs...)
-    interpl(X; kwargs...)
-Sampling spectra by interpolation.
-* `X` : Matrix (n, p) of spectra (rows).
-Keyword arguments:
-* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, or an AbstractRange, 
-    with increasing values.
-* `wlfin` : Final values (within the range of `wl`) where to interpolate each spectrum. Must be a numeric vector, 
-    or an AbstractRange, with increasing values.
-
-The function implements a cubic spline interpolation using package DataInterpolations.jl.
-
-## References
-http://github.com/SciML/DataInterpolations.jl
-
-Bhagavan et al. 2024, https://doi.org/10.21105/joss.06917
-
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-@names dat
-X = dat.X
-year = dat.Y.year
-s = year .<= 2012
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
-plotsp(X, wl; nsamp = 20).f
-
-wlfin = range(500, 2400, length = 10)
-#wlfin = collect(range(500, 2400, length = 10))
-model = interpl(; wl, wlfin)
-fit!(model, Xtrain)
-Xptrain = transf(model, Xtrain)
-Xptest = transf(model, Xtest)
-plotsp(Xptrain).f
-plotsp(Xptest).f
-```
-"""
-interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
-
-function interpl(X; kwargs...)
-    par = recovkw(ParInterpl, kwargs).par
-    Interpl(par)
-end
-
-""" 
-    transf(object::Interpl, X)
-    transf!(object::Interpl, X::Matrix, M::Matrix)
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-* `M` : Pre-allocated output matrix (n, p).
-The in-place function stores the output in `M`.
-""" 
-function transf(object::Interpl, X)
-    X = ensure_mat(X)
-    n = nro(X)
-    p = length(object.par.wlfin)
-    M = similar(X, n, p)
-    transf!(object, X, M)
-    M
-end
-
-function transf!(object::Interpl, X::Matrix, M::Matrix)
-    wl = object.par.wl 
-    wlfin = object.par.wlfin 
-    algo = DataInterpolations.CubicSpline
-    #algo = DataInterpolations.LinearInterpolation
-    ## Not faster: @Threads.threads
-    @inbounds for i in axes(X, 1)
-        ## argument 'extrapolate' has been removed for CubicSpline
-        ## ==> removed from 'interpl' since Jchemo_0.8.4
-        itp = algo(vrow(X, i), wl)
-        M[i, :] .= itp.(wlfin)
-    end
-end
-#cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
-#linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
-#quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
-#quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
 
 """
     mavg(; kwargs...)
@@ -393,7 +303,7 @@ end
 
 """ 
     transf(object::Mavg, X)
-    transf!(object::Mavg, X)
+    transf!(object::Mavg, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -404,7 +314,7 @@ function transf(object::Mavg, X)
     X
 end
 
-function transf!(object::Mavg, X::Matrix)
+function transf!(object::Mavg, X::Matrix{Q}) where Q <: Float
     p = nco(X)
     npoint = object.par.npoint
     kern = ImageFiltering.centered(ones(npoint) / npoint) 
@@ -477,9 +387,7 @@ struct Msc
     xref::Vector
 end
 
-function msc(X, xref)
-    Msc(vec(xref))
-end
+msc(X, xref) = Msc(vec(xref))
 
 msc(X) = msc(X, colmean(X)) 
 
@@ -489,7 +397,7 @@ function transf(object::Msc, X)
     X
 end
 
-function transf!(object::Msc, X::Matrix)
+function transf!(object::Msc, X::Matrix{Q}) where Q <: Float
     Xt = X'
     fitm = mlr(object.xref, Xt)
     @. Xt = Xt - fitm.int
@@ -549,7 +457,7 @@ plotsp(Xptest, wl).f
 
 #### Direct
 
-degree = 3
+degree = 2
 fitm = emsc(Xtrain; degree) 
 #fitm = emsc(Xtrain, colmean(Xtrain); degree) 
 #fitm = emsc(Xtrain, colmed(Xtrain); degree) 
@@ -559,13 +467,14 @@ fitm = emsc(Xtrain; degree)
 emsc(; kwargs...) = JchemoModel(emsc, nothing, kwargs)
 
 function emsc(X, xref; kwargs...)
-    par = recovkw(ParEmsc, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(xref)
+    Q = eltype(X)
+    par = recovkw(ParEmsc, kwargs).par
     p = length(xref) 
     wls = Q.(collect(1:p))
-    mu = meanv(wls) ; s = stdv(wls)
-    @. wls = (wls - mu) / s
+    mu = meanv(wls)
+    sigma = stdv(wls)
+    @. wls = (wls - mu) / sigma
     P = similar(xref, p, par.degree + 1)
     @inbounds for j = 0:par.degree
         P[:, j + 1] .= wls.^j
@@ -585,8 +494,7 @@ function transf(object::Emsc, X)
     X
 end
 
-function transf!(object::Emsc, X::Matrix)
-    X = ensure_mat(X)
+function transf!(object::Emsc, X::Matrix{Q}) where Q <: Float
     m, p = size(X)
     npar = nco(object.Xr)
     Xt = X'
@@ -641,7 +549,7 @@ function savgk(nhwindow::Int, degree::Int, deriv::Int)
     end
     G = S * inv(S' * S)
     kern = (-1)^deriv * factorial(deriv) * vcol(G, deriv + 1) # = h_d in Luo et al. 2005 Eq.5
-    (S = S, G = G, kern = kern)
+    (S = S, G, kern)
 end
 
 """
@@ -720,7 +628,7 @@ end
 
 """ 
     transf(object::Savgol, X)
-    transf!(object::Savgol, X)
+    transf!(object::Savgol, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -731,7 +639,7 @@ function transf(object::Savgol, X)
     X
 end
 
-function transf!(object::Savgol, X::Matrix)
+function transf!(object::Savgol, X::Matrix{Q}) where Q <: Float
     npoint = object.par.npoint 
     @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
     p = nco(X)
@@ -753,63 +661,6 @@ function transf!(object::Savgol, X::Matrix)
     #@Threads.threads for i in axes(X, 1)
     #    X[i, :] .= imfilter(vrow(X, i), reflect(kernc))
     #end
-end
-
-"""
-    snorm()
-    snorm(X)
-Row-wise norming of X-data.
-* `X` : X-data (n, p).
-
-Each row of `X` is divide by its norm.
-
-## Examples
-```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
-db = joinpath(path_jdat, "data/cassav.jld2") 
-@load db dat
-@names dat
-X = dat.X
-year = dat.Y.year
-s = year .<= 2012
-Xtrain = X[s, :]
-Xtest = rmrow(X, s)
-wlst = names(dat.X)
-wl = parse.(Float64, wlst)
-plotsp(X, wl; nsamp = 20).f
-
-model = snorm()
-fit!(model, Xtrain)
-Xptrain = transf(model, Xtrain)
-Xptest = transf(model, Xtest)
-plotsp(Xptrain).f
-plotsp(Xptest).f
-@head rownorm(Xptrain)
-@head rownorm(Xptest)
-```
-""" 
-snorm(; kwargs...) = JchemoModel(snorm, nothing, kwargs)
-
-function snorm(X)
-    Snorm()
-end
-
-""" 
-    transf(object::Snorm, X)
-    transf!(object::Snorm, X)
-Compute the preprocessed data from a model.
-* `object` : Model.
-* `X` : X-data to transform.
-""" 
-function transf(object::Snorm, X)
-    X = copy(ensure_mat(X))
-    transf!(object, X)
-    X
-end
-
-function transf!(object::Snorm, X::Matrix)
-    X ./= rownorm(X)
 end
 
 """
@@ -859,7 +710,7 @@ end
 
 """ 
     transf(object::Snv, X)
-    transf!(object::Snv, X)
+    transf!(object::Snv, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -870,16 +721,157 @@ function transf(object::Snv, X)
     X
 end
 
-function transf!(object::Snv, X::Matrix)
-    Q = eltype(X)
+function transf!(object::Snv, X::Matrix{Q}) where Q <: Float
     n, p = size(X)
-    centr = object.par.centr 
-    scal = object.par.scal
-    mu = centr ? rowmean(X) : zeros(Q, n)
-    sigma = scal ? rowstd(X) : ones(Q, n)
+    mu = object.par.centr ? rowmean(X) : zeros(Q, n)
+    sigma = object.par.scal ? rowstd(X) : ones(Q, n)
     # Not faster: @Threads.threads
     @inbounds for j = 1:p
         X[:, j] .= (vcol(X, j) .- mu) ./ sigma
     end
 end
+
+"""
+    snorm()
+    snorm(X)
+Row-wise norming of X-data.
+* `X` : X-data (n, p).
+
+Each row of `X` is divide by its norm.
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+model = snorm()
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
+@head rownorm(Xptrain)
+@head rownorm(Xptest)
+```
+""" 
+snorm(; kwargs...) = JchemoModel(snorm, nothing, kwargs)
+
+function snorm(X)
+    Snorm()
+end
+
+""" 
+    transf(object::Snorm, X)
+    transf!(object::Snorm, X::Matrix{Q}) where Q <: Float
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+""" 
+function transf(object::Snorm, X)
+    X = copy(ensure_mat(X))
+    transf!(object, X)
+    X
+end
+
+function transf!(object::Snorm, X::Matrix{Q}) where Q <: Float
+    X ./= rownorm(X)
+end
+
+""" 
+    interpl(; kwargs...)
+    interpl(X; kwargs...)
+Sampling spectra by interpolation.
+* `X` : Matrix (n, p) of spectra (rows).
+Keyword arguments:
+* `wl` : Values representing the column "names" of `X`. Must be a numeric vector of length p, or an AbstractRange, 
+    with increasing values.
+* `wlfin` : Final values (within the range of `wl`) where to interpolate each spectrum. Must be a numeric vector, 
+    or an AbstractRange, with increasing values.
+
+The function implements a cubic spline interpolation using package DataInterpolations.jl.
+
+## References
+http://github.com/SciML/DataInterpolations.jl
+
+Bhagavan et al. 2024, https://doi.org/10.21105/joss.06917
+
+## Examples
+```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/cassav.jld2") 
+@load db dat
+@names dat
+X = dat.X
+year = dat.Y.year
+s = year .<= 2012
+Xtrain = X[s, :]
+Xtest = rmrow(X, s)
+wlst = names(dat.X)
+wl = parse.(Float64, wlst)
+plotsp(X, wl; nsamp = 20).f
+
+wlfin = range(500, 2400, length = 10)
+#wlfin = collect(range(500, 2400, length = 10))
+model = interpl(; wl, wlfin)
+fit!(model, Xtrain)
+Xptrain = transf(model, Xtrain)
+Xptest = transf(model, Xtest)
+plotsp(Xptrain).f
+plotsp(Xptest).f
+```
+"""
+interpl(; kwargs...) = JchemoModel(interpl, nothing, kwargs)
+
+function interpl(X; kwargs...)
+    X = ensure_mat(X)
+    par = recovkw(ParInterpl{eltype(X)}, kwargs).par
+    Interpl(par)
+end
+
+""" 
+    transf(object::Interpl, X)
+    transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
+Compute the preprocessed data from a model.
+* `object` : Model.
+* `X` : X-data to transform.
+* `M` : Pre-allocated output matrix (n, p).
+The in-place function stores the output in `M`.
+""" 
+function transf(object::Interpl, X)
+    X = ensure_mat(X)
+    n = nro(X)
+    p = length(object.par.wlfin)
+    M = similar(X, n, p)
+    transf!(object, X, M)
+    M
+end
+
+function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
+    algo = DataInterpolations.CubicSpline
+    #algo = DataInterpolations.LinearInterpolation
+    ## Not faster: @Threads.threads
+    @inbounds for i in axes(X, 1)
+        ## argument 'extrapolate' has been removed for CubicSpline
+        ## ==> removed from 'interpl' since Jchemo_0.8.4
+        itp = algo(vrow(X, i), object.par.wl)
+        M[i, :] .= itp.(object.par.wlfin)
+    end
+end
+#cubic_spline(y, x) = DataInterpolations.CubicSpline(y, x)
+#linear_int(y, x) = DataInterpolations.LinearInterpolation(y, x)
+#quadratic_int(y, x) = DataInterpolations.QuadraticInterpolation(y, x)
+#quadratic_spline(y, x) = DataInterpolations.QuadraticSpline(y, x)
+
 

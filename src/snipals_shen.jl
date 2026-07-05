@@ -1,6 +1,5 @@
-function snipals_shen(X; kwargs...)
-    par = recovkw(Jchemo.ParSnipals, kwargs).par 
-    X = ensure_mat(X)
+function snipals_shen(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
+    par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
     p = nco(X)
     if par.meth == :soft 
         fthresh = thresh_soft
@@ -40,8 +39,7 @@ function snipals_shen(X; kwargs...)
         end
     end
     niter = iter - 1
-    v = vtild / normv(vtild)
-    t = X * v 
-    (t = t, v, vtild, niter)
+    v = vtild / normv(vtild) 
+    (t = X * v, v, vtild, niter)
 end
 

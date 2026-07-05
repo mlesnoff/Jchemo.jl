@@ -1,8 +1,8 @@
 """
     plssimp(; kwargs...)
     plssimp(X, Y; kwargs...)
-    plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
-    plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plssimp(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -12,8 +12,7 @@ Keyword arguments:
 * `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
     standard deviation.
 
-**Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of 
-de Jong (2013).
+**Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of de Jong (2013).
 
 See function `plskern` for examples.
 
@@ -24,35 +23,35 @@ Laboratory Systems 18, 251–263. https://doi.org/10.1016/0169-7439(93)85002-X
 plssimp(; kwargs...) = JchemoModel(plssimp, nothing, kwargs)
 
 function plssimp(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plssimp(X, Y, weights; kwargs...)
 end
 
-function plssimp(X, Y, weights::ProbabilityWeights; kwargs...)
-    plssimp!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plssimp(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plssimp!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsr, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     ## XtY 
     fweightr!(Y, weights.values)
@@ -93,7 +92,7 @@ function plssimp!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     end
     ## B = R * inv(T' * D * T) * T' * D * Y
     ## W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
-    Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 

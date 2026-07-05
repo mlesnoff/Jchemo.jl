@@ -8,13 +8,13 @@ Keyword arguments:
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
     `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+* `k` : The number of nearest neighbors to select for each observation to predict.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
-* `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard 
-    deviation before the distance and weight computations.
+* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances and local weights). 
+    Possible values are: `:none`, `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 The general principle of this function is as follows (many other variants of kNNR pipelines can be built):
 a) For each new observation to predict, the prediction is the weighted mean of `y` over a selected neighborhood
@@ -50,9 +50,9 @@ fit!(model, Xtrain, ytrain)
 dump(model.fitm.par)
 res = predict(model, Xtest) ; 
 @names res 
-res.listnn
-res.listd
-res.listw
+@head res.listnn
+@head res.listd
+@head res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
@@ -88,15 +88,17 @@ f
 knnr(; kwargs...) = JchemoModel(knnr, nothing, kwargs)
 
 function knnr(X, Y; kwargs...) 
-    par = recovkw(ParKnn, kwargs).par
-    @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    Q = eltype(X)
     p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParKnn{Q}, kwargs).par
+    @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
     end
     Knnr(X, Y, xscales, par) 
 end
@@ -108,18 +110,18 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Knnr, X)
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     q = nco(object.Y)
+    Q = eltype(object.X)
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
+    h = object.par.h
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    tolw = object.par.tolw
+    criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)

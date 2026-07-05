@@ -1,7 +1,7 @@
 """
     center()
     center(X)
-    center(X, weights::ProbabilityWeights)
+    center(X:: Matrix{Q}, weights::ProbabilityWeights) where Q <: Float
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 
@@ -34,19 +34,16 @@ plotsp(Xptest).f
 """
 center(; kwargs...) = JchemoModel(center, nothing, kwargs)
 
-function center(X)
-    xmeans = colmean(X)
-    Center(xmeans)
-end
+center(X) = Center(colmean(ensure_mat(X)))
 
-function center(X, weights::ProbabilityWeights)
+function center(X::Matrix{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
     xmeans = colmean(X, weights)
     Center(xmeans)
 end
 
 """ 
     transf(object::Center, X)
-    transf!(object::Center, X::Matrix)
+    transf!(object::Center, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -57,16 +54,19 @@ function transf(object::Center, X)
     X
 end
 
-function transf!(object::Center, X::Matrix)
+function transf!(object::Center, X::Matrix{Q}) where Q <: Float
     fcenter!(X, object.xmeans)
 end
 
 """
     scale()
-    scale(X)
-    scale(X, weights::ProbabilityWeights)
+    scale(X; kwargs...)
+    scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
+Keyword arguments:
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 ## Examples
 ```julia 
@@ -84,7 +84,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = scale() 
+model = scale(scal = :std) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -97,19 +97,25 @@ plotsp(Xptest).f
 """
 scale(; kwargs...) = JchemoModel(scale, nothing, kwargs)
 
-function scale(X)
-    xscales = colstd(X)
-    Scale(xscales)
+function scale(X; kwargs...)
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
+    scale(X, weights; kwargs...)
 end
 
-function scale(X, weights::ProbabilityWeights)
-    xscales = colstd(X, weights)
+function scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = Jchemo.recovkw(ParScale, kwargs).par 
+    xscales = ones(Q, nco(X)) 
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+    end
     Scale(xscales)
 end
 
 """ 
     transf(object::Scale, X)
-    transf!(object::Scale, X::Matrix)
+    transf!(object::Scale, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -120,16 +126,19 @@ function transf(object::Scale, X)
     X
 end
 
-function transf!(object::Scale, X::Matrix)
+function transf!(object::Scale, X::Matrix{Q}) where Q <: Float
     fscale!(X, object.xscales)
 end
 
 """
     cscale()
-    cscale(X)
-    cscale(X, weights::ProbabilityWeights)
+    cscale(X, weights; kwargs...)
+    cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
+Keyword arguments:
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 ## Examples
 ```julia
@@ -148,7 +157,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-model = cscale() 
+model = cscale(scal = :std) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -162,21 +171,27 @@ plotsp(Xptest).f
 """
 cscale(; kwargs...) = JchemoModel(cscale, nothing, kwargs)
 
-function cscale(X)
-    xmeans = colmean(X)
-    xscales = colstd(X)
-    Cscale(xmeans, xscales)
+function cscale(X; kwargs...)
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
+    cscale(X, weights; kwargs...)
 end
 
-function cscale(X, weights::ProbabilityWeights)
+function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = Jchemo.recovkw(ParScale, kwargs).par 
+    p = nco(X) 
     xmeans = colmean(X, weights)
-    xscales = colstd(X, weights)
+    xscales = ones(Q, p) 
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+    end
     Cscale(xmeans, xscales)
 end
 
 """ 
     transf(object::Cscale, X)
-    transf!(object::Cscale, X::Matrix)
+    transf!(object::Cscale, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -187,7 +202,7 @@ function transf(object::Cscale, X)
     X
 end
 
-function transf!(object::Cscale, X::Matrix)
+function transf!(object::Cscale, X::Matrix{Q}) where Q <: Float
     fcscale!(X, object.xmeans, object.xscales)
 end
 

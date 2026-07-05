@@ -1,5 +1,6 @@
 """
-    plotconf(object; size = (500, 400), cnt = true, ptext = true, fontsize = 15, coldiag = :red, )
+    plotconf(object; size::Tuple{Int, Int} = (500, 400), cnt::Bool = true, ptext::Bool = true, 
+        fontsize::Real = 15, coldiag::Symbol = :red)
 Plot a confusion matrix.
 * `object` : Output of function `conf`.
 Keyword arguments:
@@ -14,8 +15,8 @@ See examples in help page of function `conf`.
 To use the function, a backend (e.g., CairoMakie) has to be specified.
 ```
 """
-function plotconf(object; size = (500, 400), cnt = true, ptext = true, 
-        fontsize = 15, coldiag = :red, )
+function plotconf(object; size::Tuple{Int, Int} = (500, 400), cnt::Bool = true, ptext::Bool = true, 
+        fontsize::Real = 15, coldiag::Symbol = :red)
     if cnt
         A = object.A 
         namval = "Nb. occurrences"

@@ -1,16 +1,28 @@
 # News
 
-## *Version 0.10.0*
+## *Version 0.10.0
 
-Warning: Major changes in functions having arguments 'nlv' (laent variables) and 'lb' (ridge). 
+**Warning:** Major *breaking changes* have been made in this version compared to versions 0.9, 
+in particular in functions having arguments 'nlv' (laent variables) and 'lb' (ridge).  
 
 - Breakings:
-    - Functions having arguments 'nlv' or 'lb': deep restructuration of functions *transf*, *coef* 
-        and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb' in *transf* 
-        and *predict* has changed, see examples in function helps.
+    - All functions using a class membership variable (e.g., functions for discrimination):
+        this variable must be a 'Vector{String}'. 
+    - All functions having arguments 'nlv' or 'lb': **deep** restructuration of functions *transf*, *coef* 
+        and *predict* to improve code consistency. The syntax concerning arguments 'nlv' and 'lb'
+        in *transf* and *predict* has changed. See examples of the new code in function helps.
+    - In all functions, argument 'scal' of colums scaling (when present) has changed. It is not a 
+        Boolean-type anymore. It was replaced by a Symbol type: choice between several types of scaling 
+        is now allowed.
     - MLR functions: Functions other than **mlr** were removed.
     - Function **mbpca** renamed to **cpca**.
+    - Function **aov1**: syntax changed.
+    - Function **aggstat**: arguments 'sel' and 'group' changed.
+    - Fonction **sampdf**: remabed tp **sampdatf**.
+    - Function **waldtest**: arguments' order changed.
     - Fuction **rclustplsr** temporary removed.
+    - Package UMAP updated to 0.3
+    - Recoding functions have changed.
 
 - News:
     - Function **boxcox**: Estimate the parameter of the Box-Cox power transformation.
@@ -47,7 +59,7 @@ Warning: Major changes in functions having arguments 'nlv' (laent variables) and
     - Function **waldtest**: Wald or F test for model coefficients.
     - Function **wilks**: Compute statistics for multivariate tests.
     - Function **expand_grid**: Build a dataframe with all the combinations of the entered parameter values.
-    - Function **protoplsr**: Averaging PLSR models built on the neighborhood of prototype observations.
+    - Function **protoplsr**: Averaging prototype PLSR models (built on the neighborhood of prototype observations).
     - Function **rclustplsr**: Random clustered PLSR.
 
 - Modifications

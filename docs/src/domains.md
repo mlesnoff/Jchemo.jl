@@ -142,7 +142,7 @@
 - **lwplsravg** kNN-LWPLSR-AVG 
 
 *Prototype models*
-- **protoplsr** Averaging PLSR models built on the neighborhood of prototype observations
+- **protoplsr** Averaging prototype PLSR models (built on the neighborhood of prototype observations)
 - **protoclustplsr** Clustered PLSR
 
 ### Support vector machines
@@ -258,12 +258,15 @@
 - **occknn**: kNN distance-based outlierness
 - **occlknn**: Local kNN distance-based outlierness
 
-### Utilities (unsupervised)
+### Utilities (unsupervised computations)
 
+*Global*
 - **outstah** Stahel-Donoho outlierness
 - **outeucl**: Outlierness from Euclidean distances to center
-- **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*
 - **outsd**, **outod**, **outsdod**: Outlierness from PCA/PLS distances (SD, OD and consensus SD-OD)
+- **pcout**: Pcout algorithm for outlier identification in high dimensions *Filzmoser et al. 2008*
+
+*Local*
 - **outknn**: kNN distance-based outlierness
 - **outlknn**: Local kNN distance-based outlierness
 
@@ -326,7 +329,7 @@
 
 ### Checking
 
-- **finduniq** Find the indexes making unique the IDs in a ID vector
+- **finduniq** Find the first indexes of a vector making unique the levels in this vector
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
 - **findmiss** Find rows with missing data in a dataset
@@ -346,9 +349,8 @@
 - **fdif** Finite differences
 - **mavg** Smoothing by moving average
 - **savgk**, **savgol** Savitsky-Golay filtering
-- **rmgap** Remove vertical gaps in spectra, e.g., for ASD NIR data
 
-*Scaling*
+*Centering-Scaling*
 - **center** Column centering
 - **scale** Column scaling
 - **cscale** Column centering and scaling
@@ -356,13 +358,15 @@
 - **blockscal** Scaling of multiblock data
 - **fblockscal_col, _frob, _mfa, _sd** Scale blocks
 
-### Interpolation
+*Remove gaps*
+- **rmgap** Remove vertical gaps in spectra, e.g., for ASD NIR data
 
+*Interpolation*
 - **interpl** Sampling spectra by interpolation -- From DataInterpolations.jl
 
 ### Calibration transfer
 
-- **difmean** Compute a detrimental matrix (for calibration transfer) by difference of two matrix-column means
+- **difmean** Compute a 1-row detrimental matrix by difference of the column-means of two X-datasets
 - **eposvd** Compute an orthogonalization matrix for calibration transfer
 - **calds** Direct standardization (DS)
 - **calpds** Piecewise direct standardization (PDS)
@@ -372,7 +376,7 @@
 - **samprand** Random (without replacement)
 - **sampsys** Systematic over a quantitative variable
 - **sampcla** Stratified by class
-- **sampdf** From each column of a dataframe (where missing values are allowed)
+- **sampdatf** From each column of a dataframe (where missing values are allowed)
 
 - **sampks** Kennard-Stone 
 - **sampdp** Duplex  
@@ -418,23 +422,23 @@
 - **pweightcla** Compute observation weights for a categorical variable, given specified sub-total weights for the classes
 - Weights from distances
     - **wdis** Different functions to compute weights from distances
-    - **wtal** Compute weights from distances using the 'talworth' distribution
+    - **wtal** Compute binary weights from distances using the 'talworth' distribution
     - **winvs** Compute weights from distances using an inverse scaled exponential function
 
 *Recoding*
 - Vector
+    - **dummy** Build dummy table from a categorical variable
     - **recod_catbydict** Recode a categorical variable by levels defined in a dictionnary
-    - **recod_catbyind** Recode a categorical variable by indexes of levels
-    - **recod_catbyint** Recode a categorical variable by integer indexes
+    - **recod_catbyind** Recode a categorical variable by indexes of sorted levels
+    - **recod_catbyind2** Recode a categorical variable by successive integer indexes
     - **recod_catbylev** Recode a categorical variable by levels
-    - **recod_contbyint** Recode a continuous variable by integers
     - **recod_indbylev** Recode an index variable by levels
+    - **recod_contbylev** Recode a quantitative variable by successive levels
     - **recod_miss** Declare data as missing in a dataset
 - Data
-    - **convertdf** Convert the columns of a dataframe to given types
-    - **dummy** Build dummy table for a categorical variable
     - **expand_tab2d** Expand a 2-D contingency table to a dataframe of two categorical variables
     - **expand_grid** Build a dataframe with all the combinations of the entered parameter values
+    - **convertdf** Convert the columns of a dataframe to given types
 
 *Operations on a vector*
 - **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**,  **madv**, **iqrv**: Statistics
@@ -490,9 +494,9 @@
 - **krbf, kpol** Build kernel Gram matrices
 - **locw** Working function for local (kNN) models
 - **mad** Median absolute deviation (not exported)
-- **mlev** Return the sorted levels of a vector or a dataset 
+- **mlev** Return the sorted levels of an array or dataset 
 - **parsemiss** Parsing a string vector allowing missing data
-- **pval** Compute p-value(s) for a distribution, an ECDF or vector
+- **pval** Compute p-value(s) from a distribution, an ECDF or a vector
 - **thresh_soft**, **thresh_hard** Thresholding functions
 - **softmax** Softmax function
 - **sourcedir** Include all the files contained in a directory

@@ -1,8 +1,8 @@
 """
     kplsr(; kwargs...)
     kplsr(X, Y; kwargs...)
-    kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    kplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Kernel partial least squares regression (KPLSR) implemented with a Nipals algorithm (Rosipal & Trejo, 2001).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -11,7 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 This algorithm becomes slow for n > 1000. Use function `dkplsr` instead.
 
@@ -78,36 +79,36 @@ f
 kplsr(; kwargs...) = JchemoModel(kplsr, nothing, kwargs)
 
 function kplsr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     kplsr(X, Y, weights; kwargs...)
 end
 
-function kplsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    kplsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function kplsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    kplsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function kplsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; 
-        kwargs...)
-    par = recovkw(ParKplsr, kwargs).par
+function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
-    ymeans = colmean(Y, weights)   
+    ## Centering/scaling X, Y
+    ## No need to center X (what is centered is the kernel)
+    ymeans = colmean(Y, weights)  
+    fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(Y, ymeans)
+        fscale!(Y, yscales)
     end
+    ## End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     Kt = K'    
@@ -197,7 +198,7 @@ coef(object::Kplsr) = coef(object::Kplsr, object.par.nlv)
 
 function coef(object::Kplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    beta = object.C[:, 1:nlv]'
+    beta = vcol(object.C, 1:nlv)'
     q = length(object.ymeans)
     int = reshape(object.ymeans, 1, q)
     (beta = beta, int, nlv)
@@ -213,7 +214,6 @@ Compute Y-predictions from a fitted model.
 If nothing, it is the maximum nb. LVs.
 """ 
 function predict(object::Kplsr, X)
-    X = ensure_mat(X)
     T = transf(object, X)
     coefs = coef(object)
     pred = coefs.int .+ T * coefs.beta * Diagonal(object.yscales)

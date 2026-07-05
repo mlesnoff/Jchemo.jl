@@ -86,11 +86,12 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm!(model, X, Y; score = rmsep, rep = 50, psamp = .3)
+function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, psamp::Float = .3)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
+    Q = eltype(X)
     nval = round(Int, psamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)

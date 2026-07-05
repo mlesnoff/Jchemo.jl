@@ -8,7 +8,8 @@ Keyword arguments:
 * `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
     within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
     
 The function fits a LOESS model using package `Loess.jl'. 
 
@@ -53,14 +54,15 @@ f
 loessr(; kwargs...) = JchemoModel(loessr, nothing, kwargs)
 
 function loessr(X, y; kwargs...)
-    par = recovkw(ParLoessr, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
+    y = vec(y)    
     p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLoessr{Q}, kwargs).par
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     fitm = Loess.loess(X, y; span = par.span, degree = par.degree) 

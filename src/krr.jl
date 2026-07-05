@@ -1,8 +1,8 @@
 """
     krr(; kwargs...)
     krr(X, Y; kwargs...)
-    krr(X, Y, weights::ProbabilityWeights; kwargs...)
-    krr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -11,7 +11,8 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 KRR is also referred to as least squared SVM regression (LS-SVMR). The method is close to the particular case of 
 SVM regression where there is no marge excluding the observations (epsilon coefficient set to zero). The difference 
@@ -103,29 +104,42 @@ f
 krr(; kwargs...) = JchemoModel(krr, nothing, kwargs)
 
 function krr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     krr(X, Y, weights; kwargs...)
 end
 
-function krr(X, Y, weights::ProbabilityWeights; kwargs...)
-    krr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    krr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function krr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKrr, kwargs).par
+function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParKrr{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     p = nco(X)
-    par.lb = Q(par.lb)
-    xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        X = fscale(X, xscales)
-    end
+    
+    #xscales = ones(Q, p)
+    #if par.scal != :none
+    #    colscal = def_colscal(par.scal) 
+    #    xscales .= colscal(X, weights)
+    #    X = fscale(X, xscales)
+    #end
+    #ymeans = colmean(Y, weights)
+
+    ## Centering/scaling X, Y
+    ## No need to center X (what is centered is the kernel)
+    ## No need to scale Y
     ymeans = colmean(Y, weights)
+    #fcenter!(Y, ymeans)
+    xscales = ones(Q, p)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
+    end
+    ## End
+
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)
     sqrtw = sqrt.(weights.values)
@@ -145,14 +159,14 @@ end
 
 """
     coef(object::Krr)
-    coef(object::Krr, lb::T) where T <: AbstractFloat
+    coef(object::Krr, lb::T) where T <: Float
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
 coef(object::Krr) = coef(object::Krr, object.par.lb)
 
-function coef(object::Krr, lb::T) where T <: AbstractFloat
+function coef(object::Krr, lb::T) where T <: Float
     Q = eltype(object.sv)
     eig = object.sv.^2
     v = 1 ./ (eig .+ Q(lb)^2)
@@ -165,7 +179,7 @@ end
 
 """
     predict(object::Krr, X)
-    predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+    predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -183,7 +197,7 @@ function predict(object::Krr, X)
     (pred = pred, lb = object.par.lb)
 end
 
-function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: AbstractFloat
+function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
     fkern = eval(Meta.parse(String(object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)

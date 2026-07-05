@@ -89,10 +89,10 @@ lines!(ax, res.nlv, res.y1; color = :red, linewidth = 1)
 f
 
 ## Adding pars 
-pars = mpar(scal = [false; true])
-rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
+pars = mpar(scal = [:none; :std])
+rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
-typ = res.scal
+typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -120,7 +120,7 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
     ylabel = "Observed").f     
     
 ## Adding pars 
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
@@ -140,7 +140,7 @@ model = kplsr()
 nlv = 0:30
 gamma = (10).^(-5:1.:5)
 pars = mpar(gamma = gamma)
-rescv = gridcv(model, Xtrain, ytrain; segm,  score = rmsep, pars, nlv) ;
+rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
 lgamma = round.(log.(10, res.gamma), digits = 1)
 plotgrid(res.nlv, res.y1, lgamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP-CV", 
@@ -221,7 +221,7 @@ model = mbplsr()
 bscal = [:none, :frob]
 pars = mpar(bscal = bscal) 
 nlv = 0:30
-rescv = gridcv(model, Xbltrain, ytrain; segm,  score = rmsep, pars, nlv) ;
+rescv = gridcv(model, Xbltrain, ytrain; segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
 group = res.bscal 
 plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
@@ -264,7 +264,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 
 ####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
 ## model1
-nlv = 15 ; scal = true
+nlv = 15 ; scal = :std
 model1 = pcasvd(; nlv, scal)
 ## model2
 kern = [:krbf]
@@ -316,10 +316,10 @@ segm = segmkf(ntrain, K; rep)
 ####---- Plslda
 model = plslda()
 nlv = 1:30
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = errp, pars, nlv)
 res = rescv.res
-typ = res.scal
+typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "ERR").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -353,7 +353,17 @@ function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}},
         nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
         lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing,  
         verbose::Bool = false) 
+    ## The function works for mono- and multiblock X
+    ## Monoblock
+    if isa(X[1, 1], Number)
+        X = ensure_mat(X)
+    ## Multiblock
+    else  
+        X = ensure_mat_mb(X)
+    end
+    Y = ensure_mat(Y)
     q = nco(Y)
+    ## End
     nrep = length(segm)
     res_rep = list(nrep)
     @inbounds for i in eachindex(res_rep) 

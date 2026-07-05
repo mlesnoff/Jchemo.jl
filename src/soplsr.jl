@@ -1,8 +1,10 @@
 """
     soplsr(; kwargs...)
     soplsr(Xbl, Y; kwargs...)
-    soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    soplsr!(Xbl::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    soplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data Typically, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -10,8 +12,8 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected 
-    standard deviation.
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 ## References
 Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis for multi-block classification. 
@@ -47,8 +49,8 @@ ntot = ntrain + ntest
 nlv = 1
 #nlv = [2, 1, 2]
 #nlv = [2, 0, 1]
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = soplsr(; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 @names model 
@@ -65,26 +67,25 @@ rmsep(res.pred, ytest)
 soplsr(; kwargs...) = JchemoModel(soplsr, nothing, kwargs)
 
 function soplsr(Xbl, Y; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Y = ensure_mat(Y)
     n = nro(Xbl[1])
-    weights = pweight(ones(Q, n))
-    soplsr(Xbl, Y, weights; kwargs...)
+    soplsr(Xbl, Y, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function soplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function soplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    soplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    soplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function soplsr!(Xbl::Vector, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     par = recovkw(ParSoplsr, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, q = size(Y)   
     nbl = length(Xbl)
     pbl = nco.(Xbl)
@@ -102,26 +103,29 @@ function soplsr!(Xbl::Vector, Y::AbstractMatrix, weights::ProbabilityWeights; kw
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
     ## End
     transf!(fitm_bl, Xbl)
+    ## Scaling of Y
     yscales = ones(Q, q)
-    if par.scal 
-        yscales .= colstd(Y, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        yscales .= colscal(Y, weights)
         fscale!(Y, yscales)
     end
+    ## End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)
     ## Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
     ## First block
-    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = false)  
+    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = :none)  
     T = fitm[1].T
     fit .= predict(fitm[1], Xbl[1]).pred
     ## Other blocks
-    b = list(Array{Q}, nbl) 
+    b = list(Matrix{Q}, nbl) 
     if nbl > 1
         for i = 2:nbl
             DT = fweightr(T, weights.values)
             b[i] = inv(T' * DT) * DT' * Xbl[i]
             X = Xbl[i] - T * b[i]
-            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = false)  
+            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = :none)  
             T = hcat(T, fitm[i].T)
             fit .+= predict(fitm[i], X).pred 
         end
@@ -137,11 +141,11 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)   
-    T = transf(object.fitm[1], zXbl[1])
+    vXbl = transf(object.fitm_bl, Xbl)   
+    T = transf(object.fitm[1], vXbl[1])
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = zXbl[i] - T * object.b[i]
+            X = vXbl[i] - T * object.b[i]
             T = hcat(T, transf(object.fitm[i], X))
         end
     end
@@ -156,12 +160,12 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)   
-    T = transf(object.fitm[1], zXbl[1])
+    vXbl = transf(object.fitm_bl, Xbl)   
+    T = transf(object.fitm[1], vXbl[1])
     pred =  object.fitm[1].ymeans' .+ T * object.fitm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
-            X = zXbl[i] - T * object.b[i]
+            X = vXbl[i] - T * object.b[i]
             zT = transf(object.fitm[i], X)
             pred .+= object.fitm[i].ymeans' .+ zT * object.fitm[i].C'
             T = hcat(T, transf(object.fitm[i], X))

@@ -1,10 +1,10 @@
 """
-    emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm, dat::DataFrame)
+    emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm, datf::DataFrame)
 Estimated marginal means (EMMs).
 * `fitm` : A model fitted with package GLM and predicting a univariate response.
 * `f` : A formula that defines the model factor(s) on which is(are) computed the EMMs.
     Must be additive (interaction terms not allowed). See the syntax in the examples below.
-* `dat` : DataFrame from which `fitm` has been built (and containing the factor(s) specified in `f`).
+* `datf` : DataFrame from which `fitm` has been built (and containing the factor(s) specified in `f`).
 
 The function computes estimated marginal means (EMMs) (Searle et al 1980) from a model fitted with package GLM 
 (https://github.com/JuliaStats/GLM.jl). EMMs are unweighted marginal means of the cell means predicted by
@@ -18,10 +18,8 @@ https://doi.org/10.2307/2684063
 
 ## Examples 
 ```julia
-using DataFrames
+using Jchemo, JchemoData, DataFrames, JLD2
 using GLM
-
-using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/flour_splus6.jld2")
 @load db dat
@@ -74,21 +72,21 @@ res.datemm
 ## se 0.3007 0.2034 0.3001
 ```
 """
-function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm, dat::DataFrame)
+function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm, datf::DataFrame)
     f_fitm = formula(fitm)       # = fitm.mf.f    
     b = StatsAPI.coef(fitm)
     varb = StatsAPI.vcov(fitm)   # to do: check if correct (delta-method) for glims
     ## Build the full table corresponding to model fitm
-    nam = string.(@names dat)
+    nam = string.(@names datf)
     u = in(termnames(f_fitm.rhs)).(nam)
     keys = nam[u]
-    vdat = dat[:, keys]
-    for i in axes(vdat, 2)
-        if isa(vdat[1, i], Real)
-            vdat[:, i] .= meanv(vdat[:, i])
+    dat = datf[:, keys]
+    for i in axes(dat, 2)
+        if isa(dat[1, i], Real)
+            dat[:, i] .= meanv(dat[:, i])
         end
     end
-    values = ntuple(i -> mlev(vdat[:, i]), length(keys))
+    values = ntuple(i -> mlev(dat[:, i]), length(keys))
     tupl = (; zip(Symbol.(nam[u]), values)...)   # better than : NamedTuple{keys}(values)
     datmu = Jchemo.expand_grid_tupl(tupl)
     ## Estimate the mean 'mu' for each cell of the full table 

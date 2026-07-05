@@ -1,8 +1,8 @@
 """
     spcr(; kwargs...)
     spcr(X, Y; kwargs...)
-    spcr(X, Y, weights::ProbabilityWeights; kwargs...)
-    spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse principal component regression (sPCR). 
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -15,7 +15,8 @@ Keyword arguments:
     (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). 
 See function `spca` for details.
@@ -81,26 +82,25 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explain
 spcr(; kwargs...) = JchemoModel(spcr, nothing, kwargs)
 
 function spcr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     spcr(X, Y, weights; kwargs...)
 end
 
-function spcr(X, Y, weights::ProbabilityWeights; kwargs...)
-    spcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    spcr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function spcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSpca, kwargs).par
-    Q = eltype(X)
+function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParSpca{Q}, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q) 
     fitm = spca!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Spcr(fitm, theta', ymeans, yscales, par) 
+    Spcr(fitm, Matrix(theta'), ymeans, yscales, par) 
 end
 
 """

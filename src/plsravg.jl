@@ -1,15 +1,16 @@
 """ 
     plsravg(; kwargs...)
     plsravg(X, Y; kwargs...)
-    plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plsravg(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsravg!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : A range of nb. of latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Ensemblist method where the predictions are computed by averaging the predictions of a set of models built 
 with different numbers of LVs.
@@ -63,17 +64,17 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 plsravg(; kwargs...) = JchemoModel(plsravg, nothing, kwargs)
 
 function plsravg(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsravg(X, Y, weights; kwargs...)
 end
 
-function plsravg(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsravg!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plsravg(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsravg!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsravg!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsravg!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsravg, kwargs).par
     if par.algo == :unif
         fitm = plsravg_unif!(X, Y, weights; kwargs...)

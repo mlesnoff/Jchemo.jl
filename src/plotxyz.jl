@@ -1,8 +1,8 @@
 """
-    plotxy(x, y, z; size = (500, 300), color = nothing, perspectiveness = .1,
-        xlabel = "", ylabel = "", zlabel = "", title = "", kwargs...)
-    plotxy(x, y, z, group; size = (500, 300), color = nothing, perspectiveness = .1, 
-        xlabel = "", ylabel = "", zlabel = "", title = "", leg::Bool = true, leg_title = "Group", 
+    plotxy(x, y, z; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1,
+        xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", kwargs...)
+    plotxy(x, y, z, group; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1, 
+        xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", leg::Bool = true, leg_title = "Group", 
         kwargs...)
 3-D scatter plot of x-y-z data.
 * `x` : A x-vector (n).
@@ -31,7 +31,7 @@ y = randn(n)
 z = randn(n)
 v = 10 * x +randn(n)
 group = rand(["A", "B", "C"], n)
-lev = mlev(group)
+lev = sort(unique(group))
 nlev = length(lev)
 s = group .== "B"
 x[s] .+= 10 ;
@@ -62,8 +62,10 @@ Colorbar(f[1, 2]; colormap = colm, label = "v", limits = (minimum(v), maximum(v)
 f
 ```
 """ 
-function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = .1,
-        xlabel = "", ylabel = "", zlabel = "", title = "", kwargs...)
+function plotxyz(x, y, z; 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1,
+        xlabel::String = "", ylabel::String = "", zlabel::String = "", 
+        title::String = "", kwargs...) where Q <: Float
     x = vec(x)
     y = vec(y)
     z = vec(z)
@@ -76,14 +78,14 @@ function plotxyz(x, y, z; size = (500, 300), color = nothing, perspectiveness = 
     (f = f, ax)
 end
 
-function plotxyz(x, y, z, group; size = (500, 300), color = nothing, perspectiveness = .1, 
-        xlabel = "", ylabel = "", zlabel = "", title = "", leg::Bool = true, leg_title = "Group", 
-        kwargs...)
+function plotxyz(x, y, z, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, 
+        xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
     x = vec(x)
     y = vec(y)
     z = vec(z)
-    group = string.(vec(group))
-    lev = mlev(group)
+    lev = sort(unique(group))
     nlev = length(lev)
     lab = string.(lev)    
     f = Figure(; size)

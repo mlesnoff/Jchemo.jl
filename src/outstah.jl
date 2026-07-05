@@ -1,11 +1,12 @@
 """
-    outstah(X, V; scal::Bool = false)
-    outstah!(X::Matrix, V::Matrix; scal::Bool = false)
+    outstah(X, V; scal::Symbol = :none)
+    outstah!(X::AbstractMatrix{Q}, V::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
 Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `V` : A projection matrix (p, nlv) representing the directions of the projection pursuit.
 Keyword arguments:
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD before computing the outlierness.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 In this function, outlierness `d` of an observation (row of `X`) is defined by its Stahel-Donoho outlierness. See Maronna and Yohai 1995 for details. 
 A projection-pursuit approach is used: given a projection matrix `V` (p, nlv), in general built randomly, the observations (rows of `X`) 
@@ -26,25 +27,25 @@ X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
 nlv = 100
-V = rand(0:1, p, nlv)
-scal = false
-#scal = true
+V = rand(0:1., p, nlv)
+scal = :none
+#scal = :mad
 res = outstah(X, V; scal) ;
 @names res
 res.d    # outlierness 
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outstah(X, V; scal::Bool = false)
+function outstah(X, V; scal::Symbol = :none)
     outstah!(copy(ensure_mat(X)), ensure_mat(V); scal)
 end
 
-function outstah!(X::Matrix, V::Matrix; scal::Bool = false) 
-    Q = eltype(X)
+function outstah!(X::AbstractMatrix{Q}, V::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
     n, p = size(X)
     xscales = ones(Q, p) 
-    if scal
-        xscales .= colmad(X)
+    if scal != :none
+        colscal = def_colscal(scal) 
+        xscales .= colscal(X)
         fscale!(X, xscales)
     end
     ## Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))

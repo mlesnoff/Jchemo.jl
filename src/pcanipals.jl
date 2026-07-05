@@ -1,8 +1,8 @@
 """
     pcanipals(; kwargs...)
     pcanipals(X; kwargs...)
-    pcanipals(X, weights::ProbabilityWeights; kwargs...)
-    pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 PCA by NIPALS algorithm.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -12,7 +12,8 @@ Keyword arguments:
     before each X-deflation. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D by NIPALS. 
@@ -40,30 +41,30 @@ https://cran.r-project.org/
 pcanipals(; kwargs...) = JchemoModel(pcanipals, nothing, kwargs)
 
 function pcanipals(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcanipals(X, weights; kwargs...)
 end
 
-function pcanipals(X, weights::ProbabilityWeights; kwargs...)
-    pcanipals!(copy(ensure_mat(X)), weights; kwargs...)
+function pcanipals(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcanipals!(copy(X), weights; kwargs...)
 end
 
-function pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPcanipals, kwargs).par
-    Q = eltype(X)
+function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPcanipals{Q}, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    xmeans = colmean(X, weights) 
+    ## Centering/scaling X
+    xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
+    ## ENd
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     T = similar(X, n, nlv)
@@ -93,6 +94,6 @@ function pcanipals!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     fweightr!(T, 1 ./ sqrtw)    
     ## Could recompute the scores by
     ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
-    Pca(T, V, sv, xmeans, xscales, weights, niter, par) 
+    Pcanipals(T, V, sv, xmeans, xscales, weights, niter, par)  
 end
 

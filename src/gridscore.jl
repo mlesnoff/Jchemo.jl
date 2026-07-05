@@ -79,9 +79,9 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
     ylabel = "Observed").f    
 
 ## Adding pars 
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv)
-typ = res.scal
+typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]
@@ -108,7 +108,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
     ylabel = "Observed").f    
     
 ## Adding pars 
-pars = mpar(scal = [false; true])
+pars = mpar(scal = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, lb)
 loglb = log.(10, res.lb)
 typ = string.(res.scal)
@@ -247,7 +247,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 
 ####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
 ## model1
-nlv = 15 ; scal = true
+nlv = 15 ; scal = :std
 model1 = pcasvd(; nlv, scal)
 ## model2
 kern = [:krbf]
@@ -301,7 +301,7 @@ yval = ytrain[s.test]
 model = plslda()
 nlv = 1:30
 prior = [:unif]
-scal = [false; true]
+scal = [:none; :std]
 pars = mpar(prior = prior, scal = scal)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = errp, pars, nlv)
 typ = string.(res.prior, "-", res.scal)

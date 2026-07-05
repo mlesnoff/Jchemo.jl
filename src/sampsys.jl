@@ -1,5 +1,5 @@
 """
-    sampsys(y, k::Int)
+    sampsys(y::Vector{Q}, k::Int) where Q <: Float
 Build training vs. test sets by systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
 * `k` : Nb. test observations to sample. Must be >= 2.
@@ -23,8 +23,7 @@ res = sampsys(y, 3)
 sort(y[res.test])
 ```
 """ 
-function sampsys(y, k::Int)
-    y = vec(y)
+function sampsys(y::Vector{Q}, k::Int) where Q <: Float
     n = length(y)
     nint = k - 1            # nb. intervals
     alpha = (n - 1) / nint  # step
@@ -35,8 +34,7 @@ function sampsys(y, k::Int)
     zn = collect(1:n)
     s = zn[id[z]]
     sort!(s)
-    train = zn[setdiff(1:end, s)]
-    (train = train, test = s)
+    (train = zn[setdiff(1:end, s)], test = s)
 end
 
 

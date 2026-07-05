@@ -1,8 +1,8 @@
 """
     rp(; kwargs...)
     rp(X; kwargs...)
-    rp(X, weights::ProbabilityWeights; kwargs...)
-    rp!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    rp(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Make a random projection of X-data.
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -10,7 +10,8 @@ Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective functions 
     `rpmatgauss` and `rpmatli` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 ## Examples
 ```julia
@@ -32,29 +33,29 @@ transf(model, X[1:2, :])
 rp(; kwargs...) = JchemoModel(rp, nothing, kwargs)
 
 function rp(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     rp(X, weights; kwargs...)
 end
 
-function rp(X, weights::ProbabilityWeights; kwargs...)
-    rp!(copy(ensure_mat(X)), weights; kwargs...)
+function rp(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rp!(copy(X), weights; kwargs...)
 end
 
-function rp!(X::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParRp, kwargs).par 
+function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParRp{Q}, kwargs).par 
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
-    Q = eltype(X)
     p = nco(X)
+    ## Centering/scaling X
     xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
+    ## End
     if par.meth == :gauss
         V = rpmatgauss(p, par.nlv, Q)
     else

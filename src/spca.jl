@@ -1,8 +1,8 @@
 """
     spca(; kwargs...)
     spca(X; kwargs...)
-    spca(X, weights::ProbabilityWeights; kwargs...)
-    spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD, Shen & Huang 2008).
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -14,7 +14,8 @@ Keyword arguments:
     (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. 
 The method approximates matrix `X` by T * V', where T is a matrix of scores (PCs) and V is a matrix of 
@@ -99,21 +100,19 @@ res.explvarx
 spca(; kwargs...) = JchemoModel(spca, nothing, kwargs)
 
 function spca(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     spca(X, weights; kwargs...)
 end
 
-function spca(X, weights::ProbabilityWeights; kwargs...)
-    spca!(copy(ensure_mat(X)), weights; kwargs...)
+function spca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    spca!(copy(X), weights; kwargs...)
 end
 
-function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSpca, kwargs).par
+function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParSpca{Q}, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
     @assert in([:v; :t])(par.defl) "Wrong value for argument 'defl'."
-    Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
@@ -127,14 +126,16 @@ function spca!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     ## End 
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
-    xmeans = colmean(X, weights) 
+    ## Centering/scaling X
+    xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
+    ## End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     T = similar(X, n, nlv)
@@ -196,9 +197,6 @@ function transf(object::Spca, X, nlv::Int)
     end
     T 
 end
-
-
-
 
 """
     summary(object::Spca, X)

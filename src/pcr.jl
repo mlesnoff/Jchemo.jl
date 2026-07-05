@@ -1,15 +1,16 @@
 """
     pcr(; kwargs...)
     pcr(X, Y; kwargs...)
-    pcr(X, Y, weights::ProbabilityWeights; kwargs...)
-    pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Principal component regression (PCR) with a SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 ## Examples
 ```julia
@@ -65,19 +66,18 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explain
 pcr(; kwargs...) = JchemoModel(pcr, nothing, kwargs)
 
 function pcr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcr(X, Y, weights; kwargs...)
 end
 
-function pcr(X, Y, weights::ProbabilityWeights; kwargs...)
-    pcr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par
-    Q = eltype(X)
     q = nco(Y)
     ymeans = colmean(Y, weights)
     yscales = ones(Q, q)  # built only for consistency with coef::Plsr
@@ -88,7 +88,7 @@ function pcr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
     ## theta: coefs regression of Y on T (= C')
     ## not needed (same theta): fcenter!(Y, ymeans)
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Pcr(fitm, theta', ymeans, yscales, par) 
+    Pcr(fitm, Matrix(theta'), ymeans, yscales, par) 
 end
 
 """ 
@@ -102,8 +102,6 @@ Compute latent variables (LVs; = scores) from a fitted model and a matrix X.
 transf(object::Union{Pcr, Spcr}, X) = transf(object.fitm, X)
 
 transf(object::Union{Pcr, Spcr}, X, nlv::Int) = transf(object.fitm, X, nlv)
-
-
 
 """
     coef(object::Pcr)

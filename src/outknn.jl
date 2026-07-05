@@ -1,13 +1,14 @@
 """
-    outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
-    outknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
+    outknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
+    outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
 Compute a kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the `k` distances to the neighbors.
-* `scal` : Boolean. If `true`, each column of `X` is scaled before computing the outlierness.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 In this function, outlierness `d` of an observation (row of `X`) is defined by a summary (e.g., by sum or maximum) of the distances 
 between the observation and its `k` nearest neighbors. 
@@ -47,7 +48,7 @@ metric = :eucl ; k = 15 ; algo = sum
 #algo = maximum
 res = outknn(X; metric, k, algo) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, string.(typ), xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
@@ -58,21 +59,21 @@ fit!(model, X)
 T = model.fitm.T
 metric = :eucl 
 k = 15
-res = outknn(T; metric, k, scal = true)
-plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness").f
+res = outknn(T; metric, k, scal = :std)
+plotxy(1:n, res.d, string.(typ), xlabel = "Obs. index", ylabel = "Outlierness").f
 ```
 """ 
-function outknn(X; metric = :eucl, k, algo = sum, scal::Bool = false)
+function outknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
     outknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outknn!(X::Matrix; metric = :eucl, k, algo = sum, scal::Bool = false)
-    Q = eltype(X)
+function outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
     n, p = size(X)
     xscales = ones(Q, p)
-    if scal
-        xscales .= colstd(X)
-        fscale!(X, xscales)
+    if scal != :none
+        colscal = def_colscal(scal) 
+        xscales .= colscal(X)
+        fscale!(X, xscales) 
     end
     if k > n - 1 ; k = n - 1 ; end
     res = getknn(X, X; k = k + 1, metric)

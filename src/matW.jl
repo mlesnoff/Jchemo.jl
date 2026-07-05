@@ -1,8 +1,8 @@
 """
-    matB(X, y, weights::ProbabilityWeights)
+    matB(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
 Between-class covariance matrix.
-* `X` : X-data (n, p).
-* `y` : A vector (n) defining the class membership.
+* `X` : A matrix (n, p) or vector (n).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Compute the between-class covariance matrix (output `B`) of `X`. This is the (non-corrected) covariance matrix of 
@@ -14,7 +14,7 @@ using Jchemo
 
 n = 20 ; p = 3
 X = rand(n, p)
-y = rand(1:3, n)
+y = string.(rand(1:3, n))
 tab(y) 
 weights = pweight(ones(n)) 
 
@@ -41,15 +41,13 @@ matW(X, y, weights).W + matB(X, y, weights).B
 covm(X, weights)
 ```
 """ 
-function matB(X, y, weights::ProbabilityWeights)
-    X = ensure_mat(X)
-    y = vec(y)  # required for findall 
+function matB(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X)
     taby = tab(y)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)
-    priors = aggsumv(weights.values, vec(y)).val   # sub-total weights by class                                
+    priors = aggsumv(weights.values, y).val   # sub-total weights by class                                
     ct = similar(X, nlev, p)                       # to store class centers
     @inbounds for i in eachindex(lev)
         s = findall(y .== lev[i]) 
@@ -60,10 +58,10 @@ function matB(X, y, weights::ProbabilityWeights)
 end
 
 """
-    matW(X, y, weights::ProbabilityWeights)
+    matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
 Within-class (non-corrected) covariance matrices.
-* `X` : X-data (n, p).
-* `y` : A vector (n) defing the class membership.
+* `X` : A matrix (n, p) or vector (n).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Compute the (non-corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
@@ -73,15 +71,13 @@ If class i contains only one observation, `Wi` is computed by:
 
 For examples, see function `matB`. 
 """ 
-function matW(X, y, weights::ProbabilityWeights)
-    X = ensure_mat(X)
-    y = vec(y)  # required for findall 
+function matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X) 
     taby = tab(y)
     lev = taby.keys
     ni = taby.vals
     nlev = length(lev)                                 
-    priors = aggsumv(weights.values, vec(y)).val     # sub-total weights by class   
+    priors = aggsumv(weights.values, y).val     # sub-total weights by class   
     ## When there is at least one class containing only 1 obs, a variable 'Wi_1obs' equal 
     ## to the overal covariance matrix that is then used in the next boucle 'for'.
     ## Another convention could be chosen (e.g., giving weight = 0 to the class(es) with 1 obs), 
@@ -90,7 +86,7 @@ function matW(X, y, weights::ProbabilityWeights)
         Wi_1obs = covm(X, weights)
     end
     ## End
-    Wi = list(Matrix, nlev)
+    Wi = list(Matrix{Q}, nlev)
     W = zeros(eltype(X), p, p)
     @inbounds for i in eachindex(lev) 
         if ni[i] == 1
@@ -106,10 +102,10 @@ function matW(X, y, weights::ProbabilityWeights)
 end
 
 """
-    matWc(X, y)
+    matWc(X::AbstMatVec{Q}, y::AbstractVector{String}) where Q <: Float
 Within-class (corrected) covariance matrices.
-* `X` : X-data (n, p).
-* `y` : A vector (n) defing the class membership.
+* `X` : A matrix (n, p) or vector (n).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
 Compute the (corrected) within-class and pooled covariance matrices (outputs `Wi` and `W`, respectively) of `X`. 
 
@@ -119,8 +115,6 @@ If class i contains only one observation, `Wi` is computed by:
 For examples, see function `matB`. 
 """ 
 function matWc(X, y)
-    X = ensure_mat(X)
-    y = vec(y)  # required for findall 
     n, p = size(X) 
     taby = tab(y)
     lev = taby.keys

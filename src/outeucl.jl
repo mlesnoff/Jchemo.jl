@@ -1,10 +1,11 @@
 """
-    outeucl(X; scal::Bool = false)
-    outeucl!(X::Matrix; scal::Bool = false)
+    outeucl(X; scal::Symbol = :none)
+    outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD before computing the outlierness.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 In this function, outlierness `d` is computed by the Euclidean distance between the observation (rows of `X`) and a 
 robust estimate of the center of the data (in the present function, the spatial median). Such outlierness was for instance 
@@ -23,27 +24,29 @@ X1 = randn(n, p)
 X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
-scal::Bool = false
-#scal = true
+scal = :none
+#scal = :mad
 res = outeucl(X; scal) ;
 @names res
 res.d    # outlierness 
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outeucl(X; scal::Bool = false)
+function outeucl(X; scal::Symbol = :none)
     outeucl!(copy(ensure_mat(X)); scal)
 end
 
-function outeucl!(X::Matrix; scal::Bool = false) 
-    Q = eltype(X)
+function outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
     p = nco(X)
+    xmeans = Jchemo.colmedspa(X)
     xscales = ones(Q, p)
-    if scal
-        xscales .= colmad(X)
+    if scal != :none
+        colscal = def_colscal(scal) 
+        xscales .= colscal(X)
         fscale!(X, xscales)
     end
-    xmeans = Jchemo.colmedspa(X)
+    @head X
+    @show size(xmeans')
     d = vec(sqrt.(eucl2(X, xmeans')))
     (d = d, xmeans, xscales)
 end

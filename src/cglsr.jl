@@ -1,7 +1,7 @@
 """
     cglsr(; kwargs...)
     cglsr(X, y; kwargs...)
-    cglsr!(X::Matrix, y::Matrix; kwargs...)
+    cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
 Conjugate gradient algorithm for the normal equations (CGLS; Björck 1996).
 * `X` : X-data (n, p).
 * `y` : Univariate Y-data (n).
@@ -10,7 +10,8 @@ Keyword arguments:
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the normal equation residual 
     vectors is done.
 * `filt` : Boolean. If `true`, CG filter factors are computed (output `F`). Default = `false`.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the part of the code computing the 
 re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) is a transcription (with few 
@@ -53,7 +54,7 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 5 ; scal = true
+nlv = 5 ; scal = :std
 model = cglsr(; nlv, scal)
 fit!(model, Xtrain, ytrain)
 @names model.fitm 
@@ -71,24 +72,25 @@ cglsr(; kwargs...) = JchemoModel(cglsr, nothing, kwargs)
 
 cglsr(X, y; kwargs...) = cglsr!(copy(ensure_mat(X)), copy(ensure_mat(y)); kwargs...)
 
-function cglsr!(X::Matrix, y::Matrix; kwargs...)
+function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCglsr, kwargs).par
-    Q = eltype(X)   
     n, p = size(X)
     q = nco(y)
     nlv = min(n, p, par.nlv)
-    par.nlv = nlv
-    xmeans = colmean(X)
-    ymeans = colmean(y)
+    par.nlv = nlv 
+    ## Centering/scaling X, Y
+    ## No need to fscale y; only for consistency with Plsr
+    xmeans = colmean(X) 
+    ymeans = colmean(y)   
+    fcenter!(X, xmeans)
+    fcenter!(y, ymeans)    
     xscales = ones(Q, p)
-    yscales = ones(Q, q)  # no need to fscale y; only for consistency with Plsr
-    if par.scal 
-        xscales .= colstd(X)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    yscales = ones(Q, q)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X)
+        fscale!(X, xscales)
     end
-    fcenter!(y, ymeans)
     ## Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(Q, p) 

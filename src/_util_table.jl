@@ -1,10 +1,12 @@
 """
     tab(X::AbstractArray)
-    tab(X::DataFrame; group = nothing)
+    tab(datf::DataFrame; group = nothing)
 Tabulation of categorical variables.
-* `x` : Categorical variable or dataset containing categorical variable(s).
+* `X` : A categorical array or variable to tabulate.
+* `datf` : A dataframe containing categorical variable(s) to tabulate.
 Specific for a dataset:
-* `group` : Vector of the names of the group variables to consider in `X` (by default: all the columns of `X`).
+* `group` : Vector of the names (String or Symbol) of the group variables to consider in dataframe `datf` 
+    (by default, all the columns of `datf`).
 
 The function returns sorted levels. It does not support inputs of type `Any`.
 
@@ -18,6 +20,8 @@ res = tab(x)
 res.keys
 res.vals
 
+tab(string.(x))
+
 n = 20
 X = hcat(rand(["1"; "2"], n), rand(["a", "b", "c"], n))
 datf = DataFrame(X, [:v1, :v2])
@@ -26,39 +30,39 @@ tab(X[:, 2])
 tab(X)
 
 tab(datf)
+tab(datf; group = [:v2])
 tab(datf; group = [:v1, :v2])
-tab(datf; group = :v2)
 ```
 """
-tab(X::AbstractArray) = sort(StatsBase.countmap(vec(X)))
+tab(X::AbstractArray) = sort(StatsBase.countmap(X))
 
-function tab(X::DataFrame; group = nothing)
-    zX = copy(X)
-    if isa(zX, Vector) ; zX = DataFrame(x1 = zX) ; end
-    if !isa(zX, DataFrame) ; zX = DataFrame(zX, :auto) ; end
-    if isnothing(group) ; group = names(zX) ; end
-    zX.n = ones(Int, nro(zX))
-    res = aggstat(zX; sel = :n, group, algo = sum)
+function tab(datf::DataFrame; group = nothing)
+    dat = copy(datf)
+    if isnothing(group) ; group = names(dat) ; end
+    dat.n = ones(Int, nro(dat))
+    Q = eltype(group)
+    res = aggstat(dat; sel = [Q(:n)], group, algo = sum)
     res
 end
 
 """
-    tabdupl(x)
+    tabdupl(x::AbstractVector)
 Tabulate duplicated values in a vector.
-* `x` : Categorical variable.
+* `x` : A vector (n).
 
 ## Examples
 ```julia
 using Jchemo
 
 x = ["a", "b", "c", "a", "b", "b"]
+#x = rand(1:5, 10)
 tab(x)
 res = tabdupl(x)
 res.keys
 res.vals
 ```
 """
-function tabdupl(x)
+function tabdupl(x::AbstractVector)
     z = tab(x)
     s = z.vals .> 1
     u = z.keys[s]
@@ -66,9 +70,38 @@ function tabdupl(x)
 end
 
 """
-    tabcont(x, q)
+    mbin(q::Vector{Q}) where Q <: Float
+Build histogram-bin intervals.
+* `q` : Numerical values (K) defining the limits of the intervals. 
+
+For a given vector `q` of length K, the function returns K + 1 intervals: 
+* (-Inf, q[1]]
+* (q[1], q[2]]
+* etc.
+* (q[K - 1], q[K]]
+* (q[K], Inf)
+
+## Examples
+```julia
+using Jchemo
+
+q = [.01; .5; .500001; .9; 1.1]
+mbin(q)
+```
+"""
+function mbin(q::Vector{Q}) where Q <: Float
+    zq = vcat(-Inf, q, Inf)
+    bin = list(Vector{Q}, length(q) + 1)
+    for i in eachindex(bin)
+        bin[i] = [zq[i]; zq[i + 1]]
+    end
+    bin
+end
+
+"""
+    tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
 Tabulate a continuous variable.
-* `x` : Continuous variable (n).
+* `x` : A continuous variable (n).
 * `q` : Numerical values (K) separating the class levels from `x`.  
 
 The function returns K + 1 levels. For a given value x of vector `x` and `q` a vector 
@@ -90,11 +123,11 @@ res = tabcont(x, q)
 sum(res.n)
 ```
 """
-function tabcont(x, q)
+function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
     bin = mbin(q)
     nbin = length(bin)
-    lev = collect(1:nbin)
-    v = recod_contbyint(x, q)
+    lev = string.(collect(1:nbin))
+    v = recod_contbylev(x, q)
     resv = tab(v)
     val = zeros(Int, nbin)
     for i in eachindex(lev) 
@@ -107,32 +140,4 @@ function tabcont(x, q)
     DataFrame(bin = bin, lev = lev, n = val)
 end
 
-"""
-    mbin(q)
-Build histogram-bin intervals.
-* `q` : Numerical values (K) defining the limits of the intervals. 
-
-For a given vector `q` of length K, the function returns K + 1 intervals: 
-* (-Inf, q[1]]
-* (q[1], q[2]]
-* etc.
-* (q[K - 1], q[K]]
-* (q[K], Inf)
-
-## Examples
-```julia
-using Jchemo
-
-q = [.01; .5; .500001; .9; 1.1]
-mbin(q)
-```
-"""
-mbin = function(q)
-    zq = vcat(-Inf, q, Inf)
-    bin = list(Vector, length(q) + 1)
-    for i in eachindex(bin)
-        bin[i] = [zq[i]; zq[i + 1]]
-    end
-    bin
-end
 

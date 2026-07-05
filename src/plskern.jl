@@ -1,15 +1,16 @@
 """
     plskern(; kwargs...)
     plskern(X, Y; kwargs...)
-    plskern(X, Y, weights::ProbabilityWeights; kwargs...)
-    plskern!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    plskern(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial least squares regression (PLSR) with the "improved kernel algorithm #1" (Dayal & McGegor, 1997).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
     
 About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, Siccard & Sabatier 
 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
@@ -80,42 +81,42 @@ res = predict(model, Xtest, 1:2) # predictions with 1 and 2 LVs
 
 res = summary(model, Xtrain) ;
 @names res
-z = res.explvarx
-plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
+explv = res.explvarx
+plotgrid(explv.nlv, explv.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explained X-Variance").f
 ```
 """ 
 plskern(; kwargs...) = JchemoModel(plskern, nothing, kwargs)
 
 function plskern(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    weights = pweight(ones(Q, nro(X)))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plskern(X, Y, weights; kwargs...)
 end
 
-function plskern(X, Y, weights::ProbabilityWeights; kwargs...)
-    plskern!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plskern(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plskern!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plskern!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsr, kwargs).par
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     ## XtY 
     fweightr!(Y, weights.values)
@@ -165,31 +166,31 @@ function plskern!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwa
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 
 """ 
-    transf(object::Union{Plsr, Splsr}, X)
-    transf(object::Union{Plsr, Splsr}, X, nlv::Int)
+    transf(object::Union{Plsr, Plswold, Splsr}, X)
+    transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `X` : Matrix (m, p) for which LVs are computed.
 * `nlv` : Nb. LVs to consider.
 """ 
-function transf(object::Union{Plsr, Splsr}, X)
+function transf(object::Union{Plsr, Plswold, Splsr}, X)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * object.R
 end
 
-function transf(object::Union{Plsr, Splsr}, X, nlv::Int)
+function transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
 """
-    coef(object::Union{Plsr, Splsr})
-    coef(object::Union{Plsr, Splsr}, nlv::Int)
+    coef(object::Union{Plsr, Plswold, Splsr})
+    coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
 Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
@@ -197,7 +198,7 @@ Compute the b-coefficients of a LV model.
 For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). 
 If `nlv` = 0, `B` is a matrix of zeros. The returned object `int` is the intercept.
 """ 
-function coef(object::Union{Plsr, Splsr})
+function coef(object::Union{Plsr, Plswold, Splsr})
     theta = object.C'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
     ## To not use for Spcr (R not computed; while for Pcr, R = V)
@@ -207,7 +208,7 @@ function coef(object::Union{Plsr, Splsr})
     (B = B, int, nlv = object.par.nlv)
 end
 
-function coef(object::Union{Plsr, Splsr}, nlv::Int)
+function coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     theta = vcol(object.C, 1:nlv)'  
     Dy = Diagonal(object.yscales)
@@ -217,21 +218,21 @@ function coef(object::Union{Plsr, Splsr}, nlv::Int)
 end
 
 """
-    predict(object::Union{Plsr, Splsr, Pcr}, X)
-    predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X)
+    predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-function predict(object::Union{Plsr, Splsr, Pcr}, X)
+function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X)
     X = ensure_mat(X)
     coefs = coef(object)
     pred = coefs.int .+ X * coefs.B  # try muladd(X, coefs.B, coefs.int) 
     (pred = pred, nlv = object.par.nlv)
 end
 
-function predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
@@ -250,12 +251,12 @@ function predict(object::Union{Plsr, Splsr, Pcr}, X, nlv::Union{Int, AbstractVec
 end
 
 """
-    summary(object::Union{Plsr, Splsr}, X)
+    summary(object::Union{Plsr, Plswold, Splsr}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Union{Plsr, Splsr}, X)
+function Base.summary(object::Union{Plsr, Plswold, Splsr}, X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)

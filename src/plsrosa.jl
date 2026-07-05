@@ -1,15 +1,16 @@
 """
     plsrosa(; kwargs...)
     plsrosa(X, Y; kwargs...)
-    plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsrosa!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plsrosa(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial Least Squares Regression (PLSR) with the  ROSA algorithm (Liland et al. 2016).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 **Note:** The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (LVs) are not normed.
@@ -24,35 +25,35 @@ multiblock data analysis. Journal of Chemometrics 30, 651–662. https://doi.org
 plsrosa(; kwargs...) = JchemoModel(plsrosa, nothing, kwargs)
 
 function plsrosa(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsrosa(X, Y, weights; kwargs...)
 end
 
-function plsrosa(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsrosa!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plsrosa(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsrosa!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsrosa!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsr, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     ## Pre-allocation
     XtY = similar(X, p, q)
@@ -97,6 +98,6 @@ function plsrosa!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         TT[a] = tt
     end
     R = W * inv(V' * W)
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 

@@ -199,7 +199,9 @@ f
 occdds(; kwargs...) = JchemoModel(occdds, nothing, kwargs)
 
 function occdds(fitm, X; kwargs...) 
-    par = recovkw(ParOccdds, kwargs).par 
+    X = ensure_mat(X)
+    Q = eltype(X)
+    par = recovkw(ParOccdds{Q}, kwargs).par 
     alpha = par.alpha
     @assert 0 <= alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."    
     nlv = nco(fitm.T) 

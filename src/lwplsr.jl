@@ -16,10 +16,10 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
-* `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there 
-    is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
-    the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
-    for the weighted PLSR.
+* `scal` : Symbol defining the column scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` (and of the global `Y` if there 
+    is a preliminary PLS reduction dimension) is scaled (before the computation of the distances and local weights), 
+    and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
@@ -78,7 +78,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 15 ; metric = :mah 
-h = 1 ; k = 500 ; nlv = 10
+h = 1.; k = 500 ; nlv = 10
 model = lwplsr(; nlvdis, metric, h, k, nlv) 
 fit!(model, Xtrain, ytrain)
 @names model
@@ -86,9 +86,9 @@ fit!(model, Xtrain, ytrain)
 
 res = predict(model, Xtest) ; 
 @names res 
-res.listnn
-res.listd
-res.listw
+@head res.listnn
+@head res.listd
+@head res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
@@ -109,11 +109,11 @@ typeof(res.fitm[i])
 lwplsr(; kwargs...) = JchemoModel(lwplsr, nothing, kwargs)
 
 function lwplsr(X, Y; kwargs...)
-    par = recovkw(ParLwplsr, kwargs).par 
     X = ensure_mat(X)
-    Q = eltype(X)
-    p = nco(X)
     Y = ensure_mat(Y)
+    p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwplsr{Q}, kwargs).par
     nlv = min(par.k, p, par.nlv)
     par.nlv = nlv
     if par.nlvdis == 0
@@ -122,8 +122,9 @@ function lwplsr(X, Y; kwargs...)
         fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
     xscales = ones(Q, p)
-    if isnothing(fitm) && par.scal
-        xscales .= colstd(X)
+    if isnothing(fitm) && (par.scal != :none)
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X)
     end
     Lwplsr(fitm, X, Y, xscales, par)
 end
@@ -141,24 +142,24 @@ function predict(object::Lwplsr, X)
 end
 
 function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     a = object.par.nlv
     if isa(nlv, Int)
         nlv = min(nlv, a)
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
-    end
+    end    
     ## Getknn
     metric = object.par.metric
     k = object.par.k
-    h = Q(object.par.h)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    tolw = Q(object.par.tolw)
+    tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal
+        if object.par.scal != :none
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
             res = getknn(zX1, zX2; metric, k)
@@ -170,7 +171,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     end
     listw = similar(res.d)
     #@inbounds for i = 1:m
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w

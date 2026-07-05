@@ -107,7 +107,7 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 
 #### Fit the Occ model based on the fitted score space 'in' 
 model = occsd(cri = 2.5)
-#model = occsd(typcut = :mad, cri = 4)
+#model = occsd(typcut = :mad, cri = 4.)
 #model = occsd(typcut = :q, alpha = .01)
 fit!(model, fitm0) 
 @names model 
@@ -153,7 +153,8 @@ f
 occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 
 function occsd(fitm; kwargs...)
-    par = recovkw(ParOcc, kwargs).par
+    Q = eltype(fitm.T)
+    par = recovkw(ParOcc{Q}, kwargs).par
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     res = outsd(fitm)

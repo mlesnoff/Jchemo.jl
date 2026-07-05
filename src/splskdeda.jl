@@ -1,10 +1,10 @@
 """
     splskdeda(; kwargs...)
     splskdeda(X, y; kwargs...)
-    splskdeda(X, y, weights::ProbabilityWeights; kwargs...)
+    splskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse PLS-KDE-DA.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
@@ -17,7 +17,8 @@ Keyword arguments:
 * Eventual keyword arguments of function `dmkern` for bandwidth definition.
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation. 
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD). 
 
 Same as function `plskdeda` (PLS-KDEDA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table. 
@@ -27,18 +28,20 @@ See function `splslda` for examples.
 splskdeda(; kwargs...) = JchemoModel(splskdeda, nothing, kwargs)
 
 function splskdeda(X, y; kwargs...)
-    par = recovkw(ParSplskdeda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParSplskdeda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     splskdeda(X, y, weights; kwargs...)
 end
 
-function splskdeda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSplskdeda, kwargs).par
+function splskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParSplskdeda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     fitm_da = list(Kdeda, par.nlv)

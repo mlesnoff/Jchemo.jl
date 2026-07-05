@@ -1,15 +1,15 @@
 function plsravg_unif(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsravg_unif(X, Y, weights; kwargs...)
 end
 
-function plsravg_unif(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsravg_unif!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plsravg_unif(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsravg_unif!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsravg_unif!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsravg_unif!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsravgunif, kwargs).par
     X = ensure_mat(X)
     n, p = size(X)
@@ -24,7 +24,7 @@ function predict(object::Plsravgunif, X)
     le_nlv = length(nlv)
     predlv = predict(object.fitm, X, nlv).pred
     if(le_nlv == 1)
-        pred = predlv
+        pred = predlv[1]
     else
         acc = copy(predlv[1])
         @inbounds for i = 2:le_nlv

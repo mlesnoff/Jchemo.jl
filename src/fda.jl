@@ -1,8 +1,8 @@
 """
     fda(; kwargs...)
     fda(X, y; kwargs...)
-    fda(X, y, weights; kwargs...)
-    fda!(X::Matrix, y, weights; kwargs...)
+    fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
@@ -13,7 +13,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 FDA by eigen factorization of Inverse(W) * B, where W is the "Within"-covariance matrix (pooled over the classes), 
 and B the "Between"-covariance matrix.
@@ -93,39 +94,41 @@ f
 fda(; kwargs...) = JchemoModel(fda, nothing, kwargs)
 
 function fda(X, y; kwargs...)
-    par = recovkw(ParFda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParFda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     fda(X, y, weights; kwargs...)
 end
 
-fda(X, y, weights; kwargs...) = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
+fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+    kwargs...) where Q <: Float = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fda!(X::Matrix, y, weights; kwargs...)
-    par = recovkw(ParFda, kwargs).par
+function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
-    Q = eltype(X)
     n, p = size(X)
-    lb = Q(par.lb)
+    ## Centering/scaling X
     xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
     res = matW(X, y, weights)
     ni = res.ni
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information    
+    priors = aggsumv(weights.values, y).val  # output not used, only for information    
     lev = res.lev
     nlev = length(lev)
     nlv = min(n, p, nlev - 1, par.nlv)
     par.nlv = nlv
     res.W .*= n / (n - nlev)    # unbiased estimate
     ## Regularization
-    if lb > 0
-        res.W .+= lb .* I(p)    # @. does not work with I
+    if par.lb > 0
+        res.W .+= par.lb .* I(p)    # @. does not work with I
     end
     ## End
     zres = matB(X, y, weights)

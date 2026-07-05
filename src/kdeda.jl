@@ -1,10 +1,10 @@
 """
     kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
-    kdeda(X, y, weights::ProbabilityWeights; kwargs...)
+    kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discriminant analysis using non-parametric kernel Gaussian density estimation (KDE-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
@@ -65,22 +65,23 @@ model.fitm.fitm[1].H
 kdeda(; kwargs...) = JchemoModel(kdeda, nothing, kwargs)
 
 function kdeda(X, y; kwargs...)
-    par = recovkw(ParLda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParKdeda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     kdeda(X, y, weights; kwargs...) 
 end
 
-function kdeda(X, y, weights::ProbabilityWeights; kwargs...) 
+function kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
     ## To do: add scaling X?
-    par = recovkw(ParKdeda, kwargs).par
-    X = ensure_mat(X)
+    par = recovkw(ParKdeda{Q}, kwargs).par
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val
+    priors = aggsumv(weights.values, y).val
     lev = mlev(y)
     nlev = length(lev)
     ## End
-    fitm = list(nlev)
+    fitm = list(Dmkern, nlev)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
         fitm[i] = dmkern(vrow(X, s); h = par.h, a = par.a)
@@ -98,10 +99,9 @@ function predict(object::Kdeda, X)
         dens[:, i] .= vec(predict(object.fitm[i], X).pred)
     end
     A = object.priors' .* dens
-    v = sum(A, dims = 2)
-    posterior = fscale(A', v)'    # Could be replaced by similar as in fscale! 
-    z =  mapslices(argmax, posterior; dims = 2)    # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(z, object.lev), m, 1)
+    posterior = fscale(A', rowsum(A))'    # Could be replaced by similar as in fscale! 
+    v =  mapslices(argmax, posterior; dims = 2)    # if equal, argmax takes the first
+    pred = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     (pred = pred, dens, posterior)
 end
     

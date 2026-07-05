@@ -1,5 +1,5 @@
 """ 
-    getknn(Xtrain, X; metric = :eucl, k = 1)
+    getknn(Xtrain, X; metric::Symbol = :eucl, k::Int = 1)
 Return the k nearest neighbors in `Xtrain` of each row of the query `X`.
 * `Xtrain` : Training X-data.
 * `X` : Query X-data.

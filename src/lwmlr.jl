@@ -8,13 +8,13 @@ Keyword arguments:
 * `metric` : Type of dissimilarity used to select the neighbors and to compute the weights 
     (see function `getknn`). Possible values are: `:eucl` (Euclidean), `:mah` (Mahalanobis), 
     `:sam` (spectral angular distance), `:cos` (cosine distance), `:cor` (correlation distance).
+* `k` : The number of nearest neighbors to select for each observation to predict.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
-* `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Boolean. If `true`, each column of the global `X` is scaled by its uncorrected standard deviation before 
-    the distance and weight computations.
+* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances and local weights). 
+    Possible values are: `:none`, `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
     
@@ -45,7 +45,7 @@ fit!(model0, Xtrain)
 @head Ttest = transf(model0, Xtest)
 
 metric = :eucl 
-h = 2 ; k = 100 
+h = 2. ; k = 100 
 model = lwmlr(; metric, h, k) 
 fit!(model, Ttrain, ytrain)
 @names model
@@ -53,9 +53,9 @@ fit!(model, Ttrain, ytrain)
 
 res = predict(model, Ttest) ; 
 @names res 
-res.listnn
-res.listd
-res.listw
+@head res.listnn
+@head res.listd
+@head res.listw
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
@@ -64,7 +64,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 ## Same but with function 'pip'
 nlv = 20
 metric = :eucl 
-h = 2 ; k = 100 
+h = 2. ; k = 100 
 model1 = pcasvd(; nlv) ;
 model2 = lwmlr(; metric, h, k) 
 model = pip(model1, model2)
@@ -93,14 +93,16 @@ f
 lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
 
 function lwmlr(X, Y; kwargs...) 
-    par = recovkw(ParLwmlr, kwargs).par
-    X = ensure_mat(X)  
-    Q = eltype(X)
-    p = nco(X)
+    X = ensure_mat(X)
     Y = ensure_mat(Y)
+    p = nco(X)
+    Q = eltype(X) 
+    par = recovkw(ParLwmlr{Q}, kwargs).par
     xscales = ones(Q, p)
-    if par.scal
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
     end
     Lwmlr(X, Y, xscales, par)
 end
@@ -112,17 +114,17 @@ Compute the Y-predictions from the fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Lwmlr, X)
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
+    Q = eltype(object.X)
     ## Getknn
     metric = object.par.metric
-    h = Q(object.par.h)
     k = object.par.k
-    tolw = Q(object.par.tolw)
-    criw = Q(object.par.criw)
+    h = object.par.h
+    criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal
+    tolw = object.par.tolw
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)
@@ -130,7 +132,7 @@ function predict(object::Lwmlr, X)
         res = getknn(object.X, X; metric, k)
     end
     listw = similar(res.d)
-    Threads.@threads for i = 1:m
+    Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw
         listw[i] = w

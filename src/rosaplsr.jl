@@ -1,8 +1,10 @@
 """
     rosaplsr(; kwargs...)
     rosaplsr(Xbl, Y; kwargs...)
-    rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    rosaplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock ROSA PLSR (Liland et al. 2016).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` 
     from data (n, p).  
@@ -10,8 +12,8 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and `Y` is scaled by its uncorrected standard 
-    deviation (before the block scaling).
+* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
+    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (latent variables LVs) are not normed to 1.
@@ -45,8 +47,8 @@ ntot = ntrain + ntest
 (ntot = ntot, ntrain , ntest)
 
 nlv = 3
-scal = false
-#scal = true
+scal = :none
+#scal = std
 model = rosaplsr(; nlv, scal)
 fit!(model, Xbltrain, ytrain)
 @names model 
@@ -63,25 +65,25 @@ rmsep(res.pred, ytest)
 rosaplsr(; kwargs...) = JchemoModel(rosaplsr, nothing, kwargs)
 
 function rosaplsr(Xbl, Y; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+    Xbl = ensure_mat_mb(Xbl)
+    Y = ensure_mat(Y)
     n = nro(Xbl[1])
-    weights = pweight(ones(Q, n))
-    rosaplsr(Xbl, Y, weights; kwargs...)
+    rosaplsr(Xbl, Y, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function rosaplsr(Xbl, Y, weights::ProbabilityWeights; kwargs...)
-    Q = eltype(Xbl[1][1, 1])
+function rosaplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
     nbl = length(Xbl)  
-    zXbl = list(Matrix{Q}, nbl)
+    vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
-        zXbl[k] = copy(ensure_mat(Xbl[k]))
+        vXbl[k] = copy(Xbl[k])
     end
-    rosaplsr!(zXbl, copy(ensure_mat(Y)), weights; kwargs...)
+    rosaplsr!(vXbl, copy(ensure_mat(Y)), weights; kwargs...)
 end
 
-function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParRosaplsr, kwargs).par
-    Q = eltype(Xbl[1][1, 1])   
+function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    par = recovkw(ParRosaplsr, kwargs).par  
     n, q = size(Y)
     nbl = length(Xbl)
     pbl = nco.(Xbl) ; ptot = sum(pbl)
@@ -89,13 +91,14 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
     par.nlv = nlv
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitm_bl, Xbl)
+    ## Centering/scaling of Y
     ymeans = colmean(Y, weights)
+    fcenter!(Y, ymeans)
     yscales = ones(Q, q)
-    if par.scal 
-        yscales .= colstd(Y, weights)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        yscales .= colscal(Y, weights)
+        fscale!(Y, yscales)
     end
     ## Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)
@@ -113,7 +116,7 @@ function rosaplsr!(Xbl::Vector, Y::Matrix, weights::ProbabilityWeights; kwargs..
     Wbl = list(Array{Q}, nbl)
     wbl = list(Vector{Q}, nbl)      # List of the weights "w" by block for a given "a"
     zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
-    bl = fill(zero(Q), nlv)
+    bl = fill(zero(Int), nlv)
     ## Old
     #ssr = similar(Xbl[1], nbl)
     #Res = zeros(n, q, nbl)
@@ -203,14 +206,14 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transf(object::Rosaplsr, Xbl)
-    zXbl = transf(object.fitm_bl, Xbl)
-    fconcat(zXbl) * object.R
+    vXbl = transf(object.fitm_bl, Xbl)
+    fconcat(vXbl) * object.R
 end
 
 function transf(object::Rosaplsr, Xbl, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    zXbl = transf(object.fitm_bl, Xbl)
-    fconcat(zXbl) * vcol(object.R, 1:nlv)
+    vXbl = transf(object.fitm_bl, Xbl)
+    fconcat(vXbl) * vcol(object.R, 1:nlv)
 end
 
 """

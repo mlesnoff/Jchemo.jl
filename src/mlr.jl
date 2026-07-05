@@ -1,8 +1,8 @@
 """
     mlr(; kwargs...)
     mlr(X, Y; kwargs...)
-    mlr(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    mlr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    mlr!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Mutiple linear regression model (MLR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -53,27 +53,25 @@ coef(model)
 mlr(; kwargs...) = JchemoModel(mlr, nothing, kwargs)
 
 function mlr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     mlr(X, Y, weights; kwargs...)
 end
 
-function mlr(X, Y, weights::ProbabilityWeights; kwargs...)
-    mlr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function mlr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    mlr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function mlr!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParMlr, kwargs).par
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     sqrtw = sqrt.(weights.values)
     if par.noint
         q = nco(Y)
         fweightr!(X, sqrtw)
         fweightr!(Y, sqrtw)
         B = X \ Y
-        int = zeros(q)'
+        int = reshape(zeros(Q, q), 1, q)
     else
         xmeans = colmean(X, weights) 
         ymeans = colmean(Y, weights)   
@@ -88,24 +86,23 @@ function mlr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs.
 end
 
 """
-    coef(object::Mlr)
+    coef(object::Union{Mlr, Rrchol})
 Compute the coefficients of the fitted model.
 * `object` : The fitted model.
 """ 
-function coef(object::Mlr)
+function coef(object::Union{Mlr, Rrchol})
     (B = object.B, int = object.int)
 end
 
 """
-    predict(object::Mlr, X)
+    predict(object::Union{Mlr, Rrchol}, X)
 Compute the Y-predictions from the fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
-function predict(object::Mlr, X)
-    X = ensure_mat(X)
-    z = coef(object)
-    pred = z.int .+ X * z.B
+function predict(object::Union{Mlr, Rrchol}, X)
+    coefs = coef(object)
+    pred = coefs.int .+ ensure_mat(X) * coefs.B
     (pred = pred,)
 end
 

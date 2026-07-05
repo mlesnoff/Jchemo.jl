@@ -1,8 +1,8 @@
 """
     plsrout(; kwargs...)
     plsrout(X, Y; kwargs...)
-    plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
-    pcaout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plsrout(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Robust PLSR using outlierness.
 * `X` : X-data (n, p). 
 * `Y` : Y-data (n, q). 
@@ -60,21 +60,21 @@ res = predict(model, Xtest, 1:2)
 plsrout(; kwargs...) = JchemoModel(plsrout, nothing, kwargs)
 
 function plsrout(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsrout(X, Y, weights; kwargs...)
 end
 
-function plsrout(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsrout!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plsrout(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsrout!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsrout!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlsrout, kwargs).par 
+function plsrout!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPlsrout{Q}, kwargs).par 
     n, p = size(X)
     nlvout = 30
-    V = rand(0:1, p, nlvout)
+    V = rand(Q.(0:1), p, nlvout)
     d = outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d

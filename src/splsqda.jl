@@ -1,10 +1,10 @@
 """
     splsqda(; kwargs...)
     splsqda(X, y; kwargs...)
-    splsqda(X, y, weights::ProbabilityWeights; kwargs...)
+    splsqda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse PLS-QDA (with continuum).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
@@ -17,7 +17,8 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.    
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).       
 
 Same as function `plsqda` (PLSR-QDA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table.
@@ -27,18 +28,20 @@ See function `splslda` for examples.
 splsqda(; kwargs...) = JchemoModel(splsqda, nothing, kwargs)
 
 function splsqda(X, y; kwargs...)
-    par = recovkw(ParSplsqda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParSplsqda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     splsqda(X, y, weights; kwargs...)
 end
 
-function splsqda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSplsqda, kwargs).par
+function splsqda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParSplsqda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     fitm_da = list(Qda, par.nlv)

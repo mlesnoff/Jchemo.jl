@@ -1,17 +1,18 @@
 """
     plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
-    plsrda(X, y, weights::ProbabilityWeights; kwargs...)
+    plsrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Discrimination based on partial least squares regression (PLSR-DA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
 Keyword arguments: 
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 This is the usual and simplest "PLSDA". The approach is as follows:
 
@@ -94,17 +95,19 @@ summary(fitm.fitm_emb, Xtrain)
 plsrda(; kwargs...) = JchemoModel(plsrda, nothing, kwargs)
 
 function plsrda(X, y; kwargs...)
-    par = recovkw(ParPlsda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParPlsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     plsrda(X, y, weights; kwargs...)
 end
 
-function plsrda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlsda, kwargs).par
-    res = dummy(y)
+function plsrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPlsda{Q}, kwargs).par
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     Plsrda(fitm_emb, ni, priors, res.lev, par)
@@ -135,7 +138,7 @@ function predict(object::Plsrda, X)
     m = nro(X)
     res = predict(object.fitm_emb, X)
     v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    pred = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     (pred = pred, posterior = res.pred, nlv = res.nlv)
 end
 
@@ -149,7 +152,7 @@ function predict(object::Plsrda, X, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Qy}, le_nlv)
     @inbounds for i in eachindex(nlv)
         v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
+        pred[i] = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     end 
     (pred = pred, posterior = res.pred, nlv)
 end

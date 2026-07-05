@@ -1,7 +1,7 @@
 """
     pcapp(; kwargs...)
     pcapp(X; kwargs...)
-    pcapp!(X::Matrix; kwargs...)
+    pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
 Robust PCA by projection pursuit.
 * `X` : X-data (n, p). 
 Keyword arguments:
@@ -41,6 +41,7 @@ n = nro(X)
 
 nlv = 3
 model = pcapp(; nlv, nsim = 2000)  
+#model = pcapp(; nlv, nsim = 2000, scal = :mad)
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -55,25 +56,24 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), ylabel = st
 """
 pcapp(; kwargs...) = JchemoModel(pcapp, nothing, kwargs)
 
-function pcapp(X; kwargs...)
-    pcapp!(copy(ensure_mat(X)); kwargs...)
-end
+pcapp(X; kwargs...) = pcapp!(copy(ensure_mat(X)); kwargs...)
 
-function pcapp!(X::Matrix; kwargs...)
-    par = recovkw(ParPcapp, kwargs).par 
-    Q = eltype(X)
+function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPcapp, kwargs).par
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     nsim = par.nsim
-    xmeans = Jchemo.colmedspa(X) 
+    ## Centering/scaling X
+    xmeans = Jchemo.colmedspa(X, delta = 0.001)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colmad(X)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
+    ## End
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     t = similar(X, n)
@@ -102,6 +102,6 @@ function pcapp!(X::Matrix; kwargs...)
     V .= vcol(V, s)
     sv .= sv[s]
     weights = pweight(ones(Q, n))
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par)
+    Pca(T, V, sv, xmeans, xscales, weights, par)
 end
 

@@ -1,8 +1,8 @@
 """
     rrr(; kwargs...)
     rrr(X, Y; kwargs...)
-    rrr(X, Y, weights::ProbabilityWeights; kwargs...)
-    rr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Reduced rank regression (RRR, a.k.a RA).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -12,7 +12,8 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
  
 Reduced rank regression, also referred to as redundancy analysis (RA) regression. In this function, 
 the RA uses the Nipals algorithm presented in Mangamana et al 2021, section 2.1.1.
@@ -81,36 +82,36 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 rrr(; kwargs...) = JchemoModel(rrr, nothing, kwargs)
 
 function rrr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     rrr(X, Y, weights; kwargs...)
 end
 
-function rrr(X, Y, weights::ProbabilityWeights; kwargs...)
-    rrr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function rrr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rrr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParRrr, kwargs).par
+function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParRrr{Q}, kwargs).par
     @assert 0 <= par.tau <=1 "tau must be in [0, 1]"
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(par.nlv, p, q)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)    
+    ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     # Row metric
     sqrtw = sqrt.(weights.values)
@@ -142,7 +143,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
         cont = true
         iter = 1
         wy .= ones(Q, q)
-        wy ./= normv(q)
+        wy ./= normv(wy)
         if tau == 0       
             invCx = inv(X' * X)
         else
@@ -188,7 +189,7 @@ function rrr!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
      end
      Rx = Wx * inv(Vx' * Wx)
      fweightr!(Tx, invsqrtw)
-     Plsr(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
+     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
 end
 
 

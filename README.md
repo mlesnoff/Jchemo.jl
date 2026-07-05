@@ -32,7 +32,7 @@ Let us assume training data `(X, Y)`, and new data `Xnew` for which we want pred
 3) Function `predict` computes the predictions.   
 
 ```julia
-model = plskern(nlv = 15, scal = true)
+model = plskern(nlv = 15, scal = :std)
 fit!(model, X, Y)
 pred = predict(model Xnew).pred  # '.pred' is specified here since functio 'predict' can return several objects for some models 
 ```
@@ -48,7 +48,7 @@ We can check the contents of object `model`
 An alternative syntax to specify the keyword arguments is 
 
 ```julia
-nlv = 15 ; scal = true
+nlv = 15 ; scal = :std
 model = plskern(; nlv, scal)
 ```
 
@@ -266,7 +266,7 @@ summary(model, Xtrain)
 For a preliminary scaling of the data before the PCA
 
 ```julia
-nlv = 15 ; scal = true
+nlv = 15 ; scal = :std
 model = pcasvd(; nlv, scal)
 fit!(model, Xtrain, ytrain)
 ```
@@ -349,7 +349,7 @@ The LWR algorithm of Naes et al (1990) consists in implementing a preliminary gl
 
 ```julia
 nlv = 25
-metric = :eucl ; h = 2 ; k = 200
+metric = :eucl ; h = 2.;  k = 200
 model1 = pcasvd(; nlv)
 model2 = lwmlr(; metric, h, k)
 model = pip(model1, model2)

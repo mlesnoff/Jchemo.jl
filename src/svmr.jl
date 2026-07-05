@@ -12,16 +12,19 @@ Keyword arguments:
 * `degree` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Kernel types: 
 * :krbf -- radial basis function: exp(-gamma * ||x - y||^2)
 * :kpol -- polynomial: (gamma * x' * y + coef0)^degree
-* "klin -- linear: x' * y
+* :klin -- linear: x' * y
 * :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
 to fit a SVM regression model.
+
+**Note:** LIBSVM requires `Float64` for input data and parameters.
 
 ## References 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. Software available
@@ -88,16 +91,17 @@ f
 svmr(; kwargs...) = JchemoModel(svmr, nothing, kwargs)
 
 function svmr(X, y; kwargs...)
-    par = recovkw(ParSvm, kwargs).par
+    X = ensure_mat(X)
+    y = vec(y)
+    p = nco(X)    
+    Q = eltype(X)
+    par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
-    X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
-    p = nco(X)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     if kern == :krbf
@@ -132,9 +136,8 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmr, X)
     X = ensure_mat(X)
     m = nro(X)
-    Q = eltype(X)
     pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
-    pred = reshape(Q.(pred), m, 1)
+    pred = reshape(pred, m, 1)
     (pred = pred,)
 end
 

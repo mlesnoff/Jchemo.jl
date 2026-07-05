@@ -1,7 +1,7 @@
 """
     kpca(; kwargs...)
     kpca(X; kwargs...)
-    kpca(X, weights::ProbabilityWeights; kwargs...)
+    kpca(X::Matrix{Q}, weights::ProbabilityWeights; kwargs...) where Q <: Float
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -9,7 +9,8 @@ Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:krbf`, `:kpol`. See respective functions `krbf` 
     and `kpol` for their keyword arguments.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The method is implemented by SVD factorization of the weighted Gram matrix: 
 * D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)
@@ -62,24 +63,23 @@ kpca(; kwargs...) = JchemoModel(kpca, nothing, kwargs)
 
 function kpca(X; kwargs...)
     X = ensure_mat(X)
-    Q = eltype(X)
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    weights = pweight(ones(eltype(X), nro(X)))
     kpca(X, weights; kwargs...)
 end
 
-function kpca(X, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParKpca, kwargs).par
+function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParKpca{Q}, kwargs).par
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
-    X = ensure_mat(X)
-    Q = eltype(X)
     n, p = size(X)
     nlv = min(par.nlv, n)
+    ## Scaling of X
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
+    ## End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
     sqrtw = sqrt.(weights.values)
@@ -130,7 +130,7 @@ function Base.summary(object::Kpca)
     sstot = sum(object.eig)
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
-    explvarx = DataFrame(lv = 1:nlv, var = tt, pvar = pvar, cumpvar = cumpvar)
+    explvarx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
     (explvarx = explvarx,)
 end
 

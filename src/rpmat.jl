@@ -65,11 +65,10 @@ p = 10 ; nlv = 3
 rpmatli(p, nlv)
 ```
 """ 
-function rpmatli(p::Int, nlv::Int, Q::DataType = Float64; s = sqrt(p))
+function rpmatli(p::Int, nlv::Int, Q::DataType = Float64; s = Q(sqrt(p)))
     le = p * nlv
     k = Int(round(le / s))
     z = zeros(Q, le)
-    u = Q.([-1 ; 1])
-    z[rand(1:le, k)] .= rand(u, k) 
+    z[rand(1:le, k)] .= rand(Q.([-1 ; 1]), k) 
     sparse(reshape(z, p, nlv))
 end

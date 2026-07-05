@@ -1,9 +1,9 @@
 """
     segmts(n::Int, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
-    segmts(group::Vector, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
+    segmts(group::Vector{String}, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
 Build segments of observations for "test-set" validation.
 * `n` : Total nb. of observations in the dataset. The sampling is implemented within 1:`n`.
-* `group` : A vector (`n`) defining groups of observations.
+* `group` : A vector (`n`) defining groups of observations. Must be a `Vector{String}`.
 * `k` : Nb. test observations, or nb. test groups if `group` is used, returned in each validation segment.
 Keyword arguments: 
 * `rep` : Nb. replications of the sampling.
@@ -59,8 +59,7 @@ function segmts(n::Int, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     s
 end
 
-function segmts(group::Vector, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
-    group = vec(group)
+function segmts(group::Vector{String}, k::Int; rep = 1, seed::Union{Nothing, Int} = nothing)
     Q = Vector{Int}
     s = list(Vector{Q}, rep)
     if isnothing(seed)
@@ -71,16 +70,16 @@ function segmts(group::Vector, k::Int; rep = 1, seed::Union{Nothing, Int} = noth
     yagg = unique(group)
     nlev = length(yagg)
     k = min(k, nlev)
-    @inbounds for i = 1:rep
+    @inbounds for i in eachindex(s)
         s[i] = list(Q, 1)
         s[i][1] = StatsBase.sample(MersenneTwister(vseed[i]), 1:nlev, k; replace = false, ordered = true)
     end
-    zs = copy(s)
+    vs = copy(s)
     @inbounds for i = 1:rep
         u = s[i][1]
         v = findall(in(yagg[u]).(group))        # which(group %in% yagg[u])
-        zs[i][1] = v
+        vs[i][1] = v
     end
-    zs    
+    vs    
 end
 

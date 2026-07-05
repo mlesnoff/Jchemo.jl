@@ -49,7 +49,7 @@ end
 
 """ 
     transf(object::Rmgap, X)
-    transf!(object::Rmgap, X::Matrix{Q}) where Q <: AbstractFloat
+    transf!(object::Rmgap, X::Matrix{Q}) where Q <: Float
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -57,19 +57,16 @@ Compute the preprocessed data from a model.
 function transf(object::Rmgap, X)
     X = copy(ensure_mat(X))
     if nco(X) == 1 ; X = reshape(X, 1, :) ; end
-    println(23)
     transf!(object, X)
     X
 end
 
-function transf!(object::Rmgap, X::Matrix{Q}) where Q <: AbstractFloat
+function transf!(object::Rmgap, X::Matrix{Q}) where Q <: Float
     p = nco(X)
-    indexcol = object.par.indexcol
-    npoint = object.par.npoint
-    @assert npoint >= 2 "Argument 'npoint' must be >= 2."
-    @inbounds for i in eachindex(indexcol)
-        ind = indexcol[i]
-        wl = max(ind - npoint + 1, 1):ind
+    @assert object.par.npoint >= 2 "Argument 'npoint' must be >= 2."
+    @inbounds for i in eachindex(object.par.indexcol)
+        ind = object.par.indexcol[i]
+        wl = max(ind - object.par.npoint + 1, 1):ind
         fitm = mlr(Q.(wl), X[:, wl]')
         pred = predict(fitm, ind + 1).pred
         bias = X[:, ind + 1] .- pred'                   # check with vcol

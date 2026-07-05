@@ -1,15 +1,16 @@
 """
     plsnipals(; kwargs...)
     plsnipals(X, Y; kwargs...)
-    plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+    plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced by a direct computation of the 
 PLS weights (w) by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).
@@ -28,35 +29,35 @@ Chem. Int. Lab. Syst., 58, 109-130.
 plsnipals(; kwargs...) = JchemoModel(plsnipals, nothing, kwargs)
 
 function plsnipals(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     plsnipals(X, Y, weights; kwargs...)
 end
 
-function plsnipals(X, Y, weights::ProbabilityWeights; kwargs...)
-    plsnipals!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function plsnipals(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    plsnipals!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...)
+function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPlsr, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)    
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     ## Pre-allocation
     XtY = similar(X, p, q)
@@ -97,6 +98,6 @@ function plsnipals!(X::Matrix, Y::Matrix, weights::ProbabilityWeights; kwargs...
         TT[a] = tt
     end
     R = W * inv(V' * W)
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, nothing, par)
+    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 

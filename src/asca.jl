@@ -1,10 +1,7 @@
 """
-    asca(X, f::StatsModels.FormulaTerm, dat::DataFrame)
+    asca(object::Decompx)
 ANOVA Simultaneous Component Analysis (ASCA).
-* `X` :  X-data (n, p) to decompose.
-* `f` : A formula that defines the factor(s) on which is(are) done the decomposition.
-    See the syntax in the examples below.
-* `dat` (n, q) : Dataframe containing the factor(s) specified in `f`. 
+* `object` : Output of function `decompx`.
 
 ## References
 Bertinetto, C., Engel, J., Jansen, J., 2020. ANOVA simultaneous component analysis: A tutorial review. 
@@ -23,7 +20,7 @@ for high-dimensional data: applications in life, food and chemical sciences. Wil
 
 ## Examples 
 ```julia
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
@@ -32,9 +29,9 @@ datf = dat.datf
 n = nro(datf)
 tab(datf; group = [:temp, :catal])  # balanced design
 ##
-Y = datf[:, [:y1, :y2]]
-aggstat(datf; sel = [:y1, :y2], group = :temp)
-aggstat(datf; sel = [:y1, :y2], group = :catal)
+Y = Matrix(datf[:, [:y1, :y2]])
+aggstat(datf; sel = [:y1, :y2], group = [:temp])
+aggstat(datf; sel = [:y1, :y2], group = [:catal])
 res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
 
 f = @formula(0 ~ temp + catal + temp & catal)

@@ -96,6 +96,8 @@ scatter!(ax, (1:length(d))[s], d[s]; color = :red)
 f
 
 d = dtrain_in.d
+sdsigma = dtrain_in.sdsigma
+odsigma = dtrain_in.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
@@ -131,6 +133,8 @@ hlines!(ax, 1; linestyle = :dot)
 f
 
 d = dtrain_in.d
+sdsigma = dtrain_in.sdsigma
+odsigma = dtrain_in.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
@@ -146,7 +150,9 @@ f
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 
 function occsdod(fitm, X; kwargs...) 
-    par = recovkw(ParOccsdod, kwargs).par 
+    X = ensure_mat(X) 
+    Q = eltype(X)
+    par = recovkw(ParOccsdod{Q}, kwargs).par 
     gamma = par.gamma
     @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."   
     nlv = nco(fitm.T) 

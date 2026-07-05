@@ -1,16 +1,19 @@
 """
-    difmean(X1, X2; normx::Bool = false)
-Compute a 1-D detrimental matrix by difference of the column-means of two X-datas.
+    difmean(X1::AbstractMatrix{Q}, X2::AbstractMatrix{Q}; normx::Bool = false) where Q <: Float
+Compute a 1-row detrimental matrix by difference of the column-means of two X-datasets.
 * `X1` : Spectra (n1, p).
 * `X2` : Spectra (n2, p).
 Keyword arguments:
-* `normx` : Boolean. If `true`, the column-means vectors of `X1` and `X2` are normed before computing their difference.
+* `normx` : Boolean. If `true`, the column-means vectors of `X1` and `X2` are normed before 
+    computing their difference.
 
 The function returns a matrix `D` (1, p) computed by the difference between two mean-spectra, i.e. the 
 column-means of `X1` and `X2`. 
 
 `D` is assumed to contain the detrimental information that can be removed (by orthogonalization) 
-from `X1` and `X2` for calibration transfer. For instance, `D` can be used as input of function `eposvd`. 
+from `X1` and `X2` for calibration transfer. 
+
+For instance, `D` can be used as input of function `eposvd`. 
 
 ## Examples
 ```julia
@@ -45,7 +48,7 @@ axislegend(ax2, position = :cb, framevisible = false)
 f
 ```
 """
-function difmean(X1, X2; normx::Bool = false)
+function difmean(X1::AbstractMatrix{Q}, X2::AbstractMatrix{Q}; normx::Bool = false) where Q <: Float
     xmeans1 = colmean(X1)
     xmeans2 = colmean(X2)
     if normx

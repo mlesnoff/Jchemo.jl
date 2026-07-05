@@ -20,6 +20,8 @@ using StatsAPI
 using StatsModels
 using UMAP
 
+include("_const.jl")
+
 ## The order below is required
 include("_struct_param.jl")
 include("_struct_fun.jl")      
@@ -162,7 +164,8 @@ include("loessr.jl")
 
 ## Validation
 include("mpar.jl")
-include("scores.jl")
+include("scores_reg.jl")
+include("scores_da.jl")
 include("conf.jl")
 include("segmkf.jl")
 include("segmts.jl")
@@ -277,7 +280,7 @@ include("sampwsp.jl")
 include("samprand.jl")
 include("sampsys.jl")
 include("sampcla.jl")
-include("sampdf.jl")
+include("sampdatf.jl")
 
 include("distances.jl")
 include("getknn.jl")
@@ -299,15 +302,16 @@ export
     aggsumv,  
     sumv, meanv, stdv, varv, medv, madv, iqrv, normv, norm2v,
     boxcox, boxcox_transf, boxcox_transf!,
-    colsum, colmean, colnorm, colnorm2, colstd, colvar, colmed, colmad, 
+    colsum, colmean, colnorm, colnorm2, colvar, colstd, colprt, colmed, colmad, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
+    def_colscal,
     convertdf,
     covv, covm, 
     corv, corm,
     cosv, cosm, 
     dummy,
     dupl, findmiss,
-    ensure_df, ensure_mat, handle_bitmatrix,
+    ensure_df, ensure_mat, ensure_mat_mb, 
     fblockscal, fblockscal!,
     fcenter, fcenter!, 
     fcscale, fcscale!, 
@@ -329,10 +333,11 @@ export
     parsemiss,
     pval,
     recovkw,
-    recod_catbydict, 
-    recod_catbyint, 
+    recod_catbydict,
+    recod_catbyind, 
+    recod_catbyind2, 
     recod_catbylev, 
-    recod_contbyint,     
+    recod_contbylev,     
     recod_indbylev, 
     recod_miss, 
     expand_tab2d, expand_grid,
@@ -495,7 +500,7 @@ export
     conf, 
     ######---- Sampling
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
-    sampdf,
+    sampdatf,
     sampbag, 
     ######---- Distances
     getknn, wdis, wtal, winvs, winvs!,

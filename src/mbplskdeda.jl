@@ -1,10 +1,11 @@
 """
     mbplskdeda(; kwargs...)
     mbplskdeda(Xbl, y; kwargs...)
-    mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+    mbplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Multiblock PLS-KDEDA.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
@@ -13,8 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Keyword arguments of function `dmkern` (bandwidth definition) can also be specified here.
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` and Ydummy is scaled by its uncorrected standard deviation 
-    (before the block scaling) in the MBPLS computation.
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Same as function `mbplsqda` except that the class densities are estimated from `dmkern` instead of `dmnorm`.
 
@@ -24,18 +25,21 @@ See function `mbplslda` for examples.
 mbplskdeda(; kwargs...) = JchemoModel(mbplskdeda, nothing, kwargs)
 
 function mbplskdeda(Xbl, y; kwargs...)
-    par = recovkw(ParMbplskdeda, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    Xbl = ensure_mat_mb(Xbl)
+    y = vec(y)
+    Q = eltype(Xbl[1])
+    prior = recovkw(ParMbplskdeda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     mbplskdeda(Xbl, y, weights; kwargs...)
 end
 
-function mbplskdeda(Xbl, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbplskdeda, kwargs).par
+function mbplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    par = recovkw(ParMbplskdeda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     fitm_da = list(Kdeda, par.nlv)
     par.nlv = fitm_emb.par.nlv

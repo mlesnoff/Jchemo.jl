@@ -1,8 +1,8 @@
 """
     pcaout(; kwargs...)
     pcaout(X; kwargs...)
-    pcaout(X, weights::ProbabilityWeights; kwargs...)
-    pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcaout(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Robust PCA using outlierness.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -50,6 +50,7 @@ n = nro(X)
 
 nlv = 3
 model = pcaout(; nlv)  
+#model = pcaout(; nlv, scal = :mad) 
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -65,21 +66,20 @@ plotxy(T[:, i], T[:, i + 1]; zeros = true, xlabel = string("PC", i), ylabel = st
 pcaout(; kwargs...) = JchemoModel(pcaout, nothing, kwargs)
 
 function pcaout(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcaout(X, weights; kwargs...)
 end
 
-function pcaout(X, weights::ProbabilityWeights; kwargs...)
-    pcaout!(copy(ensure_mat(X)), weights; kwargs...)
+function pcaout(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcaout!(copy(X), weights; kwargs...)
 end
 
-function pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPcaout, kwargs).par 
+function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPcaout{Q}, kwargs).par 
     p = nco(X)
     nlvstah = 500
-    V = rand(0:1, p, nlvstah)
+    V = Q.(rand(0:1, p, nlvstah))
     d = outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
     d .= outeucl(X; scal = par.scal).d
@@ -87,5 +87,5 @@ function pcaout!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10
     fitm = pcasvd(X, pweight(w); kwargs...)
-    Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, nothing, par)
+    Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, par)
 end

@@ -1,8 +1,8 @@
 """
     splsr(; kwargs...)
     splsr(X, Y; kwargs...)
-    splsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    splsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    splsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Sparse partial least squares regression (Lê Cao et al. 2008)
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -14,7 +14,8 @@ Keyword arguments:
     of variables for each LV), or a vector of integers (of length `nlv`).   
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected standard deviation.    
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).    
 
 Sparse partial least squares regression algorihm of Lê Cao et al. 2008, but with the fast 
 "improved kernel algorithm #1" of Dayal & McGregor (1997) used instead Nipals (results are the same). 
@@ -109,21 +110,19 @@ plotgrid(z.nlv, z.cumpvar; step = 2, xlabel = "Nb. LVs", ylabel = "Prop. Explain
 splsr(; kwargs...) = JchemoModel(splsr, nothing, kwargs)
 
 function splsr(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     splsr(X, Y, weights; kwargs...)
 end
 
-function splsr(X, Y, weights::ProbabilityWeights; kwargs...)
-    splsr!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function splsr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    splsr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function splsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParSplsr, kwargs).par
+function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParSplsr{Q}, kwargs).par
     @assert in([:soft; :hard])(par.meth) "Wrong value for argument 'meth'."
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
@@ -135,18 +134,19 @@ function splsr!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwarg
     elseif par.meth == :hard 
         fthresh = thresh_hard
     end
+    ## Centering/scaling of Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
     ## XtY 
     fweightr!(Y, weights.values)

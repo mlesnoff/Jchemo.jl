@@ -1,18 +1,18 @@
 """
     plslda(; kwargs...)
     plslda(X, y; kwargs...)
-    plslda(X, y, weights::ProbabilityWeights; kwargs...)
+    plslda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 LDA on PLS latent variables (PLS-LDA).
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of `X` and Ydummy is scaled by its uncorrected standard deviation
-    in the PLS computation.
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 LDA on PLS latent variables. The approach is as follows:
 
@@ -95,18 +95,20 @@ summary(fitm_emb, Xtrain)
 plslda(; kwargs...) = JchemoModel(plslda, nothing, kwargs)
 
 function plslda(X, y; kwargs...)
-    par = recovkw(ParPlsda, kwargs).par
-    Q = eltype(X[1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    X = ensure_mat(X)
+    y = vec(y)
+    Q = eltype(X)
+    prior = recovkw(ParPlsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     plslda(X, y, weights; kwargs...)
 end
 
-function plslda(X, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParPlsda, kwargs).par
+function plslda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = recovkw(ParPlsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
-    res = dummy(y)
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     fitm_da = list(Lda, par.nlv)

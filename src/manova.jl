@@ -1,9 +1,10 @@
 """
-    manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, digits = 4)
+    manova(Y::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame; 
+        test::Symbol = :pillai, lb::Q = 0., digits::Int = 4) where Q <: Float
 MANOVA.
-* `Y` : Response variables (n, p).
+* `Y` : A matrix (n, p) or vector (n) representing the response variable(s).
 * `f` : A formula that defines the tested factor(s). See the syntax in the examples below.
-* `dat` (n, q) : Dataframe containing the factor(s) specified in `f`. 
+* `datf` (n, q) : Dataframe containing the factor(s) specified in `f`. 
 Keyword arguments:
 * `test` : Type of test statistic. Possible values are: `:wilks`, `:pillai` (default), `:hotelling`, or `:roy`.
 * `lb` : Positive constant for regularization.
@@ -23,7 +24,7 @@ https://documentation.sas.com/doc/en/statug/15.2/statug_introreg_sect038.htm#sta
 
 ## Examples 
 ```julia
-using Jchemo, JchemoData, JLD2
+using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/reaction_bertinetto.jld2")
 @load db dat
@@ -32,9 +33,9 @@ datf = dat.datf
 n = nro(datf)
 tab(datf; group = [:temp, :catal])  # balanced design
 ##
-Y = datf[:, [:y1, :y2]]
-aggstat(datf; sel = [:y1, :y2], group = :temp)
-aggstat(datf; sel = [:y1, :y2], group = :catal)
+Y = Matrix(datf[:, [:y1, :y2]])
+aggstat(datf; sel = [:y1, :y2], group = [:temp])
+aggstat(datf; sel = [:y1, :y2], group = [:catal])
 res = aggstat(datf; sel = [:y1, :y2], group = [:temp, :catal])
 
 f = @formula(0 ~ temp + catal + temp & catal)
@@ -47,14 +48,18 @@ manova(Y, f, datf)
 manova(Y, f, datf; test = :wilks)
 ```
 """
-function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, lb = 0, digits = 4)
+function manova2(Y, f, datf; 
+        test::Symbol = :pillai, lb::Q = 0, digits::Int = 4) where Q <: Float
+end
+
+function manova(Y::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame; 
+        test::Symbol = :pillai, lb::Q = 0., digits::Int = 4) where Q <: Float
     @assert in([:wilks; :pillai; :hotelling; :roy])(test) "Wrong value for argument 'test'." 
-    Y = ensure_mat(Y)
-    Q = eltype(Y)
-    res = decompx(Y, f, dat)
+    res = decompx(Y, f, datf)
     B = res.mat.B
     D = res.mat.D
-    DtD = D' * D      
+    DtD = D' * D   
+    println(22)   
     L = res.mat.L
     Yc = fcenter(Y, res.xmeans)
     RtR = Yc' * Yc - B' * DtD * B 
@@ -126,5 +131,6 @@ function manova(Y, f::StatsModels.FormulaTerm, dat::DataFrame; test = :pillai, l
     nam = collect(@names res.fit)[2:end]
     ss = round.(res.ss.ssfit[2:end]; digits)
     df = res.df.dffit[2:end]
-    DataFrame(:term => nam, :ss => ss, :df => df, test => val, :approxF => F, :dfnum => dfnum, :dfden => dfden, :pval => pval)
+    DataFrame(:term => nam, :ss => ss, :df => df, test => val, :approxF => F, :dfnum => dfnum, 
+        :dfden => dfden, :pval => pval)
 end 

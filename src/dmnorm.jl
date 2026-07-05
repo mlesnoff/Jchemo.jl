@@ -1,9 +1,9 @@
 """
     dmnorm(; kwargs...)
     dmnorm(X; kwargs...)
-    dmnorm!(X::Matrix; kwargs...)
+    dmnorm!(X::Matrix{Q}; kwargs...) where Q <: Float
     dmnorm(mu, S; kwargs...)
-    dmnorm!(mu::Vector, S::Matrix; kwargs...)
+    dmnorm!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
 Normal probability density estimation.
 * `X` : X-data (n, p) used to estimate the mean `mu` and the covariance matrix `S`. If `X` is not given, 
     `mu` and `S` must be provided in `kwargs`.
@@ -32,7 +32,6 @@ db = joinpath(mypath, "data", "iris.jld2")
 @names dat
 X = dat.X[:, 1:4] 
 y = dat.X[:, 5]
-n = nro(X)
 tab(y) 
 
 nlv = 2
@@ -41,8 +40,7 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-#### Probability density in the FDA score space (2-D)
-#### Example of class Setosa 
+#### Probability density in the FDA score space (2-D): example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
 m = nro(zT)
@@ -102,7 +100,7 @@ lims = [minimum(x), maximum(x)]
 grid = LinRange(lims[1], lims[2], npoints)
 model = dmnorm()
 fit!(model, x)
-pred_grid = predict(model, grid).pred 
+pred_grid = predict(model, collect(grid)).pred 
 f = Figure()
 ax = Axis(f[1, 1]; xlabel = string("FDA-score ", j))
 hist!(ax, x; bins = 30, normalization = :pdf)  # area = 1
@@ -116,18 +114,18 @@ function dmnorm(X; kwargs...)
     dmnorm!(copy(ensure_mat(X)); kwargs...)
 end
 
-function dmnorm!(X::Matrix; kwargs...)
+function dmnorm!(X::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm, kwargs).par
     mu = colmean(X) 
     S = cov(X; corrected = true)
     U = cholesky!(Hermitian(S)).U    # cholesky! modifies S
     if par.simpl 
-        cst = 1
-        detS = 1
+        cst = Q(1)
+        detS = Q(1)
     else
         p = nro(S)
-        cst = (2 * pi)^(-p / 2)
-        detS = det(U)^2  
+        cst = Q((2 * pi)^(-p / 2))
+        detS = Q(det(U)^2)  
     end
     LinearAlgebra.inv!(U)
     #cholesky!(S)
@@ -140,16 +138,16 @@ function dmnorm(mu, S; kwargs...)
     dmnorm!(copy(vec(mu)), copy(ensure_mat(S)); kwargs...)
 end
 
-function dmnorm!(mu::Vector, S::Matrix; kwargs...)
+function dmnorm!(mu::Vector{Q}, S::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParDmnorm, kwargs).par
     U = cholesky!(Hermitian(copy(S))).U   # cholesky! modifies S
     if par.simpl 
-        cst = 1
-        detS = 1
+        cst = Q(1)
+        detS = Q(1)
     else
         p = nro(S)
-        cst = (2 * pi)^(-p / 2)
-        detS = det(U)^2  
+        cst = Q((2 * pi)^(-p / 2))
+        detS = Q(det(U)^2)  
     end
     LinearAlgebra.inv!(U)
     Dmnorm(mu, U, detS, cst, par)

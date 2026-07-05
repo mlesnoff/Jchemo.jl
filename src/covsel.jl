@@ -1,16 +1,16 @@
 """
     covsel(; kwargs...)
     covsel(X, Y; kwargs...)
-    covsel(X, Y, weights::ProbabilityWeights; kwargs...)
-    covsel!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+    covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Variable (feature) selection from partial covariance (Covsel).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 Keyword arguments:
 * `nlv` : Nb. variables to select.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
-    standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 This is the Covsel algorithm described in Roger et al. 2011 for variable selection (see also 
 Höskuldsson, A., 1992).
@@ -43,7 +43,7 @@ https://en.wikipedia.org/wiki/Partial_correlation
 
 ## Examples
 ```julia
-using JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
@@ -72,37 +72,37 @@ plotxy(1:nlv, fitm.selc; xlabel = "Variable", ylabel = "Importance").f
 covsel(; kwargs...) = JchemoModel(covsel, nothing, kwargs)
 
 function covsel(X, Y; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    Y = ensure_mat(Y)
+    weights = pweight(ones(eltype(X), nro(X)))
     covsel(X, Y, weights; kwargs...)
 end
 
-function covsel(X, Y, weights::ProbabilityWeights; kwargs...)
-    covsel!(copy(ensure_mat(X)), copy(ensure_mat(Y)), weights; kwargs...)
+function covsel(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    covsel!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function covsel!(X::Matrix, Y::AbstractMatrix, weights::ProbabilityWeights; kwargs...)
+function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParCovsel, kwargs).par
-    Q = eltype(X)
-    Y = handle_bitmatrix(Q, Y)  # for DA functions
     n, p = size(X)
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
+    ## Centering/scaling of Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
+    fcenter!(X, xmeans)
+    fcenter!(Y, ymeans)
     xscales = ones(Q, p)
     yscales = ones(Q, q)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        yscales .= colstd(Y, weights)
-        fcscale!(X, xmeans, xscales)
-        fcscale!(Y, ymeans, yscales)
-    else
-        fcenter!(X, xmeans)
-        fcenter!(Y, ymeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        yscales .= colscal(Y, weights)
+        fscale!(X, xscales)
+        fscale!(Y, yscales)
     end
+    ## End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)

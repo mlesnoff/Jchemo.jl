@@ -1,15 +1,16 @@
 """ 
     treeda(; kwargs...)
-    treeda(X, y; kwargs...)
+    treeda(X, y::Vector{String}; kwargs...)
 Discrimination tree (CART) with DecisionTree.jl.
 * `X` : X-data (n, p).
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
 * `n_subfeatures` : Nb. variables to select at random at each split (default: 0 ==> keep all).
 * `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a single discrimnation tree (CART).
 
@@ -68,17 +69,23 @@ conf(res.pred, ytest).cnt
 treeda(; kwargs...) = JchemoModel(treeda, nothing, kwargs)
 
 ## For DA in DecisionTree.jl, y must be Int or String
-function treeda(X, y::Union{Array{Int}, Array{String}}; kwargs...) 
-    par = recovkw(ParTree, kwargs).par
+function treeda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    Q = eltype(X)
-    y = vec(y)
     n, p = size(X)
+    Q = eltype(X)
+    par = recovkw(ParTree{Q}, kwargs).par
+    xscales = ones(Q, p)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        X = fscale(X, xscales)
+    end
     taby = tab(y)
     priors = taby.vals / n  # output not used, only for information  
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     n_subfeatures = round(Int, par.n_subfeatures)

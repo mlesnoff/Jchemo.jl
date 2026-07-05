@@ -1,10 +1,11 @@
 """
     mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
-    mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
+    mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
 Discrimination based on multiblock partial least squares regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
-* `y` : Univariate class membership (n).
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
@@ -12,9 +13,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Boolean. If `true`, each column of blocks in `Xbl` 
-    and Ydummy is scaled by its uncorrected standard deviation 
-    (before the block scaling).
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The approach is as follows:
 
@@ -64,13 +64,11 @@ Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
 
 nlv = 15
-scal = false
-#scal = true
+scal = :none
+#scal = std
 bscal = :none
 #bscal = :frob
-model = mbplslda(; nlv, bscal, scal)
-#model = mbplsqda(; nlv, bscal, alpha = .5, scal)
-#model = mbplskdeda(; nlv, bscal, scal)
+model = mbplsrda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 @names model
 fitm = model.fitm ;
@@ -90,9 +88,6 @@ typeof(fitm_emb)
 @head transf(model, Xbltest)
 @head transf(model, Xbltest, 3)
 
-fitm_da = fitm.fitm_da ;
-typeof(fitm_da)
-
 res = predict(model, Xbltest) ;
 @names res
 @head res.posterior
@@ -108,17 +103,20 @@ summary(fitm_emb, Xbltrain)
 mbplsrda(; kwargs...) = JchemoModel(mbplsrda, nothing, kwargs)
 
 function mbplsrda(Xbl, y; kwargs...)
-    par = recovkw(ParMbplsda, kwargs).par
-    Q = eltype(Xbl[1][1, 1])
-    weights = pweightcla(Q, y; prior = par.prior)
+    Xbl = ensure_mat_mb(Xbl)
+    y = vec(y)
+    Q = eltype(Xbl[1])
+    prior = recovkw(ParMbplsda{Q}, kwargs).par.prior
+    weights = pweightcla(Q, y; prior)
     mbplsrda(Xbl, y, weights; kwargs...)
 end
 
-function mbplsrda(Xbl, y, weights::ProbabilityWeights; kwargs...)
-    par = recovkw(ParMbplsda, kwargs).par
-    res = dummy(y)
+function mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
+        kwargs...) where Q <: Float
+    par = recovkw(ParMbplsda{Q}, kwargs).par
+    res = dummy(Q, y)
     ni = tab(y).vals
-    priors = aggsumv(weights.values, vec(y)).val  # output not used, only for information
+    priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = mbplsr(Xbl, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
     Mbplsrda(fitm_emb, ni, priors, res.lev, par)
@@ -148,7 +146,7 @@ function predict(object::Mbplsrda, Xbl)
     m = nro(Xbl[1])
     res = predict(object.fitm_emb, Xbl)
     v =  mapslices(argmax, res.pred; dims = 2)  # if equal, argmax takes the first
-    pred = reshape(recod_indbylev(v, object.lev), m, 1)
+    pred = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     (pred = pred, posterior = res.pred, nlv = res.nlv)
 end
 
@@ -161,7 +159,7 @@ function predict(object::Mbplsrda, Xbl, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Qy}, le_nlv)
     @inbounds for i in eachindex(nlv)
         v =  mapslices(argmax, res.pred[i]; dims = 2)  # if equal, argmax takes the first
-        pred[i] = reshape(recod_indbylev(v, object.lev), m, 1)
+        pred[i] = reshape(recod_indbylev(vec(v), object.lev), m, 1)
     end 
     (pred = pred, posterior = res.pred, nlv)
 end

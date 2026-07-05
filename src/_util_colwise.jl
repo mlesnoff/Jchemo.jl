@@ -1,8 +1,9 @@
 """
-    colsum(X)
-    colsum(X, weights::ProbabilityWeights)
+    colsum(X::DataFrame)
+    colsum(X::AbstMatVec{Q}) where Q <: Union{Signed, Float}
+    colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Union{Signed, Float}
 Column-wise sums of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector (p).
@@ -19,26 +20,22 @@ colsum(X)
 colsum(X, w)
 ```
 """ 
-function colsum(X)
-    X = ensure_mat(X)
-    Q = eltype(X)
-    n, p = size(X)
-    s = zeros(Q, p)
-    Threads.@threads for j = 1:p
-        @inbounds for i in 1:n
+colsum(X::DataFrame) = colsum(ensure_mat(X))
+
+function colsum(X::AbstMatVec{Q}) where Q <: Union{Signed, Float}
+    s = zeros(eltype(X), nco(X))
+    Threads.@threads for j in axes(X, 2)
+        @inbounds for i in axes(X, 1)
             s[j] += X[i, j]
         end
     end
     s
 end
 
-function colsum(X, weights::ProbabilityWeights)
-    X = ensure_mat(X)
-    Q = eltype(X)
-    n, p = size(X)
-    s = zeros(Q, p)
-    Threads.@threads for j = 1:p
-        @inbounds for i in 1:n
+function colsum(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Union{Signed, Float}
+    s = zeros(eltype(X), nco(X))
+    Threads.@threads for j in axes(X, 2)
+        @inbounds for i in axes(X, 1)
             s[j] += X[i, j] * weights.values[i]
         end
     end
@@ -46,10 +43,11 @@ function colsum(X, weights::ProbabilityWeights)
 end
 
 """
-    colmean(X)
-    colmean(X, weights::ProbabilityWeights)
+    colmean(X::DataFrame)
+    colmean(X::AbstMatVec{Q}) where Q <: Float
+    colmean(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
 Column-wise means of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector (p).
@@ -66,15 +64,18 @@ colmean(X)
 colmean(X, w)
 ```
 """ 
-colmean(X) = colsum(X) / nro(X)
+colmean(X::DataFrame) = colmean(ensure_mat(X))
 
-colmean(X, weights::ProbabilityWeights) = colsum(X, weights)
+colmean(X::AbstMatVec{Q}) where Q <: Float = colsum(X) / nro(X)
+
+colmean(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = colsum(X, weights)
 
 """
-    colnorm(X)
-    colnorm(X, weights::ProbabilityWeights)
+    colnorm(X::DataFrame)
+    colnorm(X::AbstMatVec{Q}) where Q <: Float
+    colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
 Column-wise norms of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector (p).
@@ -99,15 +100,18 @@ colnorm(X)
 colnorm(X, w)
 ```
 """ 
-colnorm(X) = sqrt.(colnorm2(X))
+colnorm(X::DataFrame) = colnorm(ensure_mat(X))
 
-colnorm(X, weights::ProbabilityWeights) = sqrt.(colnorm2(X, weights))
+colnorm(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colnorm2(X))
+
+colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colnorm2(X, weights))
 
 """
-    colnorm2(X)
-    colnorm2(X, weights::ProbabilityWeights)
+    colnorm2(X::DataFrame)
+    colnorm2(X::AbstMatVec{Q}) where Q <: Float
+    colnorm2(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
 Column-wise squared norms of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 See function `colnorm`.
@@ -124,26 +128,22 @@ colnorm2(X)
 colnorm2(X, w)
 ```
 """
-function colnorm2(X)
-    X = ensure_mat(X)
-    Q = eltype(X)
-    n, p = size(X)
-    s = zeros(Q, p)
-    Threads.@threads for j = 1:p
-        @inbounds for i in 1:n
+colnorm2(X::DataFrame) = colnorm2(ensure_mat(X))
+
+function colnorm2(X::AbstMatVec{Q}) where Q <: Float
+    s = zeros(eltype(X), nco(X))
+    Threads.@threads for j in axes(X, 2)
+        @inbounds for i in axes(X, 1)
             s[j] += X[i, j]^2
         end
     end
     s
 end
 
-function colnorm2(X, weights::ProbabilityWeights)
-    X = ensure_mat(X)
-    Q = eltype(X)
-    n, p = size(X)
-    s = zeros(Q, p)
-    Threads.@threads for j = 1:p
-        @inbounds for i in 1:n
+function colnorm2(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+    s = zeros(eltype(X), nco(X))
+    Threads.@threads for j in axes(X, 2)
+        @inbounds for i in axes(X, 1)
             s[j] += X[i, j]^2 * weights.values[i]
         end
     end
@@ -151,35 +151,11 @@ function colnorm2(X, weights::ProbabilityWeights)
 end
 
 """
-    colstd(X)
-    colstd(X, weights::ProbabilityWeights)
-Column-wise (uncorrected) standard deviations of a matrix.
-* `X` : Data (n, p).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-Return a vector (p).
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-w = pweight(rand(n))
-
-colstd(X)
-colstd(X, w)
-```
-""" 
-colstd(X) = sqrt.(colvar(X))
-
-colstd(X, weights::ProbabilityWeights) = sqrt.(colvar(X, weights))
-
-"""
-    colvar(X)
-    colvar(X, weights::ProbabilityWeights)
+    colvar(X::DataFrame)
+    colvar(X::AbstMatVec{Q}) where Q <: Float
+    colvar(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float 
 Column-wise (uncorrected) variances of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector (p).
@@ -196,30 +172,85 @@ colvar(X)
 colvar(X, w)
 ```
 """ 
-function colvar(X)
-    X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
+colvar(X::DataFrame) = colvar(ensure_mat(X))
+
+function colvar(X::AbstMatVec{Q}) where Q <: Float
+    s = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
         s[j] = varv(vcol(X, j))
     end
     s
 end
 
-function colvar(X, weights::ProbabilityWeights)
-    X = ensure_mat(X) 
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
+function colvar(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+    s = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
         s[j] = varv(vcol(X, j), weights)
     end
     s
 end
 
 """
-    colmed(X)
+    colstd(X::DataFrame)
+    colstd(X::AbstMatVec{Q}) where Q <: Float
+    colstd(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Column-wise (uncorrected) standard deviations of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+Return a vector (p).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colstd(X)
+colstd(X, w)
+```
+""" 
+colstd(X::DataFrame) = colstd(ensure_mat(X))
+
+colstd(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colvar(X))
+
+colstd(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colvar(X, weights))
+
+"""
+    colprt(X::DataFrame)
+    colprt(X::AbstMatVec{Q}) where Q <: Float
+    colprt(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Column-wise (uncorrected) standard deviations of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+Return a vector (p).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colprt(X)
+colprt(X, w)
+```
+""" 
+colprt(X::DataFrame) = colprt(ensure_mat(X))
+
+colprt(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colstd(X))
+
+colprt(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colstd(X, weights))
+
+"""
+    colmed(X::DataFrame)
+    colmed(X::AbstMatVec{Q}) where Q <: Float
 Column-wise medians of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 
 Return a vector (p).
 
@@ -233,20 +264,21 @@ X = rand(n, p)
 colmed(X)
 ```
 """ 
-function colmed(X)
-    X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
+colmed(X::DataFrame) = colmed(ensure_mat(X))
+
+function colmed(X::AbstMatVec{Q}) where Q <: Float
+    s = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
         s[j] = Statistics.median(vcol(X, j))
     end
     s
 end
 
 """
-    colmad(X)
+    colmad(X::DataFrame)
+    colmad(X::AbstMatVec{Q}) where Q <: Float 
 Column-wise median absolute deviations (MAD) of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 
 Return a vector (p).
 
@@ -260,43 +292,76 @@ X = rand(n, p)
 colmad(X)
 ```
 """
-function colmad(X)
-    X = ensure_mat(X)
-    p = nco(X)
-    s = similar(X, p)
-    Threads.@threads for j = 1:p
+colmad(X::DataFrame) = colmad(ensure_mat(X))
+
+function colmad(X::AbstMatVec{Q}) where Q <: Float
+    s = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
         s[j] = madv(vcol(X, j))
     end
     s
 end
 
+colmad(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = colmad(X)  # for consistency when weights
+
+"""
+    def_colscal(scal::Symbol = :std)
+Define the function of column scaling.
+* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
+```
+"""
+function def_colscal(scal::Symbol = :std)
+    dict = Dict(
+        :std => colstd, 
+        :prt => colprt,
+        :mad => colmad
+        )
+    dict[scal]
+end
+
 ##### Functions skipping missing data
+
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
-function colsumskip(X, weights::ProbabilityWeights)
+
+function colsumskip(X::AbstractArray{Union{Missing, Q}}, 
+        weights::ProbabilityWeights{Q}) where Q <: Float
     X = ensure_mat(X)
-    p = nco(X)
-    v = zeros(p)
-    @inbounds for j = 1:p
+    v = zeros(Q, nco(X))
+    @inbounds for j in axes(X, 2)
         s = ismissing.(vcol(X, j))
         w = pweight(rmrow(weights.values, s))
         v[j] = sum(w.values .* rmrow(X[:, j], s))
     end
     v
 end
+
+##
 colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
-colmeanskip(X, weights::ProbabilityWeights) = colsumskip(X, weights)
+
+colmeanskip(X::AbstractArray{Union{Missing, Q}}, 
+        weights::ProbabilityWeights{Q}) where Q <: Float = colsumskip(X, weights)
+
+##
 colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
-colstdskip(X, weights::ProbabilityWeights) = sqrt.(colvarskip(X, weights))
+
+colstdskip(X::AbstractArray{Union{Missing, Q}}, 
+        weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colvarskip(X, weights))
+
+##
 colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
-function colvarskip(X, weights::ProbabilityWeights)
-    X = ensure_mat(X)
+
+function colvarskip(X::AbstractArray{Union{Missing, Q}}, 
+        weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X)
     v = colmeanskip(X, weights)
-    @inbounds for j = 1:p
+    @inbounds for j in axes(X, 2)
         s = ismissing.(vcol(X, j))
         w = pweight(rmrow(weights.values, s))
         v[j] = dot(w.values, (rmrow(X[:, j], s) .- v[j]).^2)        
     end
     v 
 end
+
+
 

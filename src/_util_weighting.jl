@@ -1,7 +1,8 @@
 ###### Building weights
 
 """ 
-    pweight(x::Vector)
+    pweight(x::Vector{Q}) where Q <: Real
+    pweight(T::DataType, x::Vector{Q}) where {Q <: Real}
 Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.ProbabilityWeights`.
 
 The wrapper forces the probability weights to sum to 1:
@@ -11,7 +12,7 @@ The wrapper forces the probability weights to sum to 1:
 ```julia
 using Jchemo
 
-x = rand(10)
+x = rand(5)
 weights = pweight(x)
 @names weights 
 weights.values 
@@ -19,17 +20,21 @@ sum(weights.values)
 weights.sum
 ```
 """
-pweight(x) = StatsBase.pweights(x / sum(x))
+pweight(x::Vector{Q}) where Q <: Real = StatsBase.pweights(x / sum(x))
 #function pweight(x)
 #    tot = sum(x) 
 #    ProbabilityWeights(x / tot, one(eltype(x)))
 #end
 
+pweight(T::DataType, x::Vector{Q}) where Q <: Real = pweight(T.(x))
+
 """ 
-    pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    pweightcla(Q::DataType, y::Vector; prior::Union{Symbol, Vector} = :prop)
+    pweightcla(y::Vector{String}; 
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
+    pweightcla(T::DataType, y::Vector{String}; 
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
-* `y` : A categorical variable (n) (class membership).
+* `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `Q` : A data type (e.g., `Float32`).
 Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
@@ -47,24 +52,30 @@ y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 tab(y)
 weights = pweightcla(y)
 #weights = pweightcla(y; prior = :prop)
+#weights = pweightcla(y; prior = :unif)
 #weights = pweightcla(y; prior = [.1, .7, .2])
 res = aggstat(weights.values, y; algo = sum)
 [res.lev res.X]
 ```
 """
-function pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
+pweightcla(y::Vector{String}; 
+    prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float = pweightcla(Float64, y; prior) 
+
+function pweightcla(T::DataType, y::Vector{String}; 
+        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
     n = length(y)
     res = tab(y)
     lev = res.keys
     nlev = length(lev)
+    vals = T.(res.vals)
     if isequal(prior, :unif)
-        priors = ones(nlev) / nlev
+        priors = ones(T, nlev) / nlev
     elseif isequal(prior, :prop)
-        priors = res.vals / n
+        priors = vals / n
     else
-        priors = pweight(prior).values  # could be '= prior', but pweight not costly 
+        priors = pweight(T, prior).values  # could be '= prior', but pweight not costly 
     end
-    w = zeros(n)
+    w = zeros(T, n)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
         w[s] .= priors[i] / res.vals[i]
@@ -72,17 +83,13 @@ function pweightcla(y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
     pweight(w)
 end
 
-function pweightcla(Q::DataType, y::AbstractVector; prior::Union{Symbol, Vector} = :prop)
-    pweight(Q.(pweightcla(y; prior).values))
-end
-
-##### Weighting of entire rows or columns
+##### Weighting rows or columns
 
 """
-    fweightr(X, v)
-    fweightr!(X::AbstractMatrix, v)
+    fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
+    fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
 Weight each row of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (n).
 
 ## Examples
@@ -98,15 +105,15 @@ fweightr!(X, v)
 X
 ```
 """ 
-fweightr(X, v) = v .* X
+fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float = v .* X
 
-fweightr!(X::AbstractMatrix, v) = X .= v .* X
+fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float = X .= v .* X
 
 """
-    fweightc(X, v)
-    fweightc!(X::AbstractMatrix, v)
+    fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float
+    fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float
 Weight each column of a matrix.
-* `X` : Data (n, p).
+* `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (p).
 
 ## Examples
@@ -122,6 +129,8 @@ fweightc!(X, v)
 X
 ```
 """ 
-fweightc(X, v) = v' .* X
+fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float = v' .* X
 
-fweightc!(X::AbstractMatrix, v) = X .= v' .* X
+fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float = X .= v' .* X
+
+

@@ -1,14 +1,15 @@
 """
     pcasvd(; kwargs...)
     pcasvd(X; kwargs...)
-    pcasvd(X, weights::ProbabilityWeights; kwargs...)
-    pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+    pcasvd(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 PCA by SVD factorization.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing a SVD factorization of sqrt(D) * X:
@@ -62,29 +63,28 @@ res.cor_circle
 pcasvd(; kwargs...) = JchemoModel(pcasvd, nothing, kwargs)
 
 function pcasvd(X; kwargs...)
-    Q = eltype(X[1, 1])
-    n = nro(X)
-    weights = pweight(ones(Q, n))
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
     pcasvd(X, weights; kwargs...)
 end
 
-function pcasvd(X, weights::ProbabilityWeights; kwargs...)
-    pcasvd!(copy(ensure_mat(X)), weights; kwargs...)
+function pcasvd(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    pcasvd!(copy(X), weights; kwargs...)
 end
 
-function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
+function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par
-    Q = eltype(X)
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
+    ## Centering/scaling X
     xmeans = colmean(X, weights)
+    fcenter!(X, xmeans)
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X, weights)
-        fcscale!(X, xmeans, xscales)
-    else
-        fcenter!(X, xmeans)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
+        fscale!(X, xscales)
     end
     ## by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights.values)
@@ -95,31 +95,31 @@ function pcasvd!(X::Matrix, weights::ProbabilityWeights; kwargs...)
     sv[sv .< 0] .= 0
     T = vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
     fweightr!(T, 1 ./ sqrtw)
-    Pca(T, V, sv, xmeans, xscales, weights, nothing, par) 
+    Pca(T, V, sv, xmeans, xscales, weights, par) 
 end
 
 """ 
-    transf(object::Union{Pca, Fda}, X)
-    transf(object::Union{Pca, Fda}, X, nlv::Int)
+    transf(object::Union{Pca, Pcanipals, Fda}, X)
+    transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
 Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `object` : The fitted model.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-transf(object::Union{Pca, Fda}, X) = fcscale(X, object.xmeans, object.xscales) * object.V
+transf(object::Union{Pca, Pcanipals, Fda}, X) = fcscale(X, object.xmeans, object.xscales) * object.V
 
-function transf(object::Union{Pca, Fda}, X, nlv::Int)
+function transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fcscale(X, object.xmeans, object.xscales) * vcol(object.V, 1:nlv)
 end
 
 """
-    summary(object::Pca, X)
+    summary(object::Union{Pca, Pcanipals}, X)
 Summarize the fitted model.
 * `object` : The fitted model.
 * `X` : The X-data that was used to fit the model.
 """ 
-function Base.summary(object::Pca, X)
+function Base.summary(object::Union{Pca, Pcanipals}, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
     weights = object.weights

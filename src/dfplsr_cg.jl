@@ -26,22 +26,22 @@ https://doi.org/10.1002/cem.3369
 ## Function "pls.model" used for df calculations in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
 ## automatically scales the X matrix before PLS. The example scales X for consistency with plsdof.
 
-using Jchemo, JchemoData, JLD2, CairoMakie 
+using Jchemo, JchemoData, JLD2, DataFrames, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "ozone.jld2") 
 @load db dat
 @names dat
 X = dat.X
 dropmissing!(X) 
-zX = rmcol(Matrix(X), 4) 
+vX = rmcol(Matrix(X), 4) 
 y = X[:, 4] 
 ## For consistency with plsdof
-xscales = colstd(zX)
-zXs = fscale(zX, xscales)
+xscales = colstd(vX)
+vXs = fscale(vX, xscales)
 ## End
 
 nlv = 12 ; gs = true
-res = dfplsr_cg(zXs, y; nlv, gs) ;
+res = dfplsr_cg(vXs, y; nlv, gs) ;
 res.df 
 df_kramer = [1.000000, 3.712373, 6.456417, 11.633565, 
     12.156760, 11.715101, 12.349716,

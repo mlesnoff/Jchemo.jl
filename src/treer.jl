@@ -9,7 +9,8 @@ Keyword arguments:
 * `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its uncorrected standard deviation.
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a single regression tree (CART).
 
@@ -57,14 +58,15 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 treer(; kwargs...) = JchemoModel(treer, nothing, kwargs)
 
 function treer(X, y; kwargs...) 
-    par = recovkw(ParTree, kwargs).par
     X = ensure_mat(X)
-    Q = eltype(X)
     y = vec(y)
-    p = nco(X)
+    p = nco(X)    
+    Q = eltype(X)
+    par = recovkw(ParTree{Q}, kwargs).par
     xscales = ones(Q, p)
-    if par.scal 
-        xscales .= colstd(X)
+    if par.scal != :none
+        colscal = def_colscal(par.scal) 
+        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     n_subfeatures = round(Int, par.n_subfeatures)
@@ -90,7 +92,6 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Treer, X)
     X = ensure_mat(X)
-    m = nro(X)
     ## Tree
     if (@names object.fitm)[1] == :node
         pred = apply_tree(object.fitm, fscale(X, object.xscales))
@@ -98,7 +99,7 @@ function predict(object::Treer, X)
     else
         pred = apply_forest(object.fitm, fscale(X, object.xscales); use_multithreading = object.par.mth)
     end
-    pred = reshape(pred, m, 1)
+    pred = reshape(pred, nro(X), 1)
     (pred = pred,)
 end
 
