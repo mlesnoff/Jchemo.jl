@@ -42,7 +42,7 @@ include("_util_stat.jl")
 include("_util_table.jl")
 include("_util_weighting.jl")
 
-include("repcentr.jl")
+include("repc.jl")
 
 ##
 include("angles.jl")
@@ -369,7 +369,7 @@ export
     interpl, 
     center, scale, cscale,
     blockscal,
-    repcentr,
+    repc,
     #cubic_spline,
     mavg, 
     msc, emsc,
