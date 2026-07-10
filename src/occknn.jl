@@ -4,8 +4,10 @@
 One-class classification (OCC) using kNN distance-based outlierness.
 * `X` : Training X-data (n, p) assumed to represent the reference (= target) class.
 Keyword arguments:
-* `nsamp` : Nb. of observations (`X`-rows) sampled in the training data and for which are computed 
-    the outliernesses (Monte Carlo simulation of the outlierness distribution of the reference class).
+* `nsamp` : Nb. of observations (`X`-rows) sampled in the training data used to estimate 
+    the reference outlierness distribution (i.e., the disitribution of the outlierness of observations belonging 
+    to the reference class). The sampling is random with no replacement. If `nsamp` = n, all the training 
+    observations are used to estimate this distribution.
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the `k` distances to the neighbors.
@@ -15,12 +17,15 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-OCC using outlierness `d` as defined in function `outknn`.
+The general principle is in two steps: 
+* 1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 
+    observations are sampled in `X` and their outlierness is computed; 
+* 2) For each new observation to predict, its outlierness is computed and compared to the reference distribution. 
+    If this outlierness is larger than a cutoff computed from the reference distribution (e.g., defined by a quantile), 
+    the observation is predicted as 'out' (i.e., not belonging to the reference class), or 'in' otherwise. 
 
-See function `occsd` for details on the cutoffs and outputs.
-
-For predictions (`predict`), the outlierness of each new observation is compared to the outlierness 
-distribution estimated from the `nsamp` observations sampled in the target class. 
+The computation method of outlierness is defined in function  `outknn` (see the function documentation for details). 
+See also function `occsd` for details on the possible types ofcutoffs and the outputs.
 
 ## Examples
 ```julia

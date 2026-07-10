@@ -8,7 +8,7 @@ One-class classification (OCC) using DD-Simca.
 Keyword arguments:
 * `fcentr` : A function that computes the centers of the empirical distributions of the squared score and orthogonal 
     distances (SD^2 and OD^2). By default, `fcentr = meanv`.
-* `fscal` : A function that computes the scales of the empirical distributions of SD^2 and OD^2. By default, `fcentr = stdv`.
+* `fscal` : A function that computes the scales of the empirical distributions of SD^2 and OD^2. By default, `fscal = stdv`.
 * `alpha` : Risk-I level to compute the parametric quantile (re-scaled Chi-2) of the consensus variable.
 
 The function implements OCC based on the outlierness `d` as defined in the DD-Simca method. The principle is described 

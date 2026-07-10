@@ -5,7 +5,7 @@ Compute outlierness from PCA/PLS orthogonal distance (OD).
     `pcasvd` or `plskern`).
 * `X` : X-data (n, p) on which was fitted model `fitm`.
 
-In this function, outlierness `d` of an observation (row of `X`) is defined by its orthogonal distance (= 'X-residuals'), 
+This function computes outlierness `d` of each observation (row of `X`) by its orthogonal distance (*aka* 'X-residuals'), 
 ie. the Euclidean distance between the observation and its projection to the score plan fitted by the model
 (e.g., PCA or PLS).
 

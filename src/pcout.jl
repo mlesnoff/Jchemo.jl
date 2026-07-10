@@ -3,7 +3,7 @@
         critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where Q <: Float
     pcout!(X::AbstractMatrix{Q}; explvar::Q = .99, critm1::Q = 1 / 3, critc1::Q = 2.5, critm2::Q = 1 / 4, 
         critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where Q <: Float
-Pcout algorithm for outlier identification in high dimensions.
+PCOut algorithm for outlier identification in high dimensions.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `explvar` : A numeric value between 0 and 1 indicating how much variance should be covered
@@ -21,7 +21,7 @@ Keyword arguments:
 * `outbound` : A numeric value between 0 and 1 indicating the outlier boundary for defining values 
     as final outliers (default to 0.25).
 
-This is the PCOut algorithm of Filzmoser et al. (2008). Same algorithm as the one implemented in the R 
+This is the PCOut algorithm of Filzmoser et al. (2008), implemented as the one available in the R 
 package mvoutlier (Filzmoser, 2026).
 
 The function returns a named tuple with the following outputs:

@@ -8,9 +8,10 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-In this function, outlierness `d` of an observation (row of `X`) is defined by its Stahel-Donoho outlierness. See Maronna and Yohai 1995 for details. 
-A projection-pursuit approach is used: given a projection matrix `V` (p, nlv), in general built randomly, the observations (rows of `X`) 
-are projected on the `nlv` directions and the Stahel-Donoho outlierness (`d`) is computed for each observation from these projections.
+This function computes outlierness `d` of each observation (row of `X`) by the Stahel-Donoho method detailed in Maronna and Yohai 1995. 
+A projection-pursuit approach is used: 
+* Given a projection matrix `V` (p, nlv), in general built randomly, the observations (rows of `X`) are projected on the `nlv` directions;
+* Then the Stahel-Donoho outlierness (`d`) is computed for each observation from these projections.
 
 ## References
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. 
