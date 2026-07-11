@@ -305,7 +305,7 @@ export
     aggsumv,  
     sumv, meanv, medv, stdv, varv, madv, iqrv, normv, norm2v, kurtv,
     boxcox, boxcox_transf, boxcox_transf!,
-    colsum, colmean, colmed, colvar, colstd, colprt, colmad, colnorm2, colnorm, 
+    colsum, colmean, colmed, colvar, colstd, colprt, colmad, colnorm2, colnorm, colkurt, 
     colsumskip, colmeanskip, colstdskip, colvarskip,
     rowsum, rowmean, rowvar, rowstd, rownorm2, rownorm,
     rowsumskip, rowmeanskip, rowstdskip, rowvarskip,

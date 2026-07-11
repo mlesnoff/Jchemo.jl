@@ -305,6 +305,46 @@ colnorm(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colnorm2(X))
 colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colnorm2(X, weights))
 
 """
+    colkurt(X::DataFrame)
+    colkurt(X::AbstMatVec{Q}) where Q <: Float
+    colkurt(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float 
+Column-wise excess kurtosis of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+The excess kurtosis is the kurtosis (fourth standardized moment) minus 3.
+
+Return a vector (p).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+
+colkurt(X)
+```
+"""
+colkurt(X::DataFrame) = colkurt(ensure_mat(X))
+
+function colkurt(X::AbstMatVec{Q}) where Q <: Float
+    v = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
+        v[j] = kurtv(vcol(X, j))
+    end
+    v
+end
+
+function colkurt(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+    v = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
+        v[j] = kurtv(vcol(X, j), weights)
+    end
+    v
+end
+
+"""
     def_colscal(scal::Symbol = :std)
 Define the function of column scaling.
 * `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 

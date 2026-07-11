@@ -468,6 +468,7 @@
     - **colmad** Median absolute deviation (MAD)
     - **colnorm2** Squared norm
     - **colnorm** Norm
+      **colkurt** Excess kurtosis
     - Allow missing data
         - **colsumskip**, **colmeanskip**, **colstdskip**, **colvarskip** 
 

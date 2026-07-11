@@ -3,6 +3,7 @@
 ## *Version 0.10.1*
 
 - News:
+    _ Functions **kurtv**, **colkurt**: Excess kurtosis
     - Function **repc**: Center the rows of a matrix by groups.
 
 - Modifications
