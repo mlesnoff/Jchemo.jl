@@ -1,4 +1,4 @@
-###### One vector 
+######## One vector 
 
 """ 
     sumv(x::AbstractVector{Q}) where Q <: Float
@@ -47,66 +47,21 @@ meanv(x::AbstractVector{Q}) where Q <: Float = Statistics.mean(x)
 meanv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sum(x, weights::ProbabilityWeights)
 
 """ 
-    normv(x::AbstractVector{Q}) where Q <: Float
-    normv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
-Norm of a vector.
+    medv(x::AbstractVector{Q}) where Q <: Float
+Median of a vector. 
 * `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-The norm of vector `x` is computed by:
-* sqrt(x' * x)
-
-The weighted norm of vector `x` is computed by:
-* sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.values`.
-
-## References
-
-@gdkrmr,
-https://discourse.julialang.org/t/julian-way-to-write-this-code/119348/17
-
-@Stevengj, 
-https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
 
 ## Examples
 ```julia
 using Jchemo
 
-n = 1000
+n = 100
 x = rand(n)
-w = pweight(ones(n))
 
-normv(x)
-sqrt(n) * normv(x, w)
+medv(x)
 ```
 """
-normv(x::AbstractVector{Q}) where Q <: Float = sqrt(norm2v(x)) 
-
-normv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt(norm2v(x, weights))
-
-""" 
-    norm2v(x::AbstractVector{Q}) where Q <: Float
-    norm2v(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
-Squared norm of a vector.
-* `x` : A vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-See function `normv`.
-
-## Examples
-```julia
-using Jchemo
-
-n = 1000
-x = rand(n)
-w = pweight(ones(n))
-
-norm2v(x)
-n * norm2v(x, w)
-```
-"""
-norm2v(x::AbstractVector{Q}) where Q <: Float = dot(x, x) 
-
-norm2v(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sum(i -> x[i]^2 * weights.values[i], 1:length(x))
+medv(x::AbstractVector{Q}) where Q <: Float = Statistics.median(x)
 
 """ 
     stdv(x::AbstractVector{Q}) where Q <: Float
@@ -155,36 +110,6 @@ varv(x::AbstractVector{Q}) where Q <: Float = Statistics.var(x; corrected = fals
 varv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = Statistics.var(x, weights; corrected = false)
 
 """ 
-    medv(x::AbstractVector{Q}) where Q <: Float
-Median of a vector. 
-* `x` : A vector (n).
-
-## Examples
-```julia
-using Jchemo
-
-n = 100
-x = rand(n)
-
-medv(x)
-```
-"""
-medv(x::AbstractVector{Q}) where Q <: Float = Statistics.median(x)
-
-"""
-    iqrv(x::AbstractVector{Q}) where Q <: Float
-Interquartile interval (IQR) of a vector.
-* `x` : A vector (n).
-
-## Examples
-```julia
-x = rand(100)
-iqrv(x)
-```
-"""
-iqrv(x::AbstractVector{Q}) where Q <: Float = quantile(x, Q(.75)) - quantile(x, Q(.25))
-
-""" 
     madv(x::AbstractVector{Q}) where Q <: Float
 
 Median absolute deviation (MAD) of a vector. 
@@ -202,7 +127,109 @@ madv(x)
 """
 madv(x::AbstractVector{Q}) where Q <: Float = Q(1.4826) * median(abs.(x .- median(x)))
 
-###### Two vectors
+"""
+    iqrv(x::AbstractVector{Q}) where Q <: Float
+Interquartile interval (IQR) of a vector.
+* `x` : A vector (n).
+
+## Examples
+```julia
+x = rand(100)
+iqrv(x)
+```
+"""
+iqrv(x::AbstractVector{Q}) where Q <: Float = quantile(x, Q(.75)) - quantile(x, Q(.25))
+
+
+""" 
+    norm2v(x::AbstractVector{Q}) where Q <: Float
+    norm2v(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Squared norm of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+See function `normv`.
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(ones(n))
+
+norm2v(x)
+n * norm2v(x, w)
+```
+"""
+norm2v(x::AbstractVector{Q}) where Q <: Float = dot(x, x) 
+
+norm2v(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sum(i -> x[i]^2 * weights.values[i], 1:length(x))
+
+""" 
+    normv(x::AbstractVector{Q}) where Q <: Float
+    normv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Norm of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+The norm of vector `x` is computed by:
+* sqrt(x' * x)
+
+The weighted norm of vector `x` is computed by:
+* sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.values`.
+
+## References
+
+@gdkrmr,
+https://discourse.julialang.org/t/julian-way-to-write-this-code/119348/17
+
+@Stevengj, 
+https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(ones(n))
+
+normv(x)
+sqrt(n) * normv(x, w)
+```
+"""
+normv(x::AbstractVector{Q}) where Q <: Float = sqrt(norm2v(x)) 
+
+normv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt(norm2v(x, weights))
+
+""" 
+    kurtv(x::AbstractVector{Q}) where Q <: Float
+    kurtv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Excess kurtosis of a vector.
+* `x` : A vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+The excess kurtosis is the kurtosis (fourth standardized moment) minus 3.
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(rand(n))
+
+kurtv(x)
+kurtv(x, pweight(ones(n)))
+kurtv(x, w)
+```
+"""
+kurtv(x::AbstractVector{Q}) where Q <: Float = StatsBase.kurtosis(x) 
+
+kurtv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = StatsBase.kurtosis(x, weights)
+
+######## Two vectors
 
 """
     covv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
@@ -312,7 +339,7 @@ corv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Statistics.c
 corv(x::AbstractVector{Q}, y::AbstractVector{Q}, 
     weights::ProbabilityWeights{Q}) where Q <: Float = covv(x, y, weights) / (stdv(x, weights) * stdv(y, weights))
 
-###### Matrices
+######## Matrices
 
 """
     covm(X::AbstMatVec{Q}) where Q <: Float

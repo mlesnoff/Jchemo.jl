@@ -34,14 +34,11 @@ rowmean(X)
 rowmean(X) = colmean(ensure_mat(X)')
 
 """
-    rownorm(X)
-Row-wise norms of a matrix.
+    rowvar(X)
+Row-wise (uncorrected) variances of a matrix.
 * `X` : Data (n, p).
 
 Return a vector (n).
-
-The norm of each row x of `X` is computed as:
-* sqrt(x' * x)
 
 ## Examples
 ```julia
@@ -49,11 +46,28 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-
-rownorm(X)
+rowvar(X)
 ```
 """ 
-rownorm(X) = sqrt.(rownorm2(X))
+rowvar(X) = colvar(ensure_mat(X)')
+
+"""
+    rowstd(X)
+Row-wise (uncorrected) standard deviations of a matrix`.
+* `X` : Data (n, p).
+
+Return a vector (n).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+rowstd(X)
+```
+""" 
+rowstd(X) = sqrt.(rowvar(X))
 
 """
     rownorm2(X)
@@ -76,12 +90,16 @@ rownorm2(X)
 """ 
 rownorm2(X) = colnorm2(ensure_mat(X)')
 
+
 """
-    rowstd(X)
-Row-wise (uncorrected) standard deviations of a matrix`.
+    rownorm(X)
+Row-wise norms of a matrix.
 * `X` : Data (n, p).
 
 Return a vector (n).
+
+The norm of each row x of `X` is computed as:
+* sqrt(x' * x)
 
 ## Examples
 ```julia
@@ -89,28 +107,11 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-rowstd(X)
+
+rownorm(X)
 ```
 """ 
-rowstd(X) = sqrt.(rowvar(X))
-
-"""
-    rowvar(X)
-Row-wise (uncorrected) variances of a matrix.
-* `X` : Data (n, p).
-
-Return a vector (n).
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-rowvar(X)
-```
-""" 
-rowvar(X) = colvar(ensure_mat(X)')
+rownorm(X) = sqrt.(rownorm2(X))
 
 ##### Functions skipping missing data
 rowsumskip(X) = colsumskip(ensure_mat(X)')

@@ -441,7 +441,8 @@
     - **convertdf** Convert the columns of a dataframe to given types
 
 *Operations on a vector*
-- **sumv**, **meanv**, **normv**, **norm2v**, **stdv**, **varv**, **medv**,  **madv**, **iqrv**: Statistics
+- **sumv**, **meanv**, **medv**, **varv**, **stdv**,  **madv**, **iqrv**, 
+    **norm2v**, **normv**, **kurtv**: Statistics
 - **boxcox**, **boxcox_transf**: Box-Cox power transformation to normalize a variable
 
 *Operations on two vectors*
@@ -460,12 +461,13 @@
     - **nco** Nb. columns 
     - **colsum** Sum
     - **colmean** Mean
-    - **colnorm** Norm
-    - **colnorm2** Squared norm
-    - **colstd** Standard deviation (uncorrected)
-    - **colvar** Variance (uncorrected)
     - **colmed** Median
+    - **colvar** Variance (uncorrected)
+    - **colstd** Standard deviation (uncorrected)
+    - **colprt** Pareto (uncorrected)
     - **colmad** Median absolute deviation (MAD)
+    - **colnorm2** Squared norm
+    - **colnorm** Norm
     - Allow missing data
         - **colsumskip**, **colmeanskip**, **colstdskip**, **colvarskip** 
 
@@ -473,10 +475,10 @@
     - **nro** Nb. rows 
     - **rowsum** Sum
     - **rowmean** Mean
-    - **rownorm** Norm
-    - **rownorm2** Squared norm
-    - **rowstd** Standard deviation (uncorrected)
     - **rowvar** Variance (uncorrected)
+    - **rowstd** Standard deviation (uncorrected)
+    - **rownorm2** Squared norm
+    - **rownorm** Norm
     - Allow missing data
         - **rowsumskip**, **rowmeanskip**, **rowstdskip**, **rowvarskip** 
 

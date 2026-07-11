@@ -71,81 +71,29 @@ colmean(X::AbstMatVec{Q}) where Q <: Float = colsum(X) / nro(X)
 colmean(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = colsum(X, weights)
 
 """
-    colnorm(X::DataFrame)
-    colnorm(X::AbstMatVec{Q}) where Q <: Float
-    colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
-Column-wise norms of a matrix.
+    colmed(X::DataFrame)
+    colmed(X::AbstMatVec{Q}) where Q <: Float
+Column-wise medians of a matrix.
 * `X` : Matrix (n, p) or vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
 Return a vector (p).
 
-The norm of each column x of `X` is computed by:
-* sqrt(x' * x)
-
-The weighted norm is:
-* sqrt(x' * D * x), where D is the diagonal matrix of `weights.values`
-
-**Warning:** `colnorm(X, pweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
-
 ## Examples
 ```julia
 using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-w = pweight(rand(n))
 
-colnorm(X)
-colnorm(X, w)
+colmed(X)
 ```
 """ 
-colnorm(X::DataFrame) = colnorm(ensure_mat(X))
+colmed(X::DataFrame) = colmed(ensure_mat(X))
 
-colnorm(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colnorm2(X))
-
-colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colnorm2(X, weights))
-
-"""
-    colnorm2(X::DataFrame)
-    colnorm2(X::AbstMatVec{Q}) where Q <: Float
-    colnorm2(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
-Column-wise squared norms of a matrix.
-* `X` : Matrix (n, p) or vector (n).
-* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
-
-See function `colnorm`.
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-w = pweight(rand(n))
-
-colnorm2(X)
-colnorm2(X, w)
-```
-"""
-colnorm2(X::DataFrame) = colnorm2(ensure_mat(X))
-
-function colnorm2(X::AbstMatVec{Q}) where Q <: Float
-    s = zeros(eltype(X), nco(X))
+function colmed(X::AbstMatVec{Q}) where Q <: Float
+    s = similar(X, nco(X))
     Threads.@threads for j in axes(X, 2)
-        @inbounds for i in axes(X, 1)
-            s[j] += X[i, j]^2
-        end
-    end
-    s
-end
-
-function colnorm2(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
-    s = zeros(eltype(X), nco(X))
-    Threads.@threads for j in axes(X, 2)
-        @inbounds for i in axes(X, 1)
-            s[j] += X[i, j]^2 * weights.values[i]
-        end
+        s[j] = Statistics.median(vcol(X, j))
     end
     s
 end
@@ -247,34 +195,6 @@ colprt(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colstd(X))
 colprt(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colstd(X, weights))
 
 """
-    colmed(X::DataFrame)
-    colmed(X::AbstMatVec{Q}) where Q <: Float
-Column-wise medians of a matrix.
-* `X` : Matrix (n, p) or vector (n).
-
-Return a vector (p).
-
-## Examples
-```julia
-using Jchemo
-
-n, p = 5, 6
-X = rand(n, p)
-
-colmed(X)
-```
-""" 
-colmed(X::DataFrame) = colmed(ensure_mat(X))
-
-function colmed(X::AbstMatVec{Q}) where Q <: Float
-    s = similar(X, nco(X))
-    Threads.@threads for j in axes(X, 2)
-        s[j] = Statistics.median(vcol(X, j))
-    end
-    s
-end
-
-"""
     colmad(X::DataFrame)
     colmad(X::AbstMatVec{Q}) where Q <: Float 
 Column-wise median absolute deviations (MAD) of a matrix.
@@ -303,6 +223,86 @@ function colmad(X::AbstMatVec{Q}) where Q <: Float
 end
 
 colmad(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = colmad(X)  # for consistency when weights
+
+"""
+    colnorm2(X::DataFrame)
+    colnorm2(X::AbstMatVec{Q}) where Q <: Float
+    colnorm2(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Column-wise squared norms of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+See function `colnorm`.
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colnorm2(X)
+colnorm2(X, w)
+```
+"""
+colnorm2(X::DataFrame) = colnorm2(ensure_mat(X))
+
+function colnorm2(X::AbstMatVec{Q}) where Q <: Float
+    s = zeros(eltype(X), nco(X))
+    Threads.@threads for j in axes(X, 2)
+        @inbounds for i in axes(X, 1)
+            s[j] += X[i, j]^2
+        end
+    end
+    s
+end
+
+function colnorm2(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+    s = zeros(eltype(X), nco(X))
+    Threads.@threads for j in axes(X, 2)
+        @inbounds for i in axes(X, 1)
+            s[j] += X[i, j]^2 * weights.values[i]
+        end
+    end
+    s
+end
+
+"""
+    colnorm(X::DataFrame)
+    colnorm(X::AbstMatVec{Q}) where Q <: Float
+    colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
+Column-wise norms of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+Return a vector (p).
+
+The norm of each column x of `X` is computed by:
+* sqrt(x' * x)
+
+The weighted norm is:
+* sqrt(x' * D * x), where D is the diagonal matrix of `weights.values`
+
+**Warning:** `colnorm(X, pweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 5, 6
+X = rand(n, p)
+w = pweight(rand(n))
+
+colnorm(X)
+colnorm(X, w)
+```
+""" 
+colnorm(X::DataFrame) = colnorm(ensure_mat(X))
+
+colnorm(X::AbstMatVec{Q}) where Q <: Float = sqrt.(colnorm2(X))
+
+colnorm(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = sqrt.(colnorm2(X, weights))
 
 """
     def_colscal(scal::Symbol = :std)
