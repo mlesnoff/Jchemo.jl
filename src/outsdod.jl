@@ -9,11 +9,11 @@ Keyword arguments:
 * `fscal` : Function used to scale SD and OD in the consensus (by default, `stdv`, but robust scaling function such 
     as `madv` can be used).
 
-This function computes outlierness `d` of each observation (row of `X`) by a *consensus* (weighted mean) between scaled SD and OD
+This function computes outlierness `d` of each observation (row) of `X` by a *consensus* (weighted mean) between scaled SD and OD
 of the observation: 
 * `d` = `gamma` * SD / `fscal`(SD) + (1 - `gamma`) * OD / `fscal`(OD) 
 The scaling ensures that SD and OD have the same order of magnitude before the consensus. 
-    
+
 See functions `outsd` and `outod` for details on SD and OD, and function `outod` for examples.
 """ 
 function outsdod(fitm, X; gamma::Q = .5, fscal::Function = stdv) where Q <: Float

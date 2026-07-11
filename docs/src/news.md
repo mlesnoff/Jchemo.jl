@@ -1,5 +1,13 @@
 # News
 
+## *Version 0.10.1*
+
+- News:
+    - Function **repc**: Center the rows of a matrix by groups.
+
+- Modifications
+    - Code cleaning.
+
 ## *Version 0.10.0*
 
 **Warning:** Major **breaking changes** have been made in this version compared to versions 0.9s, 

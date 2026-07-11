@@ -10,10 +10,11 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-The idea is to compare the KNN-outlierness of the observation to the KNN-outlierness of its neighbors, giving 
-a 'local' measure of outlierness. For each observation (row of `X`), outlierness `d` is defined as follows:
+This function computes outlierness `d` of each observation (row) of `X` as follows. 
 
-* A summary (e.g., by sum) of the distances between the observation and its `k` nearest neighbors
+The idea is to compare the outlierness of the observation to the outlierness of its neighbors, giving 
+a 'local' (KNN) measure of outlierness. For each observation (row) of `X`, outlierness `d` is defined as follows:
+* A summary (e.g., by sum or maximum) of the distances between the observation and its `k` nearest neighbors
     is computed, say out1.
 * The same summary is computed for each of the `k` nearest neighbors of the observation, and the median of 
     the `k` returned values is computed, say out2.

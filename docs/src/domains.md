@@ -480,10 +480,11 @@
     - Allow missing data
         - **rowsumskip**, **rowmeanskip**, **rowstdskip**, **rowvarskip** 
 
-*Transformation of a amatrix*
+*Transformation of a a matrix*
 - **fweightr** Weight each row
 - **fweightc** Weight each column
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling
+- **repc** Center the rows of a matrix by groups
 - **rmcol**, **rmrow** Remove columns and rows
 - **fconcat** Concatenate multiblock data
 

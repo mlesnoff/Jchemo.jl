@@ -10,7 +10,7 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-This function computes outlierness `d` of each observation (row of `X`) by a summary (e.g., the sum or maximum) 
+This function computes outlierness `d` of each observation (row) of `X` by a summary (e.g., the sum or maximum) 
 of the distances between the given observation and its `k` nearest neighbors in `X`. 
 
 ## References
