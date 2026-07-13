@@ -344,6 +344,41 @@ function colkurt(X::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where Q <: Fl
     v
 end
 
+
+"""
+    colentr(X::DataFrame)
+    colentr(X::AbstMatVec{Q}) where Q <: Float
+Column-wise differential entropy of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+
+See function `entrv`.
+
+Return a vector (p).
+
+## Examples
+```julia
+using Jchemo
+
+n, p = 1000, 6
+X = rand(n, p)
+
+colentr(X)
+```
+"""
+colentr(X::DataFrame) = colentr(ensure_mat(X))
+
+function colentr(X::AbstMatVec{Q}) where Q <: Float
+    v = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
+        v[j] = entrv(vcol(X, j))
+    end
+    v
+end
+
+
+
+
+
 """
     def_colscal(scal::Symbol = :std)
 Define the function of column scaling.

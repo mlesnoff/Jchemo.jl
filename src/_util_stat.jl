@@ -229,6 +229,45 @@ kurtv(x::AbstractVector{Q}) where Q <: Float = StatsBase.kurtosis(x)
 
 kurtv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = StatsBase.kurtosis(x, weights)
 
+
+""" 
+    entrv(x::AbstractVector{Q}) where Q <: Float
+Entropy of a continuous variable.
+* `x` : A vector (n).
+
+Estimate of the differential entropy:
+* h(x) = ∫f(x) log(f(x)) dx ≈ ∑ p(x)/δ log( p(x)/δ ) δ
+where δ is a bin size. The natural log is used.
+
+The discretization is done using function `Histogram` of package `StabsBase.jl`. 
+
+## References
+https://en.wikipedia.org/wiki/Differential_entropy
+
+## Examples
+```julia
+using Jchemo, Distributions
+
+n = 1000
+dist = Normal(0, 1)
+x = rand(dist, n) ; 
+Distributions.entropy(dist)   # 1.4189
+entrv(x)
+```
+"""
+function entrv(x::AbstractVector{Q}) where Q <: Float
+    res  = StatsBase.fit(StatsBase.Histogram, x);
+    bin_size = res.edges[1].step.hi
+    p = res.weights ./ length(x)
+    acc = .0
+    @inbounds for v in p
+        if v > .0
+            acc += v * log(v / bin_size)
+        end
+    end
+    -acc
+end
+
 ######## Two vectors
 
 """

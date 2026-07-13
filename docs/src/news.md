@@ -3,11 +3,13 @@
 ## *Version 0.10.1*
 
 - News:
-    _ Functions **kurtv**, **colkurt**: Excess kurtosis
+    - Functions **kurtv**, **colkurt**: Excess kurtosis.
+    - Functions **entrv**, **colentr**! Differential entropy. 
     - Function **repc**: Center the rows of a matrix by groups.
 
 - Modifications
     - Code cleaning.
+
 
 ## *Version 0.10.0*
 
