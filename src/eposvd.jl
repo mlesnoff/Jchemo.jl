@@ -18,7 +18,7 @@ Function `eposvd` returns two objects:
     in `V`.
 
 Any matrix X can then be corrected from `D` by:
-* X_corrected = X * `M`.
+* X.corrected = X * `M`.
 
 Matrix `D` can be built from many methods. For instance, two common methods are:
 * EPO (Roger et al. 2003, 2018): `D` is built from a set of differences between spectra collected under different 
@@ -26,8 +26,8 @@ Matrix `D` can be built from many methods. For instance, two common methods are:
 * TOP (Andrew & Fearn 2004): Each row of `D` is the mean spectrum computed for a given spectrometer instrument.
 
 A particular situation is the following. Assume that `D` is built from some differences between matrices X1 and X2, 
-and that a bilinear model (e.g., PLSR) is fitted on the data {X1_corrected, Y} where X1_corrected = X1 * `M`. 
-To predict new data X2_new with the fitted model, there is no need to correct X2_new.
+and that a bilinear model (e.g., PLSR) is fitted on the data {X1.corrected, Y} where X1.corrected = X1 * `M`. 
+To predict new data X2.new with the fitted model, there is no need to correct X2.new.
 
 # References
 Andrew, A., Fearn, T., 2004. Transfer by orthogonal projection: making near-infrared calibrations robust to 
