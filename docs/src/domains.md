@@ -488,7 +488,7 @@
 - **fweightr** Weight each row
 - **fweightc** Weight each column
 - **fcenter**, **fscale**, **fcscale** Column-wise centering and scaling
-- **repc** Center the rows of a matrix by groups
+- **repc** Center the columns of a matrix by group
 - **rmcol**, **rmrow** Remove columns and rows
 - **fconcat** Concatenate multiblock data
 

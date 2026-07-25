@@ -1,7 +1,7 @@
 """
     repc(X::AbstractMatrix{Q}, group::Vector{String}) where Q <: Float
     repc!(X::Matrix{Q}, group::Vector{String}) where Q <: Float
-Center the rows of a matrix by groups.
+Center the columns of a matrix by group.
 * `X` : Data (n, p).
 * `group` : A variable (n) representing the group membership. Must be a `Vector{String}`.
 

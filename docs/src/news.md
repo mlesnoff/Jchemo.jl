@@ -5,7 +5,7 @@
 - News:
     - Functions **kurtv**, **colkurt**: Excess kurtosis.
     - Functions **entrv**, **colentr**! Differential entropy. 
-    - Function **repc**: Center the rows of a matrix by groups.
+    - Function **repc**: Center the columns of a matrix by group.
 
 - Modifications
     - Code cleaning.
