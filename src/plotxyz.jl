@@ -97,8 +97,8 @@ function plotxyz(x, y, z, group::Union{Vector{<: Real}, Vector{String}, Vector{S
             scatter!(ax, x[s], y[s], z[s]; label = lab[i], kwargs...)
         end
         if leg
-            axislegend(ax, leg_title; position = :rc, nbanks = 1, rowgap = 10, framevisible = false)
-            #f[1, 2] = Legend(f, ax, leg_title; nbanks = 1, rowgap = 10, framevisible = false) 
+            #axislegend(ax, leg_title; position = :rc, nbanks = 1, rowgap = 10, framevisible = false)
+            f[1, 2] = Legend(f, ax, leg_title; nbanks = 1, rowgap = 10, framevisible = false) 
         end
     else
         @inbounds for i in eachindex(lev)
