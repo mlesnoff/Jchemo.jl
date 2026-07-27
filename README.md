@@ -313,6 +313,20 @@ fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 ```
+
+Note that a more direct syntax to define 'model` is:
+
+```julia
+model = pip(snv(), savgol(npoint = 5, deriv = 1, degree = 2), detrend_pol())
+```
+
+or 
+
+```julia
+npoint = 5 ; deriv = 1 ; degree = 2
+model = pip(snv(), savgol(; npoint, deriv, degree), detrend_pol())
+```
+
 #### **b) Example of PCA-SVMR**
 
 Consider a support vector machine regression model implemented on preliminary computed PLS scores (PLS-SVMR) 
