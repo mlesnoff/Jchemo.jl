@@ -314,7 +314,7 @@ Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
 ```
 
-Note that a more direct syntax to define `model` is:
+Note that a more direct syntax to define `model` is
 
 ```julia
 model = pip(snv(), savgol(npoint = 5, deriv = 1, degree = 2), detrend_pol())
