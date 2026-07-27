@@ -1,6 +1,6 @@
 # News
 
-## *Version 0.10.1*
+## *Version 0.10.1 dev*
 
 - News:
     - Functions **kurtv**, **colkurt**: Excess kurtosis.
