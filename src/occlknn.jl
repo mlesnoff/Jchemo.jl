@@ -15,12 +15,16 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-OCC using outlierness `d` as defined in function `outlknn`.
+The general principle is in two steps: 
+1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 
+    observations are sampled in `X` and their outlierness is computed; 
+2) For each new observation to predict (function `predict`), its outlierness is computed and compared to the 
+    reference distribution. If this outlierness is larger than a cutoff computed from the reference distribution
+    (e.g., defined by a quantile), the observation is predicted as 'out' (i.e., not belonging to the reference 
+    class), or 'in' otherwise. 
 
-See function `occsd` for details on the cutoff types and the outputs, and examples.
-
-For predictions (`predict`), the outlierness of each new observation is compared to the outlierness 
-distribution estimated from the `nsamp` observations sampled in the target class. 
+The method to compute outlierness is defined in function `outlknn` (see for details). 
+See also function `occsd` for the possible cutoff types and the outputs.
 """ 
 occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 

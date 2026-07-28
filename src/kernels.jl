@@ -6,14 +6,15 @@ Compute a Radial-Basis-Function (RBF) kernel Gram matrix.
 Keyword arguments:
 * `gamma` : Scale parameter.
 
-Given matrices `X` and `Y` of sizes (n, p) and (m, p), respectively, the function returns the (n, m) Gram matrix:
+Given matrices `X` and `Y` of sizes (n, p) and (m, p), respectively, the function returns the (n, m) 
+Gram matrix (similarity matrix between rows of `X` and `Y`):
 * K(`X`, `Y`) = Phi(`X`) * Phi(`Y`)'
-where Phi is the mapping (not explicit) function from the original space to the kernel space.
+where Phi is the (not explicit) mapping function from the original space to the kernel space.
 
 The RBF kernel between two vectors x and y (`X` and `Y` rows, respectively) is computed by:
 * exp(-`gamma` * ||x - y||^2)
-
-Closer are x and y, higher is the kernel value, i.e., K(`X`, `Y`) represents a similarity matrix.
+Closer are x and y, higher is the kernel value (similarity). Higher is `gamma`, sharper is the decreasing 
+similarity curve with ||x - y|| (i.e., to increase `gamma` increases locality).
 
 ## References 
 Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
@@ -42,14 +43,15 @@ Keyword arguments:
 * `coef0` : Offset of the polynom.
 * `degree` : Degree of the polynom.
 
-Given matrices `X` and `Y` of sizes (n, p) and (m, p), respectively, the function returns the (n, m) Gram matrix:
-*  K(`X`, `Y`) = Phi(`X`) * Phi(`Y`)'
-where Phi is the mapping (not explicit) function from the original space to the kernel space.
+Given matrices `X` and `Y` of sizes (n, p) and (m, p), respectively, the function returns the (n, m) 
+Gram matrix (similarity matrix between rows of `X` and `Y`):
+* K(`X`, `Y`) = Phi(`X`) * Phi(`Y`)'
+where Phi is the (not explicit) mapping function from the original space to the kernel space.
 
 The polynomial kernel between two vectors x and y (`X` and `Y` rows, respectively) is computed by:
 * (`gamma` * (x' * y) + `coef0`)^`degree`
 
-Closer are x and y, higher is the kernel value, i.e., K(`X`, `Y`) represents a similarity matrix. 
+Closer are x and y, higher is the kernel value (similarity). 
 
 ## References 
 Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 

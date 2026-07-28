@@ -20,11 +20,12 @@ Keyword arguments:
 The general principle is in two steps: 
 1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 
     observations are sampled in `X` and their outlierness is computed; 
-2) For each new observation to predict, its outlierness is computed and compared to the reference distribution. 
-    If this outlierness is larger than a cutoff computed from the reference distribution (e.g., defined by a quantile), 
-    the observation is predicted as 'out' (i.e., not belonging to the reference class), or 'in' otherwise. 
+2) For each new observation to predict (function `predict`), its outlierness is computed and compared to the 
+    reference distribution. If this outlierness is larger than a cutoff computed from the reference distribution
+    (e.g., defined by a quantile), the observation is predicted as 'out' (i.e., not belonging to the reference 
+    class), or 'in' otherwise. 
 
-The computation method of outlierness is defined in function `outknn` (see for details). 
+The method to compute outlierness is defined in function `outknn` (see for details). 
 See also function `occsd` for the possible cutoff types and the outputs.
 
 ## Examples
