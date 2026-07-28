@@ -48,9 +48,11 @@ function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) wh
     nlev = length(lev)
     zX = similar(X, nlev, p)
     s = BitVector(list(Bool, n))
-    @inbounds for i in eachindex(lev), j = 1:p
+    @inbounds for i in eachindex(lev)
         s .= y .== lev[i]
-        zX[i, j] = algo(view(X, s, j))
+        @inbounds for j in axes(X, 2)
+            zX[i, j] = algo(view(X, s, j))
+        end
     end
     (X = zX, lev)
 end
