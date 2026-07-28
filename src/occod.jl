@@ -12,7 +12,7 @@ Keyword arguments:
 
 OCC using outlierness `d` as defined in function `outod`.
 
-See function `occsd` for details on the cutoffs and outputs.
+See function `occsd` for details on the cutoff types and the outputs.
 
 ## Examples
 ```julia

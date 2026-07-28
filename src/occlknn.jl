@@ -8,7 +8,7 @@ Keyword arguments:
     the outliernesses (Monte Carlo simulation of the outlierness distribution of the reference class).
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
-* `algo` : Function summarizing the `k` distances to the neighbors.
+* `algo` : Function summarizing the distances to the `k` neighbors.
 * `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -17,7 +17,7 @@ Keyword arguments:
 
 OCC using outlierness `d` as defined in function `outlknn`.
 
-See function `occsd` for details on the cutoffs and outputs, and examples.
+See function `occsd` for details on the cutoff types and the outputs, and examples.
 
 For predictions (`predict`), the outlierness of each new observation is compared to the outlierness 
 distribution estimated from the `nsamp` observations sampled in the target class. 

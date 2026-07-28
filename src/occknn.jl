@@ -10,7 +10,7 @@ Keyword arguments:
     observations are used to estimate this distribution.
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
-* `algo` : Function summarizing the `k` distances to the neighbors.
+* `algo` : Function summarizing the distances to the `k` neighbors.
 * `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -18,14 +18,14 @@ Keyword arguments:
     `prt` (pareto) and `:mad` (MAD).
 
 The general principle is in two steps: 
-* 1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 
+1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 
     observations are sampled in `X` and their outlierness is computed; 
-* 2) For each new observation to predict, its outlierness is computed and compared to the reference distribution. 
+2) For each new observation to predict, its outlierness is computed and compared to the reference distribution. 
     If this outlierness is larger than a cutoff computed from the reference distribution (e.g., defined by a quantile), 
     the observation is predicted as 'out' (i.e., not belonging to the reference class), or 'in' otherwise. 
 
-The computation method of outlierness is defined in function  `outknn` (see the function documentation for details). 
-See also function `occsd` for details on the possible types ofcutoffs and the outputs.
+The computation method of outlierness is defined in function `outknn` (see for details). 
+See also function `occsd` for the possible cutoff types and the outputs.
 
 ## Examples
 ```julia
