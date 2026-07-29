@@ -107,7 +107,8 @@ function plotxyz(x, y, z, group::Union{Vector{<: Real}, Vector{String}, Vector{S
         end
         if leg
             elt = [MarkerElement(color = color[i], marker = '●', markersize = 10) for i in 1:nlev]
-            Legend(f[1, 2], elt, lev, leg_title; nbanks = 1, rowgap = 10, framevisible = false)
+            #Legend(f[1, 2], elt, lev, leg_title; nbanks = 1, rowgap = 10, framevisible = false)
+            f[1, 2] = Legend(f, elt, lev, leg_title; nbanks = 1, rowgap = 10, framevisible = false)
         end
     end
     (f = f, ax = ax, lev = lev)
