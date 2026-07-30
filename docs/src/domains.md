@@ -442,7 +442,7 @@
 
 *Operations on a vector*
 - **sumv**, **meanv**, **medv**, **varv**, **stdv**,  **madv**, **iqrv**, 
-    **norm2v**, **normv**, **kurtv**, **entrv**: Statistics
+    **norm2v**, **normv**, **kurtv**, **entrv**, **quantv**: Statistics
 - **boxcox**, **boxcox_transf**: Box-Cox power transformation to normalize a variable
 
 *Operations on two vectors*
@@ -469,7 +469,8 @@
     - **colnorm2** Squared norm
     - **colnorm** Norm
     - **colkurt** Excess kurtosis
-    - **colentr**! Differential entropy
+    - **colentr** Differential entropy
+    - **colquant** Quantile 
     - Allow missing data
         - **colsumskip**, **colmeanskip**, **colstdskip**, **colvarskip** 
 

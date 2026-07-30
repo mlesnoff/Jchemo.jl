@@ -641,7 +641,7 @@ end
 
 function transf!(object::Savgol, X::Matrix{Q}) where Q <: Float
     npoint = object.par.npoint 
-    @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be odd and >= 3."
+    @assert isodd(npoint) && npoint >= 3 "Argument 'npoint' must be an odd integer >= 3."
     p = nco(X)
     degree = object.par.degree
     nhwindow = Int((npoint - 1) / 2)

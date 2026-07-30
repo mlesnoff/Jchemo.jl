@@ -268,6 +268,36 @@ function entrv(x::AbstractVector{Q}) where Q <: Float
     -acc
 end
 
+""" 
+    quantv(x::AbstractVector{Q}, p::Q) where Q <: Float
+    quantv(x::AbstractVector{Q}, p::Q, weights::ProbabilityWeights) where Q <: Float
+Quantile (order p) of a vector.
+* `x` : A vector (n).
+* `p` : Probability for the quantile (0 ≤ `p` ≤ 1).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+
+For a given 0 ≤ `p` ≤ 1, `quantv(x, p)` is the smallest value z in the support of `x` 
+for which the cdf F(`x`, z) ≥ `p` (see function `Statistics.quantile`).
+
+## Examples
+```julia
+using Jchemo
+
+n = 1000
+x = rand(n)
+w = pweight(rand(n))
+
+p = .95
+quantv(x, p)
+quantv(x, p, pweight(ones(n)))
+quantv(x, p, w)
+```
+"""
+quantv(x::AbstractVector{Q}, alpha::Q) where Q <: Float = Statistics.quantile(x, alpha) 
+
+quantv(x::AbstractVector{Q}, alpha::Q, 
+    weights::ProbabilityWeights) where Q <: Float = Statistics.quantile(x, weights, alpha) 
+
 ######## Two vectors
 
 """

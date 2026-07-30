@@ -4,7 +4,8 @@
 
 - News:
     - Functions **kurtv**, **colkurt**: Excess kurtosis.
-    - Functions **entrv**, **colentr**! Differential entropy. 
+    - Functions **entrv**, **colentr**: Differential entropy. 
+    - Functions **quantv**, **colquant**: Quantiles.
     - Function **repc**: Center the columns of a matrix by group.
 
 - Modifications
