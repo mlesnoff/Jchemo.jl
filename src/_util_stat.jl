@@ -269,34 +269,34 @@ function entrv(x::AbstractVector{Q}) where Q <: Float
 end
 
 """ 
-    quantv(x::AbstractVector{Q}, p::Q) where Q <: Float
-    quantv(x::AbstractVector{Q}, p::Q, weights::ProbabilityWeights) where Q <: Float
+    quantv(x::AbstractVector{Q}, prob::Q) where Q <: Float
+    quantv(x::AbstractVector{Q}, prob::Q, weights::ProbabilityWeights) where Q <: Float
 Quantile (order p) of a vector.
 * `x` : A vector (n).
-* `p` : Probability for the quantile (0 ≤ `p` ≤ 1).
+* `prob` : Probability for the quantile (0 ≤ `prob` ≤ 1).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-For a given 0 ≤ `p` ≤ 1, `quantv(x, p)` is the smallest value z in the support of `x` 
-for which the cdf F(`x`, z) ≥ `p` (see function `Statistics.quantile`).
+For a given order `prob` (0 ≤ `prob` ≤ 1), `quantv(x, prob)` is the smallest value z in the support of `x` 
+for which the cdf F(`x`, z) ≥ `prob` (see function `Statistics.quantile`).
 
 ## Examples
 ```julia
 using Jchemo
 
 n = 1000
-x = rand(n)
+x = randn(n)
 w = pweight(rand(n))
 
-p = .95
-quantv(x, p)
-quantv(x, p, pweight(ones(n)))
-quantv(x, p, w)
+prob = .95
+quantv(x, prob)
+quantv(x, prob, pweight(ones(n)))
+quantv(x, prob, w)
 ```
 """
-quantv(x::AbstractVector{Q}, alpha::Q) where Q <: Float = Statistics.quantile(x, alpha) 
+quantv(x::AbstractVector{Q}, prob::Q) where Q <: Float = Statistics.quantile(x, prob) 
 
-quantv(x::AbstractVector{Q}, alpha::Q, 
-    weights::ProbabilityWeights) where Q <: Float = Statistics.quantile(x, weights, alpha) 
+quantv(x::AbstractVector{Q}, prob::Q, 
+    weights::ProbabilityWeights) where Q <: Float = Statistics.quantile(x, weights, prob) 
 
 ######## Two vectors
 

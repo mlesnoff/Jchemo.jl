@@ -375,9 +375,50 @@ function colentr(X::AbstMatVec{Q}) where Q <: Float
     v
 end
 
+"""
+    colquant(X::DataFrame)
+    colquant(X::AbstMatVec{Q}, prob::Q) where Q <: Float
+    colquant(X::AbstMatVec{Q}, prob::Q, weights::ProbabilityWeights{Q}) where Q <: Float 
+Column-wise quantile (order p) of a matrix.
+* `X` : Matrix (n, p) or vector (n).
+* `prob` : Probability for the quantile (0 ≤ `prob` ≤ 1).
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
+For a given order `prob` (0 ≤ `prob` ≤ 1), `quantv(x, prob)` is the smallest value z in the support of `x` 
+for which the cdf F(`x`, z) ≥ `prob` (see function `Statistics.quantile`).
 
+Return a vector (p).
 
+## Examples
+```julia
+using Jchemo
+
+n, p = 1000, 3
+X = randn(n, p)
+w = pweight(ones(n))
+
+prob = .95
+colquant(X, prob)
+colquant(X, prob, w)
+```
+"""
+colquant(X::DataFrame) = colquant(ensure_mat(X))
+
+function colquant(X::AbstMatVec{Q}, prob::Q) where Q <: Float
+    v = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
+        v[j] = quantv(vcol(X, j), prob)
+    end
+    v
+end
+
+function colquant(X::AbstMatVec{Q}, prob::Q, weights::ProbabilityWeights{Q}) where Q <: Float
+    v = similar(X, nco(X))
+    Threads.@threads for j in axes(X, 2)
+        v[j] = quantv(vcol(X, j), prob, weights)
+    end
+    v
+end
 
 """
     def_colscal(scal::Symbol = :std)
