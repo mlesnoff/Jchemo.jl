@@ -3,7 +3,7 @@
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
         title::String = "", kwargs...) where Q <: Float
-    plotlv(T::AbstractMatrix{Q}, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+    plotlv(T::AbstractMatrix{Q}, group; 
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
         title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
@@ -106,7 +106,7 @@ function plotlv(T::AbstractMatrix{Q};
     (f = f, ax)
 end
 
-function plotlv(T::AbstractMatrix{Q}, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+function plotlv(T::AbstractMatrix{Q}, group; 
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
         title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float

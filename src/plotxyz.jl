@@ -1,9 +1,12 @@
 """
-    plotxy(x, y, z; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1,
-        xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", kwargs...)
-    plotxy(x, y, z, group; size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness = .1, 
-        xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", leg::Bool = true, leg_title = "Group", 
-        kwargs...)
+    plotxyz(x, y, z; 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1,
+        xlabel::String = "", ylabel::String = "", zlabel::String = "", 
+        title::String = "", kwargs...) where Q <: Float
+    plotxyz(x, y, z, group; 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, 
+        xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
 3-D scatter plot of x-y-z data.
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -78,7 +81,7 @@ function plotxyz(x, y, z;
     (f = f, ax)
 end
 
-function plotxyz(x, y, z, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+function plotxyz(x, y, z, group; 
         size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, 
         xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
         leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float

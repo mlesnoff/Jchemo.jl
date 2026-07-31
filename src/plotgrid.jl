@@ -1,11 +1,9 @@
 """
-    plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; 
+    plotgrid(indx::AbstractVector{<: Real}, r::Jchemo.AbstMatVec{Q}; size::Tuple{Int, Int} = (500, 300), 
+        step::Int = 5, color = nothing, kwargs...) where Q <: Jchemo.Float
+    plotgrid(indx::AbstractVector{<: Real}, r::Jchemo.AbstMatVec{Q}, group; 
         size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
-        leg_title::String = "Group", kwargs...) where Q <: Float
-    plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, 
-        group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
-        size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
-        leg_title::String = "Group", kwargs...) where Q <: Float
+        leg_title::String = "Group", kwargs...) where Q <: Jchemo.Float
 Plot error/performance rates of a model.
 * `indx` : A numeric variable representing the grid of model parameters, e.g., the nb. LVs if PLSR models.
 * `r` : The error/performance rate.
@@ -52,8 +50,8 @@ group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSECV").f
 ```
 """ 
-function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; size::Tuple{Int, Int} = (500, 300), 
-        step::Int = 5, color = nothing, kwargs...) where Q <: Float
+function plotgrid(indx::AbstractVector{<: Real}, r::Jchemo.AbstMatVec{Q}; size::Tuple{Int, Int} = (500, 300), 
+        step::Int = 5, color = nothing, kwargs...) where Q <: Jchemo.Float
     r = vec(r) 
     #if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
     xticks = collect(minimum(indx):step:maximum(indx))
@@ -68,10 +66,9 @@ function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; size::Tuple{I
     (f = f, ax)
 end
 
-function plotgrid(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}, 
-        group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
+function plotgrid(indx::AbstractVector{<: Real}, r::Jchemo.AbstMatVec{Q}, group; 
         size::Tuple{Int, Int} = (700, 350), step::Int = 5, color = nothing, leg::Bool = true, 
-        leg_title::String = "Group", kwargs...) where Q <: Float
+        leg_title::String = "Group", kwargs...) where Q <: Jchemo.Float
     r = vec(r)
     #if isa(indx, Vector{Any}) ; indx = Float64.(indx) ; end
     group = vec(group)
