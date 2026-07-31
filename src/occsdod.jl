@@ -196,6 +196,7 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occsdod, X)
+    X = ensure_mat(X)
     tscales = object.sd.tscales    
     gamma = object.par.gamma 
     sigma_sd = object.sdod.sigma_sd
