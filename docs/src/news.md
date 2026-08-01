@@ -1,6 +1,6 @@
 # News
 
-## *Version 0.10.1 dev*
+## *Version 0.10.1*
 
 - News:
     - Functions **kurtv**, **colkurt**: Excess kurtosis.
@@ -9,6 +9,7 @@
     - Function **repc**: Center the columns of a matrix by group.
 
 - Modifications
+    - Output of function **tab** has been modified due to updates in **StatsBase.countmap**. 
     - Code cleaning.
 
 
