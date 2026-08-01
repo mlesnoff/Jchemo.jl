@@ -49,12 +49,13 @@ function tab(datf::DataFrame; group = nothing)
     res
 end
 
+## Not exported
 function tabv(X::AbstractArray)
     res = StatsBase.countmap(X)
     res_sort = sort(collect(res); by = p -> p.first)
     (val = last.(res_sort), lev = first.(res_sort))
 end
-
+## End
 
 """
     tabdupl(x::AbstractVector)
