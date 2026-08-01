@@ -27,8 +27,13 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
         p = sum(nco.(Xtrain))
         Q = eltype(Xtrain[1, 1])
     end
-    Ytrain = ensure_mat(Ytrain)
-    Y = ensure_mat(Y)
+    if eltype(Ytrain) == String
+        Ytrain = vec(Ytrain)
+        Y = vec(Y)
+    else
+        Ytrain = ensure_mat(Ytrain)
+        Y = ensure_mat(Y)
+    end
     q = nco(Ytrain)
     ## Rebuild 'nlv' to ensure consistency with training dimensionality
     le_nlv = length(nlv)

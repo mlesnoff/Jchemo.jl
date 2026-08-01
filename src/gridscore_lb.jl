@@ -13,9 +13,14 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
         pars::Union{Nothing, NamedTuple} = nothing, 
         lb::Union{T, AbstractVector{T}}, verbose::Bool = false) where T <: Float
     Xtrain = ensure_mat(Xtrain)
-    Ytrain = ensure_mat(Ytrain)
     X = ensure_mat(X)
-    Y = ensure_mat(Y)
+    if eltype(Ytrain) == String
+        Ytrain = vec(Ytrain)
+        Y = vec(Y)
+    else
+        Ytrain = ensure_mat(Ytrain)
+        Y = ensure_mat(Y)
+    end
     q = nco(Ytrain)
     Q = eltype(Xtrain)
     lb = sort(unique(lb))
