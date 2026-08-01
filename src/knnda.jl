@@ -84,7 +84,7 @@ function knnda(X, y::Vector{String}; kwargs...)
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    Knnda(X, y, xscales, taby.vals, taby.keys, par)
+    Knnda(X, y, xscales, taby.n, taby.lev, par)
 end
 
 """

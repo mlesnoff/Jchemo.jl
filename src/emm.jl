@@ -79,15 +79,15 @@ function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm,
     ## Build the full table corresponding to model fitm
     nam = string.(@names datf)
     u = in(termnames(f_fitm.rhs)).(nam)
-    keys = nam[u]
-    dat = datf[:, keys]
+    namsel = nam[u]
+    dat = datf[:, namsel]
     for i in axes(dat, 2)
         if isa(dat[1, i], Real)
             dat[:, i] .= meanv(dat[:, i])
         end
     end
-    values = ntuple(i -> mlev(dat[:, i]), length(keys))
-    tupl = (; zip(Symbol.(nam[u]), values)...)   # better than : NamedTuple{keys}(values)
+    values = ntuple(i -> mlev(dat[:, i]), length(namsel))
+    tupl = (; zip(Symbol.(nam[u]), values)...)   # better than : NamedTuple{namsel}(values)
     datmu = Jchemo.expand_grid_tupl(tupl)
     ## Estimate the mean 'mu' for each cell of the full table 
     namterm = termnames(f_fitm.rhs)

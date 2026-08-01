@@ -96,7 +96,7 @@ end
 function rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float    
     par = recovkw(ParRrda{Q}, kwargs).par
     res = dummy(Q, y)
-    ni = tab(y).vals 
+    ni = tab(y).n 
     priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = rr(X, res.Y, weights; kwargs...)
     Rrda(fitm_emb, ni, priors, res.lev, par)

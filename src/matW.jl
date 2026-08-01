@@ -44,8 +44,8 @@ covm(X, weights)
 function matB(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X)
     taby = tab(y)
-    lev = taby.keys
-    ni = taby.vals
+    lev = taby.lev
+    ni = taby.n
     nlev = length(lev)
     priors = aggsumv(weights.values, y).val   # sub-total weights by class                                
     ct = similar(X, nlev, p)                       # to store class centers
@@ -74,8 +74,8 @@ For examples, see function `matB`.
 function matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}) where Q <: Float
     p = nco(X) 
     taby = tab(y)
-    lev = taby.keys
-    ni = taby.vals
+    lev = taby.lev
+    ni = taby.n
     nlev = length(lev)                                 
     priors = aggsumv(weights.values, y).val     # sub-total weights by class   
     ## When there is at least one class containing only 1 obs, a variable 'Wi_1obs' equal 
@@ -117,8 +117,8 @@ For examples, see function `matB`.
 function matWc(X, y)
     n, p = size(X) 
     taby = tab(y)
-    lev = taby.keys
-    ni = taby.vals
+    lev = taby.lev
+    ni = taby.n
     nlev = length(lev)                                 
     if sum(ni .== 1) > 0
         Wi_1obs = covm(X) * n / (n - lev)

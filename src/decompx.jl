@@ -118,7 +118,7 @@ function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) 
     end
     R = Xc - D * B
     ss = (sst = frob2(X), ssfit =  frob2.(fit), ssr = frob2(R))
-    dffit = vcat(1, tab(assign).vals)
+    dffit = vcat(1, tab(assign).n)
     dfr = n - dfm
     df = (dffit = dffit, dfr, dftot = n)
     mat = (B = B, D, C, L, M)

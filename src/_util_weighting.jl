@@ -65,20 +65,20 @@ function pweightcla(T::DataType, y::Vector{String};
         prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
     n = length(y)
     res = tab(y)
-    lev = res.keys
+    lev = res.lev
     nlev = length(lev)
-    vals = T.(res.vals)
+    ni = T.(res.n)
     if isequal(prior, :unif)
         priors = ones(T, nlev) / nlev
     elseif isequal(prior, :prop)
-        priors = vals / n
+        priors = ni / n
     else
         priors = pweight(T, prior).values  # could be '= prior', but pweight not costly 
     end
     w = zeros(T, n)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]
-        w[s] .= priors[i] / res.vals[i]
+        w[s] .= priors[i] / res.n[i]
     end
     pweight(w)
 end

@@ -76,7 +76,7 @@ end
 function kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
     ## To do: add scaling X?
     par = recovkw(ParKdeda{Q}, kwargs).par
-    ni = tab(y).vals
+    ni = tab(y).n
     priors = aggsumv(weights.values, y).val
     lev = mlev(y)
     nlev = length(lev)

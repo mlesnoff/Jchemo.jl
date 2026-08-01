@@ -43,8 +43,8 @@ tab(x[res.test])
 function sampcla(x::Vector{String}, k::Union{Int, Vector{Int}}, y = nothing; seed::Union{Nothing, Int} = nothing)
     n = length(x)
     tabx = tab(x)
-    lev = tabx.keys
-    ni = tabx.vals
+    lev = tabx.lev
+    ni = tabx.n
     nlev = length(lev)
     if length(k) == 1
         k = fill(k, nlev)

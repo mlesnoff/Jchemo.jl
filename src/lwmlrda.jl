@@ -78,7 +78,7 @@ function lwmlrda(X, y::Vector{String}; kwargs...)
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    Lwmlrda(X, y, xscales, taby.vals, taby.keys, par)  
+    Lwmlrda(X, y, xscales, taby.n, taby.lev, par)  
 end
 
 """

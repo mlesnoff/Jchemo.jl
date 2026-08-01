@@ -27,8 +27,8 @@ res.pval
 function aov1(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float 
     X = ensure_mat(X)
     tabx = tab(y)
-    lev = tabx.keys
-    ni = tabx.vals
+    lev = tabx.lev
+    ni = tabx.n
     nlev = length(lev)
     Ydummy = dummy(Q, y).Y
     Xc = fcenter(X, colmean(X))

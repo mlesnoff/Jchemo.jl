@@ -5,7 +5,7 @@ Tabulation of categorical variables.
 * `X` : A categorical array or variable to tabulate.
 * `datf` : A dataframe containing categorical variable(s) to tabulate.
 Specific for a dataset:
-* `group` : Vector of the names (String or Symbol) of the group variables to consider in dataframe `datf` 
+* `group` : Vector of the names (String or Symbol) of the categorical variables to tabulate in dataframe `datf` 
     (by default, all the columns of `datf`).
 
 The function returns sorted levels. It does not support inputs of type `Any`.
@@ -17,8 +17,8 @@ using Jchemo, DataFrames
 x = rand(1:3, 20)
 
 res = tab(x)
-res.keys
-res.vals
+res.lev
+res.n
 
 tab(string.(x))
 
@@ -34,7 +34,11 @@ tab(datf; group = [:v2])
 tab(datf; group = [:v1, :v2])
 ```
 """
-tab(X::AbstractArray) = sort(StatsBase.countmap(X))
+function tab(X::AbstractArray)
+    res = StatsBase.countmap(X)
+    res_sort = sort(collect(res); by = p -> p.first)
+    DataFrame(lev = first.(res_sort), n = last.(res_sort))
+end
 
 function tab(datf::DataFrame; group = nothing)
     dat = copy(datf)
@@ -44,6 +48,13 @@ function tab(datf::DataFrame; group = nothing)
     res = aggstat(dat; sel = [Q(:n)], group, algo = sum)
     res
 end
+
+function tabv(X::AbstractArray)
+    res = StatsBase.countmap(X)
+    res_sort = sort(collect(res); by = p -> p.first)
+    (val = last.(res_sort), lev = first.(res_sort))
+end
+
 
 """
     tabdupl(x::AbstractVector)
@@ -58,14 +69,14 @@ x = ["a", "b", "c", "a", "b", "b"]
 #x = rand(1:5, 10)
 tab(x)
 res = tabdupl(x)
-res.keys
-res.vals
+res.lev
+res.n
 ```
 """
 function tabdupl(x::AbstractVector)
     z = tab(x)
-    s = z.vals .> 1
-    u = z.keys[s]
+    s = z.n .> 1
+    u = z.lev[s]
     tab(x[in(u).(x)])
 end
 
@@ -131,9 +142,9 @@ function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
     resv = tab(v)
     val = zeros(Int, nbin)
     for i in eachindex(lev) 
-        k = findfirst(lev[i] .== resv.keys)
+        k = findfirst(lev[i] .== resv.lev)
         if !isnothing(k)
-            val[i] = resv.vals[k]
+            val[i] = resv.n[k]
         end
     end
     val

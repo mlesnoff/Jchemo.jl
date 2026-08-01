@@ -78,12 +78,12 @@ merrp(pred, ytest)
 function merrp(pred, y)
     r = residcla(pred, y)
     res = tab(y)
-    lev = res.keys
+    lev = res.lev
     nlev = length(lev)
     v = zeros(nlev)
     @inbounds for i in eachindex(lev)
-        s = y .== res.keys[i]
-        v[i] = sum(r[s]) / res.vals[i]
+        s = y .== res.lev[i]
+        v[i] = sum(r[s]) / res.n[i]
     end
     reshape([mean(v)], 1, :)
 end

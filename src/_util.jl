@@ -269,7 +269,7 @@ v[s]
 function finduniq(x::Vector{String})
     n = length(x)
     res = tabdupl(x)
-    xd = res.keys
+    xd = res.lev
     s = list(Int, 0) 
     for i in eachindex(xd)
         zs = findall(x .== xd[i])

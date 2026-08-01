@@ -94,7 +94,7 @@ end
 function splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParSplsda{Q}, kwargs).par
     res = dummy(Q, y)
-    ni = tab(y).vals
+    ni = tab(y).n
     priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = splsr(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv

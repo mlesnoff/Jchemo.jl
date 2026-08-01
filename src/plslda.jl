@@ -107,7 +107,7 @@ function plslda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Probab
     par = recovkw(ParPlsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)
-    ni = tab(y).vals
+    ni = tab(y).n
     priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = plskern(X, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv

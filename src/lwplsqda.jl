@@ -63,7 +63,7 @@ function lwplsqda(X, y::Vector{String}; kwargs...)
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    Lwplsqda(fitm, X, y, xscales, taby.vals, priors, taby.keys, par)
+    Lwplsqda(fitm, X, y, xscales, taby.n, priors, taby.lev, par)
 end
 
 """

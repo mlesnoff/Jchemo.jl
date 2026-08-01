@@ -93,7 +93,7 @@ function svmda(X, y::Vector{String}; kwargs...)
     kern = par.kern 
     @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
     taby = tab(y)
-    priors = taby.vals / n  # output not used, only for information  
+    priors = taby.n / n  # output not used, only for information  
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -120,7 +120,7 @@ function svmda(X, y::Vector{String}; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmda(fitm, xscales, taby.vals, priors, taby.keys, par)
+    Svmda(fitm, xscales, taby.n, priors, taby.lev, par)
 end
 
 """

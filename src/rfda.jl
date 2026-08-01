@@ -90,7 +90,7 @@ function rfda(X, y::Vector{String}; kwargs...)
     Q = eltype(X)
     par = recovkw(ParRf{Q}, kwargs).par
     taby = tab(y)
-    priors = taby.vals / n  # output not used, only for information  
+    priors = taby.n / n  # output not used, only for information  
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
@@ -111,5 +111,5 @@ function rfda(X, y::Vector{String}; kwargs...)
         #rng = 3
         ) 
     featur = collect(1:p)
-    Treeda(fitm, xscales, featur, taby.vals, priors, taby.keys, par)
+    Treeda(fitm, xscales, featur, taby.n, priors, taby.lev, par)
 end

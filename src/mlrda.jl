@@ -89,7 +89,7 @@ end
 function mlrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParMlrda{Q}, kwargs).par
     res = dummy(Q, y)
-    ni = tab(y).vals
+    ni = tab(y).n
     priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = mlr(X, res.Y, weights)
     Mlrda(fitm_emb, ni, priors, res.lev, par)

@@ -18,8 +18,8 @@ function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symb
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     taby = tab(ycla)
-    lev = taby.keys        # class levels (prototypes)
-    ni = taby.vals         # number of observations in each prototype class
+    lev = taby.lev        # class levels (prototypes)
+    ni = taby.n         # number of observations in each prototype class
     nproto = length(lev)   # nb. prototypes
     ## For distances computations
     if par.nlvdis == 0
