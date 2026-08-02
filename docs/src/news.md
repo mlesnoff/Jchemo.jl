@@ -14,9 +14,9 @@
     - Function **repc**: Center the columns of a matrix by group.
 
 - Modifications
-    - Output of function **tab** has been modified due to updates in **StatsBase.countmap**.
-        Function **tab** being used as internal function by many discrimination functions, the update 
-        generated breaking codes. 
+    - Output of function **tab** has been modified due to updates in outputs '.keys' and '.vals' of Dict
+        objects in Julia. Function **tab** being used as internal function by many discrimination functions, 
+        the update generated breaking codes. 
     - Code cleaning.
 
 
