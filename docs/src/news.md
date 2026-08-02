@@ -1,5 +1,10 @@
 # News
 
+## *Version 0.10.2 dev*
+
+- Modifications
+    - Code cleaning.
+
 ## *Version 0.10.1*
 
 - News:
@@ -9,7 +14,9 @@
     - Function **repc**: Center the columns of a matrix by group.
 
 - Modifications
-    - Output of function **tab** has been modified due to updates in **StatsBase.countmap**. 
+    - Output of function **tab** has been modified due to updates in **StatsBase.countmap**.
+        Function **tab** being used as internal function by many discrimination functions, the update 
+        generated breaking codes. 
     - Code cleaning.
 
 
