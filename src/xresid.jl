@@ -6,7 +6,7 @@ Residual matrix from a bilinear model (e.g., PCA).
 * `X` : X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
     model `object`, i.e. before centering and eventual scaling.
 Keyword arguments:
-* `nlv` : Nb. components (PCs or LVs) to consider. If `nothing`, it is the maximum nb. of components
+* `nlv` : Nb. components (PCs or LVs) to consider. By default, it is the maximum nb. of components
     defined in model `object`.
 
 Compute the residual matrix:
