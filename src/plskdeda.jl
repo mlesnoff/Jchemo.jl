@@ -7,7 +7,7 @@ KDE-DA on PLS latent variables (PLS-KDEDA).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
+* `nlv` : Nb. latent variables (LVs) to compute. Must be integer >= 1.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).

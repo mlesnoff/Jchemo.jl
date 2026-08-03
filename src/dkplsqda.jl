@@ -7,7 +7,7 @@ DKPLS-QDA.
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to compute. Must be >= 1.
+* `nlv` : Nb. latent variables (LVs) to compute. Must be integer >= 1.
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective 
     functions `krbf` and `kpol` for their keyword arguments.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 

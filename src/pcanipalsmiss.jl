@@ -48,7 +48,7 @@ fitm.V' * fitm.V
 ## Impute missing data in X
 model = pcanipalsmiss(; nlv = 2, gs = true) ;
 fit!(model, X)
-Xfit = xfit(model.fitm)
+Xfit = xfit(model.fitm, X)
 s = ismissing.(X)
 X_imp = copy(X)
 X_imp[s] .= Xfit[s]

@@ -1,8 +1,10 @@
 """
-    outsd(fitm)
+    outsd(fitm; nlv::Int = nco(fitm.T))
 Compute outlierness from PCA/PLS score distance (SD).
 * `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
+Keyword arguments:
+* `nlv` : Nb. latent variables (LVs) to consider. Must be integer >= 1.
 
 This function computes outlierness `d` of each observation (row) of `X` by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan fitted by the model (e.g., PCA or PLS) and the 
@@ -32,16 +34,16 @@ model = pcaout(; nlv = 3)
 fit!(model, X) 
 fitm = model.fitm ;
 res = outsd(fitm) ;
+#res = outsd(fitm; nlv = 2)
 @names res
 f, ax = plotxy(1:n, res.d, string.(typ); xlabel = "Observation index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```
 """
-function outsd(fitm)
-    T = copy(fitm.T)
-    Q = eltype(T)
-    nlv = nco(T)
+function outsd(fitm; nlv::Int = nco(fitm.T))
+    Q = eltype(fitm.T)
+    T = copy(vcol(fitm.T, 1:nlv))
     tscales = colstd(T, fitm.weights)
     fscale!(T, tscales)
     centr = zeros(Q, nlv)     # the center is defined as 0

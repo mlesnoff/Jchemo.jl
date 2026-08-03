@@ -1,13 +1,13 @@
 """
-    xfit(object)
-    xfit(object, X, nlv::Int)
-    xfit!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
+    xfit(object, X, nlv::Int = nco(object.T))
+    xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
 Fit a matrix from a bilinear model (e.g., PCA).
 * `object` : The fitted bilinear model.
-* `X` : New X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
+* `X` : X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
     model `object`, i.e. before centering and eventual scaling.
 Keyword arguments:
-* `nlv` : Nb. components (PCs or LVs) to consider. If `nothing`, it is the maximum nb. of components.
+* `nlv` : Nb. components (PCs or LVs) to consider. If `nothing`, it is the maximum nb. of components
+    defined in model `object`.
 
 Compute an approximate of matrix `X` from a bilinear model (e.g., PCA or PLS) fitted on `X`. The computed approximate X 
 is returned in the original location and scale of the X-data used to fit model `object`.
@@ -27,20 +27,23 @@ y = Y[:, 1]
 ynew = Ynew[:, 1]
 weights = pweight(rand(n))
 
+#### Pca
+
 nlv = 2 
 scal = :none
-#scal = std
+#scal = :std
 model = pcasvd(; nlv, scal) ;
 fit!(model, X)
 fitm = model.fitm ;
-@head xfit(fitm)
-xfit(fitm, Xnew)
-xfit(fitm, Xnew, 0)
-xfit(fitm, Xnew, 1)
+@head xfit(fitm, X)
+@head xfit(fitm, X, 1)
+@head xfit(fitm, X, 0)
 fitm.xmeans
+xfit(fitm, Xnew)
+xfit(fitm, Xnew, 1)
 
 @head X
-@head xfit(fitm) + xresid(fitm, X)
+@head xfit(fitm, X) + xresid(fitm, X)
 @head xfit(fitm, X, 1) + xresid(fitm, X, 1)
 
 @head Xnew
@@ -49,23 +52,26 @@ fitm.xmeans
 model = pcasvd(; nlv = min(n, p), scal) 
 fit!(model, X)
 fitm = model.fitm ;
-@head xfit(fitm) 
 @head xfit(fitm, X)
 @head xresid(fitm, X)
 
+#### Pls
+
 nlv = 3
 scal = :none
-#scal = std
+#scal = :std
 model = plskern(; nlv, scal)
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
-@head xfit(fitm)
+@head xfit(fitm, X)
+@head xfit(fitm, X, 1)
+@head xfit(fitm, X, 0)
+colmean(X, weights)
 xfit(fitm, Xnew)
-xfit(fitm, Xnew, 0)
-xfit(fitm, Xnew, 1)
+@head xfit(fitm, Xnew, 1)
 
 @head X
-@head xfit(fitm) + xresid(fitm, X)
+@head xfit(fitm, X) + xresid(fitm, X)
 @head xfit(fitm, X, 1) + xresid(fitm, X, 1)
 
 @head Xnew
@@ -74,37 +80,25 @@ xfit(fitm, Xnew, 1)
 model = plskern(; nlv = min(n, p), scal) 
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
-@head xfit(fitm) 
-@head xfit(fitm, Xnew)
-@head xresid(fitm, Xnew)
+@head xfit(fitm, X) 
+@head xresid(fitm, X) 
+xfit(fitm, Xnew)
+xresid(fitm, Xnew)
 ```
 """ 
-function xfit(object)
-    X = object.T * object.V'
-    ## Coming back to the original scale
-    fscale!(X, 1 ./ object.xscales)    
-    fcenter!(X, -object.xmeans)
-    ## End
-    X
+function xfit(object, X, nlv::Int = nco(object.T))  
+    xfit!(object, copy(ensure_mat(X)), nlv)
 end
 
-xfit(object, X) = xfit(object, X, object.par.nlv)
-
-function xfit(object, X, nlv::Int) 
-    X = ensure_mat(X) 
-    xfit!(object, copy(X), nlv)
-end
-
-function xfit!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
-    a = object.par.nlv
-    nlv = isnothing(nlv) ? a : min(nlv, a)
+function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
+    nlv = min(nlv, object.par.nlv)
     if nlv == 0
         @inbounds for i in axes(X, 1)
             X[i, :] .= object.xmeans
         end
     else
-        V = vcol(object.V, 1:nlv)
-        mul!(X, transf(object, X, nlv), V')
+        T = transf(object, X, nlv)
+        mul!(X, T, vcol(object.V, 1:nlv)')
         ## Coming back to the original scale
         fscale!(X, 1 ./ object.xscales)    
         fcenter!(X, -object.xmeans)
