@@ -6,8 +6,8 @@ One-class classification (OCC) using a consensus between PCA/PLS score and ortho
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
-* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+* `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
 * `fscal` : Function used to scale SD and OD in the consensus (by default, this is `stdv`; see function `outsdod`). 

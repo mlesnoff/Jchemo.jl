@@ -6,8 +6,9 @@ One-class classification (OCC) using PCA/PLS orthognal distance (OD).
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
-* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+Keyword arguments:
+* `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
 OCC using outlierness `d` as defined in function `outod`.
@@ -50,9 +51,9 @@ ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
 ntot = ntrain_in + ntest_in + ntest_out
 (ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = fill("in", ntrain_in)
-ytest_in = fill("in", ntest_in)
-ytest_out = fill("out", ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
 
 #### Fit a preliminary Pca model on the training data 'in'
 nlv = 15
@@ -69,16 +70,17 @@ Ttest_in = transf(model0, Xtest_in)
 Ttest_out = transf(model0, Xtest_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Ttrain_in, Ttest_in, Ttest_out)
-group = vcat(fill("Train_in", ntrain_in), fill("Test_in", ntest_in), fill("Test_out", ntest_out))
+group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 i = 1
-plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 'in' 
 model = occod(cri = 2.5)
-#model = occod(cri = 4.)
+#model = occod(typcut = :std, cri = 2.5)
 #model = occod(typcut = :q, alpha = .01)
+#model = occod(cri = 2.5, nlv = 5)
 fit!(model, fitm0, Xtrain_in)
 @names model 
 fitm = model.fitm ;
@@ -114,7 +116,7 @@ conf(pred, ytest_out).cnt
 
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
-f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
+f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
     title = "OD", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
@@ -126,13 +128,20 @@ function occod(fitm, X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     par = recovkw(ParOcc{Q}, kwargs).par 
-    @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
+    @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
-    d = outod(fitm, X).d
-    if par.typcut == :mad
-        cutoff = median(d) + par.cri * madv(d)
+    if isnothing(par.nlv)
+        par.nlv = nco(fitm.T)
+    else
+        par.nlv = min(par.nlv, nco(fitm.T))
+    end
+    d = outod(fitm, X; par.nlv).d
+    if par.typcut == :std
+        cutoff = meanv(d) + par.cri * stdv(d)    
+    elseif par.typcut == :mad
+        cutoff = medv(d) + par.cri * madv(d)
     elseif par.typcut == :q
-        cutoff = quantile(d, 1 - par.alpha)
+        cutoff = quantv(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
     d = DataFrame(
@@ -152,7 +161,7 @@ Compute predictions from a fitted model.
 function predict(object::Occod, X)
     m = nro(X)
     ## Orthogonal distance
-    E = xresid(object.fitm, X)
+    E = xresid(object.fitm, X, object.par.nlv)
     d = rownorm(E)
     ## End
     d = DataFrame(

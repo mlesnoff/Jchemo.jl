@@ -3,6 +3,8 @@
 ## *Version 0.10.2 dev*
 
 - Modifications
+    - Functions **outsd**, **outod**, **outsdod**, **occsd**, **occod**, **occsdod**, 
+        **occdds**: new argument 'nlv' is allowed.   
     - Code cleaning.
 
 ## *Version 0.10.1*
