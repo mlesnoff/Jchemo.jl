@@ -1,5 +1,5 @@
 """
-    outsdod(object, X; nlv::Int = nco(object.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
+    outsdod(object, X; nlv::Int = nco(object.T), gamma::Q = .5, fscal::Function = stdv) where Q <: Float
 Compute outlierness from PCA/PLS score (SD) and orthogonal (OD) distances.
 * `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).

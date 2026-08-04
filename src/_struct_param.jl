@@ -623,12 +623,14 @@ Base.@kwdef mutable struct ParOccstah{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParOcc{Q <: Float}    # occsd, occod
+    nlv::Union{Nothing, Int} = nothing
     typcut::Symbol = :mad   
     cri::Q = 3.
     alpha::Q = .025 
 end 
 
 Base.@kwdef mutable struct ParOccsdod{Q <: Float}
+    nlv::Union{Nothing, Int} = nothing
     typcut::Symbol = :mad   
     cri::Q = 3.
     alpha::Q = .025 
@@ -637,6 +639,7 @@ Base.@kwdef mutable struct ParOccsdod{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParOccdds{Q <: Float}
+    nlv::Union{Nothing, Int} = nothing
     fcentr::Function = meanv
     fscal::Function = stdv
     alpha::Q = .05 

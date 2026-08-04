@@ -5,8 +5,8 @@ One-class classification (OCC) using PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference (= target) class.
 Keyword arguments:
-* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
-* `cri` : When `typcut` = `:mad`, a constant. See thereafter.
+* `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
+* `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 
 OCC using outlierness `d` as defined in function `outsd`. 
@@ -14,6 +14,7 @@ OCC using outlierness `d` as defined in function `outsd`.
 If a new observation has d higher than a given `cutoff`, the observation is assumed to not belong to the training 
 (= reference = target) class. The `cutoff` is computed with non-parametric heuristics, as follows. Noting `d` the vector 
 of outliernesses computed on the training class:
+* If `typcut` = `:std`, then `cutoff` = MEAN(`d`) + `cri` * STD(`d`). 
 * If `typcut` = `:mad`, then `cutoff` = MED(`d`) + `cri` * MAD(`d`). 
 * If `typcut` = `:q`, then `cutoff` is computed by the empirical quantile of `d` for risk-I = `alpha`.
 Approximate parametric cutoffs have been proposed in the literature (e.g., Nomikos & MacGregor 1995, Hubert et al. 2005,
@@ -155,25 +156,29 @@ occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 function occsd(fitm; kwargs...)
     Q = eltype(fitm.T)
     par = recovkw(ParOcc{Q}, kwargs).par
-    @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
+    @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     if isnothing(par.nlv)
-        nlv = nco(fitm.T)
+        par.nlv = nco(fitm.T)
+    else
+        par.nlv = min(par.nlv, nco(fitm.T))
     end
-    res = outsd(fitm; nlv)
+    res = outsd(fitm; par.nlv)
     d = res.d
     tscales = res.tscales
-    if par.typcut == :mad
-        cutoff = median(d) + par.cri * madv(d)
+    if par.typcut == :std
+        cutoff = meanv(d) + par.cri * stdv(d)    
+    elseif par.typcut == :mad
+        cutoff = medv(d) + par.cri * madv(d)
     elseif par.typcut == :q
-        cutoff = quantile(d, 1 - par.alpha)
+        cutoff = quantv(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
     d = DataFrame(
         d = d, 
         dstand = d / cutoff, 
         pval = pval(e_cdf, d), 
-        gh = d.^2 / nlv
+        gh = d.^2 / par.nlv
         )
     Occsd(d, fitm, tscales, e_cdf, cutoff, par)
 end
@@ -185,12 +190,13 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occsd, X)
-    T = transf(object.fitm, X)
+    nlv = object.par.nlv
+    T = transf(object.fitm, X, nlv)
+    m = nro(T)
     Q = eltype(T)
-    m, nlv = size(T)
     ## Mahalanobis distance to center (zero)
     fscale!(T, object.tscales)
-    d2 = vec(eucl2(T, zeros(Q, nlv)'))
+    d2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     d = sqrt.(d2)
     ## End
     d = DataFrame(
