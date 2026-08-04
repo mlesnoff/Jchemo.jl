@@ -134,7 +134,6 @@ function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbo
         leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Real
     x = vec(x)
     y = vec(y)
-    group = vec(group)
     lev = sort(unique(group))
     lab = string.(lev)
     f = Figure(; size)

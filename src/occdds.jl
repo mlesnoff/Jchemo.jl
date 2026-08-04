@@ -6,6 +6,8 @@ One-class classification (OCC) using DD-Simca.
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
+* `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
+    defined in model `object`.
 * `fcentr` : A function that computes the centers of the empirical distributions of the squared score and orthogonal 
     distances (SD^2 and OD^2). By default, `fcentr = meanv`.
 * `fscal` : A function that computes the scales of the empirical distributions of SD^2 and OD^2. By default, `fscal = stdv`.
@@ -204,9 +206,13 @@ function occdds(fitm, X; kwargs...)
     par = recovkw(ParOccdds{Q}, kwargs).par 
     alpha = par.alpha
     @assert 0 <= alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."    
-    nlv = nco(fitm.T) 
-    sd = outsd(fitm)
-    od = outod(fitm, X)
+    if isnothing(par.nlv)
+        par.nlv = nco(fitm.T)
+    else
+        par.nlv = min(par.nlv, nco(fitm.T))
+    end
+    sd = outsd(fitm; par.nlv)
+    od = outod(fitm, X; par.nlv)
     alpha = par.alpha
     ## SD2
     d = sd.d.^2 
@@ -239,7 +245,7 @@ function occdds(fitm, X; kwargs...)
         od2 = od2.d,
         sd2mu = sd2.d / sd2.mu,
         od2mu = od2.d / od2.mu,
-        gh = sd2.d / nlv
+        gh = sd2.d / par.nlv
         )
     ## Coefs for graphic SD2/mu - OD2/mu
     a = 1 / od2.nu * cutoff 
@@ -256,16 +262,16 @@ Compute predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Occdds, X)
-    nlv = nco(object.fitm.T)
+    nlv = object.par.nlv
     tscales = object.sd2.tscales    
     ## SD
-    T = transf(object.fitm, X)
+    T = transf(object.fitm, X, nlv)
     Q = eltype(T)
-    m, nlv = size(T)
+    m = nro(T)
     fscale!(T, tscales)
-    sd2 = vec(eucl2(T, zeros(Q, nlv)'))
+    sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     ## OD
-    E = xresid(object.fitm, X)
+    E = xresid(object.fitm, X, nlv)
     od2 = rownorm2(E)
     ## Consensus
     d = object.sd2.nu / object.sd2.mu * sd2 + object.od2.nu / object.od2.mu * od2

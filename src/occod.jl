@@ -6,7 +6,8 @@ One-class classification (OCC) using PCA/PLS orthognal distance (OD).
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
-Keyword arguments:
+* `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
+    defined in model `object`.
 * `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -80,7 +81,7 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Ty
 model = occod(cri = 2.5)
 #model = occod(typcut = :std, cri = 2.5)
 #model = occod(typcut = :q, alpha = .01)
-#model = occod(cri = 2.5, nlv = 5)
+#model = occod(nlv = 5, cri = 2.5)
 fit!(model, fitm0, Xtrain_in)
 @names model 
 fitm = model.fitm ;

@@ -6,6 +6,8 @@ One-class classification (OCC) using a consensus between PCA/PLS score and ortho
     the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
+* `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
+    defined in model `object`.
 * `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -14,7 +16,7 @@ Keyword arguments:
 
 OCC using outlierness `d` as defined in function `outsdod`.
 
-See function `occsd`for details.  
+See function `occsd` for details on the cutoff types and the outputs.
 
 ## Examples
 ```julia
@@ -52,9 +54,9 @@ ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
 ntot = ntrain_in + ntest_in + ntest_out
 (ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = fill("in", ntrain_in)
-ytest_in = fill("in", ntest_in)
-ytest_out = fill("out", ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
 
 #### Fit a preliminary Pca model on the training data 'in'
 nlv = 15
@@ -71,15 +73,17 @@ Ttest_in = transf(model0, Xtest_in)
 Ttest_out = transf(model0, Xtest_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Ttrain_in, Ttest_in, Ttest_out)
-group = vcat(fill("Train_in", ntrain_in), fill("Test_in", ntest_in), fill("Test_out", ntest_out))
+group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 i = 1
-plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 'in' 
 model = occsdod(cri = 2.5)
-#model = occsdod(cri = 2.5, fscal = stdv)
+#model = occsdod(typcut = :q, alpha = .01)
+#model = occsdod(typcut = :std, cri = 2.5, fscal = stdv)
+#model = occsdod(nlv = 5, cri = 2.5)
 fit!(model, fitm0, Xtrain_in)
 @names model 
 fitm = model.fitm ;
@@ -127,23 +131,21 @@ conf(pred, ytest_out).cnt
 
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
-f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
+f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
     title = "OD", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
 d = dtrain_in.d
-sdsigma = dtrain_in.sdsigma
-odsigma = dtrain_in.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sdsigma, odsigma; xlabel = "SD / sigma", ylabel = "OD / sigma")
+f, ax = plotxy(sdsigma, odsigma; size = (600, 300), xlabel = "SD / sigma", ylabel = "OD / sigma")
 scatter!(ax, sdsigma[s], odsigma[s]; color = :red, label = "Train-In Extreme")
 scatter!(ax, dtest_in.sdsigma, dtest_in.odsigma; color = (:purple, .5), label = "Test-In")
 scatter!(ax, dtest_out.sdsigma, dtest_out.odsigma; color = :green, label = "Test-Out")
 ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
-axislegend(ax; position = :rb)
+f[1, 2] = Legend(f, ax, "Group"; framevisible = false)
 f
 ```
 """ 
@@ -154,19 +156,26 @@ function occsdod(fitm, X; kwargs...)
     Q = eltype(X)
     par = recovkw(ParOccsdod{Q}, kwargs).par 
     gamma = par.gamma
-    @assert 0 <= gamma <= 1 "Argument 'gamma' must ∈ [0, 1]."   
-    nlv = nco(fitm.T) 
-    sd = outsd(fitm)
-    od = outod(fitm, X)
-    sdod = outsdod(fitm, X; gamma, fscal = par.fscal)
+    @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
+    @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
+    if isnothing(par.nlv)
+        par.nlv = nco(fitm.T)
+    else
+        par.nlv = min(par.nlv, nco(fitm.T))
+    end
+    sd = outsd(fitm; par.nlv)
+    od = outod(fitm, X; par.nlv)
+    sdod = outsdod(fitm, X; par.nlv, gamma, fscal = par.fscal)
     sigma_sd = sdod.sigma_sd 
     sigma_od = sdod.sigma_od
     ##
     d = sdod.d
-    if par.typcut == :mad
-        cutoff = median(d) + par.cri * madv(d)
+    if par.typcut == :std
+        cutoff = meanv(d) + par.cri * stdv(d)    
+    elseif par.typcut == :mad
+        cutoff = medv(d) + par.cri * madv(d)
     elseif par.typcut == :q
-        cutoff = quantile(d, 1 - par.alpha)
+        cutoff = quantv(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
     d = DataFrame(
@@ -177,7 +186,7 @@ function occsdod(fitm, X; kwargs...)
         od = od.d,
         sdsigma = sd.d /  sigma_sd,
         odsigma = od.d / sigma_od,
-        gh = sd.d.^2 / nlv
+        gh = sd.d.^2 / par.nlv
         )
     ## Coefs for graphic SD/sigma - OD/sigma
     #a = cutoff * sigma_od / (1 - gamma)
@@ -197,19 +206,20 @@ Compute predictions from a fitted model.
 """ 
 function predict(object::Occsdod, X)
     X = ensure_mat(X)
-    tscales = object.sd.tscales    
+    nlv = object.par.nlv
     gamma = object.par.gamma 
+    tscales = object.sd.tscales    
     sigma_sd = object.sdod.sigma_sd
     sigma_od = object.sdod.sigma_od
     ## SD
-    T = transf(object.fitm, X)
+    T = transf(object.fitm, X, nlv)
     Q = eltype(T)
-    m, nlv = size(T)
+    m = nro(T)
     fscale!(T, tscales)
-    sd2 = vec(eucl2(T, zeros(Q, nlv)'))
+    sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     sd = sqrt.(sd2)
     ## OD
-    E = xresid(object.fitm, X)
+    E = xresid(object.fitm, X, nlv)
     od = rownorm(E)
     ## Consensus
     d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od

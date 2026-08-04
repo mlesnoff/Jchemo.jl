@@ -5,6 +5,8 @@ One-class classification (OCC) using PCA/PLS score distance (SD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
     the training data assumed to represent the reference (= target) class.
 Keyword arguments:
+* `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
+    defined in model `object`.
 * `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -65,7 +67,7 @@ Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
 #### Build the data used in the example
-## The training reference class (= target = 'in') is "EHH" 
+## Training reference class (= target = 'in') is "EHH" 
 s = yclatrain .== "EHH"
 Xtrain_in = Xtrain[s, :]    
 ntrain_in = nro(Xtrain_in)
@@ -80,9 +82,9 @@ ntest_out = nro(Xtest_out)
 ## Only used to compute error rates
 ntot = ntrain_in + ntest_in + ntest_out
 (ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = fill("in", ntrain_in)
-ytest_in = fill("in", ntest_in)
-ytest_out = fill("out", ntest_out)
+ytrain_in = repeat(["in"], ntrain_in)
+ytest_in = repeat(["in"], ntest_in)
+ytest_out = repeat(["out"], ntest_out)
 
 #### Fit a preliminary Pca model on the training data 'in'
 nlv = 15
@@ -94,22 +96,22 @@ res = summary(model0, Xtrain_in).explvarx
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
 Ttrain_in = fitm0.T
 
-#### Project the test observations in the fitted score space 'in'
+#### To describe the data, project the test observations in the fitted score space 'in'
 Ttest_in = transf(model0, Xtest_in)
 Ttest_out = transf(model0, Xtest_out)
-
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Ttrain_in, Ttest_in, Ttest_out)
-group = vcat(fill("Train_in", ntrain_in), fill("Test_in", ntest_in), fill("Test_out", ntest_out))
+group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
 color = [:purple, (:green, .7), (:red, .3)]
 i = 1
-plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 'in' 
 model = occsd(cri = 2.5)
-#model = occsd(typcut = :mad, cri = 4.)
+#model = occsd(typcut = :std, cri = 2.5)
 #model = occsd(typcut = :q, alpha = .01)
+#model = occsd(nlv = 5, cri = 2.5)
 fit!(model, fitm0) 
 @names model 
 fitm = model.fitm ;
@@ -145,7 +147,7 @@ conf(pred, ytest_out).cnt
 
 d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
 color = [:purple, (:green, .7), (:red, .3)]
-f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
+f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
     title = "SD", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
