@@ -1,10 +1,11 @@
 """
-    outsd(fitm; nlv::Int = nco(fitm.T))
+    outsd(object; nlv::Int = nco(object.T))
 Compute outlierness from PCA/PLS score distance (SD).
-* `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+* `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
 Keyword arguments:
-* `nlv` : Nb. latent variables (LVs) to consider. Must be integer >= 1.
+* `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
+    defined in model `object`.
 
 This function computes outlierness `d` of each observation (row) of `X` by its score distance (SD), ie. the Mahalanobis 
 distance between the projection of the observation on the score plan fitted by the model (e.g., PCA or PLS) and the 
@@ -41,10 +42,11 @@ text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```
 """
-function outsd(fitm; nlv::Int = nco(fitm.T))
-    Q = eltype(fitm.T)
-    T = vcol(fitm.T, 1:nlv)
-    tscales = colstd(T, fitm.weights)
+function outsd(object; nlv::Int = nco(object.T))
+    nlv = min(nlv, nco(object.T))
+    T = vcol(object.T, 1:nlv)
+    Q = eltype(T)
+    tscales = colstd(T, object.weights)
     centr = zeros(Q, 1, nlv)     # the center is defined as 0
     d2 = vec(eucl2(fscale(T, tscales), centr))   
     (d = sqrt.(d2), tscales)

@@ -157,10 +157,12 @@ function occsd(fitm; kwargs...)
     par = recovkw(ParOcc{Q}, kwargs).par
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
-    res = outsd(fitm)
+    if isnothing(par.nlv)
+        nlv = nco(fitm.T)
+    end
+    res = outsd(fitm; nlv)
     d = res.d
     tscales = res.tscales
-    nlv = nco(fitm.T)
     if par.typcut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.typcut == :q

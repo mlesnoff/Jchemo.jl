@@ -2,11 +2,12 @@
     xresid(object, X, nlv::Int = nco(object.T))
     xresid!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
 Residual matrix from a bilinear model (e.g., PCA).
-* `object` : The fitted model.
+* `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+    `pcasvd` or `plskern`).
 * `X` : X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
     model `object`, i.e. before centering and eventual scaling.
 Keyword arguments:
-* `nlv` : Nb. components (PCs or LVs) to consider. By default, it is the maximum nb. of components
+* `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
     defined in model `object`.
 
 Compute the residual matrix:
@@ -19,7 +20,7 @@ function xresid(object, X, nlv::Int = nco(object.T))
 end
 
 function xresid!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
-    nlv = min(nlv, object.par.nlv)
+    nlv = min(nlv, nco(object.T))
     X .-= xfit(object, X, nlv)
     X
 end
