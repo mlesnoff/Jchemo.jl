@@ -20,7 +20,7 @@ using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
 db = joinpath(mypath, "data", "octane.jld2")
 @load db dat
-X = dat.X
+@head X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
@@ -36,17 +36,16 @@ fitm = model.fitm ;
 res = outsd(fitm) ;
 #res = outsd(fitm; nlv = 2)
 @names res
-f, ax = plotxy(1:n, res.d, string.(typ); xlabel = "Observation index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, typ, xlabel = "Observation index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```
 """
 function outsd(fitm; nlv::Int = nco(fitm.T))
     Q = eltype(fitm.T)
-    T = copy(vcol(fitm.T, 1:nlv))
+    T = vcol(fitm.T, 1:nlv)
     tscales = colstd(T, fitm.weights)
-    fscale!(T, tscales)
-    centr = zeros(Q, nlv)     # the center is defined as 0
-    d2 = vec(eucl2(T, centr'))   
+    centr = zeros(Q, 1, nlv)     # the center is defined as 0
+    d2 = vec(eucl2(fscale(T, tscales), centr))   
     (d = sqrt.(d2), tscales)
 end
