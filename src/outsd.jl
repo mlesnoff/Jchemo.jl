@@ -27,8 +27,8 @@ wl = parse.(Float64, wlst)
 n, p = size(X)
 ## Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
-typ = zeros(Int, n)
-typ[s] .= 1
+typ = fill("0", n)
+typ[s] .= "1"
 #plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
 model = pcaout(; nlv = 3)
