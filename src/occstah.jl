@@ -41,68 +41,71 @@ Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
 #### Build the data used in the example
-## Training reference class (= target = 'in') is "EHH" 
+## "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
-Xtrain_in = Xtrain[s, :]    
-ntrain_in = nro(Xtrain_in)
-## Observations 'in' to be predicted (should be predicted 'in')
+Xref = Xtrain[s, :]    
+nref = nro(Xref)
+## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
-Xtest_in = Xtest[s, :] 
-ntest_in = nro(Xtest_in)
-## Observations 'out' ("PEE") to be predicted (should be predicted 'out')
+Xnew_ref = Xtest[s, :] 
+nnew_ref = nro(Xnew_ref)
+## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
-Xtest_out = Xtest[s, :] 
-ntest_out = nro(Xtest_out)
-## Only used to compute error rates
-ntot = ntrain_in + ntest_in + ntest_out
-(ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = fill("in", ntrain_in)
-ytest_in = fill("in", ntest_in)
-ytest_out = fill("out", ntest_out)
+Xnew_out = Xtest[s, :] 
+nnew_out = nro(Xnew_out)
+
+## Only used to compute classification error rates
+ntot = nref + nnew_ref + nnew_out
+(ntot = ntot, nref, nnew_ref, nnew_out)
+yref = repeat(["in"], nref)
+ynew_ref = repeat(["in"], nnew_ref)
+ynew_out = repeat(["out"], nnew_out)
 
 #### Fit the Occ model
 model = occstah(; nlv = 5000, cri = 2., scal = :std)
 #model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
-fit!(model, Xtrain_in)
+fit!(model, Xref)
 @names model 
 fitm = model.fitm ;
 @names fitm 
-@head dtrain_in = fitm.d
+@head dref = fitm.d
 cutoff = fitm.cutoff
 
-d = dtrain_in.dstand
-f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index",
-    title = "Stahel-Donoho", ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
+d = dref.dstand
 s = d .> 1
-scatter!(ax, (1:length(d))[s], d[s]; color = :red)
+f, ax = plotxy(1:length(d), d;color = (:red, .3), size = (500, 300), title = "Train (reference class)",  
+    xlabel = "Observation index", ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+scatter!(ax, (1:length(d))[s], d[s]; color = :red, label = "Extreme")
+f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
-#### Predict the test observations 'in'
-res = predict(model, Xtest_in) ;
+#### Predict the new reference observations
+res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
-@head dtest_in = res.d
+@head dnew_ref = res.d
 tab(pred)
-errp(pred, ytest_in)
-conf(pred, ytest_in).cnt
+errp(pred, ynew_ref)
+conf(pred, ynew_ref).cnt
 
-#### Predict the test observations 'out'
-res = predict(model, Xtest_out) ;
+#### Predict the new observations 'out'
+res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred
-@head dtest_out = res.d
+@head dnew_out = res.d
 tab(pred)
-errp(pred, ytest_out)
-conf(pred, ytest_out).cnt
+errp(pred, ynew_out)
+conf(pred, ynew_out).cnt
 
-d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
-group = vcat(fill("Train_in", ntrain_in), fill("Test_in", ntest_in), fill("Test_out", ntest_out))
-color = [:purple, (:green, .7), (:red, .3)]
-f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
+d = vcat(dref.dstand, dnew_ref.dstand, dnew_out.dstand)
+group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+color = [(:red, .3), (:green, .5), :purple]
+f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
     title = "Stahel-Donoho", xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
+
 ```
 """ 
 occstah(; kwargs...) = JchemoModel(occstah, nothing, kwargs)

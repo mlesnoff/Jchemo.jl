@@ -1,12 +1,12 @@
 """
-    outsdod(object, X; nlv::Int = nco(object.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
+    outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
 Compute outlierness from PCA/PLS score (SD) and orthogonal (OD) distances.
-* `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+* `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
-* `X` : X-data (n, p) on which was fitted model `object`.
+* `X` : X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `object`.
+    defined in model `fitm`.
 * `gamma` : Proportion (∈ [0, 1]) of scaled SD in the consensus (see below).
 * `fscal` : Function used to scale SD and OD in the consensus.
 
@@ -18,11 +18,11 @@ the consensus.
 
 See functions `outsd` and `outod` for details on SD and OD, and function `outod` for examples.
 """ 
-function outsdod(object, X; nlv::Int = nco(object.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
+function outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
     X = ensure_mat(X)
     gamma = Q(gamma)
-    sd = outsd(object; nlv).d
-    od = outod(object, X; nlv).d
+    sd = outsd(fitm; nlv).d
+    od = outod(fitm, X; nlv).d
     sigma_sd = fscal(sd)
     sigma_od = fscal(od) 
     d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od

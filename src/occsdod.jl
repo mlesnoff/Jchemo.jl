@@ -2,8 +2,8 @@
     occsdod(; kwargs...)
     occsdod(object, X; kwargs...)
 One-class classification (OCC) using a consensus between PCA/PLS score and orthogonal distances (SD and OD).
-* `fitm` : The preliminary model (e.g., object `fitm` returned by function `pcasvd`) that was fitted on 
-    the training data assumed to represent the reference (= target) class.
+* `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+    that was fitted on the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
@@ -39,113 +39,117 @@ Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
 #### Build the data used in the example
-## Training reference class (= target = 'in') is "EHH" 
+## "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
-Xtrain_in = Xtrain[s, :]    
-ntrain_in = nro(Xtrain_in)
-## Observations 'in' to be predicted (should be predicted 'in')
+Xref = Xtrain[s, :]    
+nref = nro(Xref)
+## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
-Xtest_in = Xtest[s, :] 
-ntest_in = nro(Xtest_in)
-## Observations 'out' ("PEE") to be predicted (should be predicted 'out')
+Xnew_ref = Xtest[s, :] 
+nnew_ref = nro(Xnew_ref)
+## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
-Xtest_out = Xtest[s, :] 
-ntest_out = nro(Xtest_out)
-## Only used to compute error rates
-ntot = ntrain_in + ntest_in + ntest_out
-(ntot = ntot, ntrain_in, ntest_in, ntest_out)
-ytrain_in = repeat(["in"], ntrain_in)
-ytest_in = repeat(["in"], ntest_in)
-ytest_out = repeat(["out"], ntest_out)
+Xnew_out = Xtest[s, :] 
+nnew_out = nro(Xnew_out)
 
-#### Fit a preliminary Pca model on the training data 'in'
+## Only used to compute classification error rates
+ntot = nref + nnew_ref + nnew_out
+(ntot = ntot, nref, nnew_ref, nnew_out)
+yref = repeat(["in"], nref)
+ynew_ref = repeat(["in"], nnew_ref)
+ynew_out = repeat(["out"], nnew_out)
+
+#### Fit a preliminary Pca model on the training reference data
 nlv = 15
 model0 = pcasvd(; nlv) 
 #model0 = pcaout(; nlv) 
-fit!(model0, Xtrain_in) 
+fit!(model0, Xref) 
 fitm0 = model0.fitm ;
-res = summary(model0, Xtrain_in).explvarx 
+res = summary(model0, Xref).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
-Ttrain_in = fitm0.T
+Tref = fitm0.T
 
-#### To describe the data, project the test observations in the fitted score space 'in'
-Ttest_in = transf(model0, Xtest_in)
-Ttest_out = transf(model0, Xtest_out)
+#### To describe the data, 
+#### project the test observations in the fitted score space
+Tnew_ref = transf(model0, Xnew_ref)
+Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
-T = vcat(Ttrain_in, Ttest_in, Ttest_out)
-group = vcat(repeat(["Train_in"], ntrain_in), repeat(["Test_in"], ntest_in), repeat(["Test_out"], ntest_out))
-color = [:purple, (:green, .7), (:red, .3)]
+T = vcat(Tref, Tnew_ref, Tnew_out)
+group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+color = [(:red, .3), (:green, .5), :purple]
 i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
-#### Fit the Occ model based on the fitted score space 'in' 
+#### Fit the Occ model based on the fitted score space 
 model = occsdod(cri = 2.5)
 #model = occsdod(typcut = :q, alpha = .01)
 #model = occsdod(typcut = :std, cri = 2.5, fscal = stdv)
 #model = occsdod(nlv = 5, cri = 2.5)
-fit!(model, fitm0, Xtrain_in)
+fit!(model, fitm0, Xref)
 @names model 
 fitm = model.fitm ;
 @names fitm 
-@head dtrain_in = fitm.d
+@head dref = fitm.d
 cutoff = fitm.cutoff
 
-d = dtrain_in.dstand
-f, ax = plotxy(1:length(d), d; color = (:red, .3), size = (500, 300), xlabel = "Observation index", 
-    ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
+d = dref.dstand
 s = d .> 1
-scatter!(ax, (1:length(d))[s], d[s]; color = :red)
+f, ax = plotxy(1:length(d), d;color = (:red, .3), size = (500, 300), title = "Train (reference class)",  
+    xlabel = "Observation index", ylabel = "Standardized distance")
+hlines!(ax, 1; linestyle = :dot)
+scatter!(ax, (1:length(d))[s], d[s]; color = :red, label = "Extreme")
+f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
-d = dtrain_in.d
-sdsigma = dtrain_in.sdsigma
-odsigma = dtrain_in.odsigma
+d = dref.d
+sdsigma = dref.sdsigma
+odsigma = dref.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sdsigma, odsigma; xlabel = "SD / sigma", ylabel = "OD / sigma")
+f, ax = plotxy(sdsigma, odsigma; color = (:red, .3), title = "Train (reference class)", xlabel = "SD / sigma", 
+    ylabel = "OD / sigma")
 scatter!(ax, sdsigma[s], odsigma[s]; color = :red, label = "Extreme")
 ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
-axislegend(ax; position = :rb)
+f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
-#### Predict the test observations 'in'
-res = predict(model, Xtest_in) ;
+#### Predict the new reference observations
+res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
-@head dtest_in = res.d
+@head dnew_ref = res.d
 tab(pred)
-errp(pred, ytest_in)
-conf(pred, ytest_in).cnt
+errp(pred, ynew_ref)
+conf(pred, ynew_ref).cnt
 
-#### Predict the test observations 'out'
-res = predict(model, Xtest_out) ;
+#### Predict the new observations 'out'
+res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred
-@head dtest_out = res.d
+@head dnew_out = res.d
 tab(pred)
-errp(pred, ytest_out)
-conf(pred, ytest_out).cnt
+errp(pred, ynew_out)
+conf(pred, ynew_out).cnt
 
-d = vcat(dtrain_in.dstand, dtest_in.dstand, dtest_out.dstand)
-color = [:purple, (:green, .7), (:red, .3)]
+d = vcat(dref.dstand, dnew_ref.dstand, dnew_out.dstand)
+color = [(:red, .3), (:green, .5), :purple]
 f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
-    title = "OD", xlabel = "Observation index", ylabel = "Standardized distance")
+    xlabel = "Observation index", ylabel = "Standardized distance")
 hlines!(ax, 1; linestyle = :dot)
 f
 
-d = dtrain_in.d
+d = dref.d
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sdsigma, odsigma; size = (600, 300), xlabel = "SD / sigma", ylabel = "OD / sigma")
-scatter!(ax, sdsigma[s], odsigma[s]; color = :red, label = "Train-In Extreme")
-scatter!(ax, dtest_in.sdsigma, dtest_in.odsigma; color = (:purple, .5), label = "Test-In")
-scatter!(ax, dtest_out.sdsigma, dtest_out.odsigma; color = :green, label = "Test-Out")
+f, ax = plotxy(sdsigma, odsigma; size = (600, 300), color = (:red, .3), xlabel = "SD / sigma", 
+    ylabel = "SD / sigma", label = "1-Train (ref)")
+scatter!(ax, dnew_ref.sdsigma, dnew_ref.odsigma; color = (:green, .5), label = "2-New_ref")
+scatter!(ax, dnew_out.sdsigma, dnew_out.odsigma; color = :purple, label = "3-New_out")
 ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
-f[1, 2] = Legend(f, ax, "Group"; framevisible = false)
+f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f
 ```
 """ 

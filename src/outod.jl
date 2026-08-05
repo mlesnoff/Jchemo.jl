@@ -1,12 +1,12 @@
 """
-    outod(object, X; nlv::Int = nco(object.T))
+    outod(fitm, X; nlv::Int = nco(fitm.T))
 Compute outlierness from PCA/PLS orthogonal distance (OD).
-* `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+* `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
-* `X` : X-data (n, p) on which was fitted model `object`.
+* `X` : X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `object`.
+    defined in model `fitm`.
 
 This function computes outlierness `d` of each observation (row) of `X` by its orthogonal distance (*aka* 'X-residuals'), 
 ie. the Euclidean distance between the observation and its projection to the score plan fitted by the model
@@ -50,9 +50,9 @@ text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```
 """
-function outod(object, X; nlv::Int = nco(object.T))
+function outod(fitm, X; nlv::Int = nco(fitm.T))
     X = ensure_mat(X)
-    E = xresid(object, X, nlv)
+    E = xresid(fitm, X, nlv)
     d = rownorm(E)
     (d = d,)
 end

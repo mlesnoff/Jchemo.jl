@@ -24,7 +24,7 @@ The general principle is in two steps:
     class), or 'in' otherwise. 
 
 The method to compute outlierness is defined in function `outlknn` (see for details). 
-See also function `occsd` for the possible cutoff types and the outputs.
+See function `occknn` for examples, and function `occsd` for the possible cutoff types and the outputs.
 """ 
 occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 
@@ -43,7 +43,7 @@ function occlknn(X; kwargs...)
     if nsamp == n
         s = 1:n
     else
-        s = sample(1:n, nsamp, replace = false)
+        s = sample(MersenneTwister(par.seed), 1:n, nsamp, replace = false)
     end
     vX = vrow(X, s)
     k = min(par.k, n - 1)
