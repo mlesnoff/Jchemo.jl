@@ -73,7 +73,7 @@ imp = res.imp[:, 1]
 imp[imp .< 0] .= 0  # option: negative values are set to 0
 lo = round.(dat.lo)
 f = Figure(size = (650, 300))
-ax = Axis(f[1, 1], xlabel = "Wawelength (nm)", ylabel = "Importance", xticks = lo)
+ax = Axis(f[1, 1]; xlabel = "Wawelength (nm)", ylabel = "Importance", xticks = lo)
 scatter!(ax, dat.avg, imp; color = (:red, .5))
 vlines!(ax, lo; color = :grey, linestyle = :dash, linewidth = 1)
 hlines!(ax, [0]; color = :grey)

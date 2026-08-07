@@ -28,7 +28,7 @@ function plotconf(object; size::Tuple{Int, Int} = (500, 400), cnt::Bool = true, 
     lev = string.(object.lev)
     nlev = length(lev)
     f = Figure(; size)
-    ax = Axis(f[1, 1], xlabel = "Predicted", ylabel = "Observed", xticks = (1:nlev, lev), 
+    ax = Axis(f[1, 1]; xlabel = "Predicted", ylabel = "Observed", xticks = (1:nlev, lev), 
         yticks = (1:nlev, lev[end:-1:1]))
     hm = heatmap!(ax, 1:nlev, 1:nlev, zA)
     Colorbar(f[:, end + 1], hm; label = namval)

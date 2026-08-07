@@ -76,9 +76,9 @@ Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Tref, Tnew_ref, Tnew_out)
 group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
-color = [(:red, .3), (:green, .5), :purple]
+tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
 i = 1
-plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color = color, leg_title = "Type of obs.", 
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
 #### Fit the Occ model based on the fitted score space 
@@ -95,10 +95,11 @@ cutoff = fitm.cutoff
 
 d = dref.dstand
 s = d .> 1
-f, ax = plotxy(1:length(d), d;color = (:red, .3), size = (500, 300), title = "Train (reference class)",  
+tsp = .4 ; color = (:orange, tsp)
+f, ax = plotxy(1:length(d), d; color, size = (500, 300), title = "Train (reference class)",  
     xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
-scatter!(ax, (1:length(d))[s], d[s]; color = :red, label = "Extreme")
+hlines!(ax, 1; color = :grey, linestyle = :dot)
+scatter!(ax, (1:length(d))[s], d[s]; color = color[1], label = "Extreme")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
@@ -108,10 +109,11 @@ odsigma = dref.odsigma
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sdsigma, odsigma; color = (:red, .3), title = "Train (reference class)", xlabel = "SD / sigma", 
+tsp = .4 ; color = (:orange, tsp)
+f, ax = plotxy(sdsigma, odsigma; color, title = "Train (reference class)", xlabel = "SD / sigma", 
     ylabel = "OD / sigma")
-scatter!(ax, sdsigma[s], odsigma[s]; color = :red, label = "Extreme")
-ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
+scatter!(ax, sdsigma[s], odsigma[s]; color = color[1], label = "Extreme")
+ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash)
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
@@ -134,20 +136,21 @@ errp(pred, ynew_out)
 conf(pred, ynew_out).cnt
 
 d = vcat(dref.dstand, dnew_ref.dstand, dnew_out.dstand)
-color = [(:red, .3), (:green, .5), :purple]
-f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
+tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
+f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
     xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
+hlines!(ax, 1; color = :grey, linestyle = :dot)
 f
 
 d = dref.d
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff
-f, ax = plotxy(sdsigma, odsigma; size = (600, 300), color = (:red, .3), xlabel = "SD / sigma", 
+tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
+f, ax = plotxy(sdsigma, odsigma; size = (600, 300), color = color[1], xlabel = "SD / sigma", 
     ylabel = "SD / sigma", label = "1-Train (ref)")
-scatter!(ax, dnew_ref.sdsigma, dnew_ref.odsigma; color = (:green, .5), label = "2-New_ref")
-scatter!(ax, dnew_out.sdsigma, dnew_out.odsigma; color = :purple, label = "3-New_out")
+scatter!(ax, dnew_ref.sdsigma, dnew_ref.odsigma; color = color[2], label = "2-New_ref")
+scatter!(ax, dnew_out.sdsigma, dnew_out.odsigma; color = color[3], label = "3-New_out")
 ablines!(ax, a, b; color = :red, linewidth = .7, linestyle = :dash)
 f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f

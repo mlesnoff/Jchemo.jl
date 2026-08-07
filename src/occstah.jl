@@ -73,10 +73,11 @@ cutoff = fitm.cutoff
 
 d = dref.dstand
 s = d .> 1
-f, ax = plotxy(1:length(d), d;color = (:red, .3), size = (500, 300), title = "Train (reference class)",  
+tsp = .4 ; color = (:orange, tsp)
+f, ax = plotxy(1:length(d), d; color, size = (500, 300), title = "Train (reference class)",  
     xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
-scatter!(ax, (1:length(d))[s], d[s]; color = :red, label = "Extreme")
+hlines!(ax, 1; color = :grey, linestyle = :dot)
+scatter!(ax, (1:length(d))[s], d[s]; color = color[1], label = "Extreme")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
@@ -100,10 +101,10 @@ conf(pred, ynew_out).cnt
 
 d = vcat(dref.dstand, dnew_ref.dstand, dnew_out.dstand)
 group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
-color = [(:red, .3), (:green, .5), :purple]
-f, ax = plotxy(1:length(d), d, group; color = color, size = (500, 300), leg_title = "Type of obs.", 
+tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
+f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
     title = "Stahel-Donoho", xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; linestyle = :dot)
+hlines!(ax, 1; color = :grey, linestyle = :dot)
 f
 
 ```

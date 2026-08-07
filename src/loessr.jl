@@ -43,7 +43,7 @@ model = loessr(span = 1 / 3)
 fit!(model, x, y)
 pred = predict(model, x).pred 
 f = Figure(size = (700, 300))
-ax = Axis(f[1, 1], xlabel = "x", ylabel = "y")
+ax = Axis(f[1, 1]; xlabel = "x", ylabel = "y")
 scatter!(x, y) 
 lines!(ax, x, zy, label = "True model")
 lines!(ax, x, vec(pred); label = "Loess")
