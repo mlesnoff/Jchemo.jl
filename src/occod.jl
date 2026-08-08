@@ -74,6 +74,7 @@ Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Tref, Tnew_ref, Tnew_out)
 group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+lev = mlev(group)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
 i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
@@ -89,7 +90,7 @@ fit!(model, fitm0, Xref)
 fitm = model.fitm ;
 @names fitm 
 @head dref = fitm.d
-fitm.cutoff
+cutoff = fitm.cutoff
 
 d = dref.d
 s = d .> cutoff
@@ -132,6 +133,18 @@ f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg = false,
     xlabel = "Observation index", ylabel = "Outlierness")
 hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
 f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
+f
+
+d = vcat(dref.d, dnew_ref.d, dnew_out.d)
+tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
+groupnum = vcat(fill(1, nref), fill(2, nnew_ref), fill(3, nnew_out))
+cols = vcat(fill(color[1], nref), fill(color[2], nnew_ref), fill(color[3], nnew_out))
+CairoMakie.activate!()
+f = Figure(size = (600, 300))
+ax = Axis(f[1, 1]; xticks = (1:3, lev), xlabel = "", ylabel = "Outlierness") 
+rainclouds!(ax, groupnum, d; clouds = hist, jitter_width = .1, color = cols, markersize = 10)
+hlines!(ax, cutoff; color = :grey, linestyle = :dash, linewidth = 1, label = "cutoff")
+Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
 """ 
