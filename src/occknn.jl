@@ -65,9 +65,9 @@ nnew_out = nro(Xnew_out)
 ## Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
-yref = repeat(["in"], nref)
-ynew_ref = repeat(["in"], nnew_ref)
-ynew_out = repeat(["out"], nnew_out)
+yref = fill("in", nref)
+ynew_ref = fill("in", nnew_ref)
+ynew_out = fill("in", nnew_out)
 
 #### Fit the Occ model
 nsamp = 150 ; k = 5 ; cri = 2.5
@@ -82,14 +82,21 @@ fitm = model.fitm ;
 @head dref = fitm.d   #  results for the 'nsamp' sampled training observations
 cutoff = fitm.cutoff
 
-d = dref.dstand
-s = d .> 1
+d = dref.d
+s = d .> cutoff
 tsp = .4 ; color = (:orange, tsp)
-f, ax = plotxy(1:length(d), d; color, size = (500, 300), title = "Train (reference class)",  
-    xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; color = :grey, linestyle = :dot)
-scatter!(ax, (1:length(d))[s], d[s]; color = color[1], label = "Extreme")
+f, ax = plotxy(1:nsamp, d; color, size = (500, 300), title = "Train (reference class)",  
+    xlabel = "Observation index", ylabel = "Outlierness")
+hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
+scatter!(ax, (1:nsamp)[s], d[s]; color = color[1], label = "Extreme")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
+f
+
+f = Figure(size = (450, 300)) 
+ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
+rainclouds!(ax, fill(cutoff, nsamp), d; clouds = hist, jitter_width = .1, color, markersize = 10)
+hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
+Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 #### Predict the new reference observations
@@ -110,12 +117,13 @@ tab(pred)
 errp(pred, ynew_out)
 conf(pred, ynew_out).cnt
 
-d = vcat(dref.dstand, dnew_ref.dstand, dnew_out.dstand)
+d = vcat(dref.d, dnew_ref.d, dnew_out.d)
 group = vcat(fill("1-Train (ref)", nsamp), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
-f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
-    xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; color = :grey, linestyle = :dot)
+f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg = false, 
+    xlabel = "Observation index", ylabel = "Outlierness")
+hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
+f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f
 ```
 """ 

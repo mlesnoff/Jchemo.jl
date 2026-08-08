@@ -114,9 +114,9 @@ nnew_out = nro(Xnew_out)
 ## Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
-yref = repeat(["in"], nref)
-ynew_ref = repeat(["in"], nnew_ref)
-ynew_out = repeat(["out"], nnew_out)
+yref = fill("in", nref)
+ynew_ref = fill("in", nnew_ref)
+ynew_out = fill("in", nnew_out)
 
 #### Fit a preliminary Pca model on the training reference data
 nlv = 15
@@ -150,14 +150,21 @@ fitm = model.fitm ;
 @head dref = fitm.d
 cutoff = fitm.cutoff
 
-d = dref.dstand
-s = d .> 1
+d = dref.d
+s = d .> cutoff
 tsp = .4 ; color = (:orange, tsp)
-f, ax = plotxy(1:length(d), d; color, size = (500, 300), title = "Train (reference class)",  
-    xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; color = :grey, linestyle = :dot)
-scatter!(ax, (1:length(d))[s], d[s]; color = color[1], label = "Extreme")
+f, ax = plotxy(1:nref, d; color, size = (500, 300), title = "Train (reference class)",  
+    xlabel = "Observation index", ylabel = "Outlierness")
+hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
+scatter!(ax, (1:nref)[s], d[s]; color = color[1], label = "Extreme")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
+f
+
+f = Figure(size = (450, 300)) 
+ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
+rainclouds!(ax, fill(cutoff, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
+hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
+Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 d = dref.d
@@ -170,7 +177,7 @@ tsp = .4 ; color = (:orange, tsp)
 f, ax = plotxy(sd2mu, od2mu; color, title = "Train (reference class)", xlabel = "SD2 / mu", 
     ylabel = "OD2 / mu")
 scatter!(ax, sd2mu[s], od2mu[s]; color = color[1], label = "Extreme")
-ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash)
+ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash, label = "Cutoff")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
@@ -192,11 +199,12 @@ tab(pred)
 errp(pred, ynew_out)
 conf(pred, ynew_out).cnt
 
-d = vcat(dref.dstand, dnew_ref.dstand, dnew_out.dstand)
+d = vcat(dref.d, dnew_ref.d, dnew_out.d)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
-f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg_title = "Type of obs.", 
-    xlabel = "Observation index", ylabel = "Standardized distance")
-hlines!(ax, 1; color = :grey, linestyle = :dot)
+f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg = false, 
+    xlabel = "Observation index", ylabel = "Outlierness")
+hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
+f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f
 
 d = dref.d
@@ -209,7 +217,7 @@ f, ax = plotxy(sd2mu, od2mu; size = (600, 300), color = color[1], xlabel = "SD2 
     ylabel = "OD2 / mu", label = "1-Train (ref)")
 scatter!(ax, dnew_ref.sd2mu, dnew_ref.od2mu; color = color[2], label = "2-New_ref")
 scatter!(ax, dnew_out.sd2mu, dnew_out.od2mu; color = color[3], label = "3-New_out")
-ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash)
+ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash, label = "Cutoff")
 f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f
 ```
