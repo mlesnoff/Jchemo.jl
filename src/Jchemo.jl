@@ -490,6 +490,7 @@ export
     occdds,
     occstah,
     occknn, occlknn,
+    occmwpca,
     ## Auxiliary
     transf, coef, predict,
     transfbl, 

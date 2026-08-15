@@ -5,20 +5,26 @@ One-class classification (OCC) by moving window Pca.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `fun` : Function used to fit the Pca models (by default: `pcasvd`).
-* `nlv` : Maximum nb. of latent variables (LVs) to consider i the Pca models.
+* `nlv` : Maximum nb. of latent variables (LVs) to consider in the Pca models.
+* `pctvar` : Minimum proportion (within ]0, 1]) of explained variance to consider in the Pca models.
 * `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
 * `npoint` : Total number of points in the sliding window (must be odd).
 
+## References
+
 ## Examples
 ```julia
 ```
-""" 
+"""
+occmwpca(; kwargs...) = JchemoModel(occmwpca, nothing, kwargs)
+
 Base.@kwdef mutable struct ParOccmwpca1{Q <: Float}
     fun::Function = pcasvd
-    nlv::Union{Nothing, Int} = nothing
+    nlv::Int = 5
+    pctvar::Q = .95
     typcut::Symbol = :mad   
     cri::Q = 3.
     alpha::Q = .025 
@@ -35,18 +41,18 @@ struct Occmwpca1{Q <: Float}
     pxout::Vector{Q}
     cut_pxout::Q
     rangemod::Vector{UnitRange{Int}}
-    x_sel::Vector{Int}
+    xsel::Vector{Int}
 end
 
 function occmwpca(X; kwargs...)
-    par = recovkw(ParOccmwpca1, kwargs).par
-    @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must an odd integer >= 1."
     X = ensure_mat(X)
-    n = nro(X)                    
-    Q = eltype(X)
+    n, p = size(X)                    
+    Q = eltype(X)    
+    par = recovkw(ParOccmwpca1{Q}, kwargs).par
+    @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must an odd integer >= 1."
     nhwindow = Int((par.npoint - 1) / 2)  # half window
     range_sel = (nhwindow + 1):(p - nhwindow)
-    x_sel = collect(range_sel)
+    xsel = collect(range_sel)
     nmodel = length(range_sel)
     fitm_emb = list(nmodel)
     nlv_emb = list(Int, nmodel)
@@ -59,9 +65,9 @@ function occmwpca(X; kwargs...)
         rangemod[j] = (i - nhwindow):(i + nhwindow)
         #@show (i, rangemod[j])
         vX = vcol(X, rangemod[j])
-        fitm_emb[j] = par.fun(vX; nlv)
+        fitm_emb[j] = par.fun(vX; par.nlv)
         vres = summary(fitm_emb[j], vX).explvarx
-        nlv_emb[j] = (1:nlv)[vres.cumpvar .> pctvar][1]
+        nlv_emb[j] = (1:par.nlv)[vres.cumpvar .> par.pctvar][1]
         fitm_occ[j] = occsdod(fitm_emb[j], vX; nlv = nlv_emb[j], typcut = par.typcut, 
             cri = par.cri, alpha = par.alpha, gamma = par.gamma)
         d[:, j] = fitm_occ[j].d.d 
@@ -71,7 +77,7 @@ function occmwpca(X; kwargs...)
     cutoff = colquant(d, 1 - par.alpha)
     pxout = rowsum(Q.(d .> cutoff')) / nmodel
     cut_pxout = quantv(pxout, 1 - par.alpha)
-    Occmwpca1(fitm_emb, nlv_emb, fitm_occ, d, cutoff, pxout, cut_pxout, rangemod, x_sel)
+    Occmwpca1(fitm_emb, nlv_emb, fitm_occ, d, cutoff, pxout, cut_pxout, rangemod, xsel)
 end
 
 function predict(fitm::Occmwpca1, X)
