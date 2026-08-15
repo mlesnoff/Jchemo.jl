@@ -1,13 +1,13 @@
 """
     occsdod(; kwargs...)
-    occsdod(object, X; kwargs...)
+    occsdod(fitm, X; kwargs...)
 One-class classification (OCC) using a consensus between PCA/PLS score and orthogonal distances (SD and OD).
 * `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `object`.
+    defined in model `fitm`.
 * `typcut` : Type of cutoff. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -106,7 +106,7 @@ f
 
 f = Figure(size = (450, 300)) 
 ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
-rainclouds!(ax, fill(cutoff, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
+rainclouds!(ax, fill(1, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
 hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f

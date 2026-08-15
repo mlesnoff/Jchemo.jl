@@ -2,6 +2,9 @@
 
 ## *Version 0.10.2 dev*
 
+- News
+    - Function **occmwpca**: One-class classification (OCC) by moving window Pca.
+
 - Modifications
     - Functions **outsd**, **outod**, **outsdod**, **occsd**, **occod**, **occsdod**, 
         **occdds**: new argument 'nlv' is allowed.   

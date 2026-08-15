@@ -253,6 +253,8 @@
 - **occsdod** SD-OD consensus
 - **occdds**  SD2-OD2 consensus (with the DD-Simca approach)
 
+- **occmwpca** Moving window Pca
+
 ### From kNN distance 
 
 - **occknn**: kNN distance-based outlierness

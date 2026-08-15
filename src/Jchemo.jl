@@ -232,6 +232,18 @@ include("splslda.jl")
 include("splsqda.jl")
 include("splskdeda.jl")
 
+## Local
+include("lwmlrda.jl")
+include("lwplsrda.jl")
+include("lwplslda.jl")
+include("lwplsqda.jl")
+include("knnda.jl")
+
+## Svm, Trees
+include("svmda.jl")
+include("treeda.jl")
+include("rfda.jl")
+
 ## Multiblock
 include("mbplsrda.jl") 
 include("mbplslda.jl") 
@@ -255,18 +267,7 @@ include("occdds.jl")
 include("occstah.jl")
 include("occknn.jl")
 include("occlknn.jl")
-
-## Local
-include("lwmlrda.jl")
-include("lwplsrda.jl")
-include("lwplslda.jl")
-include("lwplsqda.jl")
-include("knnda.jl")
-
-## Svm, Trees
-include("svmda.jl")
-include("treeda.jl")
-include("rfda.jl")
+include("occmwpca.jl")
 
 ######---- Calibration transfer
 
@@ -469,15 +470,6 @@ export
     dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
     treeda, rfda,
-    ## One-class
-    outstah, outeucl, 
-    pcout,
-    outsd, outod, outsdod,
-    outknn, outlknn,
-    occsd, occod, occsdod, 
-    occdds,
-    occstah,
-    occknn, occlknn,
     ## Sparse 
     splsrda,
     splslda, splsqda, splskdeda,
@@ -489,6 +481,15 @@ export
     ## Multiblock
     mbplsrda, 
     mbplslda, mbplsqda, mbplskdeda,
+    ## One-class
+    outstah, outeucl, 
+    pcout,
+    outsd, outod, outsdod,
+    outknn, outlknn,
+    occsd, occod, occsdod, 
+    occdds,
+    occstah,
+    occknn, occlknn,
     ## Auxiliary
     transf, coef, predict,
     transfbl, 

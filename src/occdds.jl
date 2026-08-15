@@ -1,13 +1,13 @@
 """
     occdds(; kwargs...)
-    occdds(object, X; kwargs...)
+    occdds(fitm, X; kwargs...)
 One-class classification (OCC) using DD-Simca.
 * `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `object`.
+    defined in model `fitm`.
 * `fcentr` : A function that computes the centers of the empirical distributions of the squared score and orthogonal 
     distances (SD^2 and OD^2). By default, `fcentr = meanv`.
 * `fscal` : A function that computes the scale (dispersion) of the empirical distributions of SD^2 and OD^2. 
@@ -163,7 +163,7 @@ f
 
 f = Figure(size = (450, 300)) 
 ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
-rainclouds!(ax, fill(cutoff, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
+rainclouds!(ax, fill(1, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
 hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f

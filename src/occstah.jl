@@ -83,7 +83,7 @@ f
 
 f = Figure(size = (450, 300)) 
 ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
-rainclouds!(ax, fill(cutoff, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
+rainclouds!(ax, fill(1, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
 hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
