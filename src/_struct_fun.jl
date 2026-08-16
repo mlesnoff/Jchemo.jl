@@ -850,3 +850,15 @@ struct Occlknn{Q <: Float}
     xscales::Vector{Q}
     par::ParOccknn
 end
+
+struct Occmwpca{Q <: Float}
+    fitm_emb::Vector{Any}
+    nlv_emb::Vector{Int}
+    fitm_occ::Vector{Occsdod}
+    d::Matrix{Q}
+    cutoff::Vector{Q}
+    pxout::Vector{Q}
+    cut_pxout::Q
+    rangemod::Vector{UnitRange{Int}}
+    xsel::Vector{Int}
+end

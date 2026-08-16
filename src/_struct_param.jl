@@ -657,4 +657,14 @@ Base.@kwdef mutable struct ParOccknn{Q <: Float}
     seed::Union{Nothing, Int} = nothing                  
 end 
 
+Base.@kwdef mutable struct ParOccmwpca{Q <: Float}
+    fun::Function = pcasvd
+    nlv::Int = 5
+    pctvar::Q = .95
+    typcut::Symbol = :mad   
+    cri::Q = 3.
+    alpha::Q = .025 
+    gamma::Q = .5
+    npoint::Int = 11   # total nb. points of the sliding window (must be odd)
+end 
 
