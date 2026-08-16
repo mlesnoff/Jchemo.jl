@@ -1,6 +1,11 @@
 # News
 
-## *Version 0.10.2 dev*
+## *Version 0.10.3 dev*
+
+- Modifications 
+    - Code cleaning.
+
+## *Version 0.10.2*
 
 - News
     - Function **occmwpca**: One-class classification (OCC) by moving window Pca (MWPCA).
