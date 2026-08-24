@@ -125,17 +125,17 @@ function dmkern(X; kwargs...)
     ## Particular case where n = 1
     ## (ad'hoc code for discrimination functions only)
     if n == 1
-        H = diagm(fill(par.a * n^(-1 / (p + 4)), p))
+        H = diagm(fill(Q(par.a * n^(-1 / (p + 4))), p))
     end
     ## End
     if isnothing(par.h)
-        h = par.a * n^(-1 / (p + 4)) * colstd(X)      # a = .9, 1.06
+        h = Q.(par.a * n^(-1 / (p + 4)) * colstd(X))      # a = .9, 1.06
         H = diagm(h)
     else 
         if isa(par.h, Real)
-            H = diagm(fill(par.h, p))
+            H = diagm(fill(Q(par.h), p))
         else 
-            H = diagm(par.h)
+            H = diagm(Q.(par.h))
         end
     end
     Hinv = inv(H)
