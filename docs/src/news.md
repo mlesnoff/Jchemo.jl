@@ -1,8 +1,9 @@
 # News
 
-## *Version 0.10.3 dev*
+## *Version 0.10.3*
 
 - Modifications 
+    - Correction of type inconsistency in function **Dmkern**
     - Code cleaning.
 
 ## *Version 0.10.2*
