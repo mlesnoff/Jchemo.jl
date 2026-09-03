@@ -1,5 +1,5 @@
 """
-    sampsys(y::Vector{Q}, k::Int) where Q <: Float
+    sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where Q <: Float
 Build training vs. test sets by systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
 * `k` : Nb. test observations to sample. Must be >= 2.
