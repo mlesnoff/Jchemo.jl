@@ -23,11 +23,11 @@ res = sampsys(y, 3)
 sort(y[res.test])
 ```
 """ 
-function sampsys(y::Vector{Q}, k::Int) where Q <: Float
+function sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where Q <: Float
     n = length(y)
-    nint = k - 1            # nb. intervals
-    alpha = (n - 1) / nint  # step
-    z = collect(1:alpha:n)
+    nint = k - 1                # nb. intervals
+    alpha = Q((n - 1) / nint)  # step
+    z = Q.(collect(1:alpha:n))
     z = Int.(round.(z))
     z = unique(z)
     id = sortperm(y)
