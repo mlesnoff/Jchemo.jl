@@ -69,7 +69,7 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     ## Centering/scaling X
-    xmeans = Jchemo.colmedspa(X, delta = 0.001)
+    xmeans = Jchemo.colmedspa(X, delta = Q(0.001))
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
     if par.scal != :none

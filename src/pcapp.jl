@@ -65,7 +65,7 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     par.nlv = nlv
     nsim = par.nsim
     ## Centering/scaling X
-    xmeans = Jchemo.colmedspa(X, delta = 0.001)
+    xmeans = Jchemo.colmedspa(X, delta = Q(0.001))
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
     if par.scal != :none
