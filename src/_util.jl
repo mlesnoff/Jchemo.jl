@@ -404,7 +404,7 @@ Return the nb. rows of `X`.
 nro(X) = size(X, 1)
 
 """ 
-    out(x::AbstractVector{Q}, y::Vector{Q}) where Q <: Float
+    out(x::AbstractVector{Q}, y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where Q <: Float
 Return if elements of a vector are strictly outside of a given range.
 * `x` : A quantititative variable whose each element is evaluated to be out of or in the range 
     (min, max) defined from `y`.
@@ -421,7 +421,8 @@ out(x, [-1; .2; 1])
 out(x, [-1., 1])
 ```
 """
-out(x::AbstractVector{Q}, y::Vector{Q}) where Q <: Float = (x .< minimum(y)) .| (x .> maximum(y))
+out(x::AbstractVector{Q}, 
+    y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where Q <: Float = (x .< minimum(y)) .| (x .> maximum(y))
 
 """
     pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:Float

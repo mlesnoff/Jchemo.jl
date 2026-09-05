@@ -26,13 +26,13 @@ sort(y[res.test])
 function sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where Q <: Float
     n = length(y)
     nint = k - 1                # nb. intervals
-    alpha = Q((n - 1) / nint)  # step
-    z = Q.(collect(1:alpha:n))
-    z = Int.(round.(z))
-    z = unique(z)
+    alpha = (n - 1) / nint  # step
+    z = Q.(1:alpha:n)
+    v = Int.(round.(z))
+    v = unique(v)
     id = sortperm(y)
     zn = collect(1:n)
-    s = zn[id[z]]
+    s = zn[id[v]]
     sort!(s)
     (train = zn[setdiff(1:end, s)], test = s)
 end
