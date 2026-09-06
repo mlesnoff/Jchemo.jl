@@ -183,9 +183,15 @@ Reshape `X` to a matrix if necessary.
 ensure_mat(X::Matrix) = X
 ensure_mat(X::AbstractMatrix) = Matrix(X)
 ensure_mat(X::Vector) = reshape(X, :, 1)
+
+ensure_mat(X::Matrix{Union{Missing, Q}}) where Q <: Float = Q.(X)
+ensure_mat(X::AbstractMatrix{Union{Missing, Q}}) where Q <: Float = Matrix(Q.(X))
 ensure_mat(X::Vector{Union{Missing, Q}}) where Q <: Float = reshape(Q.(X), :, 1)
+
 ensure_mat(X::Number) = reshape([X], 1, 1)
+
 ensure_mat(X::DataFrame) = Matrix(X)
+
 function ensure_mat(X::SubArray)  # for views
     if isa(X, AbstractVector)
         return Matrix(reshape(X, length(X), 1))
