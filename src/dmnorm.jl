@@ -40,12 +40,12 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-### Probability density in the FDA score space (2-D): example of class Setosa 
+#### Probability density in the FDA score space (2-D): example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
 m = nro(zT)
 
-### Bivariate distribution
+#### Bivariate distribution
 model = dmnorm()
 fit!(model, zT)
 fitm = model.fitm
@@ -81,7 +81,7 @@ scatter!(ax, zT[:, 1], zT[:, 2], color = :blue, markersize = 5)
 #xlims!(ax, -12, 12) ;ylims!(ax, -12, 12)
 f
 
-### Univariate distribution
+#### Univariate distribution
 j = 1
 x = zT[:, j]
 model = dmnorm()

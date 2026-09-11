@@ -436,7 +436,7 @@ function def_colscal(scal::Symbol = :std)
     dict[scal]
 end
 
-#### Functions skipping missing data
+##### Functions skipping missing data
 
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 

@@ -1,5 +1,5 @@
 
-### Make a dummy table from a categorical variable
+#### Make a dummy table from a categorical variable
 
 """
     dummy([Q::DataType], y::Vector{String})
@@ -30,7 +30,7 @@ function dummy(Q::DataType, y::AbstractVector{String})
     (Y = Y, lev)
 end
 
-### Expand a 2D contingency table
+#### Expand a 2D contingency table
 
 """
     expand_tab2d(X::Matrix{Q}; levr::T = nothing, levc::T = nothing, 
@@ -125,7 +125,7 @@ function indcumul(v::Vector{Vector{Int}})
     res
 end
 
-### Recode a single variable
+#### Recode a single variable
 
 """
     recod_catbydict(x::Vector{Q}, dict::Dict{Q, Q}) where Q <: String
@@ -327,7 +327,7 @@ function recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: Float
     string.(v)
 end
 
-########### Other recoding
+############ Other recoding
 
 ## Missing data  
 

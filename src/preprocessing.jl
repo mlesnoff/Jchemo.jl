@@ -373,7 +373,7 @@ fitm = model.fitm
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
-### Direct
+#### Direct
 
 fitm = msc(Xtrain) 
 #fitm = msc(Xtrain, colmean(Xtrain)) 
@@ -455,7 +455,7 @@ fit!(model, Xtrain)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
-### Direct
+#### Direct
 
 degree = 2
 fitm = emsc(Xtrain; degree) 
@@ -602,7 +602,7 @@ Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 
-###### Gaussian signal 
+####### Gaussian signal 
 
 u = -15:.1:15
 n = length(u)

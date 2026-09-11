@@ -40,7 +40,7 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-### Build the data used in the example
+#### Build the data used in the example
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
@@ -61,7 +61,7 @@ yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-### Fit the Occ model
+#### Fit the Occ model
 model = occstah(; nlv = 5000, cri = 2., scal = :std)
 #model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
 fit!(model, Xref)
@@ -88,7 +88,7 @@ hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-### Predict the new reference observations
+#### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -97,7 +97,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-### Predict the new observations 'out'
+#### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred

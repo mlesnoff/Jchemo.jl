@@ -23,7 +23,7 @@ for high-dimensional data: applications in life, food and chemical sciences. Wil
 
 # Examples 
 ```julia
-### Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2.1).
+#### Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2.1).
 
 using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))

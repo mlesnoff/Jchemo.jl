@@ -136,7 +136,7 @@ function mah2chol(X, Y, Uinv)
     eucl2(zX, zY)
 end
 
-### Angular and correlation distances (functions not exported)
+#### Angular and correlation distances (functions not exported)
 # All the distances below are scaled to [0, 1]
 # Usage:
 # ```julia

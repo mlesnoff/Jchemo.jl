@@ -113,7 +113,7 @@ rownorm(X)
 """ 
 rownorm(X) = sqrt.(rownorm2(X))
 
-#### Functions skipping missing data
+##### Functions skipping missing data
 rowsumskip(X) = colsumskip(ensure_mat(X)')
 rowmeanskip(X) = colmeanskip(ensure_mat(X)')
 rowstdskip(X) = colstdskip(ensure_mat(X)')

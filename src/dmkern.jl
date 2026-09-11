@@ -40,7 +40,7 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-### Probability density in the FDA score space (2-D)
+#### Probability density in the FDA score space (2-D)
 
 model = dmkern()
 fit!(model, T) 

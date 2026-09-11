@@ -764,7 +764,7 @@ vcol(X, j) = view(X, :, j)
 vcol(x::Vector, i) = view(x, i)
 vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
-########## Macros 
+########### Macros 
 
 """ 
     @pmod fun

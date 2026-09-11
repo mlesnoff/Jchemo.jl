@@ -1,4 +1,4 @@
-##### Building weights
+###### Building weights
 
 """ 
     pweight(x::Vector{Q}) where Q <: Real
@@ -83,7 +83,7 @@ function pweightcla(T::DataType, y::Vector{String};
     pweight(w)
 end
 
-#### Weighting rows or columns
+##### Weighting rows or columns
 
 """
     fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float

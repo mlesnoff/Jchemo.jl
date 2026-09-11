@@ -96,7 +96,7 @@ res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 
-### This CPCA can also be implemented with function 'pip'
+#### This CPCA can also be implemented with function 'pip'
 
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()
@@ -114,7 +114,7 @@ typeof(mod_3)
 
 transf(model, Xblnew)
 
-### And a sparse CPCA as follows
+#### And a sparse CPCA as follows
 
 meth = :soft ; nvar = 2
 model1 = blockscal(; bscal, centr = true) ;

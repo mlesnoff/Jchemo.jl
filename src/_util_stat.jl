@@ -1,4 +1,4 @@
-####### One vector 
+######## One vector 
 
 """ 
     sumv(x::AbstractVector{Q}) where Q <: Float
@@ -298,7 +298,7 @@ quantv(x::AbstractVector{Q}, prob::Q) where Q <: Float = Statistics.quantile(x, 
 quantv(x::AbstractVector{Q}, prob::Q, 
     weights::ProbabilityWeights) where Q <: Float = Statistics.quantile(x, weights, prob) 
 
-####### Two vectors
+######## Two vectors
 
 """
     covv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
@@ -408,7 +408,7 @@ corv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Statistics.c
 corv(x::AbstractVector{Q}, y::AbstractVector{Q}, 
     weights::ProbabilityWeights{Q}) where Q <: Float = covv(x, y, weights) / (stdv(x, weights) * stdv(y, weights))
 
-####### Matrices
+######## Matrices
 
 """
     covm(X::AbstMatVec{Q}) where Q <: Float

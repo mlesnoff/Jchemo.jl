@@ -64,7 +64,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 tab(string.(ycla, "-", Y.label))
-#### End data
+##### End data
 
 psamp = .2  # to decrease the computation time for the example
 #psamp = 1  # all samples

@@ -33,7 +33,7 @@ these parameters in argument `pars. See the examples.
 
 # Examples
 ```julia
-###### Regression 
+####### Regression 
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -269,7 +269,7 @@ res = predict(model, Xtest) ;
 rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 
-###### Discrimination
+####### Discrimination
 # The principle is the same as for regression
 
 using Jchemo, JLD2, CairoMakie, JchemoData

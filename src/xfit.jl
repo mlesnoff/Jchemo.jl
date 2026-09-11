@@ -28,7 +28,7 @@ y = Y[:, 1]
 ynew = Ynew[:, 1]
 weights = pweight(rand(n))
 
-### Pca
+#### Pca
 
 nlv = 2 
 scal = :none
@@ -56,7 +56,7 @@ fitm = model.fitm ;
 @head xfit(fitm, X)
 @head xresid(fitm, X)
 
-### Pls
+#### Pls
 
 nlv = 3
 scal = :none

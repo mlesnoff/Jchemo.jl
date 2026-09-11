@@ -36,7 +36,7 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-### Build the data used in the example
+#### Build the data used in the example
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
@@ -57,7 +57,7 @@ yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-### Fit a preliminary Pca model on the training reference data
+#### Fit a preliminary Pca model on the training reference data
 nlv = 15
 model0 = pcasvd(; nlv) 
 #model0 = pcaout(; nlv) 
@@ -67,8 +67,8 @@ res = summary(model0, Xref).explvarx
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
 Tref = fitm0.T
 
-### To describe the data, 
-### project the test observations in the fitted score space
+#### To describe the data, 
+#### project the test observations in the fitted score space
 Tnew_ref = transf(model0, Xnew_ref)
 Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
@@ -80,7 +80,7 @@ i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
-### Fit the Occ model based on the fitted score space 
+#### Fit the Occ model based on the fitted score space 
 model = occod(cri = 2.5)
 #model = occod(typcut = :std, cri = 2.5)
 #model = occod(typcut = :q, alpha = .01)
@@ -109,7 +109,7 @@ hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-### Predict the new reference observations
+#### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -118,7 +118,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-### Predict the new observations 'out'
+#### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred

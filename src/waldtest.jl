@@ -35,7 +35,7 @@ datf = dat.datf
 n = nro(datf)
 tab(datf; group = ["temp", "catal"])  # balanced design
 
-### Fit of a 2-factor anova model with interaction, using GLM 
+#### Fit of a 2-factor anova model with interaction, using GLM 
 
 contr = EffectsCoding()  # 'sum-to-zero'
 #contr = HelmertCoding()
@@ -55,7 +55,7 @@ varb = vcov(fitm)    # variance-covariance matrix
 #s2 = dispersion(fitm.model)^2
 #s2 * inv(D' * D)   # = varb
 
-### Tests
+#### Tests
 # Hyp. matrices 'L' for contrast 'EffectsCoding' or 'HelmertCoding'
 # (Not valid for contrasts 'DummyCoding', except 'test (4)')
 

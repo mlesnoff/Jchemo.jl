@@ -31,7 +31,7 @@ The function returns two outputs:
 
 # Examples
 ```julia
-###### Regression
+####### Regression
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -286,7 +286,7 @@ res = predict(model, Xtest) ;
 rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 
-###### Discrimination
+####### Discrimination
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
