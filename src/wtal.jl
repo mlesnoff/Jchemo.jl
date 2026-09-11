@@ -9,7 +9,7 @@ The returned weight vector w has component
 * w[i] = 1 if |`d`[i]| <= `a`
 * w[i] = 0 if |`d`[i]| > `a`
 
-## Examples
+# Examples
 ```julia
 d = rand(10)
 wtal(d; a = .8)

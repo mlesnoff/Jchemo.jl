@@ -27,12 +27,12 @@ Function `summary` returns:
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
-## References 
+# References 
 Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis of multiblock and hierarchical PCA and PLS models. 
 Journal of Chemometrics 12, 301–321. 
 https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-S
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -107,11 +107,11 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    ## Block scaling
+    # Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
-    ## Centering/scaling of Y
+    # Centering/scaling of Y
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
     yscales = ones(Q, q)
@@ -127,7 +127,7 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
         fweightr!(Xbl[k], sqrtw)
     end
     fweightr!(Y, sqrtw)
-    ## Pre-allocation
+    # Pre-allocation
     X = similar(Xbl[1], n, ptot)
     Tbl = list(Matrix{Q}, nbl)
     for k in eachindex(Xbl) ; Tbl[k] = similar(Xbl[1], n, nlv) ; end
@@ -267,10 +267,10 @@ function Base.summary(object::Mbplswest, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    ## Block scaling
+    # Block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
-    ## Proportion of the total X-inertia explained by each global LV
+    # Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
         ssk[k] = frob2(vXbl[k], object.weights)
@@ -281,26 +281,26 @@ function Base.summary(object::Mbplswest, Xbl)
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## RV between each Xk and the global LVs
+    # RV between each Xk and the global LVs
     nam = string.("lv", 1:nlv)
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(vXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
-    ## Rd between each Xk and the global LVs
+    # Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
         z[k, :] = rd(vXbl[k], object.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
-    ## Correlation between the block LVs and the global LVs
+    # Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
         z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
     end
     cortbl2t = DataFrame(z, nam)
-    ## Correlation between the X-variables and the global LVs 
+    # Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
     (explvarx = explvarx, rvxbl2t, rdxbl2t, cortbl2t, corx2t)

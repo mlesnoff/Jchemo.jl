@@ -37,7 +37,7 @@ Function `summary` returns:
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
-## References
+# References
 Mangamana, E.T., Cariou, V., Vigneau, E., Glèlè Kakaï, R.L., Qannari, E.M., 2019. Unsupervised multiblock data 
 analysis: A unified approach and extensions. Chemometrics and Intelligent Laboratory Systems 194, 103856. 
 https://doi.org/10.1016/j.chemolab.2019.103856
@@ -48,7 +48,7 @@ Journal of Chemometrics 17, 323–337. https://doi.org/10.1002/cem.811
 Westerhuis, J.A., Kourti, T., MacGregor, J.F., 1998. Analysis of multiblock and hierarchical PCA and PLS models. Journal 
 of Chemometrics 12, 301–321. https://doi.org/10.1002/(SICI)1099-128X(199809/10)12:5<301::AID-CEM515>3.0.CO;2-S
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -73,18 +73,18 @@ fit!(model, Xbl)
 fitm = model.fitm ;
 @names fitm
 
-## Global scores 
+# Global scores 
 @head transf(model, Xbl)
 @head fitm.T
 
 transf(model, Xblnew)
 
-## Blocks scores
+# Blocks scores
 i = 1
 @head transfbl(model, Xbl)[i]
 @head fitm.Tbl[i]
 
-## Summary
+# Summary
 res = summary(model, Xbl) ;
 @names res 
 res.explvarx
@@ -96,7 +96,7 @@ res.rdxbl2t
 res.cortbl2t
 res.corx2t 
 
-#### This CPCA can also be implemented with function 'pip'
+### This CPCA can also be implemented with function 'pip'
 
 model1 = blockscal(; bscal, centr = true) ;
 model2 = mbconcat()
@@ -114,7 +114,7 @@ typeof(mod_3)
 
 transf(model, Xblnew)
 
-#### And a sparse CPCA as follows
+### And a sparse CPCA as follows
 
 meth = :soft ; nvar = 2
 model1 = blockscal(; bscal, centr = true) ;
@@ -161,7 +161,7 @@ function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    ## Block scaling
+    # Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
@@ -170,7 +170,7 @@ function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...
     @inbounds for k in eachindex(Xbl) 
         fweightr!(Xbl[k], sqrtw)
     end
-    ## Pre-allocation
+    # Pre-allocation
     U = similar(Xbl[1], n, nlv)
     W = similar(Xbl[1], nbl, nlv)
     Tbl = list(Matrix{Q}, nbl)
@@ -285,10 +285,10 @@ function Base.summary(object::Cpca, Xbl)
     Q = eltype(Xbl[1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    ## Block scaling
+    # Block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
-    ## Proportion of the total X-inertia explained by each global LV
+    # Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
         ssk[k] = frob2(vXbl[k], object.weights)
@@ -297,33 +297,33 @@ function Base.summary(object::Cpca, Xbl)
     pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Within each block k, proportion of the Xk-inertia explained by the global LVs
-    ## = object.lb if bscal = :frob 
+    # Within each block k, proportion of the Xk-inertia explained by the global LVs
+    # = object.lb if bscal = :frob 
     nam = string.("lv", 1:nlv)
     z = fscale(object.lb', ssk)'
     explxbl = DataFrame(z, nam)
-    ## Contribution of each block Xk to the global LVs = lb proportions
+    # Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contrxbl2t = DataFrame(z, nam)
-    ## RV between each Xk and the global LVs
+    # RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(vXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
-    ## Rd between each Xk and the global LVs
+    # Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
         z[k, :] = rd(vXbl[k], object.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
-    ## Correlation between the block LVs and the global LVs
+    # Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
         z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
     end
     cortbl2t = DataFrame(z, nam)
-    ## Correlation between the X-variables and the global LVs 
+    # Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
     (explvarx = explvarx, explxbl, contrxbl2t, rvxbl2t, rdxbl2t, cortbl2t, corx2t) 

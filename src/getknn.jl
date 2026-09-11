@@ -20,7 +20,7 @@ and distances as (see script file 'distances.jl'):
 
 Note: If x and y are centered, costheta = corr(x, y).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 Xtrain = rand(5, 3)
@@ -47,7 +47,7 @@ function getknn(Xtrain, X; metric::Symbol = :eucl, k::Int = 1)
     if k > n ; k = n ; end
     if metric == :eucl
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
-    ## Below for mah:, since tree = BruteTree(Xtrain', Mahalanobis(Sinv)) is very slow
+    # Below for mah:, since tree = BruteTree(Xtrain', Mahalanobis(Sinv)) is very slow
     elseif metric == :mah
         S = covm(Xtrain)
         if p == 1
@@ -62,20 +62,20 @@ function getknn(Xtrain, X; metric::Symbol = :eucl, k::Int = 1)
         Xtrain = Xtrain * Uinv
         X = X * Uinv
         tree = NearestNeighbors.BruteTree(Xtrain', Distances.Euclidean())
-    ## End :mah
+    # End :mah
     elseif metric == :cos
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CosDist())
     elseif metric == :sam
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.SamDist())
     elseif metric == :cor
         tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.CorDist())
-    ## Tentative (not still working)
+    # Tentative (not still working)
     #elseif metric == :was
     #    tree = NearestNeighbors.BruteTree(Xtrain', Jchemo.WasDist())
-    ## End
+    # End
     end
     ind, d = NearestNeighbors.knn(tree, X', k, true)     # 'ind' and 'd' are lists  
-    ## Possible alternative for output 'ind': ind = reduce(hcat, ind)'
+    # Possible alternative for output 'ind': ind = reduce(hcat, ind)'
     (ind = ind, d)
 end
 

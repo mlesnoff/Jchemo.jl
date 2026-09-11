@@ -6,7 +6,7 @@ Confusion matrix.
 Keyword arguments:
 * `digits` : Nb. digits used to round percentages.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie
 

@@ -18,13 +18,13 @@ with different numbers of LVs.
 For instance, if argument `nlv` is set to `nlv` = `5:10`, the prediction for a new observation is the simple average
 of the predictions returned by the models with 5 LVs, 6 LVs, ... 10 LVs, respectively.
 
-## References
+# References
 Lesnoff, M., Andueza, D., Barotin, C., Barre, V., Bonnal, L., Fernández Pierna, J.A., Picard, F., Vermeulen, V., 
 Roger, J.-M., 2022. Averaging and Stacking Partial Least Squares Regression Models to Predict the Chemical Compositions 
 and the Nutritive Values of Forages from Spectral Near Infrared Data. Applied Sciences 12, 7850. 
 https://doi.org/10.3390/app12157850
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -82,7 +82,7 @@ function plsravg!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     Plsravg(fitm, par)  
 end
 
-## Note: There is no 'transf' nor 'coef' functions for Plsravg.
+# Note: There is no 'transf' nor 'coef' functions for Plsravg.
 
 """
     predict(object::Plsravg, X)

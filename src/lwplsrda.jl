@@ -31,7 +31,7 @@ Keyword arguments:
 This is the same principle as function `lwplsr` except that PLSR-DA models, instead of PLSR models, are fitted 
 on the neighborhoods.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -73,7 +73,7 @@ res.listw
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-## Storage of the local models fitted on the neighborhoods
+# Storage of the local models fitted on the neighborhoods
 model = lwplsrda(; nlvdis, metric, h, k, prior = :unif, nlv, store = true) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
@@ -134,7 +134,7 @@ function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     k = object.par.k
     h = object.par.h
@@ -159,8 +159,8 @@ function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
-    ## In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
+    # End
+    # In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
     reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plsrda, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 

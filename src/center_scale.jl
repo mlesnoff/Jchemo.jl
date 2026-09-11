@@ -5,7 +5,7 @@
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -68,7 +68,7 @@ Keyword arguments:
 * `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-## Examples
+# Examples
 ```julia 
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -140,7 +140,7 @@ Keyword arguments:
 * `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))

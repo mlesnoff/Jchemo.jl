@@ -1,4 +1,4 @@
-###### Building weights
+##### Building weights
 
 """ 
     pweight(x::Vector{Q}) where Q <: Real
@@ -8,7 +8,7 @@ Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.
 The wrapper forces the probability weights to sum to 1:
 * The returned object `values` is equal to `x / sum(x)`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -44,7 +44,7 @@ Keyword arguments:
 Return an object of type `ProbabilityWeights` (see function `pweight`) containing a vector `weights.values` (n) 
 that sums to 1.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -83,7 +83,7 @@ function pweightcla(T::DataType, y::Vector{String};
     pweight(w)
 end
 
-##### Weighting rows or columns
+#### Weighting rows or columns
 
 """
     fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
@@ -92,7 +92,7 @@ Weight each row of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, LinearAlgebra
 
@@ -116,7 +116,7 @@ Weight each column of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, LinearAlgebra
 

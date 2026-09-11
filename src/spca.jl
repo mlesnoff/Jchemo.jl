@@ -41,7 +41,7 @@ Function `spca` allows two types of deflation of matrix `X`:
 The computation of the % of variance explained in `X` by each PC (returned by function `summary`) depends on 
 the type of deflation chosen (see the code).    
 
-## References
+# References
 
 Guerra-Urzola, R., Van Deun, K., Vera, J.C., Sijtsma, K., 2021. A Guide for Sparse PCA: Model Comparison 
 and Applications. Psychometrika 86, 893–919. https://doi.org/10.1007/s11336-021-09773-2
@@ -54,7 +54,7 @@ https://www.bioconductor.org/packages/release/bioc/html/mixOmics.html
 Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
 Journal of Multivariate Analysis 99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -116,17 +116,17 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Argument 'algo' is volontary masked (not recommended)
+    # Argument 'algo' is volontary masked (not recommended)
     @assert in([:shen; :post])(par.algo) "Wrong value for argument 'algo'." 
     if par.algo == :shen 
         fnipals = snipals_shen
     elseif par.algo == :post 
         fnipals = Jchemo.snipals_post  # not exported
     end
-    ## End 
+    # End 
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -135,7 +135,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     T = similar(X, n, nlv)
@@ -147,7 +147,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
     sellv = list(Vector{Int}, nlv)
     for a = 1:nlv
         res = fnipals(X; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)
-        ## Deflation
+        # Deflation
         if par.defl == :v          # regression of X' on v (Shen & Huang 2008 p.1033 in Th.A.2)
             X .-= res.t * res.v'   # = X - X * v * v' = X - t * v'
         elseif par.defl == :t      # Regression of X on t (e.g., used in R mixOmics::spca)
@@ -155,7 +155,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
             b .= res.t' * X / tt   # = inv(t' * t) * t' * X  =  t' X / tt       
             X .-= res.t * b        # = X - t * t' X / tt
         end
-        ## End        
+        # End        
         sv[a] = normv(res.t)
         @. T[:, a] = res.t / sqrtw
         V[:, a] .= res.v
@@ -187,13 +187,13 @@ function transf(object::Spca, X, nlv::Int)
     defl = object.par.defl
     for a = 1:nlv
         T[:, a] .= zX * vcol(object.V, a)
-        ## Deflation
+        # Deflation
         if defl == :v       
             zX .-= vcol(T, a) * vcol(object.V, a)'
         elseif defl == :t   
             zX .-= vcol(T, a) * vcol(object.beta, a)'
         end
-        ## End   
+        # End   
     end
     T 
 end
@@ -215,9 +215,9 @@ function Base.summary(object::Spca, X)
     tt = colsum(TT)
     defl = object.par.defl 
     if defl == :v      
-        ## Adjusted variance and CPEV (cumulative percentage of explained variance) of Shen & Huang 2008
-        ## section 2.3: based on the orthogonal projection of the rows of the deflated X[a] on the space 
-        ## spanned by the columns of matrix V[a] = [v1 v2 ... va]  
+        # Adjusted variance and CPEV (cumulative percentage of explained variance) of Shen & Huang 2008
+        # section 2.3: based on the orthogonal projection of the rows of the deflated X[a] on the space 
+        # spanned by the columns of matrix V[a] = [v1 v2 ... va]  
         zX = fweightr(X, sqrtw)
         ss = zeros(nlv)
         for a = 1:nlv
@@ -229,11 +229,11 @@ function Base.summary(object::Spca, X)
         pvar = [cumpvar[1]; diff(cumpvar)]
         explvarx = DataFrame(nlv = collect(1:nlv), pvar = pvar, cumpvar = cumpvar)
     elseif defl == :t
-        ## Proportion of variance of X explained by each column of T 
+        # Proportion of variance of X explained by each column of T 
         A = X' * fweightr(object.T, weights.values)
         ss = colnorm(A).^2 ./ colnorm(object.T, object.weights).^2
-        ## = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
-        ## = diag(A' * A) ./ diag(object.T' * D * object.T)
+        # = diag(T' * D * X * X' * D * T) ./ diag(T' * D * T)
+        # = diag(A' * A) ./ diag(object.T' * D * object.T)
         pvar = ss / sstot 
         cumpvar = cumsum(pvar)
         zrd = vec(rd(X, object.T, weights))
@@ -242,10 +242,10 @@ function Base.summary(object::Spca, X)
     nam = string.("lv", 1:nlv)
     contr_ind = DataFrame(fscale(TT, tt), nam)
     contr_var = DataFrame(object.V.^2, nam)
-    ## Should be ok 
+    # Should be ok 
     C = X' * fweightr(fscale(object.T, sqrt.(tt)), weights.values) 
     coord_var = DataFrame(C, nam)
-    ## End
+    # End
     cor_circle = DataFrame(corm(X, object.T, weights), nam)
     (explvarx = explvarx, contr_ind, contr_var, coord_var, cor_circle)
 end

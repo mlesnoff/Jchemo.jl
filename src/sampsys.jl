@@ -13,7 +13,7 @@ one observation over three observations over the sorted `y` is selected.
 
 Output `test` always contains the indexes of the minimum and maximum of `y`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 

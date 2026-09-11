@@ -16,7 +16,7 @@ and returns the residuals (= signals corrected from the baseline).
 Generally `0.001 ≤ p ≤ 0.1` is a good choice (for a signal with positive peaks) and `1e2 ≤ lb ≤ 1e9`, but exceptions
 may occur (Eilers & Boelens 2005).
 
-## References
+# References
 
 Baek, S.-J., Park, A., Ahn, Y.-J., Choo, J., 2015. Baseline correction using asymmetrically reweighted penalized 
 least squares smoothing. Analyst 140, 250–257. https://doi.org/10.1039/C4AN01061B
@@ -24,7 +24,7 @@ least squares smoothing. Analyst 140, 250–257. https://doi.org/10.1039/C4AN010
 Eilers, P. H., & Boelens, H. F. (2005). Baseline correction with asymmetric least squares smoothing. Leiden 
 University Medical Centre Report, 1(1).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -40,7 +40,7 @@ wlst = names(dat.X)
 wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
-## Example on 1 spectrum
+# Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
 lb = 1e5 ; p = .001
@@ -93,10 +93,10 @@ function transf!(object::Detrendasls, X::Matrix{Q}) where Q <: Float
             z0 .= copy(z)
             W .= spdiagm(0 => w)    
             z .= cholesky!(Hermitian(W + object.par.lb * C)) \ (w .* x)
-            ## Faster (but less safe) than:
+            # Faster (but less safe) than:
             #z .= \(W + lb * C, w .* x)
-            ## = (W + lb * C) \ (w .* x)    
-            ## End 
+            # = (W + lb * C) \ (w .* x)    
+            # End 
             w .= object.par.p * (x .> z) + (1 - object.par.p) * (x .<= z)  
             dif = sum((z .- z0).^2)
             iter = iter + 1

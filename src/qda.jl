@@ -26,11 +26,11 @@ For the continuum approach, a value `alpha` > 0 shrinks the QDA class covariance
 covariance ('within-W'). This corresponds to the 'first regularization (Eqs.16)' approach described in 
 Friedman 1989 (in which the present parameter `alpha` is referred to as 'lambda').
 
-## References
+# References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American Statistical Association. 1989; 84(405):165-175. 
 doi:10.1080/01621459.1989.10478752.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -71,7 +71,7 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-## With regularization
+# With regularization
 alpha = 0.5
 #alpha = 1 # = LDA
 model = qda(; alpha)
@@ -103,7 +103,7 @@ function qda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Probabili
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    ## End
+    # End
     ct = similar(X, nlev, p)
     fitm = list(Dmnorm, nlev)
     @inbounds for i in eachindex(lev)

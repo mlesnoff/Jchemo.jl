@@ -25,7 +25,7 @@ The final weights of the observations are computed by weights.values * w1 * w2 t
 
 By default, the function uses `prm = .3` (such as in the ROBPCA algorithm of Hubert et al. 2005, 2009). 
 
-## References
+# References
 
 Hubert, M., Rousseeuw, V.J., Vanden Branden, K., 2005. ROBPCA: A New Approach to Robust Principal Component 
 Analysis. Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
@@ -36,7 +36,7 @@ Statistics & Data Analysis 53, 2264-2274. https://doi.org/10.1016/j.csda.2008.05
 Maronna, R.A., Yohai, V.J., 1995. The Behavior of the Stahel-Donoho Robust Multivariate Estimator. Journal of the 
 American Statistical Association 90, 330–341. https://doi.org/10.1080/01621459.1995.10476517
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -56,7 +56,7 @@ fit!(model, X)
 @names model
 @names model.fitm
 @head T = model.fitm.T
-## Same as:
+# Same as:
 transf(model, X)
 
 i = 1

@@ -18,7 +18,7 @@ Keyword arguments:
 The function is a wrapper of package `DecisionTree.jl' to fit a random forest discrimnation model.
 In DecisionTree.jl, 'y' component must have type `Int` or `String`.
 
-## References
+# References
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. https://doi.org/10.1007/BF00058655
 
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. https://doi.org/10.1023/A:1010933404324
@@ -31,7 +31,7 @@ Université Paris Sud - Paris XI.
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : trois thèmes statistiques autour de CART en 
 régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 using CairoMakie
@@ -84,7 +84,7 @@ plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
 
 function rfda(X, y::Vector{String}; kwargs...)
-    ## For DA in DecisionTree.jl, y must be Int or String
+    # For DA in DecisionTree.jl, y must be Int or String
     X = ensure_mat(X)
     n, p = size(X)
     Q = eltype(X)

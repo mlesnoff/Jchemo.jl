@@ -12,7 +12,7 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -83,10 +83,10 @@ function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     yscales = ones(Q, q)  # built only for consistency with coef::Plsr
     fitm = pcasvd!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
-    ## Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
-    ## if T is D-orthogonal. This is the case for the actual version (pcasvd)
-    ## theta: coefs regression of Y on T (= C')
-    ## not needed (same theta): fcenter!(Y, ymeans)
+    # Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
+    # if T is D-orthogonal. This is the case for the actual version (pcasvd)
+    # theta: coefs regression of Y on T (= C')
+    # not needed (same theta): fcenter!(Y, ymeans)
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
     Pcr(fitm, Matrix(theta'), ymeans, yscales, par) 
 end
@@ -116,11 +116,11 @@ of zeros. The returned object `int` is the intercept.
 function coef(object::Pcr)
     theta = object.C'
     Dy = Diagonal(object.yscales)
-    ## Not used for Spcr (since R not computed; while for Pcr, R = V)
+    # Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweightr(object.fitm.V, 1 ./ object.fitm.xscales) * theta * Dy
-    ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
+    # In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.fitm.xmeans' * B
-    ## End
+    # End
     (B = B, int, nlv = object.par.nlv)
 end
 
@@ -129,11 +129,11 @@ function coef(object::Pcr, nlv::Int)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
     Dy = Diagonal(object.yscales)
-    ## Not used for Spcr (since R not computed; while for Pcr, R = V)
+    # Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
-    ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
+    # In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.fitm.xmeans' * B
-    ## End
+    # End
     (B = B, int, nlv)
 end
 

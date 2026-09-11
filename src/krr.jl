@@ -18,7 +18,7 @@ KRR is also referred to as least squared SVM regression (LS-SVMR). The method is
 SVM regression where there is no marge excluding the observations (epsilon coefficient set to zero). The difference 
 is that a L2-norm optimization is done, instead of L1 in SVM.
 
-## References 
+# References 
 Bennett, K.V., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
 in: Advances in Learning Theory: Methods, Models and Applications, NATO Science Series III: Computer & Systems 
 Sciences. IOS Press Amsterdam, pp. 227-250.
@@ -38,7 +38,7 @@ https://doi.org/10.1109/ISCAS.2000.856439
 Welling, M., n.d. Kernel ridge regression. Department of Computer Science, University of Toronto, Toronto, Canada. 
 https://www.ics.uci.edu/~welling/classnotes/papers_class/Kernel-Ridge.pdf
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -82,7 +82,7 @@ fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest)
 rmsep(res.pred, ytest)
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
+###### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
  
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
@@ -127,9 +127,9 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     #end
     #ymeans = colmean(Y, weights)
 
-    ## Centering/scaling X, Y
-    ## No need to center X (what is centered is the kernel)
-    ## No need to scale Y
+    # Centering/scaling X, Y
+    # No need to center X (what is centered is the kernel)
+    # No need to scale Y
     ymeans = colmean(Y, weights)
     #fcenter!(Y, ymeans)
     xscales = ones(Q, p)
@@ -138,7 +138,7 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
 
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)

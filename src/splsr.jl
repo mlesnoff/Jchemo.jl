@@ -32,7 +32,7 @@ When `meth = :soft` the function returns the same results as function `spls` of 
 The case `nvar = 1` corresponds to the Covsel regression method described in Roger et al 2011 (see also 
 Höskuldsson 1992).
 
-## References
+# References
 
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.
 
@@ -56,7 +56,7 @@ Roger, J.M., Palagos, B., Bertrand, D., Fernandez-Ahumada, E., 2011. Covsel: Var
 multivariate and multi-response calibration: Application to IR spectroscopy. 
 Chem. Lab. Int. Syst. 106, 216-223.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -134,7 +134,7 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     elseif par.meth == :hard 
         fthresh = thresh_hard
     end
-    ## Centering/scaling of Y
+    # Centering/scaling of Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     fcenter!(X, xmeans)
@@ -148,11 +148,11 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## XtY 
+    # XtY 
     fweightr!(Y, weights.values)
     XtY = X' * Y
     YtX = XtY'
-    ## Pre-allocation
+    # Pre-allocation
     T  = similar(X, n, nlv)
     W  = similar(X, p, nlv)
     V  = similar(W)
@@ -173,7 +173,7 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     @inbounds for a = 1:nlv
         if q == 1
             w .= vcol(XtY, 1)
-            ## Sparsity
+            # Sparsity
             nzeros = p - nvar[a]
             if nzeros > 0
                 absw .= abs.(w)
@@ -183,7 +183,7 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
                 lambda = maximum(absw[absw .< qt])
                 w .= fthresh.(w, lambda)
             end
-            ## End
+            # End
             w ./= normv(w)
         else
             res = snipals_shen(YtX; meth = par.meth, nvar = nvar[a], tol = par.tol, maxit = par.maxit)

@@ -21,11 +21,11 @@ Keyword arguments:
 Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). 
 See function `spca` for details.
 
-## References
+# References
 Shen, H., Huang, J.Z., 2008. Sparse principal component analysis via regularized low rank matrix approximation. 
 Journal of Multivariate Analysis 99, 1015–1034. https://doi.org/10.1016/j.jmva.2007.06.007
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -111,7 +111,7 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-## Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C (regression coefs on the scores) 
+# Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C (regression coefs on the scores) 
 function predict(object::Spcr, X)
     T = transf(object, X)
     theta = object.C'

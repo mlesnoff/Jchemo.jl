@@ -37,7 +37,7 @@ The function returns two outputs (in addition to eventual plots):
 * `opt` : The index corresponding to the minimum value of `r`.
 * `sel` : The index of the selection from the R (or smoothed R) threshold.
 
-## References
+# References
 
 Andries, J.V.M., Vander Heyden, Y., Buydens, L.M.C., 2011. Improved variable reduction in partial least squares 
 modelling based on Predictive-Property-Ranked Variables and adaptation of partial least squares complexity. Analytica 
@@ -55,7 +55,7 @@ Partial Least Squares Regression. J. Near Infrared Spectrosc., JNIRS 8, 117â�
 Wold S. Cross-Validatory Estimation of the Number of Components in Factor and Principal Components Models. 
 Technometrics. 1978;20(4):397-405
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -89,7 +89,7 @@ function selwold(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; smooth::Bool =
         alpha::Q = .05, digits::Int = 3, graph::Bool = true, step::Int = 2, xlabel::String = "Index", 
         ylabel::String = "Value", title::String = "Score") where Q <: Float
     n = length(r)
-    ## below, length = n - 1
+    # below, length = n - 1
     zdiff = -diff(r) 
     R = zdiff ./ abs.(rmrow(r, n))
     Rs = copy(R)
@@ -99,7 +99,7 @@ function selwold(indx::AbstractVector{<: Real}, r::AbstMatVec{Q}; smooth::Bool =
         Rs = vec(transf(fitm, Rt)) 
         #Rs = vec(mavg(R'; f = f))
     end
-    ## End
+    # End
     opt = indx[r .== minimum(r)][1]
     sbool = Rs .< alpha
     if sum(sbool) == 0 

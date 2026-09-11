@@ -26,7 +26,7 @@ variables when computing covariances.
 **Note:** A faster alternative to function `covsel` is function `splsr` (with `nlv = 1`) that implements 
 the kernel PLS algorithm of Dayal&McGregor 1997. Another faster algorithm is described in Mishra 2022.   
 
-## References
+# References
 Höskuldsson, A., 1992. The H-principle in modelling with applications to chemometrics. Chemometrics 
 and Intelligent Laboratory Systems, Proceedings of the 2nd Scandinavian Symposium on Chemometrics 14, 
 139–153. https://doi.org/10.1016/0169-7439(92)80099-P
@@ -41,7 +41,7 @@ Chem. Lab. Int. Syst. 106, 216-223.
 Wikipedia
 https://en.wikipedia.org/wiki/Partial_correlation
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -88,7 +88,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
-    ## Centering/scaling of Y
+    # Centering/scaling of Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     fcenter!(X, xmeans)
@@ -102,7 +102,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
@@ -127,7 +127,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         selc[i] = c[sel[i]]
         x .= vcol(X, sel[i])
         dotx = dot(x, x) 
-        ## Projecion matrix on x (n, n) = x * inv(x' * x) * x' = x * x' / dot(x, x)
+        # Projecion matrix on x (n, n) = x * inv(x' * x) * x' = x * x' / dot(x, x)
         X .-= x * x' * X / dotx   
         Y .-= x * x' * Y / dotx 
         xss[i] = frob2(X)

@@ -33,7 +33,7 @@ Particular cases:
 
 See functions `lda` and `qda` for other details (arguments `weights`and `prior`).
 
-## References
+# References
 Friedman JH. Regularized Discriminant Analysis. Journal of the American Statistical Association. 1989; 
 84(405):165-175. doi:10.1080/01621459.1989.10478752.
 
@@ -42,7 +42,7 @@ Biostatistics. 2007; 8(1):86-100. doi:10.1093/biostatistics/kxj035.
 
 Hastie, T., Buja, A., Tibshirani, R., 1995. Penalized Discriminant Analysis. The Annals of Statistics 23, 73–102.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

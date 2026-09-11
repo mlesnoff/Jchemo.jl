@@ -30,7 +30,7 @@ instead of a PLSR.
 For instance, if argument `nlv` is set to `nlv` = `5:10`, the prediction for a new observation is the simple average of 
 the predictions returned by the models with 5 LVs, 6 LVs, ... 10 LVs, respectively.
 
-## References
+# References
 Lesnoff, M., Andueza, D., Barotin, C., Barre, V., Bonnal, L., Fernández Pierna, J.A., Picard, F., 
 Vermeulen, V., Roger, J.-M., 2022. Averaging and Stacking Partial Least Squares 
 Regression Models to Predict the Chemical Compositions and the Nutritive Values of Forages from 
@@ -40,7 +40,7 @@ M. Lesnoff, Averaging a local PLSR pipeline to predict chemical compositions and
 and feed from spectral near infrared data, Chemometrics and Intelligent Laboratory Systems. 244 (2023) 105031. 
 https://doi.org/10.1016/j.chemolab.2023.105031.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -109,7 +109,7 @@ function predict(object::Lwplsravg, X)
     m = nro(X)
     Q = eltype(object.X)
     nlv = object.par.nlv
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     k = object.par.k
     h = object.par.h
@@ -133,7 +133,7 @@ function predict(object::Lwplsravg, X)
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
+    # End
     pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, 
         nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)

@@ -6,7 +6,7 @@ Decomposition of a matrix by orthogonal projection on experimental factors.
     See the syntax in the examples below.
 * `datf` (n, q) : Dataframe containing the factor(s) specified in `f`. 
 
-## References
+# References
 Bertinetto, C., Engel, J., Jansen, J., 2020. ANOVA simultaneous component analysis: A tutorial review. 
 Analytica Chimica Acta: X 6, 100061. https://doi.org/10.1016/j.acax.2020.100061
 
@@ -21,9 +21,9 @@ Bioinformatics 21, 3043–3048. https://doi.org/10.1093/bioinformatics/bti476
 Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
 for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
 
-## Examples 
+# Examples 
 ```julia
-#### Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2.1).
+### Example of decomposition reported in Bertinetto et al. act chim. acta 2020 (section 2.1).
 
 using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -46,24 +46,24 @@ f = @formula(0 ~ temp + catal + temp & catal)
 d = decompx(Y, f, datf) ;
 @names d
 
-## Fitted values of the effects
+# Fitted values of the effects
 @names d.fit
 nam = :temp
 #nam = Symbol("temp & catal")
 d.fit[nam]
 
-## Residuals
+# Residuals
 d.R
 
-## Rebuild Y
+# Rebuild Y
 @head Y
 @head reduce(+, d.fit) + d.R
 
-## Explained variances
+# Explained variances
 summary(d)
 summary(d; corrected = false)
 
-## Permutation tests
+# Permutation tests
 res = permut(d; rep = 1000) ;
 res.explvarx
 res.valref
@@ -75,7 +75,7 @@ function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) 
     xmeans = colmean(X)
     Xc = fcenter(X, xmeans)
     Xm = ones(Q, n) * xmeans'
-    ## Contrasts
+    # Contrasts
     contr = EffectsCoding()   # sum-to-zero
     term_princ = Symbol.(terms(f.rhs))     # [2:end]
     nterm_princ = length(term_princ)
@@ -85,22 +85,22 @@ function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) 
     for i in term_princ
         contrasts[i] = contr
     end 
-    ## D, B
+    # D, B
     mf = ModelFrame(f, datf; contrasts)
     fs = apply_schema(f, mf.schema)
     resp, D = modelcols(fs, datf) ;   # no intercept
-    ## If argument 'perm' is added in the future
-    ## if perm
-    ##     D .= D[randperm(n), :]
-    ## end
-    ## End
+    # If argument 'perm' is added in the future
+    # if perm
+    #     D .= D[randperm(n), :]
+    # end
+    # End
     B = inv(D' * D) * D' * Xc        # no intercept
     dfm = nco(D) + 1                 # include intercept
-    ## Assign terms
+    # Assign terms
     term_rhs = fs.rhs.terms
     nterm_rhs = length(term_rhs) 
     assign = StatsModels.asgn(term_rhs)
-    ## Fit (including Intercept term) and R
+    # Fit (including Intercept term) and R
     C = list(Matrix{Int}, nterm_rhs)
     L = list(Matrix{Int}, nterm_rhs)    
     M = list(Matrix{Int}, nterm_rhs)
@@ -169,7 +169,7 @@ distribution of SS(effect) / SSR (computed from the set of `rep` permutations) t
 
 See function `decompx` for examples. 
 
-## References
+# References
 Manly, B.F., 2007. Randomization, bootstrap and Monte Carlo methods in biology, 3rd ed. Chapman & Hall/CRC, Boca Raton.
 
 Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 

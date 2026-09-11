@@ -8,7 +8,7 @@ Keyword arguments:
 
 The number of degrees of freedom (`df`) of the PLSR model is returned for 0, 1, ..., `nlv` LVs.
 
-## References
+# References
 Hansen, P.C., 1998. Rank-Deficient and Discrete Ill-Posed Problems, Mathematical Modeling and Computation. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898719697
 
@@ -19,12 +19,12 @@ Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimat
 for PLSR models. Illustration on agronomic spectroscopic NIR data. Journal of Chemometrics n/a, e3369.
 https://doi.org/10.1002/cem.3369
 
-## Examples
+# Examples
 ```julia
-## The example below reproduces the numerical illustration given by Kramer & Sugiyama 2011 
-## on the Ozone data (Fig. 1, center).
-## Function "pls.model" used for df calculations in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
-## automatically scales the X matrix before PLS. The example scales X for consistency with plsdof.
+# The example below reproduces the numerical illustration given by Kramer & Sugiyama 2011 
+# on the Ozone data (Fig. 1, center).
+# Function "pls.model" used for df calculations in the R package "plsdof" v0.2-9 (Kramer & Braun 2019)
+# automatically scales the X matrix before PLS. The example scales X for consistency with plsdof.
 
 using Jchemo, JchemoData, JLD2, DataFrames, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -35,10 +35,10 @@ X = dat.X
 dropmissing!(X) 
 vX = rmcol(Matrix(X), 4) 
 y = X[:, 4] 
-## For consistency with plsdof
+# For consistency with plsdof
 xscales = colstd(vX)
 vXs = fscale(vX, xscales)
-## End
+# End
 
 nlv = 12 ; gs = true
 res = dfplsr_cg(vXs, y; nlv, gs) ;

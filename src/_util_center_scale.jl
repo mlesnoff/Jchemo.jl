@@ -5,7 +5,7 @@ Center each column of a matrix.
 * `X` : Data (n, p).
 * `v` : Centering vector (p).
 
-## examples
+# examples
 ```julia
 using Jchemo
 
@@ -34,7 +34,7 @@ Scale each column of a matrix.
 * `X` : Data (n, p).
 * `v` : Scaling vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -62,7 +62,7 @@ Center and scale each column of a matrix.
 * `u` : Centering vector (p).
 * `v` : Scaling vector (p).
 
-## examples
+# examples
 ```julia
 using Jchemo
 

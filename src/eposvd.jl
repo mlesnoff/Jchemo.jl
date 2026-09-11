@@ -45,7 +45,7 @@ Zeaiter, M., Roger, J.M., Bellon-Maurel, V., 2006. Dynamic orthogonal projection
 robustness of multivariate calibrations. Application to NIR-based monitoring of wine fermentations. Chemometrics and 
 Intelligent Laboratory Systems, 80, 227–235. https://doi.org/10.1016/j.chemolab.2005.06.011
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -57,15 +57,15 @@ X1val = dat.X1val
 X2cal = dat.X2cal
 X2val = dat.X2val
 
-## The objective is to remove a detrimental 
-## information (here, D) from spaces X1 and X2
+# The objective is to remove a detrimental 
+# information (here, D) from spaces X1 and X2
 D = X1cal - X2cal
 nlv = 2
 res = eposvd(D; nlv)
 res.M # orthogonalization matrix
 res.V # detrimental directions (columns of matrix V = loadings of D)
 
-## Corrected Val matrices
+# Corrected Val matrices
 X1val_c = X1val * res.M
 X2val_c = X2val * res.M
 
@@ -88,9 +88,9 @@ function eposvd(D::AbstractMatrix{Q}; nlv::Int = 1) where Q <: Float
     nlv = min(nlv, n, p)
     Id = Diagonal(I, p)
     V = svd(D).V[:, 1:nlv]
-    ## If n = 1, this is the same as:
-    ## zp = vec(D) ; zp ./= normv(zp) ; V = reshape(zp, p, 1)
-    ## End 
+    # If n = 1, this is the same as:
+    # zp = vec(D) ; zp ./= normv(zp) ; V = reshape(zp, p, 1)
+    # End 
     M = Id - V * V'
     (M = M, V)
 end

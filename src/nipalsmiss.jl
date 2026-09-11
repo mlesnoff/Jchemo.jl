@@ -11,14 +11,14 @@ Keyword arguments:
 
 See function `nipals`. 
 
-## References
+# References
 K.R. Gabriel, S. Zamir, Lower rank approximation of matrices by least squares with any choice of weights, 
 Technometrics 21 (1979) 489–498.
 
 Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS with Gram-Schmidt Orthogonalization. 
 https://cran.r-project.org/
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 
@@ -73,7 +73,7 @@ function nipalsmiss(X::AbstractMatrix{Union{Missing, Q}}; kwargs...) where Q <: 
     (t = t, u, v, sv, niter)
 end
 
-## Used when GS in sequential extraction 
+# Used when GS in sequential extraction 
 function nipalsmiss(X::AbstractMatrix{Union{Missing, Q}}, UUt::Matrix{Q}, VVt::Matrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)

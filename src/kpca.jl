@@ -16,7 +16,7 @@ The method is implemented by SVD factorization of the weighted Gram matrix:
 * D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)
 where X is the cenetred matrix and D is a diagonal matrix of weights (`weights.values`) of the observations (rows of X).
 
-## References 
+# References 
 Scholkopf, B., Smola, A., MÃ¼ller, K.-R., 1997. Kernel principal component analysis, in: Gerstner, W., Germond, A., Hasler, 
 M., Nicoud, J.-D. (Eds.), Artificial Neural Networks, ICANN 97, Lecture Notes in Computer Science. Springer, Berlin, 
 Heidelberg, pp. 583-588. https://doi.org/10.1007/BFb0020217
@@ -27,7 +27,7 @@ computation and machine learning. MIT Press, Cambridge, Mass.
 Tipping, M.E., 2001. Sparse kernel principal component analysis. Advances in neural information processing systems, MIT Press. 
 http://papers.nips.cc/paper/1791-sparse-kernel-principal-component-analysis.pdf
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -72,14 +72,14 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     n, p = size(X)
     nlv = min(par.nlv, n)
-    ## Scaling of X
+    # Scaling of X
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    ## End
+    # End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
     sqrtw = sqrt.(weights.values)

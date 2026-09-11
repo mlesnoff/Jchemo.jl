@@ -21,7 +21,7 @@ Keyword arguments:
 This is the same principle as function `lwplsr` except that MLR models are fitted on the neighborhoods, instead of 
 PLSR models.  The neighborhoods are computed directly on `X` (there is no preliminary dimension reduction).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -61,7 +61,7 @@ res = predict(model, Ttest) ;
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f    
 
-## Same but with function 'pip'
+# Same but with function 'pip'
 nlv = 20
 metric = :eucl 
 h = 2. ; k = 100 
@@ -73,7 +73,7 @@ res = predict(model, Xtest) ;
 @head res.pred
 rmsep(res.pred, ytest)
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
+###### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
  
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
@@ -117,7 +117,7 @@ function predict(object::Lwmlr, X)
     X = ensure_mat(X)
     m = nro(X)
     Q = eltype(object.X)
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     k = object.par.k
     h = object.par.h
@@ -137,7 +137,7 @@ function predict(object::Lwmlr, X)
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
+    # End
     reslocw = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, store = object.par.store, 
         verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)

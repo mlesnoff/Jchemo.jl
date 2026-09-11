@@ -22,7 +22,7 @@ Keyword arguments:
 Same as function `plsrda` (PLSR-DA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 
 is run on the Y-dummy table. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))

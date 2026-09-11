@@ -14,7 +14,7 @@ Keyword arguments:
 Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). Matrix `X` is centered by the spatial 
 median computed by function`Jchemo.colmedspa`.
 
-## References
+# References
 Daszykowski, M., Kaczmarek, K., Vander Heyden, Y., Walczak, B., 2007. Robust statistics in data analysis - A review. 
 Chemometrics and Intelligent Laboratory Systems 85, 203-219. https://doi.org/10.1016/j.chemolab.2006.06.016
 
@@ -24,7 +24,7 @@ functional data, Test 8 (1999) 1–7
 Maronna, R., 2005. Principal components and orthogonal regression based on robust scales, Technometrics, 47:3, 264-273,
 DOI: 10.1198/004017005000000166
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -44,7 +44,7 @@ fit!(model, X)
 @names model
 @names model.fitm
 @head T = model.fitm.T
-## Same as:
+# Same as:
 transf(model, X)
 
 i = 1
@@ -68,7 +68,7 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = Jchemo.colmedspa(X, delta = Q(0.001))
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -77,12 +77,12 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## Sphere
+    # Sphere
     Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)
     fweightr!(Xtt, sqrt.(weights.values))
     res = LinearAlgebra.svd!(Matrix(Xtt)) 
     V = res.V[:, 1:nlv]
-    ## End
+    # End
     T = X * V      
     sv = colmad(T)  # Maronna 2005 p.268 eq.20 [different than in rnirs/rchemo ==> to fix in rchemo]
     s = sortperm(sv; rev = true)

@@ -13,7 +13,7 @@ Keyword arguments:
 Compute an approximate of matrix `X` from a bilinear model (e.g., PCA or PLS) fitted on `X`. The computed approximate X 
 is returned in the original location and scale of the X-data used to fit model `object`.
 
-## Examples 
+# Examples 
 ```julia 
 using Jchemo
 
@@ -28,7 +28,7 @@ y = Y[:, 1]
 ynew = Ynew[:, 1]
 weights = pweight(rand(n))
 
-#### Pca
+### Pca
 
 nlv = 2 
 scal = :none
@@ -56,7 +56,7 @@ fitm = model.fitm ;
 @head xfit(fitm, X)
 @head xresid(fitm, X)
 
-#### Pls
+### Pls
 
 nlv = 3
 scal = :none
@@ -100,7 +100,7 @@ function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
     else
         T = transf(object, X, nlv)
         mul!(X, T, vcol(object.V, 1:nlv)')
-        ## Coming back to the original scale
+        # Coming back to the original scale
         fscale!(X, 1 ./ object.xscales)    
         fcenter!(X, -object.xmeans)
     end

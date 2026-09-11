@@ -13,7 +13,7 @@ from a simple linear regression computed on the left side of the gap.
 For instance, If two gaps are observed between column-indexes 651-652 and between column-indexes 1425-1426, respectively, 
 the syntax should be `indexcol` = [651 ; 1425].
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -31,7 +31,7 @@ f, ax = plotsp(X, wl)
 vlines!(ax, wl_target; linestyle = :dot, color = (:grey, .8))
 f
 
-## Corrected data
+# Corrected data
 model = rmgap(; indexcol, npoint = 5)
 fit!(model, X)
 Xc = transf(model, X)

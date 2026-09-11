@@ -18,7 +18,7 @@ The window used in `X1` to predict wavelength "i" in `X2` is:
 
 * i - `npoint`, i - `npoint` + 1, ..., i, ..., i + `npoint` - 1, i + `npoint`
 
-## References
+# References
 Bouveresse, E., Massart, D.L., 1996. Improvement of the piecewise direct targetisation procedure 
 for the transfer of NIR spectra for multivariate calibration. Chemometrics and Intelligent Laboratory 
 Systems 32, 201–213. https://doi.org/10.1016/0169-7439(95)00074-7
@@ -30,7 +30,7 @@ Wülfert, F., Kok, W.Th., Noord, O.E. de, Smilde, A.K., 2000. Correction of Temp
 Spectral Variation by Continuous Piecewise Direct Standardization. Anal. Chem. 72, 1639–1644.
 https://doi.org/10.1021/ac9906835
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -38,23 +38,23 @@ db = joinpath(path_jdat, "data/caltransfer.jld2")
 @load db dat
 @names dat
 
-## Objects X1 and X2 are spectra collected on the same samples, and X2 represents 
-## the target space. The objective is to transfer X1 in the same space as X2.
+# Objects X1 and X2 are spectra collected on the same samples, and X2 represents 
+# the target space. The objective is to transfer X1 in the same space as X2.
 
-## Data to transfer
+# Data to transfer
 X1cal = dat.X1cal
 X1val = dat.X1val
 n = nro(X1cal)
 m = nro(X1val)
 
-## Target space
+# Target space
 X2cal = dat.X2cal
 X2val = dat.X2val
 
-## Fitting the model
+# Fitting the model
 fitm = calpds(X1cal, X2cal; npoint = 2, algo = plskern, nlv = 2) 
 
-## Transfer of new spectra X1val 
+# Transfer of new spectra X1val 
 pred = predict(fitm, X1val).pred  # transformed X1val expected to be close to X2val
 
 i = 1

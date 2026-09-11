@@ -12,14 +12,14 @@ See function `gridscore` for examples.
 function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
         nlv::Union{Int, AbstractVector{Int}}, verbose::Bool = false)
-    ## The function works for mono- and multiblock X
-    ## Monoblock
+    # The function works for mono- and multiblock X
+    # Monoblock
     if isa(Xtrain[1, 1], Number)
         Xtrain = ensure_mat(Xtrain)
         X = ensure_mat(X)
         n, p = size(Xtrain)
         Q = eltype(Xtrain)
-    ## Multiblock
+    # Multiblock
     else  
         Xtrain = ensure_mat_mb(Xtrain)
         X = ensure_mat_mb(X)
@@ -35,7 +35,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
         Y = ensure_mat(Y)
     end
     q = nco(Ytrain)
-    ## Rebuild 'nlv' to ensure consistency with training dimensionality
+    # Rebuild 'nlv' to ensure consistency with training dimensionality
     le_nlv = length(nlv)
     if le_nlv == 1
         nlv = minimum([maximum(nlv); n - 1; p - 1])
@@ -43,7 +43,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
         nlv = minimum(nlv):minimum([maximum(nlv); n - 1; p - 1])
         le_nlv = length(nlv)
     end
-    ## End
+    # End
     if isnothing(pars)   # e.g.: case of PLSR with no scaling
         if verbose ; println("-- Nb. combinations = 0.") ; end
         fitm = algo(Xtrain, Ytrain; nlv = maximum(nlv))
@@ -67,7 +67,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
             zres
         end 
         res = ncomb == 1 ? res[1] : reduce(vcat, res) 
-        ## Make dat
+        # Make dat
         if le_nlv == 1
             dat = DataFrame(pars)
         else
@@ -80,7 +80,7 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
         end
         znlv = repeat(nlv, ncomb)
         dat = hcat(dat, DataFrame(nlv = znlv))
-        ## End
+        # End
     end
     if verbose ; println("-- End.") ; end
     namy = map(string, fill("y", q), 1:q)

@@ -48,7 +48,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
             zres
         end 
         res = ncomb == 1 ? res[1] : reduce(vcat, res) 
-        ## Make dat
+        # Make dat
         if le_lb == 1
             dat = DataFrame(pars)
         else
@@ -61,7 +61,7 @@ function gridscore_lb(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
         end
         zlb = repeat(lb, ncomb)
         dat = hcat(dat, DataFrame(lb = zlb))
-        ## End
+        # End
     end
     if verbose ; println("-- End.") ; end
     namy = map(string, fill("y", q), 1:q)

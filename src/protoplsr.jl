@@ -56,7 +56,7 @@ Notes:
 * The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
     first Y column (this will be fixed later). 
 
-## References
+# References
 Ramirez-Lopez, L., Metz, M., Lesnoff, M., Orellano, C., Perez-Fernandez, E., Plans, M., Breure, T., Behrens, 
 T., Viscarra Rossel, R., Peng, Y., 2026. Rethinking local spectral modelling: From per-query refitting to model libraries. 
 Analytica Chimica Acta 345682. https://doi.org/10.1016/j.aca.2026.345682
@@ -66,7 +66,7 @@ Neural Computation 10, 2047–2084. https://doi.org/10.1162/089976698300016963
 
 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -140,13 +140,13 @@ function protoplsr(X, Y; kwargs...)
     par = recovkw(ParProtoplsr{Q}, kwargs).par
     nlv = min(par.k, p, par.nlv)
     par.nlv = nlv
-    ## Selection of the prototypes
+    # Selection of the prototypes
     if par.typsamp == :rand      
         s_proto = samprand(n, par.nproto; seed = par.seed).test
     elseif par.typsamp == :ks
         s_proto = sampks(X, par.nproto; metric = par.metric).test
     end
-    ## Compute the neighborhood of each prototype
+    # Compute the neighborhood of each prototype
     if par.nlvdis == 0
         fitm_emb = nothing
         resnn = getknn(X, vrow(X, s_proto); k = par.k, metric = par.metric)
@@ -154,7 +154,7 @@ function protoplsr(X, Y; kwargs...)
         fitm_emb = plskern(X, Y; nlv = par.nlvdis)
         resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, metric = par.metric)
     end
-    ## Optimize(K-fold-CV)/fit/store the nproto prototype models 
+    # Optimize(K-fold-CV)/fit/store the nproto prototype models 
     fitm = list(Plsr, par.nproto)
     coefs = list(NamedTuple, par.nproto)
     segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
@@ -167,9 +167,9 @@ function protoplsr(X, Y; kwargs...)
         pars = mpar(scal = [par.scal])
         model = plskern()
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:par.nlv).res
-        ## To do: adapt for multivariate Y
+        # To do: adapt for multivariate Y
         u = findall(rescv.y1 .== minimum(rescv.y1))[1]
-        ## End
+        # End
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])
         if par.centroid          
@@ -180,7 +180,7 @@ function protoplsr(X, Y; kwargs...)
             Yproto[i, :] .= vrow(Y, s_proto[i])
         end
     end
-    ## Outputs
+    # Outputs
     Protoplsr(fitm, fitm_emb, Xproto, Yproto, coefs, resnn, par)  
 end
 

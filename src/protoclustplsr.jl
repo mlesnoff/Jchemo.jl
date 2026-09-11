@@ -48,7 +48,7 @@ Notes:
 * The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
     first Y column (this will be fixed later). 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))

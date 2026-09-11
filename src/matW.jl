@@ -8,7 +8,7 @@ Between-class covariance matrix.
 Compute the between-class covariance matrix (output `B`) of `X`. This is the (non-corrected) covariance matrix of 
 the weighted class centers.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -78,14 +78,14 @@ function matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityW
     ni = taby.n
     nlev = length(lev)                                 
     priors = aggsumv(weights.values, y).val     # sub-total weights by class   
-    ## When there is at least one class containing only 1 obs, a variable 'Wi_1obs' equal 
-    ## to the overal covariance matrix that is then used in the next boucle 'for'.
-    ## Another convention could be chosen (e.g., giving weight = 0 to the class(es) with 1 obs), 
-    ## but this is not implemented for now.
+    # When there is at least one class containing only 1 obs, a variable 'Wi_1obs' equal 
+    # to the overal covariance matrix that is then used in the next boucle 'for'.
+    # Another convention could be chosen (e.g., giving weight = 0 to the class(es) with 1 obs), 
+    # but this is not implemented for now.
     if sum(ni .== 1) > 0
         Wi_1obs = covm(X, weights)
     end
-    ## End
+    # End
     Wi = list(Matrix{Q}, nlev)
     W = zeros(eltype(X), p, p)
     @inbounds for i in eachindex(lev) 
@@ -96,7 +96,7 @@ function matW(X::AbstMatVec{Q}, y::AbstractVector{String}, weights::ProbabilityW
             Wi[i] = covm(X[s, :], pweight(weights.values[s]))
         end
         @. W = W + priors[i] * Wi[i]
-        ## Alternative: to give weight = 0 to the class(es) with 1 obs
+        # Alternative: to give weight = 0 to the class(es) with 1 obs
     end
     (W = W, Wi, ni, priors, lev, weights)
 end

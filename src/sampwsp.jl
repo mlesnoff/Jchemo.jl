@@ -21,7 +21,7 @@ If `recod = true`, each column x of `X` is recoded within [0, 1] and the center 
 * vdiff = vmax - vmin
 * x .=  0.5 .+ (x .- (vdiff / 2 + vmin)) / vdiff
 
-## References
+# References
 
 Béal A. 2015. Description et sélection de données en grande dimensio. Thèse de doctorat. Laboratoire 
 d’Instrumentation et de sciences analytiques, Ecole doctorale des siences chimiques, Université d'Aix-Marseille.
@@ -30,7 +30,7 @@ Santiago, J., Claeys-Bruno, M., Sergent, M., 2012. Construction of space-filling
 for high dimensional spaces. Chemometrics and Intelligent Laboratory Systems, Selected Papers from 
 Chimiométrie 2010 113, 26–31. https://doi.org/10.1016/j.chemolab.2011.06.003
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie
 
@@ -57,11 +57,11 @@ function sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where Q <
         xmeans = colmean(vX)
         #xmeans = fill(.5, p)
     end
-    ## First reference point is set as the closest from the domain center
+    # First reference point is set as the closest from the domain center
     s = getknn(vX, xmeans'; k = 1).ind[1][1]
     x .= vrow(vX, s:s)
     ind = [indX[s]]
-    ## Start
+    # Start
     iter = 1
     while (n > 1) && (iter < maxit) 
         res = getknn(vX, x; k = n)

@@ -19,7 +19,7 @@ where:
 When `Y` is used, R2(Yc, ta) is replaced by the redundancy Rd(Yc, ta) (see function `rd`), such as in 
 Tenenhaus 1998 p.139. 
 
-## References
+# References
 Chong, I.-G., Jun, C.-H., 2005. Performance of some variable selection methods when 
 multicollinearity is present. Chemometrics and Intelligent Laboratory Systems 78, 103–112. 
 https://doi.org/10.1016/j.chemolab.2004.12.011
@@ -29,7 +29,7 @@ squares regression. Journal of Chemometrics 34, e3226. https://doi.org/10.1002/c
 
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -49,7 +49,7 @@ fit!(model, X, Y)
 vip(model.fitm).imp
 vip(model.fitm, Y).imp
 
-## For PLSDA
+# For PLSDA
 
 model = plsrda(; nlv) 
 fit!(model, X, ycla)
@@ -82,11 +82,11 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, 
     p = nro(W)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     Q = eltype(T)
-    ## Type 'Plsr' contains algorithmns where W is normed
-    ## ==> No need to do the following: 
-    ## wnorms = colnorm(W)
-    ## W2 = fscale(W, wnorms).^2
-    ## End
+    # Type 'Plsr' contains algorithmns where W is normed
+    # ==> No need to do the following: 
+    # wnorms = colnorm(W)
+    # W2 = fscale(W, wnorms).^2
+    # End
     W2 = vcol(W, 1:nlv).^2
     sst = zeros(Q, nlv)
     @inbounds for a = 1:nlv

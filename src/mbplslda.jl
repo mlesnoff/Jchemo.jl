@@ -38,7 +38,7 @@ observation weights (see function `pweightcla`) that are then given as input in 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JLD2, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))

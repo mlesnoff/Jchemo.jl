@@ -15,7 +15,7 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
     `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
-## References
+# References
 Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis for multi-block classification. 
 Chemometrics and Intelligent Laboratory Systems, 141, 58-67.
 
@@ -24,7 +24,7 @@ University of copenhagen.
 
 Menichelli et al., 2014. SO-PLS as an exploratory toolfor path modelling. Food Quality and Preference, 36, 122-134.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -99,26 +99,26 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
         end
     end 
     par.nlv = nlv
-    ## 'bscal = :none' since block-scaling has no effect on SOPLS  
+    # 'bscal = :none' since block-scaling has no effect on SOPLS  
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
-    ## End
+    # End
     transf!(fitm_bl, Xbl)
-    ## Scaling of Y
+    # Scaling of Y
     yscales = ones(Q, q)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         yscales .= colscal(Y, weights)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)
-    ## Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
-    ## First block
+    # Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
+    # First block
     fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = :none)  
     T = fitm[1].T
     fit .= predict(fitm[1], Xbl[1]).pred
-    ## Other blocks
+    # Other blocks
     b = list(Matrix{Q}, nbl) 
     if nbl > 1
         for i = 2:nbl

@@ -25,7 +25,7 @@ b) Within the selected neighborhood, the weights  are defined from the dissimila
 In general, for X-data with high dimensions, using the Mahalanobis distance requires a preliminary dimensionality 
 reduction (see examples).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -58,7 +58,7 @@ res = predict(model, Xtest) ;
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## With preliminary dimension reduction
+# With preliminary dimension reduction
 model1 = pcasvd(nlv = 15)
 metric = :eucl ; h = 1. ; k = 3 
 model2 = knnr(; metric, h, k) 
@@ -68,7 +68,7 @@ res = predict(model, Xtest) ;
 @head res.pred
 @show rmsep(res.pred, ytest)
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
+###### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
  
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
@@ -114,7 +114,7 @@ function predict(object::Knnr, X)
     m = nro(X)
     q = nco(object.Y)
     Q = eltype(object.X)
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     h = object.par.h
     k = object.par.k
@@ -134,7 +134,7 @@ function predict(object::Knnr, X)
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
+    # End
     pred = zeros(Q, m, q)
     @inbounds for i = 1:m
         weights = pweight(listw[i])

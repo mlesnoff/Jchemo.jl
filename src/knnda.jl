@@ -18,7 +18,7 @@ Keyword arguments:
 This function has the same principle as function `knnr` except that a discrimination replaces the regression. A weighted vote 
 is done over the neighborhood, and the prediction corresponds to the most frequent class.
  
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -59,7 +59,7 @@ res.listw
 @show errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-## With dimension reduction and function 'pip'
+# With dimension reduction and function 'pip'
 nlv = 15
 metric = :cos ; h = 1. ; k = 3 
 model1 = pcasvd(; nlv)
@@ -97,7 +97,7 @@ function predict(object::Knnda, X)
     X = ensure_mat(X)
     m = nro(X)
     Q = eltype(object.X)
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     h = object.par.h
     k = object.par.k
@@ -117,7 +117,7 @@ function predict(object::Knnda, X)
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
+    # End
     pred = similar(object.y, m, 1)
     @inbounds for i = 1:m
         s = res.ind[i]

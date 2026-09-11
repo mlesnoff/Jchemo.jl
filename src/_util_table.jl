@@ -10,7 +10,7 @@ Specific for a dataset:
 
 The function returns sorted levels. It does not support inputs of type `Any`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -49,20 +49,20 @@ function tab(datf::DataFrame; group = nothing)
     res
 end
 
-## Not exported
+# Not exported
 function tabv(X::AbstractArray)
     res = StatsBase.countmap(X)
     res_sort = sort(collect(res); by = p -> p.first)
     (val = last.(res_sort), lev = first.(res_sort))
 end
-## End
+# End
 
 """
     tabdupl(x::AbstractVector)
 Tabulate duplicated values in a vector.
 * `x` : A vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -93,7 +93,7 @@ For a given vector `q` of length K, the function returns K + 1 intervals:
 * (q[K - 1], q[K]]
 * (q[K], Inf)
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -124,7 +124,7 @@ of length K:
 * q[K - 1] < x <= q[K]  : ==> K 
 * q[K] < x              : ==> K + 1 
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 

@@ -18,7 +18,7 @@ predict is correlated within groups. This prevents underestimation of the genera
 The function returns a list (vector) of `rep` elements. Each element of the list is a vector of the indexes 
 (positions within 1:`n`) of the sampled observations.  
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 

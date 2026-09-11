@@ -18,7 +18,7 @@ Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
     
 See function `plskern` for examples.
 
-## References
+# References
 Tenenhaus, M., 1998. La régression PLS: thÃ©orie et pratique. Editions Technip, Paris, France.
 
 Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in Linear Regression. 
@@ -44,7 +44,7 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -62,7 +62,7 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
-    ## Pre-allocation
+    # Pre-allocation
     Tx = similar(X, n, nlv)
     Wx = similar(X, p, nlv)
     Wytild = similar(X, q, nlv)
@@ -75,7 +75,7 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     wytild = similar(wy)     
     vx = similar(wx)
     niter = zeros(Int, nlv)
-    ## End
+    # End
     @inbounds for a = 1:nlv       
         ty .= vcol(Y, 1)
         cont = true
@@ -99,10 +99,10 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         ttx = dot(tx, tx)
         mul!(vx, X', tx)
         vx ./= ttx
-        ## Deflation with respect to tx (asymetric PLS)
+        # Deflation with respect to tx (asymetric PLS)
         X .-= tx * vx'
         Y .-= tx * wytild'
-        ## End         
+        # End         
         Tx[:, a] .= tx
         Wx[:, a] .= wx
         Vx[:, a] .= vx

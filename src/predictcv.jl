@@ -13,7 +13,7 @@ The score is computed as in `gridcv` for the same model and segments,
 but using the predictions from `predictcv`. This allows to check that the same score 
 is obtained with both functions. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -47,7 +47,7 @@ plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = findall(res.y1 .== minimum(res.y1))[1] 
 res[u, :]  # best model
 
-## Within-CV predictions for the best model
+# Within-CV predictions for the best model
 model = plskern(nlv = res.nlv[u], scal = res.scal[u])
 respred = predictcv(model, Xtrain, ytrain; segm, score = rmsep) ; 
 @names respred

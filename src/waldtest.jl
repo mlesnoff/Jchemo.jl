@@ -18,12 +18,12 @@ The function tests hypothesis H0: `L` * `b` = `h0`, with either
 Both tests assume that `b` is Gaussian.  Compared to the F test, the Wald test neglects the uncertainty 
 affecting the estimate of the dispersion parameter of the model (e.g., 'sigma2' in MLRs). 
 
-## References
+# References
 Diggle, P.J., Liang, K.-Y., Zeger, S.L., 1994. Analysis of longitudinal data. Oxford, Clarendon Press, 253 p.
 
 Draper, N.R., Smith, H., 1998. Applied Regression Analysis. New York, John Wiley & Sons, Inc., 706 p
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo, JchemoData, JLD2
 using GLM, AnovaGLM
@@ -35,7 +35,7 @@ datf = dat.datf
 n = nro(datf)
 tab(datf; group = ["temp", "catal"])  # balanced design
 
-#### Fit of a 2-factor anova model with interaction, using GLM 
+### Fit of a 2-factor anova model with interaction, using GLM 
 
 contr = EffectsCoding()  # 'sum-to-zero'
 #contr = HelmertCoding()
@@ -51,34 +51,34 @@ dfr = dof_residual(fitm)
 (n = n, dfm, dfr)
 b = GLM.coef(fitm)   # model coefficients
 varb = vcov(fitm)    # variance-covariance matrix
-## Same as:
+# Same as:
 #s2 = dispersion(fitm.model)^2
 #s2 * inv(D' * D)   # = varb
 
-#### Tests
-## Hyp. matrices 'L' for contrast 'EffectsCoding' or 'HelmertCoding'
-## (Not valid for contrasts 'DummyCoding', except 'test (4)')
+### Tests
+# Hyp. matrices 'L' for contrast 'EffectsCoding' or 'HelmertCoding'
+# (Not valid for contrasts 'DummyCoding', except 'test (4)')
 
 anova(fitm)
 
-## (1) Factor 'temp'
+# (1) Factor 'temp'
 L = [0. 1 0 0 0 0 ;
      0 0 1 0 0 0]
 waldtest(L, b, varb)                  # Wald test
 waldtest(L, b, varb; dfden = dfr)     # F test
 
-## (2) Factor 'catal'
+# (2) Factor 'catal'
 L = [0. 0 0 1 0 0]
 waldtest(L, b, varb) 
 waldtest(L, b, varb; dfden = dfr)
 
-## (3) Interaction 'temp * catal'
+# (3) Interaction 'temp * catal'
 L = [0. 0 0 0 1 0 ;
      0 0 0 0 0 1]
 waldtest(L, b, varb) 
 waldtest(L, b, varb; dfden = dfr)
 
-## (4) Whole effect 'catal': 'catal + temp * catal'
+# (4) Whole effect 'catal': 'catal + temp * catal'
 L = [0. 0 0 1 0 0 ;
      0 0 0 0 1 0 ;
      0 0 0 0 0 1]

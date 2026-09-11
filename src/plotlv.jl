@@ -26,7 +26,7 @@ Keyword arguments:
 
 To use the function, a backend (e.g., CairoMakie) has to be specified.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

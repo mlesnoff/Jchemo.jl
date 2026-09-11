@@ -23,11 +23,11 @@ At the end, X ~ u * sv * v', where:
 When NIPALS is used on sequentially deflated matrices, vectors u and v can loose orthogonality due to accumulation 
 of rounding errors. Orthogonality can be rebuilt from the Gram-Schmidt method (arguments `UUt` and `VVt`). 
 
-## References
+# References
 K.R. Gabriel, S. Zamir, Lower rank approximation of matrices by least squares with any choice of weights, 
 Technometrics 21 (1979) 489–498.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, LinearAlgebra
 
@@ -69,7 +69,7 @@ function nipals(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
     (t = t, u, v, sv, niter)
 end
 
-## Used when GS in sequential extraction 
+# Used when GS in sequential extraction 
 function nipals(X::AbstractMatrix{Q}, UUt::AbstractMatrix{Q}, VVt::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(ParNipals{Q}, kwargs).par
     X = ensure_mat(X)

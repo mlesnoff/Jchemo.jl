@@ -12,7 +12,7 @@ Keyword arguments:
 
 Use the matrix division operator (polyalgorithm, see the related help).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))

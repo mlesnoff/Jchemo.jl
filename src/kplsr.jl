@@ -16,11 +16,11 @@ Keyword arguments:
 
 This algorithm becomes slow for n > 1000. Use function `dkplsr` instead.
 
-## References 
+# References 
 Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
 Journal of Machine Learning Research 2, 97-123.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -57,7 +57,7 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
+###### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
  
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
@@ -95,8 +95,8 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
-    ## Centering/scaling X, Y
-    ## No need to center X (what is centered is the kernel)
+    # Centering/scaling X, Y
+    # No need to center X (what is centered is the kernel)
     ymeans = colmean(Y, weights)  
     fcenter!(Y, ymeans)
     xscales = ones(Q, p)
@@ -108,7 +108,7 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
     K = fkern(X, X; kwargs...)     # In the future?: fkern!(K, X, X; values(kwargs)...)
     Kt = K'    
@@ -116,7 +116,7 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- vtot .+ sum(fweightr(DKt', weights.values)) 
     I = Diagonal(ones(Q, n))
-    ## Pre-allocation
+    # Pre-allocation
     T = similar(X, n, nlv)
     U = similar(T)
     C = similar(X, q, nlv)

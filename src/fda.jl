@@ -36,7 +36,7 @@ observation weights (see function `pweightcla`) that are then given as input in 
 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif').
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -73,17 +73,17 @@ aggsumv(fitm.weights.values, ytrain)
 @head transf(model, Xtrain)
 @head transf(model, Xtest)
 
-## X-loadings matrix
-## = coefficients of the linear discriminant function
-## = "LD" of function lda of the R package MASS
+# X-loadings matrix
+# = coefficients of the linear discriminant function
+# = "LD" of function lda of the R package MASS
 fitm.V
 fitm.V' * fitm.V
 
-## Explained variance computed by weighted PCA of the class centers 
-## in transformed scale
+# Explained variance computed by weighted PCA of the class centers 
+# in transformed scale
 summary(model).explvarx
 
-## Projections of the class centers to the score space
+# Projections of the class centers to the score space
 ct = fitm.Tcenters 
 f, ax = plotxy(fitm.T[:, 1], fitm.T[:, 2], ytrain; ellipse = true, title = "FDA",
     xlabel = "Score-1", ylabel = "Score-2")
@@ -109,7 +109,7 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -126,14 +126,14 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     nlv = min(n, p, nlev - 1, par.nlv)
     par.nlv = nlv
     res.W .*= n / (n - nlev)    # unbiased estimate
-    ## Regularization
+    # Regularization
     if par.lb > 0
         res.W .+= par.lb .* I(p)    # @. does not work with I
     end
-    ## End
+    # End
     zres = matB(X, y, weights)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W)))
-    ## Winv * B (p, p) is not symmetric
+    # Winv * B (p, p) is not symmetric
     fitm = eigen!(Winv * zres.B; sortby = x -> -abs(x))
     nlv = min(par.nlv, n, p, nlev - 1)
     V = real.(vcol(fitm.vectors, 1:nlv))

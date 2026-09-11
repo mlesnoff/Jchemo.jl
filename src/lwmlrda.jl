@@ -20,7 +20,7 @@ Keyword arguments:
 This is the same principle as function `lwmlr` except that MLR-DA models, instead of MLR models, are fitted on the 
 neighborhoods.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -91,7 +91,7 @@ function predict(object::Lwmlrda, X)
     X = ensure_mat(X)
     m = nro(X)
     Q = eltype(object.X)
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     k = object.par.k
     h = object.par.h
@@ -111,8 +111,8 @@ function predict(object::Lwmlrda, X)
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
-    ## In each neighborhood, the observation weights used in 'algo' are given by listw
+    # End
+    # In each neighborhood, the observation weights used in 'algo' are given by listw
     reslocw = locw(object.X, object.y, X; listnn = res.ind, listw, algo = mlrda, store = object.par.store, 
         verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)

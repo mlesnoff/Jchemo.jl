@@ -17,10 +17,10 @@ Depending argument `typ`, the correlation can be replaced by the (not corrected)
 
 See Tenenhaus 1998 section 2.2.1 p.10-11.
 
-## References
+# References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
-## Examples 
+# Examples 
 ```julia 
 using Jchemo
 X = rand(5, 10)
@@ -60,7 +60,7 @@ RV is bounded within [0, 1].
 
 A dissimilarty measure between `X` and `Y` can be computed by d = sqrt(2 * (1 - RV)).
 
-## References
+# References
 Escoufier, Y., 1973. Le Traitement des Variables Vectorielles. Biometrics 29, 751–760. 
 https://doi.org/10.2307/2529140
 
@@ -83,7 +83,7 @@ data: the modified RV-coefficient. Bioinformatics 25, 401–405. https://doi.org
 Robert, P., Escoufier, Y., 1976. A Unifying Tool for Linear Multivariate Statistical Methods: The RV-Coefficient. 
 Journal of the Royal Statistical Society: Series C (Applied Statistics) 25, 257–265. https://doi.org/10.2307/2347233
 
-## Examples 
+# Examples 
 ```julia 
 using Jchemo
 X = rand(5, 10)

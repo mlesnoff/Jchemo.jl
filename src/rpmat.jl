@@ -10,12 +10,12 @@ of size n x `p` is given by X * V.
 
 V is simulated from i.i.d. N(0, 1) / sqrt(`nlv`).
 
-## References 
+# References 
 Li, V., Hastie, T.J., Church, K.W., 2006. Very sparse random projections, in: Proceedings of the 12th ACM SIGKDD 
 International Conference on Knowledge Discovery and Data Mining, KDD ’06. Association for Computing Machinery, 
 New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 p = 10 ; nlv = 3
@@ -49,7 +49,7 @@ Usual values for `s` are:
 * 1               (Achlioptas 2001)
 * 3               (Achlioptas 2001) 
 
-## References 
+# References 
 Achlioptas, D., 2001. Database-friendly random projections, in: Proceedings of the Twentieth ACM SIGMOD-SIGACT-SIGART 
 Symposium on Principles of Database Systems, PODS ’01. Association for Computing Machinery, New York, NY, USA, pp. 274–281. 
 https://doi.org/10.1145/375551.375608
@@ -58,7 +58,7 @@ Li, V., Hastie, T.J., Church, K.W., 2006. Very sparse random projections, in: Pr
 SIGKDD International Conference on Knowledge Discovery and Data Mining, KDD ’06. Association for Computing Machinery, 
 New York, NY, USA, pp. 287–296. https://doi.org/10.1145/1150402.1150436
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 p = 10 ; nlv = 3

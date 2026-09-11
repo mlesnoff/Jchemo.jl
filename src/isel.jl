@@ -25,12 +25,12 @@ The overall process above is replicated `rep` times. The outputs provided by the
 
 Note: the function is inplace (modifies object `model`).
 
-## References
+# References
 - Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
 Least-Squares Regression (iPLS): A Comparative Chemometric Study with an Example from Near-Infrared 
 Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/0003702001949500
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, DataFrames, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -56,7 +56,7 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Work on the j-th y-variable 
+# Work on the j-th y-variable 
 j = 2
 nam = namy[j]
 ytrain = Ytrain[:, nam]
@@ -105,18 +105,18 @@ function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector
         Ycal .= vrow(Y, s.train)
         Xval .= vrow(X, s.test)
         Xval .= vrow(X, s.test)
-        ## Reference
+        # Reference
         fit!(model, Xcal, Ycal)
         pred .= predict(model, Xval).pred
         resref .= score(pred, Yval)
-        ## Intervals
+        # Intervals
         @inbounds for j = 1:nint
             u = itv[j, 1]:itv[j, 2]
             fit!(model, vcol(Xcal, u), Ycal)
             pred .= predict(model, vcol(Xval, u)).pred
             vres[j] = resref - score(pred, Yval)
         end
-        ## End
+        # End
         res_rep[:, :, i] .= reduce(vcat, vres)
     end
     imp = mean(res_rep, dims = 3)[:, :, 1]

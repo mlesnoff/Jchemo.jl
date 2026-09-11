@@ -16,7 +16,7 @@ Keyword arguments:
 
 See function `plskern` for examples.
 
-## References
+# References
 de Jong, S., 1993. SIMPLS: An alternative approach to partial least squares regression. Chemometrics and Intelligent 
 Laboratory Systems 18, 251–263. https://doi.org/10.1016/0169-7439(93)85002-X
 """ 
@@ -39,7 +39,7 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -53,10 +53,10 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## XtY 
+    # XtY 
     fweightr!(Y, weights.values)
     XtY = X' * Y
-    ## Pre-allocation
+    # Pre-allocation
     T  = similar(X, n, nlv)
     V  = similar(X, p, nlv)
     R  = similar(V)
@@ -68,8 +68,8 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     r  = similar(v)
     c  = similar(X, q)
     zXtY = similar(XtY)
-    ## End
-    ## de Jong Chemolab 1993 Table 1 (as fast as Appendix) 
+    # End
+    # de Jong Chemolab 1993 Table 1 (as fast as Appendix) 
     @inbounds for a = 1:nlv
         if a == 1
             zXtY .= XtY
@@ -90,8 +90,8 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         C[:, a] .= c
         TT[a] = tt
     end
-    ## B = R * inv(T' * D * T) * T' * D * Y
-    ## W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
+    # B = R * inv(T' * D * T) * T' * D * Y
+    # W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
     Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
 end
 

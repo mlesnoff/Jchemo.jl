@@ -15,7 +15,7 @@ Keyword arguments:
 
 See the help page of function `dmnorm`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -27,7 +27,7 @@ y = dat.X[:, 5]
 n = nro(X)
 tab(y) 
 
-## Example of class Setosa 
+# Example of class Setosa 
 s = y .== "setosa"
 zX = X[s, :]
 
@@ -39,7 +39,7 @@ fitm.Uinv
 fitm.logdetS
 @head pred = predict(model, zX).pred
 
-## Consistency with dmnorm
+# Consistency with dmnorm
 model0 = dmnorm()
 fit!(model0, zX)
 @head pred0 = predict(model0, zX).pred

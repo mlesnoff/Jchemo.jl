@@ -27,14 +27,14 @@ results (i.e. over the `rep` replications;`imp`) and the results per replication
 In general, this method returns similar results as the out-of-bag permutation method (such as the one used in random 
 forests; Breiman, 2001).
 
-## References
+# References
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. https://doi.org/10.1023/A:1010933404324
 
 Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
 Least-Squares Regression (iPLS): A Comparative Chemometric Study with an Example from Near-Infrared 
 Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/0003702001949500
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -59,7 +59,7 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Work on the j-th y-variable 
+# Work on the j-th y-variable 
 j = 2
 nam = namy[j]
 ytrain = Ytrain[:, nam]
@@ -112,10 +112,10 @@ function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, psamp::Flo
         zXval = similar(Xval)
         @inbounds for j = 1:p
             zXval .= copy(Xval)
-            ## Permutation of variable j
+            # Permutation of variable j
             zs .= StatsBase.sample(1:nval, nval, replace = false)
             zXval[:, j] .= zXval[zs, j]
-            ## End  
+            # End  
             pred .= predict(model, zXval).pred
             res_rep[j, :, i] = score(pred, Yval) - scoreref
         end

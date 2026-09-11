@@ -29,9 +29,9 @@ The function returns two outputs:
 * `res` : mean results
 * `res_p` : results per replication.
 
-## Examples
+# Examples
 ```julia
-####### Regression
+###### Regression
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -55,10 +55,10 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## a) Replicated K-fold CV 
+# a) Replicated K-fold CV 
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
-## b) Replicated test-set validation
+# b) Replicated test-set validation
 #m = round(Int, ntrain / 3) ; rep = 30
 #segm = segmts(ntrain, m; rep)
 
@@ -78,7 +78,7 @@ pred = predict(model, Xtest).pred
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## Example of plot showing replications
+# Example of plot showing replications
 res_rep = rescv.res_rep
 f, ax = plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV")
 for i = 1:rep, j = 1:K
@@ -88,7 +88,7 @@ end
 lines!(ax, res.nlv, res.y1; color = :red, linewidth = 1)
 f
 
-## Adding pars 
+# Adding pars 
 pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
@@ -119,7 +119,7 @@ pred = predict(model, Xtest).pred
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f     
     
-## Adding pars 
+# Adding pars 
 pars = mpar(scal = [:none; :std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, lb) ;
 res = rescv.res 
@@ -234,18 +234,18 @@ pred = predict(model, Xbltest).pred
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f   
     
-## Pipelines
+# Pipelines
 
 ####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
-## model1
+# model1
 model1 = snv(scal = false)
-## model2 
+# model2 
 npoint = 5 ; deriv = 0 ; degree = 2
 model2 = savgol(; npoint, deriv, degree)
-## model3
+# model3
 nlv = 0:30
 model3 = plskern()
-## Pipeline
+# Pipeline
 model = pip(model1, model2, model3)
 segm = segmkf(ntrain, 3; rep = 2)
 res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv).res ;
@@ -263,17 +263,17 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
       ylabel = "Observed").f
 
 ####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
-## model1
+# model1
 nlv = 15 ; scal = :std
 model1 = pcasvd(; nlv, scal)
-## model2
+# model2
 kern = [:krbf]
 gamma = (10).^(-5:1.:5)
 cost = (10).^(1:3)
 epsilon = [.1, .2, .5]
 pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
 model2 = svmr()
-## Pipeline
+# Pipeline
 model = pip(model1, model2)
 res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true).res ;
 u = findall(res.y1 .== minimum(res.y1))[1] 
@@ -286,7 +286,7 @@ res = predict(model, Xtest) ;
 rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 
-####### Discrimination
+###### Discrimination
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -306,10 +306,10 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## a) Replicated K-fold CV 
+# a) Replicated K-fold CV 
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
-## b) Replicated test-set validation
+# b) Replicated test-set validation
 #m = round(Int, ntrain / 3) ; rep = 30
 #segm = segmts(ntrain, m; rep)
 
@@ -329,7 +329,7 @@ pred = predict(model, Xtest).pred
 @show errp(pred, ytest)
 conf(pred, ytest).pct
 
-## Computation of the confusion matrix within CV (average over the replications), for the best model 
+# Computation of the confusion matrix within CV (average over the replications), for the best model 
 matpred = Vector{Matrix{String}}(undef, rep * K)
 k = 1
 for i = 1:rep
@@ -353,17 +353,17 @@ function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}},
         nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
         lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing,  
         verbose::Bool = false) 
-    ## The function works for mono- and multiblock X
-    ## Monoblock
+    # The function works for mono- and multiblock X
+    # Monoblock
     if isa(X[1, 1], Number)
         X = ensure_mat(X)
-    ## Multiblock
+    # Multiblock
     else  
         X = ensure_mat_mb(X)
     end
     Y = ensure_mat(Y)
     q = nco(Y)
-    ## End
+    # End
     nrep = length(segm)
     res_rep = list(nrep)
     @inbounds for i in eachindex(res_rep) 
@@ -374,10 +374,10 @@ function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}},
         @inbounds for j = 1:nsegm
             if verbose ; print("segm=", j, " ") ; end
             s = listsegm[j]
-            ## Monoblock
+            # Monoblock
             if isa(X[1, 1], Number)
                 zres[j] = gridscore(model, rmrow(X, s), rmrow(Y, s), X[s, :], Y[s, :]; score, pars, nlv, lb)
-            ## Multiblock
+            # Multiblock
             else  
                 Xcal = similar(X)
                 Xval = similar(X)
@@ -396,7 +396,7 @@ function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}},
     end
     if verbose ; println("/ End.") ; end
     res_rep = reduce(vcat, res_rep)
-    ## Average scores over reps and segms
+    # Average scores over reps and segms
     if isnothing(nlv) && isnothing(lb)
         gdf = groupby(res_rep, collect(keys(pars))) 
     elseif !isnothing(nlv)
@@ -408,7 +408,7 @@ function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}},
     end
     namy = map(string, fill("y", q), 1:q)
     res = combine(gdf, namy .=> meanv, renamecols = false)
-    ## End
+    # End
     (res = res, res_rep)
 end
 

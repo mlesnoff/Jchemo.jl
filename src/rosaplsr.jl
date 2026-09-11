@@ -20,11 +20,11 @@ The function has the following differences with the original algorithm of Liland
 * Multivariate `Y` is allowed. In such a case, the squared residuals are summed over the columns to find the 
     winning block for each global LV (therefore, Y-columns should have the same scale).
 
-## References
+# References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA — a fast extension of partial least squares regression 
 for multiblock data analysis. Journal of Chemometrics 30, 651–662. https://doi.org/10.1002/cem.2824
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -91,7 +91,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     par.nlv = nlv
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitm_bl, Xbl)
-    ## Centering/scaling of Y
+    # Centering/scaling of Y
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
     yscales = ones(Q, q)
@@ -100,7 +100,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
         yscales .= colscal(Y, weights)
         fscale!(Y, yscales)
     end
-    ## Pre-allocation
+    # Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)
     V  = similar(W)
     T  = similar(Xbl[1], n, nlv)
@@ -117,10 +117,10 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     wbl = list(Vector{Q}, nbl)      # List of the weights "w" by block for a given "a"
     zT = similar(Xbl[1], n, nbl)    # Matrix gathering the nbl scores for a given "a"
     bl = fill(zero(Int), nlv)
-    ## Old
+    # Old
     #ssr = similar(Xbl[1], nbl)
     #Res = zeros(n, q, nbl)
-    ## Start 
+    # Start 
     @inbounds for a = 1:nlv
         DY .= fweightr(Y, weights.values)  # apply the metric to the covariance
         @inbounds for k in eachindex(Xbl)
@@ -134,19 +134,19 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
             end
             zT[:, k] .= Xbl[k] * wbl[k]
         end
-        ## GS Orthogonalization of the scores
+        # GS Orthogonalization of the scores
         if a > 1
             z = vcol(T, 1:(a - 1))
             zT .= zT .- z * inv(z' * fweightr(z, weights.values)) * z' * fweightr(zT, weights.values)
         end
-        ## Selection of the winner block (opt)
+        # Selection of the winner block (opt)
         @inbounds for k in eachindex(Xbl)
             t = vcol(zT, k)
             corr[k] = sum(corm(Y, t, weights).^2)
         end
         opt = argmax(corr)
-        ## Faster than:
-        ## Old
+        # Faster than:
+        # Old
         #@inbounds for k in eachindex(Xbl)
         #    t = vcol(zT, k)
         #    @. dt = weights.values * t
@@ -155,9 +155,9 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
         #end
         #ssr = vec(sum(Res.^2, dims = (1, 2)))
         #opt = findmin(ssr)[2][1]
-        ## End
+        # End
         bl[a] = opt
-        ## Outputs for winner block
+        # Outputs for winner block
         t .= zT[:, opt]
         @. dt = weights.values * t
         tt = dot(t, dt)
@@ -166,16 +166,16 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
         T[:, a] .= t
         TT[a] = tt
         C[:, a] .= c
-        ## Old
+        # Old
         #Y .= Res[:, :, opt]
-        ## End
+        # End
         Y .-= (t * t') * DY / tt
         for k in eachindex(Xbl)
             vbl[k] = Xbl[k]' * dt
         end
         v .= reduce(vcat, vbl)
         @. V[:, a] = v / tt
-        ## Orthogonalization of the weights "w" by block
+        # Orthogonalization of the weights "w" by block
         zw = wbl[opt]
         if (a > 1) && isassigned(Wbl, opt)       
             zW = Wbl[opt]
@@ -187,7 +187,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
         else
             Wbl[opt] = hcat(Wbl[opt], zw)
         end
-        ## Build the weights over the overall matrix
+        # Build the weights over the overall matrix
         z = zeros(Q, nbl)
         z[opt] = 1
         W[:, a] .= reduce(vcat, z .* wbl)

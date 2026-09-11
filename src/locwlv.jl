@@ -85,12 +85,12 @@ function locwlv(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn:
         end
         zXtrain = vrow(Xtrain, s)
         zytrain = vrow(ytrain, s)
-        ## Case where all the neighbors have the same class
+        # Case where all the neighbors have the same class
         if length(unique(zytrain)) == 1
             @inbounds for a in eachindex(nlv)
                 zpred[i, :, a] .= zytrain[1]
             end
-        ## End 
+        # End 
         else
             if isnothing(listw)
                 zfitm = algo(zXtrain, zytrain; nlv = maximum(nlv), kwargs...)

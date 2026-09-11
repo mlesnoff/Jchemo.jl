@@ -4,7 +4,7 @@
 * `X` : X-data (n, p) whose columns are tested (independently).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

@@ -20,14 +20,14 @@ observations. If `nsim > 0`, the function simulates `nsim` additional PP directi
 proposed in Hubert et al. (2005): random couples of observations are sampled in `X` and, for each couple, the 
 direction passes through the two observations of the couple (see function `simpphub`).
 
-## References
+# References
 Croux, C., Ruiz-Gazen, A., 2005. High breakdown estimators for principal components: the projection-pursuit 
 approach revisited. Journal of Multivariate Analysis 95, 206–226. https://doi.org/10.1016/j.jmva.2004.08.002
 
 Hubert, M., Rousseeuw, V.J., Vanden Branden, K., 2005. ROBPCA: A New Approach to Robust Principal 
 Component Analysis. Technometrics 47, 64-79. https://doi.org/10.1198/004017004000000563
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie 
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -47,7 +47,7 @@ fit!(model, X)
 @names model
 @names model.fitm
 @head T = model.fitm.T
-## Same as:
+# Same as:
 @head transf(model, X)
 
 i = 1
@@ -64,7 +64,7 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     nsim = par.nsim
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = Jchemo.colmedspa(X, delta = Q(0.001))
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -73,7 +73,7 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     T = similar(X, n, nlv)
     V = similar(X, p, nlv)
     t = similar(X, n)
@@ -84,7 +84,7 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     fobj = colmad
     #fobj = colstd
     for a = 1:nlv
-        ## For simpphub: the nb. columns of zP can be variable (max = n + A(n, 2))
+        # For simpphub: the nb. columns of zP can be variable (max = n + A(n, 2))
         zP = fsimpp(X; nsim) 
         zT = X * zP 
         zobj = fobj(zT)

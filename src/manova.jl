@@ -19,10 +19,10 @@ The function returns approximated F tests for one of the the following statistic
 If `lb` > 0, the function performs a ridge regularization by adding `lb` to the diagonal of R'R, where 
 R (n, p) is the residual matrix.
 
-## References
+# References
 https://documentation.sas.com/doc/en/statug/15.2/statug_introreg_sect038.htm#statug_introreg001918
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -105,18 +105,18 @@ function manova(Y::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame;
             dfnum[i] = s * b
             dfden[i] = s * a
         elseif test == :hotelling
-            ## Approximation McKeon, 1974
+            # Approximation McKeon, 1974
             F[i] = 2 * (s * n + 1) * val[i] / (s^2 * (2 * m + s + 1))
             dfnum[i] = s * (2 * m + s + 1)
             dfden[i] = 2 * (s * n + 1)
-            ## The actual version of the function follows the R's choice,
-            ## not the SAS' one when n > 0 (see ref):
-            ## b = (p + 2 * n) * (q + 2 * n) / (2 * (2 * n + 1) * (n - 1))
-            ## c = (2 + (p * q + 2) / (b - 1)) / (2 * n)
-            ## F[i] = (val[i] / c) * ((4 + (p * q + 2) / (b - 1)) / (p * q))
-            ## dfnum[i] = p * q
-            ## dfden[i] = 4 + (p * q + 2) / (b - 1)
-            ## End
+            # The actual version of the function follows the R's choice,
+            # not the SAS' one when n > 0 (see ref):
+            # b = (p + 2 * n) * (q + 2 * n) / (2 * (2 * n + 1) * (n - 1))
+            # c = (2 + (p * q + 2) / (b - 1)) / (2 * n)
+            # F[i] = (val[i] / c) * ((4 + (p * q + 2) / (b - 1)) / (p * q))
+            # dfnum[i] = p * q
+            # dfden[i] = 4 + (p * q + 2) / (b - 1)
+            # End
         elseif test == :roy
             r = max(p, q)
             a = nu - r + q

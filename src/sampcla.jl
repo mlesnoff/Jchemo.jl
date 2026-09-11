@@ -15,11 +15,11 @@ Two outputs are returned (= row indexes of the data):
 If `y` = `nothing`, the sampling ( within each class) of the `k` test observations is random, else it is systematic 
 over the sorted `y` (see the principle in function `sampsys`).
 
-## References
+# References
 Naes, T., 1987. The design of calibration in near infra-red reflectance analysis by clustering. 
 Journal of Chemometrics 1, 121-134.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 x = string.(repeat(1:3, 5))

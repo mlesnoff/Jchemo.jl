@@ -11,11 +11,11 @@ Return
 * Hotelling-Lawley trace
 * Roy’s maximum root
 
-## References
+# References
 
 https://documentation.sas.com/doc/en/statug/15.2/statug_introreg_sect038.htm#statug_introreg001918
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

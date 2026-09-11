@@ -11,11 +11,11 @@ This function computes outlierness `d` of each observation (row) of `X` by its s
 distance between the projection of the observation on the score plan fitted by the model (e.g., PCA or PLS) and the 
 'center' of the score plan (in this function always defined by zero).
 
-## References
+# References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
 Technometrics, 47, 64-79.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -25,7 +25,7 @@ db = joinpath(mypath, "data", "octane.jld2")
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
-## Six of the samples (25, 26, and 36-39) contain added alcohol
+# Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
 typ = fill("0", n)
 typ[s] .= "1"

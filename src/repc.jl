@@ -7,7 +7,7 @@ Center the columns of a matrix by group.
 
 Each sub-matrix of `X` corresponding to a group is centered by its column mean. 
 
-## Examples
+# Examples
 ```julia
 @head X = rand(15, 3)
 group = rand(["A", "B", "C"], 15)

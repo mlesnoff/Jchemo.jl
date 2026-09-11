@@ -25,7 +25,7 @@ where D is the observation (row) metric. Value `tau` = 0 can generate unstabilit
 matrices. A better alternative is generally to use an epsilon value (e.g., `tau` = 1e-8) to get similar results 
 as with pseudo-inverses.  
 
-## References
+# References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011-a. Multiblock redundancy analysis from a user's 
 perspective. Application in veterinary epidemiology. Electronic Journal of Applied Statistical Analysis 
 4, 203-214. https://doi.org/10.1285/i20705948v4n2p203
@@ -38,7 +38,7 @@ Legendre, V., Legendre, L., 2012. Numerical Ecology. Elsevier, Amsterdam, The Ne
 Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical Correlation 
 Analysis for Multiblock Data Multiblock data analysis. https://cran.r-project.org/web/packages/RGCCA/index.html 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -97,7 +97,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -111,7 +111,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     if par.bscal == :none
         bscales = ones(Q, 2)
     elseif par.bscal == :frob
@@ -184,8 +184,8 @@ function transfbl(object::Rasvd, X, Y, nlv::Int)
     (Tx = Tx, Ty)
 end
 
-## Same as ::Cca
-## But explvary has to be computed (To Do)
+# Same as ::Cca
+# But explvary has to be computed (To Do)
 """
     summary(object::Rasvd, X, Y)
 Summarize the fitted model.
@@ -197,7 +197,7 @@ function Base.summary(object::Rasvd, X, Y)
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    ## Block X
+    # Block X
     T = object.Tx
     DT = fweightr(T, object.weights.values)
     ss = frob(X, object.weights)^2
@@ -206,8 +206,8 @@ function Base.summary(object::Rasvd, X, Y)
     cumpvar = cumsum(pvar)
     xvar = tt / n
     explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## To do: explvary 
-    ## Block Y
+    # To do: explvary 
+    # Block Y
     #T .= object.Ty
     #ss = frob2(Y, object.weights)
     #tt = diag(DT' * Y * Y' * DT) ./ diag(T' * DT)
@@ -215,10 +215,10 @@ function Base.summary(object::Rasvd, X, Y)
     #cumpvar = cumsum(pvar)
     #explvary = DataFrame(nlv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
     explvary = nothing 
-    ## Correlation between X- and Y-block LVs
+    # Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
-    ## RV(X, tx) and RV(Y, ty)
+    # RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
     z = similar(X, 1, nlv)
     for a = 1:nlv
@@ -229,16 +229,16 @@ function Base.summary(object::Rasvd, X, Y)
         z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
     end
     rvy2ty = DataFrame(z, nam)
-    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z[1, :] = rd(X, object.Tx, object.weights) 
     rdx2tx = DataFrame(z, nam)
     z[1, :] = rd(Y, object.Ty, object.weights) 
     rdy2ty = DataFrame(z, nam)
-    ## Correlation between block variables and their block LVs
+    # Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2tx = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
-    ## End
+    # End
     (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)
 end

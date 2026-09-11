@@ -65,10 +65,10 @@ function locw(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::V
         end
         zXtrain = vrow(Xtrain, s)
         zytrain = vrow(ytrain, s)
-        ## Case where all the neighbors have the same class
+        # Case where all the neighbors have the same class
         if length(unique(zytrain)) == 1
             pred[i, :] .= zytrain[1]
-        ## End
+        # End
         else
             if isnothing(listw)
                 zfitm = algo(zXtrain,  zytrain; kwargs...)

@@ -12,7 +12,7 @@ This function computes outlierness `d` of each observation (row) of `X` by its o
 ie. the Euclidean distance between the observation and its projection to the score plan fitted by the model
 (e.g., PCA or PLS).
 
-## References
+# References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
 Technometrics, 47, 64-79.
 
@@ -22,7 +22,7 @@ Chem. Lab. Int. Syst, 79, 10-21.
 K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
 CRC Press, Boca Raton.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -32,7 +32,7 @@ X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
-## Six of the samples (25, 26, and 36-39) contain added alcohol
+# Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
 typ = fill("0", n)
 typ[s] .= "1"

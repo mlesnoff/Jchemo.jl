@@ -8,7 +8,7 @@ Column-wise sums of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -52,7 +52,7 @@ Column-wise means of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -78,7 +78,7 @@ Column-wise medians of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -108,7 +108,7 @@ Column-wise (uncorrected) variances of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -148,7 +148,7 @@ Column-wise (uncorrected) standard deviations of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -176,7 +176,7 @@ Column-wise (uncorrected) standard deviations of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -202,7 +202,7 @@ Column-wise median absolute deviations (MAD) of a matrix.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -234,7 +234,7 @@ Column-wise squared norms of a matrix.
 
 See function `colnorm`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -286,7 +286,7 @@ The weighted norm is:
 
 **Warning:** `colnorm(X, pweight(ones(n)))` = `colnorm(X) / sqrt(n)`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -316,7 +316,7 @@ The excess kurtosis is the kurtosis (fourth standardized moment) minus 3.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -355,7 +355,7 @@ See function `entrv`.
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -389,7 +389,7 @@ for which the cdf F(`x`, z) ≥ `prob` (see function `Statistics.quantile`).
 
 Return a vector (p).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -436,7 +436,7 @@ function def_colscal(scal::Symbol = :std)
     dict[scal]
 end
 
-##### Functions skipping missing data
+#### Functions skipping missing data
 
 colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
 

@@ -26,7 +26,7 @@ where D is the observation (row) metric.
 **Note:** Value `tau = 0` can generate unstability when inverting the covariance matrices. A better alternative is generally to 
 use an epsilon value (e.g., `tau = 1e-8`) to get similar results as with pseudo-inverses.  
 
-## References
+# References
 Bougeard, S., Qannari, E.M., Lupo, C., Chauvin, C., 2011. Multiblock redundancy analysis from 
 a user’s perspective. Application in veterinary epidemiology. Electronic Journal of 
 Applied Statistical Analysis 4, 203-214–214. https://doi.org/10.1285/i20705948v4n2p203
@@ -38,7 +38,7 @@ Tchandao Mangamana, E., Glèlè Kakaï, R., Qannari, E.M., 2021. A general strat
 methods of multiblock data analysis. Chemometrics and Intelligent Laboratory Systems 217, 104388. 
 https://doi.org/10.1016/j.chemolab.2021.104388
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -99,7 +99,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     q = nco(Y)
     nlv = min(par.nlv, p, q)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -118,7 +118,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     invsqrtw = 1 ./ sqrtw
     X .= sqrtw .* X
     Y .= sqrtw .* Y
-    ## Pre-allocation
+    # Pre-allocation
     Tx  = similar(X, n, nlv)
     Wx  = similar(X, p, nlv)
     Wy  = similar(X, q, nlv)

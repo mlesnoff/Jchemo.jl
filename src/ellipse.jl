@@ -1,9 +1,9 @@
-## Working function building a 2-D ellipse
-## Equation: (x - mu)' * S^(-1) * (x - mu) <= r^2
-## - S : variance-covariance matrix (size q x q) ("shape") of x (vector of length q)
-## Keyword arguments
-## - mu : center (vector of length q)
-## - radius : r
+# Working function building a 2-D ellipse
+# Equation: (x - mu)' * S^(-1) * (x - mu) <= r^2
+# - S : variance-covariance matrix (size q x q) ("shape") of x (vector of length q)
+# Keyword arguments
+# - mu : center (vector of length q)
+# - radius : r
 function ellipse(S::AbstractMatrix{Q}; mu::Vector{Q} = zeros(Q, nco(S)), radius::Q = 1.) where Q <: Float
     theta = Q.(collect(range(0, 2 * pi, length = 51)))
     circ = radius * hcat(cos.(theta), sin.(theta))

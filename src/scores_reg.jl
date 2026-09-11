@@ -1,4 +1,4 @@
-## scores: Must return a matrix
+# scores: Must return a matrix
 
 """
     residreg(pred, Y) 
@@ -6,7 +6,7 @@ Compute the regression residual vector.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 Xtrain = rand(10, 5) 
 Ytrain = rand(10, 2)
@@ -34,7 +34,7 @@ Compute the sum of squared prediction errors (SSR).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -67,7 +67,7 @@ Compute the mean of the squared prediction errors (MSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 
@@ -100,7 +100,7 @@ Compute the square root of the mean of the squared prediction errors (RMSEP).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 
@@ -132,7 +132,7 @@ Compute a version of relative RMSEP.
 
 RMSEP_rel = RMSEP(`pred` - `Y`) ./ colmean(`Y`)'
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -166,7 +166,7 @@ Compute a version of relative RMSEP.
 
 RMSEP_stand = RMSEP((`pred` - `Y`) ./ `Y`).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -199,7 +199,7 @@ Compute the median absolute error (MAE).
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 
@@ -232,12 +232,12 @@ Compute the "corrected SEP" (SEP_c), i.e. the standard deviation of the predicti
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## References
+# References
 Bellon-Maurel, V., Fernandez-Ahumada, E., Palagos, B., Roger, J.-M., McBratney, A., 2010. Critical review of 
 chemometric indicators commonly used for assessing the quality of the prediction of soil attributes by NIR 
 spectroscopy. TrAC Trends in Analytical Chemistry 29, 1073–1081. https://doi.org/10.1016/j.trac.2010.05.006
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -267,7 +267,7 @@ Compute the prediction bias, i.e. the opposite of the mean prediction error.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -300,7 +300,7 @@ Compute the squared linear correlation between data and predictions.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 
@@ -341,7 +341,7 @@ The rate R2 is calculated by:
 where the "null model" is the overall mean. For predictions over CV or test sets, and/or for non linear models, 
 it can be different from the square of the correlation coefficient (`cor2`) between the true data and the predictions. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -383,7 +383,7 @@ where Std(Y) is the standard deviation.
 Since Std(Y) = RMSEP(null model) where the null model is the simple average, this also gives:
 * RPD = RMSEP(null model) / RMSEP 
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -416,7 +416,7 @@ Compute a robustified RPD.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -453,7 +453,7 @@ Summary of model performance for regression.
 * `pred` : Predictions.
 * `Y` : Observed data.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 

@@ -8,7 +8,7 @@ end
 Build a pipeline of models.
 * `args...` : Succesive models, see examples.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -29,7 +29,7 @@ ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
 
-## Pipeline Snv :> Savgol :> Pls :> Svmr
+# Pipeline Snv :> Savgol :> Pls :> Svmr
 
 model1 = snv()
 model2 = savgol(npoint = 11, deriv = 2, degree = 3)

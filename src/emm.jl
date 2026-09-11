@@ -11,12 +11,12 @@ The function computes estimated marginal means (EMMs) (Searle et al 1980) from a
 the given model, a.k.a 'least-squares means' in the SAS GLM terminology. When the model contains 
 continuous variables, the cell means are predicted at the mean of these continuous variables.
 
-## References
+# References
 Searle, S.R., Speed, F.M., Milliken, G.A., 1980. Population Marginal Means in the Linear Model: 
 An Alternative to Least Squares Means. The American Statistician 34, 216–221. 
 https://doi.org/10.2307/2684063
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo, JchemoData, DataFrames, JLD2
 using GLM
@@ -27,11 +27,11 @@ db = joinpath(path_jdat, "data/flour_splus6.jld2")
 datf = dat.datf   # uncomplete design without replication
 n = nro(datf)
 
-## Initial model
+# Initial model
 f_fitm = @formula(y ~ 1 + flour + fat * surfact)
 fitm = lm(f_fitm, datf)
 
-## Define factor(s) on which is(are) computed EMMs
+# Define factor(s) on which is(are) computed EMMs
 f = @formula(0 ~ flour)
 #f = @formula(0 ~ fat)
 #f = @formula(0 ~ surfact)
@@ -41,42 +41,42 @@ res = emm(fitm, f, datf) ;
 @names res
 res.datemm
 
-## Results reported from Manual Splus6, p. 632-633
-## EMMs fo model 'flour + fat * surfact'
+# Results reported from Manual Splus6, p. 632-633
+# EMMs fo model 'flour + fat * surfact'
 ##
-## Tables of adjusted means
-##   Grand mean
-##     6.633281
-##  se 0.084599
-## Flour
-##       1      2     3      4
-##    7.3020 5.7073 6.9815 6.5423
-## se 0.1995 0.1467 0.1621 0.1785
-## Fat
-##       1     2      3
-##    5.8502 6.5771 7.4725
-## se 0.1365 0.1477 0.1565
-## Surfactant
-##       1      2      3
-##    6.3960 6.5999 6.9039
-## se 0.1502 0.1432 0.1473
-## Fat:Surfactant
-## Dim 1 : Fat
-## Dim 2 : Surfactant
-##      1       2     3
-## 1  5.5364 5.8913 6.1229
-## se 0.2404 0.2392 0.2414
-## 2  7.0229 6.7085 6.0000
-## se 0.2414 0.3006 0.2034
-## 3  6.6286 7.2000 8.5889
-## se 0.3007 0.2034 0.3001
+# Tables of adjusted means
+#   Grand mean
+#     6.633281
+#  se 0.084599
+# Flour
+#       1      2     3      4
+#    7.3020 5.7073 6.9815 6.5423
+# se 0.1995 0.1467 0.1621 0.1785
+# Fat
+#       1     2      3
+#    5.8502 6.5771 7.4725
+# se 0.1365 0.1477 0.1565
+# Surfactant
+#       1      2      3
+#    6.3960 6.5999 6.9039
+# se 0.1502 0.1432 0.1473
+# Fat:Surfactant
+# Dim 1 : Fat
+# Dim 2 : Surfactant
+#      1       2     3
+# 1  5.5364 5.8913 6.1229
+# se 0.2404 0.2392 0.2414
+# 2  7.0229 6.7085 6.0000
+# se 0.2414 0.3006 0.2034
+# 3  6.6286 7.2000 8.5889
+# se 0.3007 0.2034 0.3001
 ```
 """
 function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm, datf::DataFrame)
     f_fitm = formula(fitm)       # = fitm.mf.f    
     b = StatsAPI.coef(fitm)
     varb = StatsAPI.vcov(fitm)   # to do: check if correct (delta-method) for glims
-    ## Build the full table corresponding to model fitm
+    # Build the full table corresponding to model fitm
     nam = string.(@names datf)
     u = in(termnames(f_fitm.rhs)).(nam)
     namsel = nam[u]
@@ -89,7 +89,7 @@ function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm,
     values = ntuple(i -> mlev(dat[:, i]), length(namsel))
     tupl = (; zip(Symbol.(nam[u]), values)...)   # better than : NamedTuple{namsel}(values)
     datmu = Jchemo.expand_grid_tupl(tupl)
-    ## Estimate the mean 'mu' for each cell of the full table 
+    # Estimate the mean 'mu' for each cell of the full table 
     namterm = termnames(f_fitm.rhs)
     namterm[namterm .== "(Intercept)"] .= "1"
     fst = string("0 ~", join(namterm, "+"))
@@ -101,7 +101,7 @@ function emm(fitm::StatsModels.TableRegressionModel, f::StatsModels.FormulaTerm,
     varmu = D * varb * D'
     datmu.pred = mu
     datmu.se = sqrt.(diag(varmu))
-    ## Compute EMMs
+    # Compute EMMs
     nam = termnames(f)[2]
     if !isa(nam, Vector) ; nam = [nam] ; end
     datmu[:, nam]

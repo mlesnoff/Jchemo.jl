@@ -23,7 +23,7 @@ be useful when the number of columns (p) of `X` becomes too large, with the poss
 * `cst` tends to 0,
 which makes impossible to compute the true density. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -40,12 +40,12 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-#### Probability density in the FDA score space (2-D): example of class Setosa 
+### Probability density in the FDA score space (2-D): example of class Setosa 
 s = y .== "setosa"
 zT = T[s, :]
 m = nro(zT)
 
-#### Bivariate distribution
+### Bivariate distribution
 model = dmnorm()
 fit!(model, zT)
 fitm = model.fitm
@@ -54,7 +54,7 @@ fitm.Uinv
 fitm.detS
 @head pred = predict(model, zT).pred
 
-## Direct syntax
+# Direct syntax
 mu = colmean(zT)
 S = covm(zT, pweight(ones(m))) * m / (m - 1) # corrected cov. matrix
 fitm = dmnorm(mu, S) ; 
@@ -81,7 +81,7 @@ scatter!(ax, zT[:, 1], zT[:, 2], color = :blue, markersize = 5)
 #xlims!(ax, -12, 12) ;ylims!(ax, -12, 12)
 f
 
-#### Univariate distribution
+### Univariate distribution
 j = 1
 x = zT[:, j]
 model = dmnorm()

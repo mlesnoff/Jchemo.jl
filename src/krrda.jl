@@ -19,7 +19,7 @@ Keyword arguments:
 Same as function `rrda` (RR-DA) except that a kernel RR (function `krr`), instead of a RR (function `rr`), 
 is run on the Y-dummy table. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

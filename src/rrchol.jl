@@ -32,8 +32,8 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     p = nco(X)
     sqrtw = sqrt.(weights.values)
-    ## Centering/scaling X, Y
-    ## No need to scale Y
+    # Centering/scaling X, Y
+    # No need to scale Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     fcenter!(X, xmeans)
@@ -44,7 +44,7 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
     B = cholesky!(Hermitian(X' * X + par.lb^2 * Diagonal(ones(Q, p)))) \ (X' * Y)

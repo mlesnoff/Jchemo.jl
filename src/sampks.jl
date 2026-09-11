@@ -18,10 +18,10 @@ the remaining observations. In the seminal article (K&S, 1969), the algorithm is
 be used to build a calibration set. To the opposite, in the present function, KS is used to select a test set with 
 higher variability than the training set. 
 
-## References
+# References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. Technometrics, 11(1), 137-148.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -65,10 +65,10 @@ function sampks(X, k::Int; metric::Symbol = :eucl)
         D = mah2chol(X, X)
     end
     vn = 1:nro(D)
-    ## Initial selection of 2 obs. (train)
+    # Initial selection of 2 obs. (train)
     s = findall(D .== maximum(D))
     s = [s[1][1] ; s[1][2]]
-    ## Candidates
+    # Candidates
     candidat = vn[setdiff(1:end, s)]
     @inbounds for i = 1:(k - 2)
         u = vec(minimum(D[s, candidat], dims = 1))

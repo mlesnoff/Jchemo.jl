@@ -20,7 +20,7 @@ The function minimizes ||X - T * V'||^2  in metric D by NIPALS.
 
 See function `pcasvd` for examples.
 
-## References
+# References
 Andrecut, M., 2009. Parallel GPU Implementation of Iterative PCA Algorithms. Journal of Computational Biology 16, 1593-1599. 
 https://doi.org/10.1089/cmb.2008.0221
 
@@ -55,7 +55,7 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -64,7 +64,7 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## ENd
+    # ENd
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     T = similar(X, n, nlv)
@@ -92,8 +92,8 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
         end
     end
     fweightr!(T, 1 ./ sqrtw)    
-    ## Could recompute the scores by
-    ## X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
+    # Could recompute the scores by
+    # X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
     Pcanipals(T, V, sv, xmeans, xscales, weights, niter, par)  
 end
 

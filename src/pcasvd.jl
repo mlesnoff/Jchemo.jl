@@ -20,7 +20,7 @@ Outputs are:
 * `V` = V
 * The diagonal of S   
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie 
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -44,7 +44,7 @@ fit!(model, Xtrain)
 @names model
 @names model.fitm
 @head T = model.fitm.T
-## Same as:
+# Same as:
 @head transf(model, X)
 T' * T
 @head V = model.fitm.V
@@ -77,7 +77,7 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -86,7 +86,7 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
+    # by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     res = LinearAlgebra.svd!(X)
@@ -127,9 +127,9 @@ function Base.summary(object::Union{Pca, Pcanipals}, X)
     sstot = frob2(X, weights)  # = (||X||_D)^2 = tr(X' * D * X)
     TT = fweightr(object.T.^2, weights.values)  # matrix required for 'contr_ind'
     tt = colsum(TT) 
-    ## = colnorm(object.T, weights).^2 
-    ## = diag(T' * D * T) 
-    ## = object.sv[1:nlv].^2
+    # = colnorm(object.T, weights).^2 
+    # = diag(T' * D * T) 
+    # = object.sv[1:nlv].^2
     pvar = tt / sstot
     cumpvar = cumsum(pvar)
     zrd = vec(rd(X, object.T, weights))

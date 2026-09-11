@@ -38,7 +38,7 @@ Function `summary` returns:
 * `cortbl2t` : Correlations between the block LVs (= Tbl[k]) and the global LVs.
 * `corx2t` : Correlation between the X-variables and the global LVs.  
 
-## References
+# References
 Cariou, V., Qannari, E.M., Rutledge, D.N., Vigneau, E., 2018. ComDim: From multiblock data analysis to 
 path modeling. Food Quality and Preference, Sensometrics 2016: Sensometrics-by-the-Sea 67, 27–34. 
 https://doi.org/10.1016/j.foodqual.2017.02.012
@@ -58,7 +58,7 @@ société française de statistique 149, 75–97.
 Qannari, E.M., Wakeling, I., Courcoux, P., MacFie, H.J.H., 2000. Defining the underlying sensory dimensions. 
 Food Quality and Preference 11, 151–154. https://doi.org/10.1016/S0950-3293(99)00069-5
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -80,11 +80,11 @@ model = comdim(; nlv, bscal, scal)
 fit!(model, Xbl)
 @names model 
 @names model.fitm
-## Global scores 
+# Global scores 
 @head model.fitm.T
 @head transf(model, Xbl)
 transf(model, Xblnew)
-## Blocks scores
+# Blocks scores
 i = 1
 @head model.fitm.Tbl[i]
 @head transfbl(model, Xbl)[i]
@@ -127,7 +127,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    ## Block scaling
+    # Block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
@@ -136,7 +136,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     @inbounds for k in eachindex(Xbl) 
         fweightr!(Xbl[k], sqrtw)
     end
-    ## Pre-allocation
+    # Pre-allocation
     u = similar(Xbl[1], n)
     U = similar(Xbl[1], n, nlv)
     tk = similar(u)
@@ -253,10 +253,10 @@ function Base.summary(object::Comdim, Xbl)
     Q = eltype(Xbl[1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    ## Block scaling
+    # Block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
-    ## Proportion of the total X-inertia explained by each global LV
+    # Proportion of the total X-inertia explained by each global LV
     ssk = zeros(Q, nbl)
     @inbounds for k in eachindex(Xbl)
         ssk[k] = frob2(vXbl[k], object.weights)
@@ -266,7 +266,7 @@ function Base.summary(object::Comdim, Xbl)
     pvar = tt / sum(ssk)
     cumpvar = cumsum(pvar)
     explvarx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Explained XXt inertia by each global LV (indicator 'V')
+    # Explained XXt inertia by each global LV (indicator 'V')
     sqrtw = sqrt.(object.weights.values)
     sstot_xx = 0 
     @inbounds for k in eachindex(Xbl)
@@ -277,39 +277,39 @@ function Base.summary(object::Comdim, Xbl)
     pvar = tt / sstot_xx
     cumpvar = cumsum(pvar)
     explvarxx = DataFrame(lv = collect(1:nlv), var = tt, pvar = pvar, cumpvar = cumpvar)
-    ## Within each block k, proportion of the Xk-inertia explained by the global LVs
-    ## = object.lb if bscal = :frob  
+    # Within each block k, proportion of the Xk-inertia explained by the global LVs
+    # = object.lb if bscal = :frob  
     nam = string.("lv", 1:nlv)
     z = fscale(object.lb', ssk)'
     explxbl = DataFrame(z, nam)
-    ## Poportion of squared saliences
+    # Poportion of squared saliences
     psal2 = copy(object.lb)
     @inbounds for a = 1:nlv
         psal2[:, a] .= object.lb[:, a].^2 / object.mu[a]
     end
     psal2 = DataFrame(psal2, nam)
-    ## Contribution of each block Xk to the global LVs = lb proportions
+    # Contribution of each block Xk to the global LVs = lb proportions
     z = fscale(object.lb, colsum(object.lb))
     contrxbl2t = DataFrame(z, nam)
-    ## RV between each Xk and the global LVs
+    # RV between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv
         z[k, a] = rv(vXbl[k], object.T[:, a], object.weights) 
     end
     rvxbl2t = DataFrame(z, nam)
-    ## Rd between each Xk and the global LVs
+    # Rd between each Xk and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl) 
         z[k, :] = rd(vXbl[k], object.T, object.weights) 
     end
     rdxbl2t = DataFrame(z, nam)
-    ## Correlation between the block LVs and the global LVs
+    # Correlation between the block LVs and the global LVs
     z = zeros(Q, nbl, nlv)
     for k in eachindex(Xbl), a = 1:nlv 
         z[k, a] = corv(object.Tbl[k][:, a], object.T[:, a], object.weights) 
     end
     cortbl2t = DataFrame(z, nam)
-    ## Correlation between the X-variables and the global LVs 
+    # Correlation between the X-variables and the global LVs 
     z = corm(X, object.T, object.weights)  
     corx2t = DataFrame(z, nam)  
     (explvarx = explvarx, explvarxx, explxbl, psal2, contrxbl2t, rvxbl2t, rdxbl2t, cortbl2t, corx2t)

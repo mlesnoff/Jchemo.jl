@@ -19,7 +19,7 @@ The function minimizes ||X - T * V'||^2  in metric D, by computing an Eigen fact
 
 See function `pcasvd` for examples.
 
-## References
+# References
 Wu, W., Massart, D.L., de Jong, S., 1997. The kernel PCA algorithms for wide data. Part I: Theory and algorithms. 
 Chemometrics and Intelligent Laboratory Systems 36, 165-172. https://doi.org/10.1016/S0169-7439(97)00010-5
 """ 
@@ -40,7 +40,7 @@ function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -49,7 +49,7 @@ function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     res = eigen!(Symmetric(X * X'); sortby = x -> -abs(x))

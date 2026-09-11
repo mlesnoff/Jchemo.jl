@@ -17,7 +17,7 @@ PLS weights (w) by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).
 
 See function `plskern` for examples.
 
-## References
+# References
 Hoskuldsson, A., 1988. PLS regression methods. Journal of Chemometrics 2, 211-228.
 https://doi.org/10.1002/cem.1180020306
 
@@ -45,7 +45,7 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -59,7 +59,7 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## Pre-allocation
+    # Pre-allocation
     XtY = similar(X, p, q)
     T  = similar(X, n, nlv)
     W  = similar(X, p, nlv)
@@ -71,7 +71,7 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
     w  = similar(X, p)
     v  = similar(w)
     c  = similar(X, q)
-    ## End
+    # End
     @inbounds for a = 1:nlv
         XtY .= X' * fweightr(Y, weights.values)
         if q == 1
@@ -87,10 +87,10 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         v ./= tt
         mul!(c, Y', dt)
         c ./= tt                      
-        ## Deflation with respect to t: asymetric PLS
+        # Deflation with respect to t: asymetric PLS
         X .-= t * v'
         Y .-= t * c'
-        ## End
+        # End
         V[:, a] .= v  
         T[:, a] .= t
         W[:, a] .= w

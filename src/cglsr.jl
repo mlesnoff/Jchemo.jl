@@ -18,7 +18,7 @@ re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) 
 adaptations) of the Matlab function `cgls` 
 (Saunders et al. https://web.stanford.edu/group/SOL/software/cgls/; Hansen 2008).
 
-## References
+# References
 Björck, A., 1996. Numerical Methods for Least Squares Problems, Other Titles in Applied Mathematics. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9781611971484
 
@@ -37,7 +37,7 @@ of some properties of PLS. J. Chemometrics 2002; 16: 361–367.
 Vogel, C. R.,  "Solving ill-conditioned linear systems using the conjugate gradient method", Report, Dept. of Mathematical 
 Sciences, Montana State University, 1987.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -78,8 +78,8 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     q = nco(y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv 
-    ## Centering/scaling X, Y
-    ## No need to fscale y; only for consistency with Plsr
+    # Centering/scaling X, Y
+    # No need to fscale y; only for consistency with Plsr
     xmeans = colmean(X) 
     ymeans = colmean(y)   
     fcenter!(X, xmeans)
@@ -91,7 +91,7 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
         xscales .= colscal(X)
         fscale!(X, xscales)
     end
-    ## Pre-allocation and initialization
+    # Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(Q, p) 
     r = vec(y)       # r = y - X * b, with b = 0
@@ -135,8 +135,8 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
         g = copy(gnew[j])
         vp .= vs .+ beta * vp
         B[:, j] .= b
-        ## Filter factors
-        ## fudge threshold is used to prevent filter factors from exploding
+        # Filter factors
+        # fudge threshold is used to prevent filter factors from exploding
         if par.filt
             if j == 1
                 F[:, 1] .= alpha * eig

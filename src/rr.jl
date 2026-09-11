@@ -18,7 +18,7 @@ b (q, 1) (the corresponding column of output `B` (p, q)) that minimizes
 * ||y - X * b||^2 + `lb`^2 * ||b||^2 
 where ||.|| is the Euclidean norm.
 
-## References 
+# References 
 Cule, E., De Iorio, M., 2012. A semi-automatic method to guide the choice of ridge parameter 
 in ridge regression. arXiv:1205.0686.
 
@@ -31,7 +31,7 @@ inference, and prediction, 2nd ed. Springer, New York.
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 
 Technometrics 12, 55-67. https://doi.org/10.1080/00401706.1970.10488634
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -63,7 +63,7 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## !! Only for function 'rr' (not for 'rrchol')
+# !! Only for function 'rr' (not for 'rrchol')
 coef(model, 1e-1)
 res = predict(model, Xtest, [.1; .01])
 @head res.pred[1]
@@ -86,8 +86,8 @@ end
 function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParRr{Q}, kwargs).par
     p = nco(X)
-    ## Centering/scaling X, Y
-    ## No need to scale Y
+    # Centering/scaling X, Y
+    # No need to scale Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)
     fcenter!(X, xmeans)
@@ -98,7 +98,7 @@ function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)

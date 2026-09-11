@@ -1,4 +1,4 @@
-######## One vector 
+####### One vector 
 
 """ 
     sumv(x::AbstractVector{Q}) where Q <: Float
@@ -7,7 +7,7 @@ Sum of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -30,7 +30,7 @@ Mean of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -51,7 +51,7 @@ meanv(x::AbstractVector{Q}, weights::ProbabilityWeights{Q}) where Q <: Float = s
 Median of a vector. 
 * `x` : A vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -70,7 +70,7 @@ Uncorrected standard deviation of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -93,7 +93,7 @@ Uncorrected variance of a vector.
 * `x` : A vector (n).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -117,7 +117,7 @@ Median absolute deviation (MAD) of a vector.
 
 This is the MAD adjusted by factor 1.4826 for asymptotically normal consistency.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -132,7 +132,7 @@ madv(x::AbstractVector{Q}) where Q <: Float = Q(1.4826) * median(abs.(x .- media
 Interquartile interval (IQR) of a vector.
 * `x` : A vector (n).
 
-## Examples
+# Examples
 ```julia
 x = rand(100)
 iqrv(x)
@@ -150,7 +150,7 @@ Squared norm of a vector.
 
 See function `normv`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -179,7 +179,7 @@ The norm of vector `x` is computed by:
 The weighted norm of vector `x` is computed by:
 * sqrt(x' * D * x), where D is the diagonal matrix of vector `weights.values`.
 
-## References
+# References
 
 @gdkrmr,
 https://discourse.julialang.org/t/julian-way-to-write-this-code/119348/17
@@ -187,7 +187,7 @@ https://discourse.julialang.org/t/julian-way-to-write-this-code/119348/17
 @Stevengj, 
 https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -212,7 +212,7 @@ Excess kurtosis of a vector.
 
 The excess kurtosis is the kurtosis (fourth standardized moment) minus 3.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -241,10 +241,10 @@ where δ is a bin size. The natural log is used.
 
 The discretization is done using function `Histogram` of package `StabsBase.jl`. 
 
-## References
+# References
 https://en.wikipedia.org/wiki/Differential_entropy
 
-## Examples
+# Examples
 ```julia
 using Jchemo, Distributions
 
@@ -279,7 +279,7 @@ Quantile (order p) of a vector.
 For a given order `prob` (0 ≤ `prob` ≤ 1), `quantv(x, prob)` is the smallest value z in the support of `x` 
 for which the cdf F(`x`, z) ≥ `prob` (see function `Statistics.quantile`).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -298,7 +298,7 @@ quantv(x::AbstractVector{Q}, prob::Q) where Q <: Float = Statistics.quantile(x, 
 quantv(x::AbstractVector{Q}, prob::Q, 
     weights::ProbabilityWeights) where Q <: Float = Statistics.quantile(x, weights, prob) 
 
-######## Two vectors
+####### Two vectors
 
 """
     covv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
@@ -307,7 +307,7 @@ Uncorrected covariance between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -341,11 +341,11 @@ Cosinus between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
 
-## References
+# References
 @Stevengj, 
 https://discourse.julialang.org/t/interesting-post-about-simd-dot-product-and-cosine-similarity/123282.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -389,7 +389,7 @@ Correlation between two vectors.
 * `x` : vector (n).
 * `y` : vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -408,7 +408,7 @@ corv(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Statistics.c
 corv(x::AbstractVector{Q}, y::AbstractVector{Q}, 
     weights::ProbabilityWeights{Q}) where Q <: Float = covv(x, y, weights) / (stdv(x, weights) * stdv(y, weights))
 
-######## Matrices
+####### Matrices
 
 """
     covm(X::AbstMatVec{Q}) where Q <: Float
@@ -424,7 +424,7 @@ The function computes the uncorrected covariance matrix:
 * of the columns of `X` ==> return a matrix (p, p),
 * or between the columns of `X` and `Y` ==> return a matrix (p, q).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -468,7 +468,7 @@ The function computes the cosinus matrix:
 * of the columns of `X` ==> return a matrix (p, p),
 * or between the columns of `X` and `Y` ==> return a matrix (p, q).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -505,7 +505,7 @@ Correlation matrix:
 * of the `X`-columns ==> return a (p, p) matrix, 
 * or between the `X`-columns and the `Y`-columns ==> return a matrix (p, q).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -573,7 +573,7 @@ The squared Frobenius norm of `X` is:
 The squared weighted Frobenius norm is:
 * tr(X' * D * X), where D is the diagonal matrix of vector `weights.values`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 

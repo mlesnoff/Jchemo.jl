@@ -6,7 +6,7 @@ Two-sample Hotelling's T-squared test.
 Keyword arguments:
 * `digits` : Nb. digits for the outputs.
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))

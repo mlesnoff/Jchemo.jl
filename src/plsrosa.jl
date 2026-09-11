@@ -18,7 +18,7 @@ Keyword arguments:
 
 See function `plskern` for examples.
     
-## References
+# References
 Liland, K.H., Næs, T., Indahl, U.G., 2016. ROSA—a fast extension of partial least squares regression for 
 multiblock data analysis. Journal of Chemometrics 30, 651–662. https://doi.org/10.1002/cem.2824
 """ 
@@ -41,7 +41,7 @@ function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -55,7 +55,7 @@ function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## Pre-allocation
+    # Pre-allocation
     XtY = similar(X, p, q)
     T  = similar(X, n, nlv)
     W  = similar(X, p, nlv)
@@ -67,7 +67,7 @@ function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     v  = similar(X, p)
     w  = similar(v)
     c  = similar(X, q)
-    ## End
+    # End
     @inbounds for a = 1:nlv
         XtY .= X' * fweightr(Y, weights.values)
         if q == 1

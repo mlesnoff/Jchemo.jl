@@ -1,5 +1,5 @@
-## !!!! This function still works but is not used anymore for >= 0.6.0
-## (previous syntax)
+# !!!! This function still works but is not used anymore for >= 0.6.0
+# (previous syntax)
 
 """
     mod_(algo::Function; kwargs...)
@@ -7,7 +7,7 @@ Build a model.
 * `algo` : The algorithm (function) defining the model.
 * `kwargs...`: Keyword arguments of `algo`.
 
-## Examples
+# Examples
 ```julia
 X = rand(5, 10)
 y = rand(5)

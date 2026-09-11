@@ -18,11 +18,11 @@ The default bandwith is computed by:
 * `h` = `a` * n^(-1 / (p + 4)) * colstd(`X`)
 (`a` = 1 in Scott & Sain 2005).
 
-## References 
+# References 
 Scott, D.W., Sain, S.R., 2005. 9 - Multidimensional Density Estimation, in: Rao, C.R., Wegman, E.J., Solka, J.L. (Eds.), 
 Handbook of Statistics, Data Mining and Data Visualization. Elsevier, pp. 229–261. https://doi.org/10.1016/S0169-7161(04)24009-3
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -40,7 +40,7 @@ fit!(model0, X, y)
 @head T = transf(model0, X)
 n, p = size(T)
 
-#### Probability density in the FDA score space (2-D)
+### Probability density in the FDA score space (2-D)
 
 model = dmkern()
 fit!(model, T) 
@@ -61,7 +61,7 @@ fit!(model, T)
 model.fitm.H
 predict(model, T[u, :]).pred
 
-## Bivariate distribution
+# Bivariate distribution
 npoints = 2^7
 nlv = 2
 lims = [(minimum(T[:, j]), maximum(T[:, j])) for j = 1:nlv]
@@ -85,7 +85,7 @@ scatter!(ax, T[:, 1], T[:, 2], color = :red, markersize = 5)
 #xlims!(ax, -15, 15) ;ylims!(ax, -15, 15)
 f
 
-## Univariate distribution
+# Univariate distribution
 x = T[:, 1]
 model = dmkern() 
 #model = dmkern(a = .5) 
@@ -122,12 +122,12 @@ function dmkern(X; kwargs...)
     n, p = size(X)
     Q = eltype(X)
     par = recovkw(ParDmkern{Q}, kwargs).par
-    ## Particular case where n = 1
-    ## (ad'hoc code for discrimination functions only)
+    # Particular case where n = 1
+    # (ad'hoc code for discrimination functions only)
     if n == 1
         H = diagm(fill(Q(par.a * n^(-1 / (p + 4))), p))
     end
-    ## End
+    # End
     if isnothing(par.h)
         h = Q.(par.a * n^(-1 / (p + 4)) * colstd(X))      # a = .9, 1.06
         H = diagm(h)

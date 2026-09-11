@@ -4,7 +4,7 @@ Return a named tuple with all the combinations of the parameter values defined i
 Keyword arguments:
 * `kwargs` : Named vector(s) of the parameter(s) values.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 nlvdis = 25 ; metric = [:mah] 
@@ -20,7 +20,7 @@ mpar = function(; kwargs...)
     Jchemo.mpar_work(iter, nam)
 end
 
-## Not exported 
+# Not exported 
 
 mpar_work = function(iter::Base.Iterators.ProductIterator, nam::Union{Vector, Tuple})
     z = collect(iter) # matrix (n, 1)

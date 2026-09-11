@@ -22,7 +22,7 @@ observation weights (see function `pweightcla`) that are then given as input in 
 **Note:** For highly unbalanced classes, it may be recommended to define equal class weights ('prior = :unif'),
 and to use a performance score such as `merrp`, instead of `errp`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -85,7 +85,7 @@ function lda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Probabili
     lev = res.lev
     nlev = length(lev)
     res.W .*= n / (n - nlev)    # unbiased estimate
-    ## End
+    # End
     ct = similar(X, nlev, p)
     fitm = list(Dmnorm, nlev)
     @inbounds for i in eachindex(lev)

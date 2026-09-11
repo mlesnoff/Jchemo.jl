@@ -17,7 +17,7 @@ Keyword arguments:
 
 Same as function `plsqda` except that the class densities are estimated from `dmkern` instead of `dmnorm`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

@@ -21,7 +21,7 @@ Keyword arguments:
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
-## References
+# References
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. https://doi.org/10.1007/BF00058655
 
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. https://doi.org/10.1023/A:1010933404324
@@ -32,7 +32,7 @@ Université Paris Sud - Paris XI.
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : trois thèmes statistiques autour de CART 
 en régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -121,7 +121,7 @@ function predict(object::Baggr, X)
     (pred = pred,)
 end
 
-## Little slower
+# Little slower
 #function predict(object::Baggr, X)
 #    rep = length(object.fitm)
 #    pred = predict(object.fitm[1], X[:, object.scol[1]]).pred

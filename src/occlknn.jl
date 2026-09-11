@@ -47,7 +47,7 @@ function occlknn(X; kwargs...)
     end
     vX = vrow(X, s)
     k = min(par.k, n - 1)
-    ## Distribution of outlierness of the 'nsamp' sampled training observations
+    # Distribution of outlierness of the 'nsamp' sampled training observations
     res = getknn(X, vX; k = k + 1, par.metric)
     d = similar(X, nsamp)
     nn = zeros(Int, k)
@@ -61,7 +61,7 @@ function occlknn(X; kwargs...)
         end
         d[i] /= median(d_nn)
     end
-    ## End 
+    # End 
     if par.typcut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.typcut == :q
@@ -82,7 +82,7 @@ function predict(object::Occlknn, X)
     k = object.par.k
     metric = object.par.metric
     algo = object.par.algo
-    ## kNN distance
+    # kNN distance
     res = getknn(object.X, fscale(X, object.xscales); k = k + 1, metric)
     d = similar(X, m)
     nn = zeros(Int, k)
@@ -96,7 +96,7 @@ function predict(object::Occlknn, X)
         end
         d[i] /= median(d_nn)
     end
-    ## End
+    # End
     d = DataFrame(
         d = d, 
         dstand = d / object.cutoff, 

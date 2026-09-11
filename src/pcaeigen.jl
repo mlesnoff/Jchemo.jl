@@ -33,7 +33,7 @@ function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) wher
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -42,7 +42,7 @@ function pcaeigen!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) wher
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     res = eigen!(Symmetric(X' * X); sortby = x -> -abs(x)) 

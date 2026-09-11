@@ -59,7 +59,7 @@ On a paper focusing on OD^2, Nomikos & MacGregor (1995) proposed to estimate par
 distribution of Z. In DD-Simca, the same approach is applied to both SD^2 and OD^2. This allows to 
 easily compute an assumed Chi-square distribution for a consensus between SD^2 and OD^2 (outlierness `d`).
 
-## References
+# References
 Kucheryavskiy, S., Rodionova, O., Pomerantsev, A., 2024. A comprehensive tutorial on Data-Driven SIMCA: Theory 
 and implementation in web. Journal of Chemometrics 38, e3556. https://doi.org/10.1002/cem.3556
 
@@ -77,7 +77,7 @@ Rodionova, O., Kucheryavskiy, S., Pomerantsev, A., 2021. Efficient tools for pri
 data — a tutorial. Chemometrics and Intelligent Laboratory Systems 213, 104304. 
 https://doi.org/10.1016/j.chemolab.2021.104304
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -97,28 +97,28 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
-## "EHH" = Training reference class (= target = 'in')
+### Build the data used in the example
+# "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
 nref = nro(Xref)
-## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
+# New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
 nnew_ref = nro(Xnew_ref)
-## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
+# New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
 
-## Only used to compute classification error rates
+# Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
 yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-#### Fit a preliminary Pca model on the training reference data
+### Fit a preliminary Pca model on the training reference data
 nlv = 15
 model0 = pcasvd(; nlv) 
 #model0 = pcaout(; nlv) 
@@ -128,8 +128,8 @@ res = summary(model0, Xref).explvarx
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
 Tref = fitm0.T
 
-#### To describe the data, 
-#### project the test observations in the fitted score space
+### To describe the data, 
+### project the test observations in the fitted score space
 Tnew_ref = transf(model0, Xnew_ref)
 Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
@@ -141,7 +141,7 @@ i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
-#### Fit the Occ model based on the fitted score space 
+### Fit the Occ model based on the fitted score space 
 model = occdds()
 #model = occdds(nlv = 5)
 fit!(model, fitm0, Xref)
@@ -182,7 +182,7 @@ ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash, label = "Cu
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
-#### Predict the new reference observations
+### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -191,7 +191,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-#### Predict the new observations 'out'
+### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred
@@ -249,7 +249,7 @@ function occdds(fitm, X; kwargs...)
     end
     sd = outsd(fitm; par.nlv)
     od = outod(fitm, X; par.nlv)
-    ## Estimates for SD^2
+    # Estimates for SD^2
     d = sd.d.^2 
     mu = par.fcentr(d)
     sigma = par.fscal(d)
@@ -258,7 +258,7 @@ function occdds(fitm, X; kwargs...)
     nu = max(1, round(Int, nu))
     cutoff = mu / nu * quantile(Chisq(nu), 1 - par.alpha)
     sd2 = (d = d, mu, sigma, g, nu, cutoff, tscales = sd.tscales)
-    ## Estimates for OD^2
+    # Estimates for OD^2
     d = od.d.^2 
     mu = par.fcentr(d)
     sigma = par.fscal(d)
@@ -267,7 +267,7 @@ function occdds(fitm, X; kwargs...)
     nu = max(1, round(Int, nu))
     cutoff = mu / nu * quantile(Chisq(nu), 1 - par.alpha)
     od2 = (d = d, mu, sigma, g, nu, cutoff)
-    ## Consensus
+    # Consensus
     nu = sd2.nu + od2.nu
     cutoff = quantile(Chisq(nu), 1 - par.alpha)
     d = sd2.nu / sd2.mu * sd2.d + od2.nu / od2.mu * od2.d 
@@ -282,11 +282,11 @@ function occdds(fitm, X; kwargs...)
         od2mu = od2.d / od2.mu,
         gh = sd2.d / par.nlv
         )
-    ## Coefs for graphic SD2/mu - OD2/mu
+    # Coefs for graphic SD2/mu - OD2/mu
     a = 1 / od2.nu * cutoff 
     b = -sd2.nu / od2.nu
     coefs = [a; b]
-    ## 
+    # 
     Occdds(d, fitm, e_cdf, nu, cutoff, sd2, od2, coefs, par) 
 end
 
@@ -299,18 +299,18 @@ Compute predictions from a fitted model.
 function predict(object::Occdds, X)
     nlv = object.par.nlv
     tscales = object.sd2.tscales    
-    ## SD^2
+    # SD^2
     T = transf(object.fitm, X, nlv)
     Q = eltype(T)
     m = nro(T)
     fscale!(T, tscales)
     sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
-    ## OD^2
+    # OD^2
     E = xresid(object.fitm, X, nlv)
     od2 = rownorm2(E)
-    ## Consensus
+    # Consensus
     d = object.sd2.nu / object.sd2.mu * sd2 + object.od2.nu / object.od2.mu * od2
-    ## End
+    # End
     d = DataFrame(
         d = d, 
         dstand = d / object.cutoff, 

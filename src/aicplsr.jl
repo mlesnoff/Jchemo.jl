@@ -10,7 +10,7 @@ Keyword arguments:
 
 The function uses function `dfplsr_cg`. 
 
-## References
+# References
 Hansen, P.C., 1998. Rank-Deficient and Discrete Ill-Posed Problems, Mathematical Modeling and Computation. 
 Society for Industrial and Applied Mathematics. https://doi.org/10.1137/1.9780898719697
 
@@ -21,7 +21,7 @@ Lesnoff, M., Roger, J.-M., Rutledge, D.N., 2021. Monte Carlo methods for estimat
 for PLSR models. Illustration on agronomic spectroscopic NIR data. Journal of Chemometrics n/a, e3369. 
 https://doi.org/10.1002/cem.3369
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -59,29 +59,29 @@ function aicplsr(X::AbstMatVec{Q}, y::AbstMatVec{Q}; alpha::Q = 2., kwargs...) w
     zssr = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv).y1
     df = dfplsr_cg(X, y; kwargs...).df
     dfssr = n .- df
-    ## For Cp, unbiased estimate of sigma2 
-    ## ----- Cp1: From a low biased model
-    ## Not stable with dfcov and nlv too large 
-    ## compared to best model !!
-    ## If df stays below .95 * n, this corresponds
-    ## to the maximal model (nlv)
-    ## Option 2 gives in general results
-    ## very close to those of option 1,
-    ## but can give poor results with dfcov
-    ## when nlv is set too large to the best model
+    # For Cp, unbiased estimate of sigma2 
+    # ----- Cp1: From a low biased model
+    # Not stable with dfcov and nlv too large 
+    # compared to best model !!
+    # If df stays below .95 * n, this corresponds
+    # to the maximal model (nlv)
+    # Option 2 gives in general results
+    # very close to those of option 1,
+    # but can give poor results with dfcov
+    # when nlv is set too large to the best model
     k = maximum(findall(df .<= .5 * n))
     s2_1 = zssr[k] / dfssr[k]
-    ## ----- Cp2: FPE-like
-    ## s2 is estimated from the model under evaluation
-    ## Used in Kraemer & Sugiyama 2011 Eq.5-6
+    # ----- Cp2: FPE-like
+    # s2 is estimated from the model under evaluation
+    # Used in Kraemer & Sugiyama 2011 Eq.5-6
     s2_2 = zssr ./ dfssr
     ct = ones(Q, nlv + 1)
     ct .= n ./ (n .- df .- 2)  # bias correction
     ct[(df .> n) .| (ct .<= 0)] .= NaN 
-    ## For safe predictions when df stabilizes 
-    ## and fluctuates
+    # For safe predictions when df stabilizes 
+    # and fluctuates
     ct[df .> .8 * n] .= NaN
-    ## End
+    # End
     u = findall(isnan.(ct)) 
     if length(u) > 0
         ct[minimum(u):(nlv + 1)] .= NaN

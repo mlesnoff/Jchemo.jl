@@ -20,7 +20,7 @@ function snipals_shen(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
     while cont
         u0 .= copy(u)
         mul!(vtild, X', u)
-        ## Sparsity
+        # Sparsity
         if nzeros > 0
             @. absv = abs(vtild)
             ind .= sortperm(absv; rev = true)
@@ -29,7 +29,7 @@ function snipals_shen(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
             lambda = maximum(absv[absv .< qt])
             @. vtild = fthresh(vtild, lambda)
         end
-        ## End
+        # End
         mul!(u, X, vtild)
         u ./= normv(u)
         dif = sum((u .- u0).^2)

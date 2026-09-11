@@ -13,7 +13,7 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 n, p = (5, 10)
@@ -46,7 +46,7 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <:
     par = recovkw(ParRp{Q}, kwargs).par 
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     p = nco(X)
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -55,7 +55,7 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <:
         xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
-    ## End
+    # End
     if par.meth == :gauss
         V = rpmatgauss(p, par.nlv, Q)
     else

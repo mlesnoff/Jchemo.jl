@@ -1,5 +1,5 @@
 
-#### Make a dummy table from a categorical variable
+### Make a dummy table from a categorical variable
 
 """
     dummy([Q::DataType], y::Vector{String})
@@ -7,7 +7,7 @@ Compute dummy table from a categorical variable.
 * `Q` : Data type for the returned output (dummy table) `Y`.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -24,13 +24,13 @@ dummy(y::AbstractVector{String}) = dummy(Float64, y)
 
 function dummy(Q::DataType, y::AbstractVector{String})
     lev = mlev(y)
-    ## Thanks to the idea given in the following post of @Mattriks:
-    ## https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
+    # Thanks to the idea given in the following post of @Mattriks:
+    # https://discourse.julialang.org/t/all-the-ways-to-do-one-hot-encoding/64807/4
     Y = Q.(y .== permutedims(lev))
     (Y = Y, lev)
 end
 
-#### Expand a 2D contingency table
+### Expand a 2D contingency table
 
 """
     expand_tab2d(X::Matrix{Q}; levr::T = nothing, levc::T = nothing, 
@@ -47,7 +47,7 @@ The eventual names in `levr` (or`levc`) must have the same length and be in the 
 
 The levels are returned in String.
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo
 
@@ -83,7 +83,7 @@ Build a dataframe with all the combinations of the entered parameter values.
 Keyword arguments:
 * `kwargs` : Named vector(s) of the parameter(s) values.
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo
 
@@ -99,11 +99,11 @@ function expand_grid(; kwargs...)
     convertdf(res, typ)
 end
 
-## Not exported
+# Not exported
 
-## v = (y1 = [1, 2], y2 = string.(collect('a':'c')), y3 = [:a1])  # the function does not accept thype 'Char'
-## Jchemo.mpar_tupl(v) 
-## Jchemo.expand_grid_tupl(v)
+# v = (y1 = [1, 2], y2 = string.(collect('a':'c')), y3 = [:a1])  # the function does not accept thype 'Char'
+# Jchemo.mpar_tupl(v) 
+# Jchemo.expand_grid_tupl(v)
 function expand_grid_tupl(tupl::NamedTuple)
     pars = Jchemo.mpar_tupl(tupl) 
     typ = [typeof(pars[i][1]) for i in eachindex(pars)]
@@ -113,8 +113,8 @@ function expand_grid_tupl(tupl::NamedTuple)
     convertdf(res, typ)
 end
 
-## ind = [[[1, 2]]; [[1]]; [[1, 2, 3]]]
-## Jchemo.indcumul(ind)
+# ind = [[[1, 2]]; [[1]]; [[1, 2, 3]]]
+# Jchemo.indcumul(ind)
 function indcumul(v::Vector{Vector{Int}})
     ind = 1
     res = Vector{Vector{Int}}()
@@ -125,7 +125,7 @@ function indcumul(v::Vector{Vector{Int}})
     res
 end
 
-#### Recode a single variable
+### Recode a single variable
 
 """
     recod_catbydict(x::Vector{Q}, dict::Dict{Q, Q}) where Q <: String
@@ -135,7 +135,7 @@ Recode a categorical variable by levels defined in a dictionnary.
 
 See examples.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -162,7 +162,7 @@ see examples. Internally, the function makes unique and sorts the elements of ve
 
 *Warning*: All levels in `x` must be contained in `lev`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -186,7 +186,7 @@ an index vector, vind, is built such as:
 * vind = [`start`; `start` + 1; ...; `start` + k - 1] 
 The function replaces element `x[i]` by the index in vind corresponding to `x[i]`, see examples.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -216,7 +216,7 @@ The ith sorted level in `x` (i = 1, ..., n) is replaced by the ith sorted level 
 
 *Warning*: `x` and `lev` must contain the same number of levels.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -256,7 +256,7 @@ see examples.
 
 *Warning*: Vector `x` must contain integers withinh [1, nlev], where nlev is the number of levels in `lev`. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -297,7 +297,7 @@ of length K:
 * q[K - 1] < x <= q[K]  : ==> "K"
 * q[K] < x              : ==> "K + 1" 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, Statistics
 x = [collect(1:10); 8.1 ; 3.1] 
@@ -327,9 +327,9 @@ function recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: Float
     string.(v)
 end
 
-############ Other recoding
+########### Other recoding
 
-### Missing data  
+## Missing data  
 
 """ 
     parsemiss(Q, x::Vector{Union{String, Missing}})
@@ -339,7 +339,7 @@ Parsing a string vector containing missing data.
 
 See examples.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -371,7 +371,7 @@ The case `miss = nothing` has the only action to allow `missing` in `X` or `datf
 
 See examples.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -404,7 +404,7 @@ function recod_miss(datf::DataFrame; miss = nothing)
 end
 
 
-### Convertdf
+## Convertdf
 
 """ 
     convertdf(datf::DataFrame, typ; miss = nothing)
@@ -415,7 +415,7 @@ Keyword arguments:
 * `miss` : The code used in `datf` to identify the data to be declared as `missing` (of type `Missing`).
     See function `recod_miss`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -442,7 +442,7 @@ function convertdf(datf::DataFrame, typ::Vector{DataType}; miss = nothing)
             if sum(ismissing.(z)) == 0
                 z = convert.(typ[i], parse.(Float64, z))
             else
-                ## this case does not work to change floats "1." to int (to do) 
+                # this case does not work to change floats "1." to int (to do) 
                 z = parsemiss(typ[i], z)
             end
         else

@@ -34,7 +34,7 @@ by function `rgcca` of the R package `RGCCA` (Tenenhaus & Guillemot 2017, Tenenh
 
 See function `plscan` for the details on the `summary` outputs.
 
-## References
+# References
 Tenenhaus, A., Guillemot, V. 2017. RGCCA: Regularized and Sparse Generalized Canonical Correlation Analysis for 
 Multiblock Data Multiblock data analysis.https://cran.r-project.org/web/packages/RGCCA/index.html 
 
@@ -47,7 +47,7 @@ Wold, S., Ruhe, A., Wold, H., Dunn, III, W.J., 1984. The Collinearity Problem in
 Squares (PLS) Approach to Generalized Inverses. SIAM Journal on Scientific and Statistical Computing 5, 735–743. 
 https://doi.org/10.1137/0905052
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -106,7 +106,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -120,7 +120,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     if par.bscal == :none
         bscales = ones(Q, 2)
     elseif par.bscal == :frob
@@ -135,7 +135,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     invsqrtw = 1 ./ sqrtw
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
-    ## Pre-allocation
+    # Pre-allocation
     Tx = similar(X, n, nlv)
     Ty = similar(Tx)
     Wx = similar(X, p, nlv)
@@ -162,7 +162,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         cont = true
         iter = 1
         wx .= Q.(rand(p))
-        ## invCx, invCy
+        # invCx, invCy
         if par.tau == 0       
             invCx = inv(X' * X)
             invCy = inv(Y' * Y)
@@ -175,7 +175,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
                 invCy = inv((1 - par.tau) * Y' * Y + par.tau * Iy)
             end
         end 
-        ## End
+        # End
         ttx = 0
         tty = 0
         while cont
@@ -264,24 +264,24 @@ function Base.summary(object::Ccawold, X, Y)
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
     ttx = object.TTx 
     tty = object.TTy 
-    ## Block X
+    # Block X
     ss = frob2(X, object.weights)
     tt_adj = (colnorm(object.Vx).^2) .* ttx  
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Block Y
+    # Block Y
     ss = frob2(Y, object.weights)
     tt_adj = (colnorm(object.Vy).^2) .* tty  
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between X- and Y-block LVs
+    # Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
-    ## RV(X, tx) and RV(Y, ty)
+    # RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
     z = similar(X, 1, nlv)
     for a = 1:nlv
@@ -292,17 +292,17 @@ function Base.summary(object::Ccawold, X, Y)
         z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
     end
     rvy2ty = DataFrame(z, nam)
-    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z[1, :] = rd(X, object.Tx, object.weights) 
     rdx2tx = DataFrame(z, nam)
     z[1, :] = rd(Y, object.Ty, object.weights) 
     rdy2ty = DataFrame(z, nam)
-    ## Correlation between block variables and their block LVs
+    # Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2tx = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
-    ## End
+    # End
     (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)
 end
 

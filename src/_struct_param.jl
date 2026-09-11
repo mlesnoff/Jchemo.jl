@@ -160,7 +160,7 @@ Base.@kwdef mutable struct ParCovsel
     scal::Symbol = :none
 end 
 
-## Multiblock
+# Multiblock
 
 Base.@kwdef mutable struct ParBlock
     centr::Bool = false   
@@ -285,7 +285,7 @@ Base.@kwdef mutable struct ParKplsr{Q <: Float}
     scal::Symbol = :none                   
 end 
 
-## Multiblock
+# Multiblock
 
 Base.@kwdef mutable struct ParMbplsr{Q <: Float}
     nlv::Int = 1 
@@ -305,7 +305,7 @@ Base.@kwdef mutable struct ParSoplsr
     scal::Symbol = :none  
 end 
 
-## End
+# End
 
 Base.@kwdef mutable struct ParRr{Q <: Float}   
     lb::Q = 1e-6                    
@@ -378,7 +378,7 @@ Base.@kwdef mutable struct ParLwplsravg{Q <: Float}
     verbose::Bool = false                   
 end 
 
-## Svm, Trees
+# Svm, Trees
 
 Base.@kwdef mutable struct ParSvm{Q <: Float64}    # svmr, svmda    LIBSVM requires Float64
     kern::Symbol = :krbf    
@@ -578,7 +578,7 @@ Base.@kwdef mutable struct ParMbplskdeda{Q <: Float}
     scal::Symbol = :none                    
 end 
 
-## 
+# 
 
 Base.@kwdef mutable struct ParLwplsda{Q <: Float}    # lwplsrda, lwplslda 
     nlvdis::Int = 0                         
@@ -611,7 +611,7 @@ Base.@kwdef mutable struct ParLwplsqda{Q <: Float}
     verbose::Bool = false                   
 end 
 
-## Occ 
+# Occ 
 
 Base.@kwdef mutable struct ParOccstah{Q <: Float} 
     nlv::Int = 500

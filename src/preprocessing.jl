@@ -9,7 +9,7 @@ Keyword arguments:
 De-trend transformation: the function fits a baseline by polynomial regression for each observation 
 and returns the residuals (= signals corrected from the baseline).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -32,7 +32,7 @@ Xptest = transf(model, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
-## Example on 1 spectrum
+# Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
 model = detrend_pol(degree = 1)
@@ -83,7 +83,7 @@ function transf!(object::Detrendpol, X::Matrix{Q}) where Q <: Float
     PtP = Pt * P
     A = inv(PtP) * Pt
     @inbounds for i in axes(X, 1)
-    ## Not faster: @Threads.threads
+    # Not faster: @Threads.threads
         y = vrow(X, i)
         X[i, :] .= y - P * A * y
     end
@@ -102,7 +102,7 @@ Keyword arguments:
 De-trend transformation: The function fits a baseline by LOESS regression (function `loessr`) for each 
 observation and returns the residuals (= signals corrected from the baseline).
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -125,7 +125,7 @@ Xptest = transf(model, Xtest)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
-## Example on 1 spectrum
+# Example on 1 spectrum
 i = 2
 zX = Matrix(X)[i:i, :]
 model = detrend_lo(span = .75)
@@ -163,7 +163,7 @@ function transf!(object::Detrendlo, X::Matrix{Q}) where Q <: Float
     p = nco(X)
     x = Q.(collect(1:p))
     @inbounds for i in axes(X, 1)
-    ## Not faster: @Threads.threads
+    # Not faster: @Threads.threads
         y = vec(vrow(X, i))
         fitm = loessr(x, y; object.par.span, object.par.degree)
         X[i, :] .= y - vec(predict(fitm, x).pred)
@@ -182,7 +182,7 @@ of two successive colums) is npoint - 1.
 The method reduces the column-dimension: 
 * (n, p) --> (n, p - npoint + 1). 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -267,10 +267,10 @@ If `npoint = 4`, the  kernel is kern = [.25, .25, .25, .25], and:
 - The output value at index i = 4 is: dot(kern, [x[3], x[4], x[5], x[6]]). The corresponding wavelength 
     is: (wl[4] + wl[5]) / 2.
 
-## References
+# References
 https://github.com/JuliaImages/ImageFiltering.jl
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -339,7 +339,7 @@ Multiplicative scatter correction (MSC).
 
 If `xref` is not given, the reference vector is computed as the column mean of `X`.
  
-## References
+# References
 Afseth, N.K., Kohler, A., 2012. Extended multiplicative signal correction in vibrational spectroscopy, a tutorial. 
 Chemometrics and Intelligent Laboratory Systems, Special Issue Section: Selected Papers from the 1st African-European 
 Conference on Chemometrics, Rabat, Morocco, September 2010 Special Issue Section: Preprocessing methods Special Issue 
@@ -347,7 +347,7 @@ Section: Spectroscopic imaging 117, 92–99. https://doi.org/10.1016/j.chemolab.
 
 Martens, H., Næs, T. (1989) Multivariate calibration. Chichester: Wiley.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -373,7 +373,7 @@ fitm = model.fitm
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
-#### Direct
+### Direct
 
 fitm = msc(Xtrain) 
 #fitm = msc(Xtrain, colmean(Xtrain)) 
@@ -418,7 +418,7 @@ This function implements the polynomial version of EMSC. The case `degree = 0` c
 
 If `xref` is not given, the reference vector is computed as the column mean of `X`.
  
-## References
+# References
 Afseth, N.K., Kohler, A., 2012. Extended multiplicative signal correction in vibrational spectroscopy, a tutorial. 
 Chemometrics and Intelligent Laboratory Systems, Special Issue Section: Selected Papers from the 1st African-European 
 Conference on Chemometrics, Rabat, Morocco, September 2010 Special Issue Section: Preprocessing methods Special Issue 
@@ -429,7 +429,7 @@ New preprocessing methods for near infrared spectroscopy. Journal of Pharmaceuti
 Invited Papers from the International Symposium organized by the Swedish Academy of Pharmaceutical Sciences 9, 625–635. 
 https://doi.org/10.1016/0731-7085(91)80188-F
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -455,7 +455,7 @@ fit!(model, Xtrain)
 plotsp(Xptrain, wl).f
 plotsp(Xptest, wl).f
 
-#### Direct
+### Direct
 
 degree = 2
 fitm = emsc(Xtrain; degree) 
@@ -523,11 +523,11 @@ If `deriv` = 0, there is no derivation (only polynomial smoothing).
 
 The case `degree` = 0 (i.e. simple moving average) is not allowed by the funtion.
 
-## References
+# References
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for even number data. Signal 
 Processing 85, 1429–1434. https://doi.org/10.1016/j.sigpro.2005.02.002
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 res = savgk(21, 3, 2)
@@ -568,7 +568,7 @@ Each returned point is located on the center of the kernel. The kernel is comput
 
 The function returns a matrix (n, p).
 
-## References 
+# References 
 Luo, J., Ying, K., Bai, J., 2005. Savitzky–Golay smoothing and differentiation filter for 
 even number data. Signal Processing 85, 1429–1434. https://doi.org/10.1016/j.sigpro.2005.02.002
 
@@ -578,7 +578,7 @@ Savitzky, A., Golay, M.J.E., 2002. Smoothing and Differentiation of Data by Simp
 Schafer, R.W., 2011. What Is a Savitzky-Golay Filter? [Lecture Notes]. IEEE Signal Processing Magazine 28, 111–117.
 https://doi.org/10.1109/MSP.2011.941097
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -602,7 +602,7 @@ Xptest = transf(model, Xtest)
 plotsp(Xptrain).f
 plotsp(Xptest).f
 
-####### Gaussian signal 
+###### Gaussian signal 
 
 u = -15:.1:15
 n = length(u)
@@ -650,14 +650,14 @@ function transf!(object::Savgol, X::Matrix{Q}) where Q <: Float
     kernc = ImageFiltering.centered(kern)
     x = similar(X, p)
     @inbounds for i in axes(X, 1)
-        ## Convolution with "replicate" padding
+        # Convolution with "replicate" padding
         ImageFiltering.imfilter!(x, vrow(X, i), reflect(kernc))
         X[i, :] .= x
-        ## Alternatves not fasters (~ same)
+        # Alternatves not fasters (~ same)
         #ImageFiltering.imfilter!(X[i, :], vrow(X, i), reflect(kernc))
         #ImageFiltering.imfilter!(vrow(X, i), vrow(X, i), reflect(kernc))
     end
-    ## Not faster
+    # Not faster
     #@Threads.threads for i in axes(X, 1)
     #    X[i, :] .= imfilter(vrow(X, i), reflect(kernc))
     #end
@@ -672,7 +672,7 @@ Keyword arguments:
 * `centr` : Boolean indicating if the centering in done.
 * `scal` : Boolean indicating if the scaling in done.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -739,7 +739,7 @@ Row-wise norming of X-data.
 
 Each row of `X` is divide by its norm.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -801,12 +801,12 @@ Keyword arguments:
 
 The function implements a cubic spline interpolation using package DataInterpolations.jl.
 
-## References
+# References
 http://github.com/SciML/DataInterpolations.jl
 
 Bhagavan et al. 2024, https://doi.org/10.21105/joss.06917
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -861,10 +861,10 @@ end
 function transf!(object::Interpl, X::Matrix{Q}, M::Matrix{Q}) where Q <: Float
     algo = DataInterpolations.CubicSpline
     #algo = DataInterpolations.LinearInterpolation
-    ## Not faster: @Threads.threads
+    # Not faster: @Threads.threads
     @inbounds for i in axes(X, 1)
-        ## argument 'extrapolate' has been removed for CubicSpline
-        ## ==> removed from 'interpl' since Jchemo_0.8.4
+        # argument 'extrapolate' has been removed for CubicSpline
+        # ==> removed from 'interpl' since Jchemo_0.8.4
         itp = algo(vrow(X, i), object.par.wl)
         M[i, :] .= itp.(object.par.wlfin)
     end

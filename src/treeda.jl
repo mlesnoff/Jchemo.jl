@@ -14,7 +14,7 @@ Keyword arguments:
 
 The function is a wrapper of package `DecisionTree.jl' to fit a single discrimnation tree (CART).
 
-## References
+# References
 Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification And Regression Trees. 
 Chapman & Hall, 1984.
 
@@ -23,7 +23,7 @@ DecisionTree.jl https://github.com/JuliaAI/DecisionTree.jl
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : trois thèmes statistiques autour de CART 
 en régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -68,7 +68,7 @@ conf(res.pred, ytest).cnt
 """ 
 treeda(; kwargs...) = JchemoModel(treeda, nothing, kwargs)
 
-## For DA in DecisionTree.jl, y must be Int or String
+# For DA in DecisionTree.jl, y must be Int or String
 function treeda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
     n, p = size(X)
@@ -112,10 +112,10 @@ Compute Y-predictions from a fitted model.
 function predict(object::Treeda, X)
     X = ensure_mat(X)
     m = nro(X)
-    ## Tree
+    # Tree
     if (@names object.fitm)[1] == :node
         pred = apply_tree(object.fitm, fscale(X, object.xscales))
-    ## Forest 
+    # Forest 
     else
         pred = apply_forest(object.fitm, fscale(X, object.xscales); use_multithreading = object.par.mth)
     end

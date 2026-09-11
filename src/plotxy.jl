@@ -32,7 +32,7 @@ Keyword arguments:
 
 To use the function, a backend (e.g., CairoMakie) has to be specified.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -66,8 +66,8 @@ plotxy(collect(1:5), collect(1:5)).f
 y = reshape(rand(5), 5, 1)
 plotxy(collect(1:5), y).f
 
-## Several layers can be added
-## (same syntax as in Makie)
+# Several layers can be added
+# (same syntax as in Makie)
 A = rand(50, 2)
 f, ax = plotxy(A[:, 1], A[:, 2]; xlabel = "x1", ylabel = "x2")
 ylims!(ax, -1, 2)
@@ -83,7 +83,7 @@ function plotxy(x, y;
     x = vec(x)
     y = vec(y)
     f = Figure(; size)
-    ## Ticks (to improve)
+    # Ticks (to improve)
     if isnothing(xticks) && isnothing(yticks)
         ax = Axis(f; xlabel, ylabel, title)
     elseif !isnothing(xticks) && isnothing(yticks)
@@ -93,7 +93,7 @@ function plotxy(x, y;
     else 
         ax = Axis(f; xticks, yticks, xlabel, ylabel, title)
     end
-    ## End
+    # End
     if isnothing(color)
         scatter!(ax, x, y; kwargs...)
     else
@@ -137,7 +137,7 @@ function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbo
     lev = sort(unique(group))
     lab = string.(lev)
     f = Figure(; size)
-    ## Ticks (to improve)
+    # Ticks (to improve)
     if isnothing(xticks) && isnothing(yticks)
         ax = Axis(f; xlabel, ylabel, title)
     elseif !isnothing(xticks) && isnothing(yticks)
@@ -147,7 +147,7 @@ function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbo
     else 
         ax = Axis(f; xticks, yticks, xlabel, ylabel, title)
     end
-    ## End
+    # End
     lw = .8
     @inbounds for i in eachindex(lev)
         s = group .== lev[i]

@@ -13,7 +13,7 @@ Keyword arguments:
 
 Same as function `qda` except that class densities are estimated from function `dmkern` instead of function `dmnorm`. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -74,13 +74,13 @@ function kdeda(X, y; kwargs...)
 end
 
 function kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
-    ## To do: add scaling X?
+    # To do: add scaling X?
     par = recovkw(ParKdeda{Q}, kwargs).par
     ni = tab(y).n
     priors = aggsumv(weights.values, y).val
     lev = mlev(y)
     nlev = length(lev)
-    ## End
+    # End
     fitm = list(Dmkern, nlev)
     @inbounds for i in eachindex(lev)
         s = y .== lev[i]

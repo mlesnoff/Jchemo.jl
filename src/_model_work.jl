@@ -1,4 +1,4 @@
-## Define type 'JchemoModel' 
+# Define type 'JchemoModel' 
 
 Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
     algo::T   
@@ -6,7 +6,7 @@ Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
     kwargs::K
 end
 
-######## Fit
+####### Fit
 
 function fit!(model::JchemoModel, X)
     kwargs = values(model.kwargs)
@@ -26,19 +26,19 @@ function fit!(model::JchemoModel, X, Y, weights::ProbabilityWeights)
     return
 end  
 
-######## Transf
+####### Transf
 
 transf(model::JchemoModel, X) = transf(model.fitm, X)
 
 transf(model::JchemoModel, X, nlv::Union{Int, AbstractVector{Int}}) = transf(model.fitm, X, nlv)
 
-## 2-block
+# 2-block
 
 transf(model::JchemoModel, X, Y) = transf(model.fitm, X, Y)
 
 transf(model::JchemoModel, X, Y, nlv::Union{Int, AbstractVector{Int}}) = transf(model.fitm, X, Y, nlv)
 
-## Multiblock
+# Multiblock
 
 transfbl(model::JchemoModel, X) = transfbl(model.fitm, X)
 
@@ -48,7 +48,7 @@ transfbl(model::JchemoModel, X, Y) = transfbl(model.fitm, X, Y)
 
 transfbl(model::JchemoModel, X, Y, nlv::Union{Int, AbstractVector{Int}}) = transfbl(model.fitm, X, Y, nlv)
 
-######## Coef 
+####### Coef 
 
 coef(model::JchemoModel) = coef(model.fitm)
 
@@ -60,7 +60,7 @@ function coef(model::JchemoModel, lb::Union{Q, AbstractVector{Q}}) where Q <: Fl
     coef(model.fitm, lb)
 end
 
-######## Predict 
+####### Predict 
 
 predict(model::JchemoModel, X) = predict(model.fitm, X)
 
@@ -72,7 +72,7 @@ function predict(model::JchemoModel, X, lb::Union{Q, AbstractVector{Q}}) where Q
     predict(model.fitm, X, lb)
 end
 
-######## Summary 
+####### Summary 
 
 Base.summary(model::JchemoModel) = Base.summary(model.fitm)
 

@@ -7,7 +7,7 @@ Squared Euclidean distances between the rows of `X` and `Y`.
 The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
-## Examples
+# Examples
 ```julia
 X = rand(5, 3)
 Y = rand(2, 3)
@@ -43,7 +43,7 @@ Mahalanobis Squared distances between the rows of `X` and `Y`.
 The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 
@@ -92,7 +92,7 @@ Mahalanobis Squared distances (with a Cholesky factorization) between the rows o
 The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, LinearAlgebra
 
@@ -136,15 +136,15 @@ function mah2chol(X, Y, Uinv)
     eucl2(zX, zY)
 end
 
-#### Angular and correlation distances (functions not exported)
-## All the distances below are scaled to [0, 1]
-## Usage:
-## ```julia
-## n = 1000
-## x = rand(n)
-## y = rand(n)
-## Jchemo.SamDist()(x, y)
-## ```julia
+### Angular and correlation distances (functions not exported)
+# All the distances below are scaled to [0, 1]
+# Usage:
+# ```julia
+# n = 1000
+# x = rand(n)
+# y = rand(n)
+# Jchemo.SamDist()(x, y)
+# ```julia
 struct CosDist <: Distances.Metric end                      
 (::CosDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Distances.CosineDist()(x, y) / 2
 
@@ -157,12 +157,12 @@ struct CorDist <: Distances.Metric end
 struct CorDist_b <: Distances.Metric end                            
 (::CorDist_b)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = (1 - corv(x, y)) / 2
 
-## Square-root correlation distance
-## max is used since possible negative zeros (floating point issues)
+# Square-root correlation distance
+# max is used since possible negative zeros (floating point issues)
 struct sqrCorDist <: Distances.Metric end                                
 (::sqrCorDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 
-## Tentative (will be modified)
+# Tentative (will be modified)
 function wass1d(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
     sum_x = sum(x)
     sum_y = sum(y)
@@ -182,7 +182,7 @@ function wass1d(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
 end
 struct WasDist <: Distances.Metric end                            
 (::WasDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Jchemo.wass1d(x, y)
-## End
+# End
 
 
 

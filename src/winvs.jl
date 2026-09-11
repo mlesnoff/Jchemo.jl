@@ -16,13 +16,13 @@ weights are standardized to their maximal value. This is an adaptation of the we
 
 The weights decrease when distances increase. Lower is h, sharper is the decreasing function.
 
-## References 
+# References 
 
 Kim S, Kano M, Nakagawa H, Hasebe S. Estimation of active pharmaceutical ingredients content using locally weighted 
 partial least squares and statistical wavelength selection. Int J Pharm. 2011; 421(2):269-274. 
 https://doi.org/10.1016/j.ijpharm.2011.10.007
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie, Distributions
 
@@ -70,8 +70,8 @@ function winvs!(d::Vector{T}; h::T = 2., criw::T = 4., squared::Bool = false) wh
     if sigma == 0 ; sigma = eps(T) ; end
     cutoff = medv(d) + criw * sigma
     @. d = ifelse(d <= cutoff, exp(-d / (h * sigma)), zero(T))
-    ## Alternative, e.g.: 
-    ## d .= wdis(d; typw = :bisquare)
+    # Alternative, e.g.: 
+    # d .= wdis(d; typw = :bisquare)
     dmax = maximum(d) 
     if dmax > 0
         @. d = d / dmax

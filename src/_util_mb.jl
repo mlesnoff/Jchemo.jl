@@ -7,7 +7,7 @@ Make blocks from a matrix.
 
 The function returns a list (vector) of blocks.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 n = 5 ; p = 10 
@@ -54,7 +54,7 @@ Types of block scaling:
 * `:sd` : Each block X is divided by sqrt(sum(weighted variances of the block-columns)). After this scaling, sum(weighted variances of 
     the block-columns) = 1.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 n = 5 ; m = 3 ; p = 10 
@@ -69,7 +69,7 @@ centr = true ; scal = :std
 bscal = :frob
 model = blockscal(; centr, scal, bscal)
 fit!(model, Xbl)
-## Data transformation
+# Data transformation
 vXbl = transf(model, Xbl) ; 
 @head vXbl[3]
 
@@ -93,8 +93,8 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
     xscales = list(Vector{Q}, nbl)
     bscales = ones(Q, nbl)
     for k in eachindex(Xbl)
-        ## Computes:
-        ## xmeans for column centering
+        # Computes:
+        # xmeans for column centering
         zX = copy(Xbl[k])
         pbl = nco(zX)
         xmeans[k] = zeros(Q, pbl)  # if no centering, 'zeros' is required for 'transf'  
@@ -103,13 +103,13 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
             xmeans[k] .= colmean(Xbl[k], weights)
             fcenter!(zX, xmeans[k])
         end
-        ## xscales for column scaling
+        # xscales for column scaling
         if par.scal != :none
             colscal = def_colscal(par.scal) 
             xscales[k] .= colscal(Xbl[k], weights)
             fscale!(zX, xscales[k])
         end
-        ## bscales for block scaling
+        # bscales for block scaling
         if par.bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif par.bscal == :mfa
@@ -152,7 +152,7 @@ Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `bscales` : A vector (of length equal to the nb. of blocks) of the scalars diving the blocks.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 n = 5 ; m = 3 ; p = 10 
@@ -169,7 +169,7 @@ fblockscal!(Xbl, bscales) ;
 @head Xbl[3]
 ```
 """
-## This function is not commonly used. See blockscal instead
+# This function is not commonly used. See blockscal instead
 function fblockscal(Xbl, bscales)
     Xbl = ensure_mat_mb(Xbl)
     nbl = length(Xbl)  
@@ -194,7 +194,7 @@ end
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 n = 5 ; m = 3 ; p = 9 
@@ -230,7 +230,7 @@ transf(object::Mbconcat, Xbl) = fconcat(Xbl)
 Concatenate horizontaly multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 n = 5 ; m = 3 ; p = 9 

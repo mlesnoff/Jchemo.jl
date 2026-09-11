@@ -12,7 +12,7 @@ Specific for `X::DataFrame`:
 
 Variables defined in `sel` and `group` must be columns of `X`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -28,7 +28,7 @@ res.X
 
 aggstat(Matrix(datf), y; algo = sumv).X
 
-## Dataframe
+# Dataframe
 
 n, p = 20, 5
 X = rand(n, p)
@@ -71,7 +71,7 @@ Compute column-wise means by group in a dataset.
 
 This is a faster particular case of `aggstat`: computes means from a single group variable. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -106,7 +106,7 @@ Compute the sum by group over a categorical variable.
 * `x` : A vector representing the quantitative variable to sum (n) 
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -133,7 +133,7 @@ Find duplicated rows in a dataset.
 * `X` : A dataset.
 * `digits` : Nb. digits used to round `X` before checking.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -215,7 +215,7 @@ Find the most occurent level in `x`.
 
 If ex-aequos, the function returns the first.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -238,7 +238,7 @@ Find rows with missing data in a dataset.
 
 For dataframes, see also `DataFrames.completecases` and `DataFrames.dropmissing`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -263,7 +263,7 @@ Find the first indexes of a vector making unique the levels in this vector.
 
 Can be used to remove duplicated rows (for instance, identified by a single ID variable) in a dataset.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -289,7 +289,7 @@ end
     @head X
 Display the first rows of a dataset.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -321,7 +321,7 @@ Create a Vector{Any}(nothing, n).
 
 `isnothing(object, i)` can be used to check if cell i is empty.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -336,7 +336,7 @@ Create a Vector{Q}(undef, n).
 
 `isassigned(object, i)` can be used to check if cell i is empty.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -354,7 +354,7 @@ Return the sorted levels of an array or dataframe.
 * `X` : A categorical array (class membership). Must be of type `String`.
 * `datf` : A dataframe.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -382,7 +382,7 @@ Return the name of a variable.
 Thanks to: 
 https://stackoverflow.com/questions/38986764/save-variable-name-as-string-in-julia
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -419,7 +419,7 @@ Return if elements of a vector are strictly outside of a given range.
 
 Return a BitVector.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -443,7 +443,7 @@ Compute p-value(s) from a distribution, an ECDF or a vector.
 
 Compute or estimate the p-value of quantile `q`, ie. V(Q > `q`) where Q is the random variable.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, Distributions
 
@@ -502,7 +502,7 @@ Remove the rows of a matrix or the components of a vector having indexes `s`.
 * `X`, `x` : Matrix and vector, respectively.
 * `s` : Vector of the row indexes.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -530,7 +530,7 @@ Remove the columns of a matrix or the components of a vector having indexes `s`.
 * `X` : A data set (n, p).
 * `s` : Vector of the column indexes.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -555,7 +555,7 @@ Softmax transformation.
 Let v be a vector:
 * 'softmax'(v) = exp.(v) / sum(exp.(v))
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -586,7 +586,7 @@ end
 Include all the files contained in a directory.
 """
 function sourcedir(path::String)
-    z = readdir(path)  ## List of files in path
+    z = readdir(path)  # List of files in path
     for i in eachindex(z)
         include(string(path, "/", z[i]))
     end
@@ -600,7 +600,7 @@ Summarize a variable or a dataset.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `digits` : Nb. digits in the outputs.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -651,7 +651,7 @@ The returned value is:
 * abs(`x`) > `delta` ? `x` : 0
 where delta >= 0.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie 
 
@@ -682,7 +682,7 @@ The returned value is:
 * sign(`x`) * max(0, abs(`x`) - `delta`)
 where delta >= 0.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie 
 
@@ -697,7 +697,7 @@ lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 """
 function thresh_soft(x::Q, delta::Q) where Q <: Float
     @assert delta >= 0 "delta must be >= 0."
-    ## same as: abs(x) > delta ? sign(x) * (abs(x) - delta) : zero(eltype(x))
+    # same as: abs(x) > delta ? sign(x) * (abs(x) - delta) : zero(eltype(x))
     sign(x) * max(zero(eltype(x)), abs(x) - delta)  # type consistent
 end
 
@@ -708,7 +708,7 @@ Vertical concatenation of a list of dataframes.
 * `dat` : List (vector) of dataframes.
 * `cols` : Determines the columns of the returned dataframe. See ?DataFrames.vcat.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -764,14 +764,14 @@ vcol(X, j) = view(X, :, j)
 vcol(x::Vector, i) = view(x, i)
 vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
-########### Macros 
+########## Macros 
 
 """ 
     @pmod fun
 Shortcut for function `parentmodule`.
 * `fun` : The name of a function.
 
-## Examples
+# Examples
 ```julia
 @pmod rand
 ```
@@ -795,7 +795,7 @@ end
 Display the keyword arguments (with their default values) of a function.
 * `fun` : The name of a function.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 

@@ -3,7 +3,7 @@
 ANOVA Simultaneous Component Analysis (ASCA).
 * `object` : Output of function `decompx`.
 
-## References
+# References
 Bertinetto, C., Engel, J., Jansen, J., 2020. ANOVA simultaneous component analysis: A tutorial review. 
 Analytica Chimica Acta: X 6, 100061. https://doi.org/10.1016/j.acax.2020.100061
 
@@ -18,7 +18,7 @@ Bioinformatics 21, 3043–3048. https://doi.org/10.1093/bioinformatics/bti476
 Smilde, A.K., Marini, F., Westerhuis, J.A., Liland, K.H. (Eds.), 2025. Analysis of variance 
 for high-dimensional data: applications in life, food and chemical sciences. Wiley, Hoboken, NJ.
 
-## Examples 
+# Examples 
 ```julia
 using Jchemo, JchemoData, JLD2, StatsModels
 path_jdat = dirname(dirname(pathof(JchemoData)))

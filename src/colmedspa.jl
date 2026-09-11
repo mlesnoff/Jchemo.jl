@@ -1,6 +1,6 @@
-## Not exported
-## Transcription of function 'spatial.median' available in the script "PcaLocantore.R" of package rrcov v.1.4-3 
-## on R CRAN (Thanks to V. Todorov, 2016)
+# Not exported
+# Transcription of function 'spatial.median' available in the script "PcaLocantore.R" of package rrcov v.1.4-3 
+# on R CRAN (Thanks to V. Todorov, 2016)
 function colmedspa(X::AbstractMatrix{Q}; delta::Q = Q(1e-6)) where Q <: Float
     n, p = size(X)
     delta1 = delta * sqrt(p)

@@ -28,7 +28,7 @@ The general principle is in two steps:
 The method to compute outlierness is defined in function `outknn` (see for details). 
 See also function `occsd` for the possible cutoff types and the outputs.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -48,28 +48,28 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
-## "EHH" = Training reference class (= target = 'in')
+### Build the data used in the example
+# "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
 nref = nro(Xref)
-## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
+# New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
 nnew_ref = nro(Xnew_ref)
-## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
+# New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
 
-## Only used to compute classification error rates
+# Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
 yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-#### Fit the Occ model
+### Fit the Occ model
 nsamp = 150 ; k = 5 ; cri = 2.5
 #nsamp = copy(nref) ; k = 5 ; cri = 2.5
 model = occknn(; nsamp, k, cri)
@@ -99,7 +99,7 @@ hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-#### Predict the new reference observations
+### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -108,7 +108,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-#### Predict the new observations 'out'
+### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred
@@ -160,13 +160,13 @@ function occknn(X; kwargs...)
     end
     vX = vrow(X, s)
     k = min(par.k, n - 1)
-    ## Distribution of outlierness of the 'nsamp' sampled training observations
+    # Distribution of outlierness of the 'nsamp' sampled training observations
     res = getknn(X, vX; k = k + 1, metric = par.metric)
     d = similar(X, nsamp)
     @inbounds for i in eachindex(d)
         d[i] = par.algo(res.d[i][2:end])
     end
-    ## End 
+    # End 
     if par.typcut == :mad
         cutoff = median(d) + par.cri * madv(d)
     elseif par.typcut == :q
@@ -184,13 +184,13 @@ end
 function predict(object::Occknn, X)
     X = ensure_mat(X)
     m = nro(X)
-    ## kNN distance
+    # kNN distance
     res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, metric = object.par.metric) 
     d = similar(X, m)
     @inbounds for i in eachindex(d)
         d[i] = object.par.algo(res.d[i][2:end])
     end
-    ## End
+    # End
     d = DataFrame(
         d = d, 
         dstand = d / object.cutoff, 

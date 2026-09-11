@@ -15,7 +15,7 @@ The function fits a LOESS model using package `Loess.jl'.
 
 Smaller values of `span` result in smaller local context in fitting (less smoothing).
 
-## References
+# References
 
 https://github.com/JuliaStats/Loess.jl
 
@@ -28,11 +28,11 @@ local fitting. Journal of the American statistical association, 83(403), 596-610
 Cleveland, W. S., & Grosse, E. (1991). Computational methods for local regression. Statistics and computing, 
 1(1), 47-62. DOI: 10.1007/BF01890836
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie
 
-####### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
+###### Example of fitting the function sinc(x) described in Rosipal & Trejo 2001 p. 105-106 
  
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5

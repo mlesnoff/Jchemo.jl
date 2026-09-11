@@ -47,7 +47,7 @@ from {`X`, `Y`} and the dissimilarities are computed over these scores.
 In general, for high dimensional X-data, using the Mahalanobis distance requires preliminary dimensionality 
 reduction of the data.
 
-## References
+# References
 Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active pharmaceutical ingredients content using 
 locally weighted partial least squares and statistical wavelength selection. Int. J. Pharm., 421, 269-274.
 
@@ -60,7 +60,7 @@ robot learning. Applied Intell., 17, 49-60.
 Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression and application to a rainfall dataset. 
 Comput. Stat. Data Anal., 51, 1393-1410.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -94,7 +94,7 @@ res = predict(model, Xtest) ;
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f 
 
-## Storage of the local models fitted on the neighborhoods
+# Storage of the local models fitted on the neighborhoods
 model = lwplsr(; nlvdis, metric, h, k, nlv, store = true) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest) ; 
@@ -151,7 +151,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end    
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     k = object.par.k
     h = object.par.h
@@ -176,7 +176,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
+    # End
     reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 

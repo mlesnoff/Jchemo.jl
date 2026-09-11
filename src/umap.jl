@@ -18,7 +18,7 @@ The function fits a UMAP dimension reduction using package `UMAP.jl'.
 If `psamp < 1`, only a proportion `psamp` of the observations (rows of `X`) are used to build the model (systematic 
 sampling over the first score of the PCA of `X`). Can be used to decrease computation times when n is large.
 
-## References
+# References
 
 https://github.com/dillondaudert/UMAP.jl
 
@@ -29,7 +29,7 @@ https://umap-learn.readthedocs.io/en/latest/how_umap_works.html
 
 https://pair-code.github.io/understanding-umap/ 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -45,14 +45,14 @@ summ(Y)
 y = Y.conc
 ycla = Y.typ
 test = Y.test
-## Preprocessing
+# Preprocessing
 model1 = snv() 
 model2 = savgol(npoint = 21, deriv = 2, degree = 3)
 model = pip(model1, model2)
 fit!(model, X)
 @head Xp = transf(model, X)
 plotsp(Xp, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance", nsamp = 20).f
-## Tot => Train + Test
+# Tot => Train + Test
 s = Bool.(test)
 Xtrain = rmrow(Xp, s)
 ytrain = rmrow(y, s)
@@ -64,7 +64,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 (ntot = ntot, ntrain, ntest)
 tab(string.(ycla, "-", Y.label))
-##### End data
+#### End data
 
 psamp = .2  # to decrease the computation time for the example
 #psamp = 1  # all samples
@@ -98,8 +98,8 @@ umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
 function umap(X; kwargs...)  # Q is forced to be Float32
     Q = Float32
     X = ensure_mat(X)
-    ## UMAP.jl 0.3.0 seems force object embedding to be Float32.
-    ## Therefore, the computations below are also forced to be Float32.
+    # UMAP.jl 0.3.0 seems force object embedding to be Float32.
+    # Therefore, the computations below are also forced to be Float32.
     X = Q.(X)
     par = recovkw(ParUmap{Q}, kwargs).par
     n, p = size(X)
@@ -113,14 +113,14 @@ function umap(X; kwargs...)  # Q is forced to be Float32
     else
         s = collect(1:n)
     end
-    ## Scaling of X
+    # Scaling of X
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    ## Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
+    # Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
     fitm = UMAP.fit(Matrix(X'), nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
     T = Matrix(fitm.embedding')
     Umap(fitm, T, xscales, s, par)

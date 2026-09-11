@@ -13,7 +13,7 @@ Keyword arguments:
 * `colsamp`: Proportion of observations to sample within `p` (without replacement) at each replication.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator.
 
-## Examples
+# Examples
 ```julia
 using Jchemo  
 
@@ -44,11 +44,11 @@ function sampbag(n::Int, p::Int; rep::Int = 50, rowsamp::Q = .7,
     end    
     ordered = true
     Threads.@threads for i in eachindex(srow)
-        ## Rows
+        # Rows
         s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered)
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
-        ## Columns
+        # Columns
         if colsamp == 1
             scol[i] = range_p
         else
@@ -77,11 +77,11 @@ function sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50
     end
     ordered = true
     Threads.@threads for i in eachindex(srow)
-        ## Rows
+        # Rows
         s = StatsBase.sample(MersenneTwister(vseed[i]), range_n, mrow; replace, ordered)
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
-        ## Columns
+        # Columns
         if colsamp == 1
             scol[i] = range_p
         else

@@ -19,7 +19,7 @@ predict is correlated within blocks. This prevents underestimation of the genera
 The function returns a list (vector) of `rep` elements. Each element of the list contains `K` segments (= `K` vectors). 
 Each segment contains the indexes (position within 1:`n`) of the sampled observations.    
 
-## Examples
+# Examples
 ```julia
 using Jchemo 
 

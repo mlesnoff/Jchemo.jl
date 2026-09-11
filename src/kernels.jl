@@ -16,11 +16,11 @@ The RBF kernel between two vectors x and y (`X` and `Y` rows, respectively) is c
 Closer are x and y, higher is the kernel value (similarity). Higher is `gamma`, sharper is the decreasing 
 similarity curve with ||x - y|| (i.e., to increase `gamma` increases locality).
 
-## References 
+# References 
 Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
 and beyond, Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 X = rand(5, 3)
@@ -53,11 +53,11 @@ The polynomial kernel between two vectors x and y (`X` and `Y` rows, respectivel
 
 Closer are x and y, higher is the kernel value (similarity). 
 
-## References 
+# References 
 Scholkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
 and beyond, Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 X = rand(5, 3)

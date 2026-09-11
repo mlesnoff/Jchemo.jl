@@ -20,7 +20,7 @@ factorizes the covariance matrix X'Y by SVD.
 
 See function `plscan` for the details on the `summary` outputs.
 
-## References
+# References
 Tenenhaus, M., 1998. La régression PLS: théorie et pratique. Editions Technip, Paris.
 
 Tishler, A., Lipovetsky, S., 2000. Modelling and forecasting with robust canonical 
@@ -33,7 +33,7 @@ https://doi.org/10.1007/BF02289009
 Wegelin, J.A., 2000. A Survey of Partial Least Squares (PLS) Methods, with Emphasis 
 on the Two-Block Case (No. 371). University of Washington, Seattle, Washington, USA.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -88,7 +88,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
@@ -102,7 +102,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     if par.bscal == :none
         bscales = ones(Q, 2)
     elseif par.bscal == :frob
@@ -162,24 +162,24 @@ function Base.summary(object::Plstuck, X, Y)
     n, nlv = size(object.Tx)
     X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
     Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
-    ## Block X
+    # Block X
     tt = object.TTx
     ss = frob2(X, object.weights)
     pvar = tt / ss
     cumpvar = cumsum(pvar) 
     xvar = tt / n    
     explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Block Y
+    # Block Y
     tt = object.TTy
     ss = frob2(Y, object.weights)
     pvar = tt / ss
     cumpvar = cumsum(pvar)
     xvar = tt / n    
     explvary = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
-    ## Correlation between X- and Y-block LVs
+    # Correlation between X- and Y-block LVs
     z = diag(corm(object.Tx, object.Ty, object.weights))
     cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
-    ## RV(X, tx) and RV(Y, ty)
+    # RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
     z = similar(X, 1, nlv)
     for a = 1:nlv
@@ -190,16 +190,16 @@ function Base.summary(object::Plstuck, X, Y)
         z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
     end
     rvy2ty = DataFrame(z, nam)
-    ## Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
+    # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
     z[1, :] = rd(X, object.Tx, object.weights) 
     rdx2tx = DataFrame(z, nam)
     z[1, :] = rd(Y, object.Ty, object.weights) 
     rdy2ty = DataFrame(z, nam)
-    ## Correlation between block variables and their block LVs
+    # Correlation between block variables and their block LVs
     z = corm(X, object.Tx, object.weights)
     corx2tx = DataFrame(z, string.("lv", 1:nlv))
     z = corm(Y, object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
-    ## End
+    # End
     (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)
 end

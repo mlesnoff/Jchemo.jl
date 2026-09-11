@@ -20,7 +20,7 @@ The directions used for projections are simulated by random binary (0/1) values.
 
 See function `occsd` for details on the cutoff types and the outputs.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -40,28 +40,28 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
-## "EHH" = Training reference class (= target = 'in')
+### Build the data used in the example
+# "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
 nref = nro(Xref)
-## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
+# New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
 nnew_ref = nro(Xnew_ref)
-## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
+# New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
 
-## Only used to compute classification error rates
+# Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
 yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-#### Fit the Occ model
+### Fit the Occ model
 model = occstah(; nlv = 5000, cri = 2., scal = :std)
 #model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
 fit!(model, Xref)
@@ -88,7 +88,7 @@ hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-#### Predict the new reference observations
+### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -97,7 +97,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-#### Predict the new observations 'out'
+### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred

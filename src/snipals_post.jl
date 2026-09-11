@@ -1,4 +1,4 @@
-## Here, sparseness is applied after convergence of Nipals
+# Here, sparseness is applied after convergence of Nipals
 function snipals_post(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
     par = recovkw(Jchemo.ParSnipals{Q}, kwargs).par 
     p = nco(X)
@@ -11,7 +11,7 @@ function snipals_post(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
     res = nipals(X; kwargs...)
     v = res.v
     nzeros = p - par.nvar  # = degree of sparsity 
-    ## Sparsity
+    # Sparsity
     if nzeros > 0
         absv = abs.(v)
         ind = sortperm(absv; rev = true)
@@ -20,7 +20,7 @@ function snipals_post(X::AbstractMatrix{Q}; kwargs...) where Q <: Float
         lambda = maximum(absv[absv .< qt])
         v .= fthresh.(v, lambda)
     end
-    ## End
+    # End
     v ./= normv(v)
     (t = X * v, v, niter = res.niter)
 end

@@ -13,7 +13,7 @@ Keyword arguments:
 This function computes outlierness `d` of each observation (row) of `X` by a summary (e.g., the sum or maximum) 
 of the distances between the given observation and its `k` nearest neighbors in `X`. 
 
-## References
+# References
 Angiulli, F., Pizzuti, C., 2005. Outlier mining in large high-dimensional data sets. IEEE Transactions on Knowledge 
 and Data Engineering 17, 203–215. https://doi.org/10.1109/TKDE.2005.31
 
@@ -28,7 +28,7 @@ Ramaswamy, S., Rastogi, R., Shim, K., 2000. Efficient algorithms for mining outl
 in: Proceedings of the 2000 ACM SIGMOD International Conference on Management of Data, SIGMOD ’00. 
 Association for Computing Machinery, New York, NY, USA, pp. 427–438. https://doi.org/10.1145/342009.335437
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -38,7 +38,7 @@ X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
-## Six of the samples (25, 26, and 36-39) contain added alcohol
+# Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
 typ = fill("0", n)
 typ[s] .= "1"
@@ -52,7 +52,7 @@ f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
-## With a preliminary PCA
+# With a preliminary PCA
 nlv = 3
 model = pcasph(; nlv)
 fit!(model, X)

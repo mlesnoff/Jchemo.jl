@@ -12,7 +12,7 @@ Keyword arguments:
     sampling over each sorted `Y`-column (see the principle in function `sampsys`).  
 * `seed` : When `meth = :rand`, eventual seed for the `Random.MersenneTwister` generator.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, DataFrames
 
@@ -31,7 +31,7 @@ res.test
 
 sampdatf(Y, k; seed = 123) 
 
-## Replicated splitting Train/Test
+# Replicated splitting Train/Test
 rep = 10
 k = 3
 ids = [sampdatf(Y, k) for i = 1:rep]
@@ -66,7 +66,7 @@ function sampdatf(Y::DataFrame, k::Union{Int, Vector{Int}}, id::Vector = collect
         else
             res = sampsys(y[s_all], k[i])
         end 
-        ## Sorting
+        # Sorting
         train[i] = sort(id[s_all[res.train]])
         test[i] = sort(id[s_all[res.test]])             
     end

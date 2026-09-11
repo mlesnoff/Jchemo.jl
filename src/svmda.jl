@@ -26,7 +26,7 @@ to fit a C-SVC discriminiation model.
 
 **Note:** LIBSVM requires `Float64` for input data and parameters.
 
-## References 
+# References 
 Chang, C.-C. & Lin, C.-J. (2001). LIBSVM: a library for support vector machines. Software available
 at http://www.csie.ntu.edu.tw/~cjlin/libsvm. Detailed documentation (algorithms, formulae, ...) can be found 
 in http://www.csie.ntu.edu.tw/~cjlin/papers/libsvm.ps.gz
@@ -39,7 +39,7 @@ LIBSVM.jl: https://github.com/JuliaML/LIBSVM.jl
 Schölkopf, B., Smola, A.J., 2002. Learning with kernels: support vector machines, regularization, optimization, 
 and beyond. Adaptive computation and machine learning. MIT Press, Cambridge, Mass.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

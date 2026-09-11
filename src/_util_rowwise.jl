@@ -5,7 +5,7 @@ Row-wise sums of a matrix.
 
 Return a vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
  
@@ -22,7 +22,7 @@ Row-wise means of a matrix.
 
 Return a vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -40,7 +40,7 @@ Row-wise (uncorrected) variances of a matrix.
 
 Return a vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -58,7 +58,7 @@ Row-wise (uncorrected) standard deviations of a matrix`.
 
 Return a vector (n).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -78,7 +78,7 @@ Return a vector (n).
 
 See function `rownorm`.
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -101,7 +101,7 @@ Return a vector (n).
 The norm of each row x of `X` is computed as:
 * sqrt(x' * x)
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -113,7 +113,7 @@ rownorm(X)
 """ 
 rownorm(X) = sqrt.(rownorm2(X))
 
-##### Functions skipping missing data
+#### Functions skipping missing data
 rowsumskip(X) = colsumskip(ensure_mat(X)')
 rowmeanskip(X) = colmeanskip(ensure_mat(X)')
 rowstdskip(X) = colstdskip(ensure_mat(X)')

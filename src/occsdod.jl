@@ -18,7 +18,7 @@ OCC using outlierness `d` as defined in function `outsdod`.
 
 See function `occsd` for details on the cutoff types and the outputs.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -38,28 +38,28 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
-## "EHH" = Training reference class (= target = 'in')
+### Build the data used in the example
+# "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
 nref = nro(Xref)
-## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
+# New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
 nnew_ref = nro(Xnew_ref)
-## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
+# New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
 
-## Only used to compute classification error rates
+# Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
 yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-#### Fit a preliminary Pca model on the training reference data
+### Fit a preliminary Pca model on the training reference data
 nlv = 15
 model0 = pcasvd(; nlv) 
 #model0 = pcaout(; nlv) 
@@ -69,8 +69,8 @@ res = summary(model0, Xref).explvarx
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
 Tref = fitm0.T
 
-#### To describe the data, 
-#### project the test observations in the fitted score space
+### To describe the data, 
+### project the test observations in the fitted score space
 Tnew_ref = transf(model0, Xnew_ref)
 Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
@@ -82,7 +82,7 @@ i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
-#### Fit the Occ model based on the fitted score space 
+### Fit the Occ model based on the fitted score space 
 model = occsdod(cri = 2.5)
 #model = occsdod(typcut = :q, alpha = .01)
 #model = occsdod(typcut = :std, cri = 2.5, fscal = stdv)
@@ -125,7 +125,7 @@ ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash, label = "Cu
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
-#### Predict the new reference observations
+### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -134,7 +134,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-#### Predict the new observations 'out'
+### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred
@@ -216,7 +216,7 @@ function occsdod(fitm, X; kwargs...)
         odsigma = od.d / sigma_od,
         gh = sd.d.^2 / par.nlv
         )
-    ## Coefs for graphic SD/sigma - OD/sigma
+    # Coefs for graphic SD/sigma - OD/sigma
     #a = cutoff * sigma_od / (1 - gamma)
     #b = -gamma / (1 - gamma) * sigma_od / sigma_sd
     a = cutoff / (1 - gamma)
@@ -239,19 +239,19 @@ function predict(object::Occsdod, X)
     tscales = object.sd.tscales    
     sigma_sd = object.sdod.sigma_sd
     sigma_od = object.sdod.sigma_od
-    ## SD
+    # SD
     T = transf(object.fitm, X, nlv)
     Q = eltype(T)
     m = nro(T)
     fscale!(T, tscales)
     sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     sd = sqrt.(sd2)
-    ## OD
+    # OD
     E = xresid(object.fitm, X, nlv)
     od = rownorm(E)
-    ## Consensus
+    # Consensus
     d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od
-    ## End
+    # End
     d = DataFrame(
         d = d, 
         dstand = d / object.cutoff, 

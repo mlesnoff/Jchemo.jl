@@ -15,7 +15,7 @@ from `X1` and `X2` for calibration transfer.
 
 For instance, `D` can be used as input of function `eposvd`. 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -27,11 +27,11 @@ X1val = dat.X1val
 X2cal = dat.X2cal
 X2val = dat.X2val
 
-## The objective is to remove a detrimental 
-## information (here, D) from spaces X1 and X2
+# The objective is to remove a detrimental 
+# information (here, D) from spaces X1 and X2
 D = difmean(X1cal, X2cal).D
 res = eposvd(D; nlv = 1)
-## Corrected Val matrices
+# Corrected Val matrices
 X1val_c = X1val * res.M
 X2val_c = X2val * res.M
 

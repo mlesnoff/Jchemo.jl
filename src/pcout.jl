@@ -36,7 +36,7 @@ The function returns a named tuple with the following outputs:
 * `M2` : Upper boundary for assigning weight 1 in scatter outlier detection.
 * `const2` : Lower boundary for assigning weight 0 in scatter outlier detection.
 
-## References
+# References
 
 Filzmoser, P., Maronna, R., Werner, M., 2008. Outlier identification in high dimensions. 
 Computational Statistics & Data Analysis 52, 1694–1711. https://doi.org/10.1016/j.csda.2007.05.018
@@ -44,7 +44,7 @@ Computational Statistics & Data Analysis 52, 1694–1711. https://doi.org/10.101
 Filzmoser, P. 2026. mvoutlier: Multivariate Outlier Detection Based on Robust Methods. 
 R package version 2.1.4. https://cran.r-project.org/package=mvoutlier
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JLD2, CairoMakie
 using JchemoData 
@@ -55,7 +55,7 @@ X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
-## Six of the samples (25, 26, and 36-39) contain added alcohol
+# Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
 typ = fill("0", n)
 typ[s] .= "1"
@@ -124,7 +124,7 @@ function pcout!(X::AbstractMatrix{Q}; explvar::Q = .99, critm1::Q = 1 / 3, critc
             w1[i] = (1 - ((dist1[i] - M1) / (const1 - M1))^2)^2
         end
     end 
-    ## Phase 2
+    # Phase 2
     d .= sqrt.(rowsum(T.^2))
     dist2 = d * sqrt(q) / median(d)
     M2 = sqrt(quantile(distr, critm2))
@@ -138,7 +138,7 @@ function pcout!(X::AbstractMatrix{Q}; explvar::Q = .99, critm1::Q = 1 / 3, critc
             w2[i] = (1 - ((dist2[i] - M2) / (const2 - M2))^2)^2
         end
     end 
-    ## End
+    # End
     @. wfinal = ((w1 + cs) * (w2 + cs)) / (1 + cs)^2
     @. wfinal01 = round(wfinal + 0.5 - outbound)   # weights < outbound are assigned 0
     (wfinal01 = wfinal01, wfinal, wloc = w1, wscat = w2, dist1, dist2, M1, const1, M2, const2)

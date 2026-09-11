@@ -1,4 +1,4 @@
-## Not exported
+# Not exported
 
 struct Protoyclaplsr{Q <: Float}
     fitm::Vector{Plsr}    
@@ -21,19 +21,19 @@ function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symb
     lev = taby.lev        # class levels (prototypes)
     ni = taby.n         # number of observations in each prototype class
     nproto = length(lev)   # nb. prototypes
-    ## For distances computations
+    # For distances computations
     if par.nlvdis == 0
         fitm_emb = nothing
     else
         fitm_emb = plskern(X, Y; nlv = par.nlvdis)
     end
-    ## To store the prototypes (in this version = class centroids)
+    # To store the prototypes (in this version = class centroids)
     Xproto = similar(X, nproto, nco(X))
     Yproto = similar(Y, nproto, nco(Y))
-    ## To store the prototype models
+    # To store the prototype models
     fitm = list(Plsr, nproto)
     coefs = list(NamedTuple, nproto)
-    ## Optimize/fit/store the nproto prototype models 
+    # Optimize/fit/store the nproto prototype models 
     #@inbounds for i in eachindex(lev)
     Threads.@threads for i in eachindex(lev)
         ind = ycla .== lev[i]
@@ -44,9 +44,9 @@ function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symb
         segm = segmkf(ni[i], K; rep = 1, seed = 1234)
         pars = mpar(scal = [scal])
         model = plskern()
-        ## To do: adapt for multivariate Y
+        # To do: adapt for multivariate Y
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:nlv).res
-        ## End
+        # End
         u = findall(rescv.y1 .== minimum(rescv.y1))[1]
         fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
         coefs[i] = coef(fitm[i])
@@ -60,13 +60,13 @@ function predict(object::Protoyclaplsr, X)
     Q = eltype(object.Xproto)
     q = nco(object.Yproto)
     nproto = nro(object.Xproto)
-    ## Params to average the prototype predictions
+    # Params to average the prototype predictions
     kavg = min(object.par.kavg, nproto)  
     h = object.par.h
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    ## Find the kavg closest prototypes for each new observation
+    # Find the kavg closest prototypes for each new observation
     if isnothing(object.fitm_emb)
         res = getknn(object.Xproto, X; k = kavg, metric = object.par.metric)
     else
@@ -84,7 +84,7 @@ function predict(object::Protoyclaplsr, X)
     listnn = res.ind
     listw = list(Vector{Q}, m)
     pred = zeros(Q, m, q)
-    ## Compute the kavg protype predictions and average them (weighted average)
+    # Compute the kavg protype predictions and average them (weighted average)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m   
         s = listnn[i]

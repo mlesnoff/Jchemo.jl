@@ -15,11 +15,11 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-## References
+# References
 Wright, K., 2018. Package nipals: Principal Components Analysis using NIPALS with Gram-Schmidt Orthogonalization. 
 https://cran.r-project.org/
 
-## Examples
+# Examples
 ```julia
 X = [1 2. missing 4 ; 4 missing 6 7 ; 
     missing 5 6 13 ; missing 18 7 6 ; 
@@ -40,12 +40,12 @@ fitm.niter
 fitm.sv
 fitm.V
 fitm.T
-## Orthogonality 
-## only if gs = true
+# Orthogonality 
+# only if gs = true
 fitm.T' * fitm.T
 fitm.V' * fitm.V
 
-## Impute missing data in X
+# Impute missing data in X
 model = pcanipalsmiss(; nlv = 2, gs = true) ;
 fit!(model, X)
 Xfit = xfit(model.fitm, X)
@@ -76,7 +76,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmeanskip(X, weights)
     X .-= xmeans' 
     xscales = ones(Q, p)
@@ -84,7 +84,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
         xscales .= colstdskip(X, weights)
         X ./= xscales'
     end
-    ## End
+    # End
     sqrtw = sqrt.(weights.values)
     @. X = sqrtw * X
     T = similar(xmeans, n, nlv)

@@ -15,7 +15,7 @@ Keyword arguments:
 About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, Siccard & Sabatier 
 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
 
-## References
+# References
 Dayal, B.S., MacGregor, J.F., 1997. Improved PLS algorithms. Journal of Chemometrics 11, 73-85.
 
 Kim, S., Kano, M., Nakagawa, H., Hasebe, S., 2011. Estimation of active pharmaceutical ingredients 
@@ -32,7 +32,7 @@ for the real time robot learning. Applied Intell., 17, 49-60.
 Sicard, E. Sabatier, R., 2006. Theoretical framework for local PLS1 regression and application to a 
 rainfall dataset. Comput. Stat. Data Anal., 51, 1393-1410.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -104,7 +104,7 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    ## Centering/scaling X, Y
+    # Centering/scaling X, Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     fcenter!(X, xmeans)
@@ -118,13 +118,13 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## XtY 
+    # XtY 
     fweightr!(Y, weights.values)
     XtY = X' * Y
-    ## Old
-    ## D = Diagonal(weights.values)
-    ## XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
-    ## Pre-allocation
+    # Old
+    # D = Diagonal(weights.values)
+    # XtY = X' * (D * Y)    # Xd = D * X   Very costly!!
+    # Pre-allocation
     T  = similar(X, n, nlv)
     W  = similar(X, p, nlv)
     V  = similar(W)
@@ -178,13 +178,13 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Union{Plsr, Plswold, Splsr}, X)
-    ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
+    # Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * object.R
 end
 
 function transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    ## Could be fcscale! but would change X. If too heavy ==> Makes summary!
+    # Could be fcscale! but would change X. If too heavy ==> Makes summary!
     fcscale(X, object.xmeans, object.xscales) * vcol(object.R, 1:nlv)
 end
 
@@ -201,9 +201,9 @@ If `nlv` = 0, `B` is a matrix of zeros. The returned object `int` is the interce
 function coef(object::Union{Plsr, Plswold, Splsr})
     theta = object.C'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
-    ## To not use for Spcr (R not computed; while for Pcr, R = V)
+    # To not use for Spcr (R not computed; while for Pcr, R = V)
     B = fweightr(object.R, 1 ./ object.xscales) * theta * Dy
-    ## In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
+    # In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int, nlv = object.par.nlv)
 end
@@ -260,7 +260,7 @@ function Base.summary(object::Union{Plsr, Plswold, Splsr}, X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
     X = fcscale(X, object.xmeans, object.xscales)
-    ## Could be fcscale! but changes X. If too heavy ==> Makes summary!
+    # Could be fcscale! but changes X. If too heavy ==> Makes summary!
     sstot = frob2(X, object.weights)       # = sum(object.weights.values' * X.^2)
     tt = object.TT
     tt_adj = (colnorm(object.V).^2) .* tt  # tt_adj[a] = p[a]'p[a] * tt[a]

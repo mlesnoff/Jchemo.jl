@@ -22,12 +22,12 @@ using UMAP
 
 include("_const.jl")
 
-## The order below is required
+# The order below is required
 include("_struct_param.jl")
 include("_struct_fun.jl")      
 include("_model_work.jl")
 include("_pip.jl")
-## End
+# End
 include("_defaults.jl")
 
 ######---- Misc
@@ -98,10 +98,10 @@ include("rpmat.jl")
 include("rp.jl")
 include("umap.jl")
 
-## Sparse
+# Sparse
 include("spca.jl")
 
-## Multiblock 
+# Multiblock 
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -146,17 +146,17 @@ include("vip.jl")
 include("xfit.jl")
 include("xresid.jl")
 
-## Sparse
+# Sparse
 include("splsr.jl")
 include("spcr.jl")
 
-## Multiblock
+# Multiblock
 include("mbplsr.jl") 
 include("mbplswest.jl")
 include("rosaplsr.jl") 
 include("soplsr.jl") 
 
-## Local
+# Local
 include("locw.jl")
 include("locwlv.jl")
 include("knnr.jl")
@@ -165,7 +165,7 @@ include("lwplsr.jl")
 include("lwplsravg.jl")
 include("loessr.jl")
 
-## Validation
+# Validation
 include("mpar.jl")
 include("scores_reg.jl")
 include("scores_da.jl")
@@ -184,21 +184,21 @@ include("predictcv.jl")
 
 include("selwold.jl")
 
-## Variable importance (direct methods) 
+# Variable importance (direct methods) 
 include("isel.jl")
 include("viperm.jl")
 
-## Svm, Trees
+# Svm, Trees
 include("svmr.jl")
 include("treer.jl")
 include("rfr.jl")
 
-## Bagging 
+# Bagging 
 
 include("sampbag.jl")
 include("baggr.jl")
 
-## Prototypes
+# Prototypes
 
 include("protoplsr.jl")
 include("protoyclaplsr.jl")
@@ -226,31 +226,31 @@ include("dkplslda.jl")
 include("dkplsqda.jl")
 include("dkplskdeda.jl")
 
-## Sparse
+# Sparse
 include("splsrda.jl")
 include("splslda.jl")
 include("splsqda.jl")
 include("splskdeda.jl")
 
-## Local
+# Local
 include("lwmlrda.jl")
 include("lwplsrda.jl")
 include("lwplslda.jl")
 include("lwplsqda.jl")
 include("knnda.jl")
 
-## Svm, Trees
+# Svm, Trees
 include("svmda.jl")
 include("treeda.jl")
 include("rfda.jl")
 
-## Multiblock
+# Multiblock
 include("mbplsrda.jl") 
 include("mbplslda.jl") 
 include("mbplsqda.jl") 
 include("mbplskdeda.jl") 
 
-## One-class
+# One-class
 include("outstah.jl")
 include("outeucl.jl")
 include("pcout.jl")
@@ -365,7 +365,7 @@ export
     dmnorm, dmnorm!,
     dmnormlog, dmnormlog!,
     dmkern,
-    ## Pre-processing
+    # Pre-processing
     detrend_pol, detrend_lo,  
     detrend_asls, detrend_airpls, detrend_arpls,
     fdif,
@@ -398,7 +398,7 @@ export
     covsel,
     rpmatgauss, rpmatli, rp, rp!,
     umap,
-    ## Multiblock
+    # Multiblock
     rd, rv, 
     mbconcat, fconcat,
     cca, cca!,
@@ -426,35 +426,35 @@ export
     dfplsr_cg, aicplsr,
     svmr,
     treer, rfr, 
-    ## Anova
+    # Anova
     aov1, 
     manova, decompx, asca, 
     emm, 
     permut, 
     hotelling, waldtest, wilks,
-    ## Sparse 
+    # Sparse 
     spcr, spcr!,
     splsr, splsr!, 
-    ## Multi-block
+    # Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
     rosaplsr, rosaplsr!,
     soplsr,
-    ## Local
+    # Local
     locw, locwlv,
     knnr,
     lwmlr,
     lwplsr, lwplsravg,
     loessr,
-    ## Bagging
+    # Bagging
     baggr,
-    ## Prototype
+    # Prototype
     protoplsr, protoclustplsr,
-    ## Variable selection/importance (direct methods) 
+    # Variable selection/importance (direct methods) 
     vip, 
     viperm!,
     isel!,
-    ## Utils
+    # Utils
     xfit, xfit!, xresid, xresid!,
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
@@ -470,18 +470,18 @@ export
     dkplslda, dkplsqda, dkplskdeda, 
     svmda, 
     treeda, rfda,
-    ## Sparse 
+    # Sparse 
     splsrda,
     splslda, splsqda, splskdeda,
-    ## Local 
+    # Local 
     lwmlrda,
     lwplsrda, 
     lwplslda, lwplsqda,
     knnda,
-    ## Multiblock
+    # Multiblock
     mbplsrda, 
     mbplslda, mbplsqda, mbplskdeda,
-    ## One-class
+    # One-class
     outstah, outeucl, 
     pcout,
     outsd, outod, outsdod,
@@ -491,10 +491,10 @@ export
     occstah,
     occknn, occlknn,
     occmwpca,
-    ## Auxiliary
+    # Auxiliary
     transf, coef, predict,
     transfbl, 
-    ## Validation
+    # Validation
     residreg, residcla, 
     ssr, msep, rmsep, rmsepstand, rmseprel, mae,
     bias, sep, cor2, r2, rpd, rpdr, mse, 
@@ -520,8 +520,8 @@ export
     plotlv,
     plotgrid, 
     plotconf
-    ## Not exported since surcharge:
-    ## - summary => Base.summary
+    # Not exported since surcharge:
+    # - summary => Base.summary
 
 end # End-Module
 

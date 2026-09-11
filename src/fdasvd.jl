@@ -38,7 +38,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
-    ## Centering/scaling X
+    # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
     xscales = ones(Q, p)
@@ -55,11 +55,11 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     par.nlv = nlv
     priors = aggsumv(weights.values, y).val  # output not used, only for information 
     res.W .*= n / (n - nlev)
-    ## Regularization
+    # Regularization
     if par.lb > 0
         res.W .+= par.lb .* I(p)    # @. does not work with I
     end
-    ## End
+    # End
     #Winv = inv(res.W)
     Winv = LinearAlgebra.inv!(cholesky(Hermitian(res.W))) 
     ct = similar(X, nlev, p)

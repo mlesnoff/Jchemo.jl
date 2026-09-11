@@ -30,7 +30,7 @@ Details on outputs:
 * `gh` : Indicator 'GH' provided in the software referred to as 'Winisi', computed as GH = SD^2 / nlv, where nlv is 
     the nb. scores used in the dimension reduction model. Winisi considers that GH > 3 is extreme.
 
-## References
+# References
 M. Hubert, V. J. Rousseeuw, K. Vanden Branden (2005). ROBPCA: a new approach to robust principal components analysis. 
 Technometrics, 47, 64-79.
 
@@ -46,7 +46,7 @@ Chem. Lab. Int. Syst, 79, 10-21.
 K. Varmuza, V. Filzmoser (2009). Introduction to multivariate statistical analysis in chemometrics. 
 CRC Press, Boca Raton.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -66,28 +66,28 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
-## "EHH" = Training reference class (= target = 'in')
+### Build the data used in the example
+# "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
 nref = nro(Xref)
-## New reference observations ("EHH") to be predicted ==> should be predicted 'in'
+# New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
 nnew_ref = nro(Xnew_ref)
-## New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
+# New observations 'out' ("PEE") to be predicted ==> should be predicted 'out'
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
 
-## Only used to compute classification error rates
+# Only used to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
 yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-#### Fit a preliminary Pca model on the training reference data
+### Fit a preliminary Pca model on the training reference data
 nlv = 15
 model0 = pcasvd(; nlv) 
 #model0 = pcaout(; nlv) 
@@ -97,8 +97,8 @@ res = summary(model0, Xref).explvarx
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
 Tref = fitm0.T
 
-#### To describe the data, 
-#### project the test observations in the fitted score space
+### To describe the data, 
+### project the test observations in the fitted score space
 Tnew_ref = transf(model0, Xnew_ref)
 Tnew_out = transf(model0, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
@@ -110,7 +110,7 @@ i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 
-#### Fit the Occ model based on the fitted score space 
+### Fit the Occ model based on the fitted score space 
 model = occsd(cri = 2.5)
 #model = occsd(typcut = :std, cri = 2.5)
 #model = occsd(typcut = :q, alpha = .01)
@@ -139,7 +139,7 @@ hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-#### Predict the new reference observations
+### Predict the new reference observations
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -148,7 +148,7 @@ tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
 
-#### Predict the new observations 'out'
+### Predict the new observations 'out'
 res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred
@@ -221,11 +221,11 @@ function predict(object::Occsd, X)
     T = transf(object.fitm, X, nlv)
     m = nro(T)
     Q = eltype(T)
-    ## Mahalanobis distance to center (zero)
+    # Mahalanobis distance to center (zero)
     fscale!(T, object.tscales)
     d2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     d = sqrt.(d2)
-    ## End
+    # End
     d = DataFrame(
         d = d, 
         dstand = d / object.cutoff, 

@@ -31,9 +31,9 @@ these parameters in argument `pars. See the examples.
 **For pipeline models:** In the present version of the function, only the last model of the pipeline 
 (= the final predictor) is tuned. Therefore, argument `pars` must only contain parameters for this last model.
 
-## Examples
+# Examples
 ```julia
-####### Regression 
+###### Regression 
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -56,7 +56,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
-## Train ==> Cal + Val 
+# Train ==> Cal + Val 
 nval = round(Int, .3 * ntrain)
 s = samprand(ntrain, nval; seed = 1234)
 Xcal = Xtrain[s.train, :]
@@ -78,7 +78,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## Adding pars 
+# Adding pars 
 pars = mpar(scal = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv)
 typ = string.(res.scal)
@@ -107,7 +107,7 @@ pred = predict(model, Xtest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
     
-## Adding pars 
+# Adding pars 
 pars = mpar(scal = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, lb)
 loglb = log.(10, res.lb)
@@ -218,18 +218,18 @@ pred = predict(model, Xbltest).pred
 plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
     ylabel = "Observed").f    
 
-## Pipelines
+# Pipelines
 
 ####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
-## model1
+# model1
 model1 = snv(scal = false)
-## model2 
+# model2 
 npoint = 5 ; deriv = 0 ; degree = 2
 model2 = savgol(; npoint, deriv, degree)
-## model3
+# model3
 nlv = 0:30
 model3 = plskern()
-## Pipeline
+# Pipeline
 model = pip(model1, model2, model3)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv) ;
 @head res
@@ -246,17 +246,17 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
       ylabel = "Observed").f
 
 ####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
-## model1
+# model1
 nlv = 15 ; scal = :std
 model1 = pcasvd(; nlv, scal)
-## model2
+# model2
 kern = [:krbf]
 gamma = (10).^(-5:1.:5)
 cost = (10).^(1:3)
 epsilon = [.1, .2, .5]
 pars = mpar(kern = kern, gamma = gamma, cost = cost, epsilon = epsilon)
 model2 = svmr()
-## Pipeline
+# Pipeline
 model = pip(model1, model2)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
 u = findall(res.y1 .== minimum(res.y1))[1] 
@@ -269,8 +269,8 @@ res = predict(model, Xtest) ;
 rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 
-####### Discrimination
-## The principle is the same as for regression
+###### Discrimination
+# The principle is the same as for regression
 
 using Jchemo, JLD2, CairoMakie, JchemoData
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -289,7 +289,7 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
-## Train ==> Cal + Val 
+# Train ==> Cal + Val 
 nval = round(Int, .3 * ntrain)
 s = samprand(ntrain, nval; seed = 1234)
 Xcal = Xtrain[s.train, :]
@@ -319,7 +319,7 @@ function gridscore(model, Xtrain, Ytrain, X, Y; score::Function, pars::Union{Not
         nlv::Union{Nothing, Int, AbstractVector{Int}} = nothing, 
         lb::Union{Nothing, Float64, AbstractVector{Float64}} = nothing, 
         verbose::Bool = false)
-    ## Multiblock Xbl is allowed
+    # Multiblock Xbl is allowed
     algo = model.algo
     if isnothing(nlv) && isnothing(lb)
         res = Jchemo.gridscore_br(Xtrain, Ytrain, X, Y; algo, score, pars, verbose)

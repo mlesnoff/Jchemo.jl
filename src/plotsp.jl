@@ -14,7 +14,7 @@ Plot of the rows (e.g., spectrum) of `X`.
 
 To use the function, a backend (e.g., CairoMakie) has to be specified.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -38,7 +38,7 @@ lines!(ax, wl, xmeans; color = :black, linewidth = 2)
 vlines!(ax, 1200)
 f
 
-## Example of mean spectra with label
+# Example of mean spectra with label
 n, p = 50, 100
 X1 = randn(n, p)
 X2 = randn(n, p) .+ 1
@@ -81,9 +81,9 @@ function plotsp(X, wl::AbstractVector{Q} = collect(1:nco(X)); size::Tuple{Int, I
         for i in eachindex(res)
             res[i] = hcat([wl ; NaN], [vX[i, :] ; NaN])
         end
-        ## Same as:
-        ## res = [hcat([wl ; NaN], [vX[i, :] ; NaN]) for i in eachindex(res)]
-        ## End
+        # Same as:
+        # res = [hcat([wl ; NaN], [vX[i, :] ; NaN]) for i in eachindex(res)]
+        # End
         res = reduce(vcat, res)
         lines!(ax, res[:, 1], res[:, 2]; color, label)
     end

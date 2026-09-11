@@ -1,6 +1,6 @@
 ############---- Data Processing 
 
-## Preprocessing
+# Preprocessing
 
 struct Detrendlo
     par::ParDetrendlo
@@ -68,7 +68,7 @@ struct Interpl
     par::ParInterpl
 end
 
-## Calibration transfer
+# Calibration transfer
 
 struct Calds
     fitm
@@ -178,7 +178,7 @@ struct Fda{Q <: Float}
     par::ParFda
 end
 
-## Multiblock
+# Multiblock
 
 struct Blockscal{Q <: Float}
     bscales::Vector{Q}
@@ -445,7 +445,7 @@ struct Dkplsr{Q <: Float}
     par::ParKplsr
 end
 
-## Multiblock
+# Multiblock
 
 struct Mbplsr{Q <: Float}
     fitm_bl::Blockscal
@@ -500,7 +500,7 @@ struct Soplsr{Q <: Float}
     par::ParSoplsr
 end
 
-## End
+# End
 
 struct Rr{Q <: Float}
     V::Adjoint{Q}
@@ -535,7 +535,7 @@ struct Krr{Q <: Float}
     par::ParKrr
 end
 
-## Local
+# Local
 
 struct Loessr{Q <: Float}
     fitm::Loess.LoessModel
@@ -573,7 +573,7 @@ struct Lwplsravg{Q <: Float}
     par::ParLwplsravg
 end
 
-## Svm, Trees
+# Svm, Trees
 
 struct Svmr{Q <: Float64}
     fitm::LIBSVM.SVM
@@ -707,7 +707,7 @@ struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
 end
 
-## Local (from below, fitm not yet specified)
+# Local (from below, fitm not yet specified)
 
 struct Knnda{Q <: Float}
     X::Matrix{Q}
@@ -760,7 +760,7 @@ struct Lwplsqda{Q <: Float}
     par::ParLwplsqda
 end
 
-## Svm, Trees
+# Svm, Trees
 
 struct Svmda{Q <: Float64}
     fitm::LIBSVM.SVM
@@ -781,7 +781,7 @@ struct Treeda{Q <: Float}
     par::Union{ParTree, ParRf}
 end
 
-## Occ
+# Occ
 
 struct Occstah{Q <: Float}
     d::DataFrame

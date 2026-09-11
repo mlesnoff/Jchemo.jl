@@ -16,7 +16,7 @@ Keyword arguments:
 Robust PLSR combining outlyingness measures and weighted PLSR (WPLSR). This is the same principle as function 
 `pcaout` (see the help page) but the final step is a weighted PLSR instead of a weighted PCA.  
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))

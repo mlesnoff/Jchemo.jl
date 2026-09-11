@@ -31,7 +31,7 @@ Keyword arguments:
 This is the same principle as function `lwplsr` except that a PLS-LDA model, instead of a PLSR model, is fitted 
 on each neighborhoods.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -117,7 +117,7 @@ function predict(object::Lwplslda, X, nlv::Union{Int, AbstractVector{Int}})
     else
         nlv = max(1, min(minimum(nlv), a)):min(maximum(nlv), a)
     end
-    ## Getknn
+    # Getknn
     metric = object.par.metric
     k = object.par.k
     h = object.par.h
@@ -141,8 +141,8 @@ function predict(object::Lwplslda, X, nlv::Union{Int, AbstractVector{Int}})
         @. w[w < tolw] = tolw
         listw[i] = w
     end
-    ## End
-    ## In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
+    # End
+    # In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
     reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plslda, nlv, scal = object.par.scal, 
         store = object.par.store, verbose = object.par.verbose, prior = object.par.prior)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 

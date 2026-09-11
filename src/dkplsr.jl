@@ -17,7 +17,7 @@ Keyword arguments:
 The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster (but not equivalent) to the 
 "true" KPLSR (Nipals) algorithm (function `kplsr`) described in Rosipal & Trejo (2001).
 
-## References 
+# References 
 Bennett, K.P., Embrechts, M.J., 2003. An optimization perspective on kernel partial least squares regression, 
 in: Advances in Learning Theory: Methods, Models and Applications, NATO Science Series III: Computer & Systems Sciences. 
 IOS Press Amsterdam, pp. 227-250.
@@ -25,7 +25,7 @@ IOS Press Amsterdam, pp. 227-250.
 Rosipal, R., Trejo, L.J., 2001. Kernel Partial Least Squares Regression in Reproducing Kernel Hilbert Space. 
 Journal of Machine Learning Research 2, 97-123.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
@@ -69,8 +69,8 @@ res = predict(model, Xtest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
     ylabel = "Observed").f  
 
-####### Example of fitting the function sinc(x)
-####### described in Rosipal & Trejo 2001 p. 105-106 
+###### Example of fitting the function sinc(x)
+###### described in Rosipal & Trejo 2001 p. 105-106 
 x = collect(-10:.2:10) 
 x[x .== 0] .= 1e-5
 n = length(x)
@@ -106,7 +106,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
     p = nco(X)
     q = nco(Y)
-    ## ScalingX, Y
+    # ScalingX, Y
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
@@ -116,7 +116,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    ## End
+    # End
     fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
     K = fkern(X, X; kwargs...)     
     fitm = plskern!(K, Y, weights; kwargs...)

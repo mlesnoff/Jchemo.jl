@@ -11,11 +11,11 @@ This function computes outlierness `d` of each observation (row) of `X` by the E
 robust estimate of the center of the data (in the present function, the spatial median). Such outlierness was for instance 
 used in the robust PLSR algorithm 'PRM' of Serneels et al. 2005. 
 
-## References
+# References
 Serneels, S., Croux, C., Filzmoser, V., Van Espen, V.J., 2005. Partial robust M-regression. 
 Chemometrics and Intelligent Laboratory Systems 79, 55-64. https://doi.org/10.1016/j.chemolab.2005.04.007
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie
 n = 300 ; p = 700 ; m = 80

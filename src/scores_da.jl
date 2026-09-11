@@ -1,5 +1,5 @@
-## scores: Must return a matrix
-## - In particular for errp, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
+# scores: Must return a matrix
+# - In particular for errp, create multiple dispatches Y::AbstractVector, Y::AbstractMatrix
 
 """
     residcla(pred, y) 
@@ -7,7 +7,7 @@ Compute the discrimination residual vector (0 = no error, 1 = error).
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -30,7 +30,7 @@ Compute the classification error rate (ERRP).
 * `pred` : Predictions.
 * `y` : Observed data (class membership).
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -60,7 +60,7 @@ Compute the mean intra-class classification error rate.
 ERRP (see function `errp`) is computed for each class.
 Function `merrp` returns the average of these intra-class ERRPs.   
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 

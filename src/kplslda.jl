@@ -19,7 +19,7 @@ Keyword arguments:
 Same as function `plslda` (PLS-LDA) except that a kernel PLSR (function `kplsr`), instead of a PLSR (function `plskern`), 
 is run on the Y-dummy table. 
 
-## Examples
+# Examples
 ```julia
 using JchemoData, JLD2
 path_jdat = dirname(dirname(pathof(JchemoData)))

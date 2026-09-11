@@ -24,7 +24,7 @@ The approach can be seen as a simplification of the local outlier factor (LOF) m
 such as the Simplified-LOF method (Schubert et al 2014 p.206, Campos et al. 2016 p.896) where local density 
 is estimated by the inverse of the k-distance.
 
-## References
+# References
 Campos, G.O., Zimek, A., Sander, J., Campello, R.J.G.B., Micenková, B., Schubert, E., Assent, I., Houle, M.E., 2016. 
 On the evaluation of unsupervised outlier detection: measures, datasets, and an empirical study. Data Min Knowl 
 Disc 30, 891–927. https://doi.org/10.1007/s10618-015-0444-8
@@ -34,7 +34,7 @@ locality with applications to spatial, video, and network outlier detection. Dat
 https://doi.org/10.1007/s10618-012-0300-z
 
 
-## Examples
+# Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
 mypath = dirname(dirname(pathof(JchemoData)))
@@ -44,7 +44,7 @@ X = dat.X
 wlst = names(X)
 wl = parse.(Float64, wlst)
 n, p = size(X)
-## Six of the samples (25, 26, and 36-39) contain added alcohol
+# Six of the samples (25, 26, and 36-39) contain added alcohol
 s = [25; 26; 36:39]
 typ = fill("0", n)
 typ[s] .= "1"
@@ -58,7 +58,7 @@ f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
-## With a preliminary PCA
+# With a preliminary PCA
 nlv = 3
 model = pcasph(; nlv)
 fit!(model, X)

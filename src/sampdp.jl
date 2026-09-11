@@ -18,13 +18,13 @@ to cover approximately the same X-space region and have similar statistical prop
 In practice, when output `remain` is not empty (i.e. when there are remaining observations), one common strategy 
 is to add it to output `train`.
 
-## References
+# References
 Kennard, R.W., Stone, L.A., 1969. Computer aided design of experiments. Technometrics, 11(1), 137-148.
 
 Snee, R.D., 1977. Validation of Regression Models: Methods and Examples. Technometrics 19, 415-428. 
 https://doi.org/10.1080/00401706.1977.10489581
 
-## Examples
+# Examples
 ```julia
 using Jchemo
 
@@ -47,7 +47,7 @@ function sampdp(X, k::Int; metric::Symbol = :eucl)
     end
     n = nro(D)
     vn = 1:n
-    ## Initial selection of 2 pairs of obs.
+    # Initial selection of 2 pairs of obs.
     s = findall(D .== maximum(D)) 
     s1 = [s[1][1] ; s[1][2]]
     vD = copy(D)
@@ -55,7 +55,7 @@ function sampdp(X, k::Int; metric::Symbol = :eucl)
     vD[:, s1] .= -Inf ;
     s = findall(D .== maximum(vD)) 
     s2 = [s[1][1] ; s[1][2]]
-    ## Candidates
+    # Candidates
     candidat = vn[setdiff(1:end, [s1 ; s2])]
     @inbounds for i = 1:(k - 2)
         u = vec(minimum(D[s1, candidat], dims = 1))

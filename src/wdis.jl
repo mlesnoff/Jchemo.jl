@@ -20,11 +20,11 @@ Possible values for `typw` are:
 * :trian: w = 1 - d  
 * :tricube: w = (1 - d^3)^3  
 
-## References
+# References
 Cleveland, W.S., Grosse, E., 1991. Computational methods for local regression. Stat Comput 1, 47–62. 
 https://doi.org/10.1007/BF01890836
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie, Distributions
 

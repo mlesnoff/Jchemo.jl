@@ -25,7 +25,7 @@ Keyword arguments:
 
 To use the function, a backend (e.g., CairoMakie) has to be specified.
 
-## Examples
+# Examples
 ```julia
 using Jchemo, CairoMakie, GLMakie
 n = 1000
@@ -54,7 +54,7 @@ color = [(:red, .3); (:blue, .3); (:green, .3)]
 #color = cgrad(:Dark2_5; categorical = true, alpha = .3)[1:nlev]
 plotxyz(x, y, z, group; size = (500, 300), color, leg = true, markersize = 10, xlabel = "V1").f
 
-## With a color bar
+# With a color bar
 colm = cgrad(:default; alpha = 0.6)
 #colm = cgrad(:viridis; alpha = 0.6)
 #colm = cgrad([:blue, :red]; alpha = 0.6)
