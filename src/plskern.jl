@@ -195,8 +195,9 @@ Compute the b-coefficients of a LV model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
-For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). 
-If `nlv` = 0, `B` is a matrix of zeros. The returned object `int` is the intercept.
+For a model fitted from X (n, p) and Y (n, q), the returned objects are :
+* `B` : A matrix (p, q) of the coefficients of the variables. If `nlv` = 0, `B` contains zeros. 
+* `int` : A matrix (1, q) of the intercept coefficients.
 """ 
 function coef(object::Union{Plsr, Plswold, Splsr})
     theta = object.C'  # regression coefs of Y on T
@@ -232,7 +233,8 @@ function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X)
     (pred = pred, nlv = object.par.nlv)
 end
 
-function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X, nlv::Union{Int, AbstractVector{Int}})
+function predict(object::Union{Plsr, Plswold, Splsr, Pcr}, X, 
+        nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
     Q = eltype(X)
     a = object.par.nlv
