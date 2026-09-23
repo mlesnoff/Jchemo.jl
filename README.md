@@ -17,7 +17,8 @@ Related projects:  [JchemoData](https://github.com/mlesnoff/JchemoData.jl) (a "c
 
 *Warning*
 
-Before to [update](https://github.com/mlesnoff/Jchemo.jl?tab=readme-ov-file#-installation-) the package, it is recommended to have a look on [What's new](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for eventual breaking changes. 
+Before to [update](https://github.com/mlesnoff/Jchemo.jl#-installation-) 
+the package, it is recommended to have a look on [What's new](https://mlesnoff.github.io/Jchemo.jl/dev/news/) for eventual breaking changes. 
 
 # <span style="color:green"> **Sample workflow** </span> 
 
@@ -51,16 +52,6 @@ nlv = 15 ; scal = :std
 model = plskern(; nlv, scal)
 ```
 
-The default values of the keyword arguments of the model function can be displayed using macro `@pars`
-
-```julia
-@pars plskern
-
-Jchemo.ParPlsr
-  nlv: Int64 1
-  scal: Bool false
-```
-
 After model fitting, the matrices of the PLS scores can be obtained from function `transf`
 
 ```julia
@@ -91,7 +82,7 @@ The keyword arguments required or allowed in a given function can be found in th
 julia> ?plskern
 ```
 
-Default values can be displayed in the REPL with macro `@pars`
+Default values of any function can be displayed in the REPL with macro `@pars`
 
 ```julia
 julia> @pars plskern
