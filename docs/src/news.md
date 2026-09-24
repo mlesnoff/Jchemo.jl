@@ -2,7 +2,8 @@
 
 ## *Version 0.10.4 dev*
 
-- Modifications 
+- Modifications
+    - **ensure_mat**: type extensions. 
     - Code cleaning.
 
 ## *Version 0.10.3*
