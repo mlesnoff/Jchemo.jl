@@ -3,7 +3,7 @@
 ## *Version 0.10.4 dev*
 
 - Modifications
-    - **ensure_mat**: type extensions. 
+    - **ensure_mat**: type extensions including Missing. 
     - Code cleaning.
 
 ## *Version 0.10.3*

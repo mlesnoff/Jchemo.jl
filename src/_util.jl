@@ -37,8 +37,8 @@ datf.y1 = rand(1:2, n)
 datf.y2 = rand(["a", "b", "c"], n)
 datf
 
-aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = var)  # return a dataframe 
-aggstat(datf; sel = [:v1, :v2] , group = [:y2], algo = var)
+aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = varv)  # return a dataframe 
+aggstat(datf; sel = [:v1, :v2] , group = [:y2], algo = varv)
 ```
 """ 
 function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where Q <: Float
@@ -77,14 +77,11 @@ using Jchemo
 
 n, p = 20, 5
 X = rand(n, p)
-datf = DataFrame(X, :auto) 
 y = string.(rand(1:3, n))
 
 res = aggmean(X, y)
 res.X
 res.lev 
-
-aggmean(Matrix(datf), y).X
 ```
 """ 
 function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
@@ -93,8 +90,8 @@ function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
     lev = mlev(y)
     nlev = length(lev)
     zX = similar(X, nlev, p)
-    @inbounds for i in eachindex(lev)
-    #Threads.@threads for i in eachindex(lev)
+    #@inbounds for i in eachindex(lev)
+    Threads.@threads for i in eachindex(lev)
         zX[i, :] .= colmean(vrow(X, y .== lev[i]))
     end
     (X = zX, lev)

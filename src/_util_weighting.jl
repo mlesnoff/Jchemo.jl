@@ -54,8 +54,8 @@ weights = pweightcla(y)
 #weights = pweightcla(y; prior = :prop)
 #weights = pweightcla(y; prior = :unif)
 #weights = pweightcla(y; prior = [.1, .7, .2])
-res = aggstat(weights.values, y; algo = sum)
-[res.lev res.X]
+res = aggsumv(weights.values, y)
+[res.lev res.val]
 ```
 """
 pweightcla(y::Vector{String}; 

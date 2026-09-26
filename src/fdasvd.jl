@@ -67,7 +67,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
         s = findall(y .== lev[i]) 
         ct[i, :] = colmean(vrow(X, s), pweight(weights.values[s]))
     end
-    #ct = aggstat(X, y; algo::Function = meanv).X
+    #ct = aggmean(X, y).X
     Ut = cholesky!(Hermitian(Winv)).U'
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
