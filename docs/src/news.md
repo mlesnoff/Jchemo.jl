@@ -1,6 +1,11 @@
 # News
 
-## *Version 0.10.4 dev*
+## *Version 0.10.5 dev*
+
+- Modifications
+    - Code cleaning.
+
+## *Version 0.10.4*
 
 - Modifications
     - **ensure_mat**: type extensions including Missing. 
