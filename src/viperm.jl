@@ -9,6 +9,8 @@ Keyword arguments:
 * `psamp` : Proportion of data used as validation set to compute the `score`.
 * `rep` : Number of replications of the splitting calibration/validation. 
 
+*Note:* This is an inplace function that modifies the content of object `model` (only).
+
 The principle is as follows:
 * Data (X, Y) are splitted randomly to a calibration set (Xcal, Ycal) and a validation set (Xval, Yval).
 * The model is fitted on (Xcal, Ycal) and used to compute the predictions from Xval. The error rate (the `score`) 
@@ -24,8 +26,8 @@ The principle is as follows:
 The overall process above is replicated `rep` times. The outputs provided by the function are the average 
 results (i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
 
-In general, this method returns similar results as the out-of-bag permutation method (such as the one used in random 
-forests; Breiman, 2001).
+In general, this method returns similar results as the 'out-of-bag' permutation method such as the one used in random 
+forests (Breiman, 2001).
 
 # References
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. https://doi.org/10.1023/A:1010933404324
