@@ -12,29 +12,30 @@ Keyword arguments:
 *Note:* This is an inplace function that modifies the content of object `model` (only).
 
 The principle is as follows:
-* Data (X, Y) are splitted randomly to a calibration set (Xcal, Ycal) and a validation set (Xval, Yval).
-* The model is fitted on (Xcal, Ycal) and used to compute the predictions from Xval. The error rate (the `score`) 
-    is computed by comparing these predictions to Yval, giving the reference error rate.
-* Consider Xval and a given variable (feature = column) j.
-    * a) The rows of variable j are permutated randomly (the other columns of Xval are unchanged), generating a new
-        matrix "Xval.perm.j".
-    * b) The model is used to compute the predictions from Xval.perm.j, and the error rate is computed by comparing 
-        these predictions to Yval. The variable importance (for variable j) is the difference between this error rate and 
+1) The observations (rows of data {`X`, `Y`}) are splitted randomly to a calibration set and 
+    a validation set, {Xcal, Ycal} and {Xval, Yval}, respectively.
+2) Model `model` is fitted on {Xcal, Ycal} and used to compute predictions from Xval. 
+    The error rate (`score`) is computed by comparing these predictions to Yval, giving the reference 
+    error rate.
+3) Then, consider Xval and a given variable j (column of Xval).
+    * a) The rows of variable j are permutated randomly, while the other columns of Xval are unchanged.
+        This generates a new matrix, say 'Xval-perm-j'.
+    * b) Predictions are computed for Xval-perm-j using preliminary model (fitted in step 1), 
+        and the error rate by comparing these predictions to Yval. 
+    * c) The variable importance for variable j is the difference between this error rate and 
         the reference error rate.
-* This process is run for each variable j, separately.
+4) This process is run successively (and independently) for each variable j.
 
-The overall process above is replicated `rep` times. The outputs provided by the function are the average 
-results (i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
+The overall process (the four steps above) is replicated `rep` times. The outputs returned 
+by the function are:
+* `imp` : average results (i.e. over the `rep` replications),
+* `res_rep` : results per replication.
 
-In general, this method returns similar results as the 'out-of-bag' permutation method such as the one used in random 
-forests (Breiman, 2001).
+In general, this method returns similar results as the 'out-of-bag' permutation method such as the one 
+used in random forests.
 
 # References
 Breiman, L., 2001. Random Forests. Machine Learning 45, 5–32. https://doi.org/10.1023/A:1010933404324
-
-Nørgaard, L., Saudland, A., Wagner, J., Nielsen, J.V., Munck, L., Engelsen, S.B., 2000. Interval Partial 
-Least-Squares Regression (iPLS): A Comparative Chemometric Study with an Example from Near-Infrared 
-Spectroscopy. Appl Spectrosc 54, 413–419. https://doi.org/10.1366/0003702001949500
 
 # Examples
 ```julia
@@ -93,7 +94,6 @@ function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, psamp::Flo
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    Q = eltype(X)
     nval = round(Int, psamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
