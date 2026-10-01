@@ -141,8 +141,9 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     # End
     @inbounds for a = 1:nlv
         if q == 1
-            w .= vcol(XtY, 1)
-            w ./= normv(w)
+            xTy = view(XtY, :, 1)
+            norm_xTy = normv(xTy) 
+            @. w = xTy / norm_xTy
         else
             w .= svd(XtY).U[:, 1]
         end                                  
