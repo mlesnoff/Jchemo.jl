@@ -43,11 +43,11 @@ model = plskern(; nlv)
 fit!(model, X, y)
 res = vip(model.fitm)
 @names res
-res.imp
+res.vi
 
 fit!(model, X, Y)
-vip(model.fitm).imp
-vip(model.fitm, Y).imp
+vip(model.fitm).vi
+vip(model.fitm, Y).vi
 
 # For PLSDA
 
@@ -55,16 +55,16 @@ model = plsrda(; nlv)
 fit!(model, X, ycla)
 @names model.fitm
 fitm = model.fitm.fitm_emb ;  # fitted PLS model
-vip(fitm).imp
+vip(fitm).vi
 Ydummy = dummy(ycla).Y
-vip(fitm, Ydummy).imp
+vip(fitm, Ydummy).vi
 
 model = plslda(; nlv) 
 fit!(model, X, ycla)
 @names model.fitm
 fitm = model.fitm.fitm_emb ;  # fitted PLS model
-vip(fitm).imp
-vip(fitm, Ydummy).imp
+vip(fitm).vi
+vip(fitm, Ydummy).vi
 ```
 """ 
 function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, Int} = nothing)
@@ -97,8 +97,8 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, 
     end 
     A = rowsum(sst' .* W2)
     B = sum(sst) * (1 / p)
-    imp = sqrt.(A / B)
-    (imp = imp, W2, sst)
+    vi = sqrt.(A / B)
+    (vi = vi, W2, sst)
 end
 
 function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothing, Int} = nothing)
@@ -120,6 +120,6 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothin
     rdd = rd(fscale(Y, object.yscales), vcol(T, 1:nlv), weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) * (1 / p)
-    imp = sqrt.(A / B)
-    (imp = imp, W2, rdd)
+    vi = sqrt.(A / B)
+    (vi = vi, W2, rdd)
 end

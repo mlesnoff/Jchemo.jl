@@ -28,7 +28,7 @@ The principle is as follows:
 
 The overall process (the four steps above) is replicated `rep` times. The outputs returned 
 by the function are:
-* `imp` : average results (i.e. over the `rep` replications),
+* `vi` : average results (i.e. over the `rep` replications),
 * `res_rep` : results per replication.
 
 In general, this method returns similar results as the 'out-of-bag' permutation method such as the one 
@@ -70,7 +70,7 @@ ytest = Ytest[:, nam]
 
 model = plskern(nlv = 9)
 res = viperm!(model, Xtrain, ytrain; score = rmsep, rep = 50) ;
-z = vec(res.imp)
+z = vec(res.vi)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
 scatter!(ax, wl, vec(z); color = (:red, .5))
@@ -80,7 +80,7 @@ f
 
 model = rfr(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
 res = viperm!(model, Xtrain, ytrain; rep = 50)
-z = vec(res.imp)
+z = vec(res.vi)
 f = Figure(size = (500, 400))
 ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
 scatter!(ax, wl, vec(z); color = (:red, .5))
@@ -122,6 +122,6 @@ function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, psamp::Flo
             res_rep[j, :, i] = score(pred, Yval) - scoreref
         end
     end
-    imp = reshape(mean(res_rep, dims = 3), p, q)
-    (imp = imp, res_rep)
+    vi = reshape(mean(res_rep, dims = 3), p, q)
+    (vi = vi, res_rep)
 end 

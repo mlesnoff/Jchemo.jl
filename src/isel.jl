@@ -21,7 +21,7 @@ The principle is as follows:
     the reference error rate and the error rate computed for each interval.
 
 The overall process above is replicated `rep` times. The outputs provided by the function are the average results 
-(i.e. over the `rep` replications;`imp`) and the results per replication (`res_rep`).
+(i.e. over the `rep` replications;`vi`) and the results per replication (`res_rep`).
 
 Note: the function is inplace (modifies object `model`).
 
@@ -66,15 +66,15 @@ model = plskern(nlv = 5)
 nint = 10
 res = isel!(model, Matrix(Xtrain), ytrain, wl; nint, rep = 100) ;
 dat = res.dat
-res.imp 
+res.vi 
 res.res_rep
 
-imp = res.imp[:, 1]
-imp[imp .< 0] .= 0  # option: negative values are set to 0
+vi = res.vi[:, 1]
+vi[vi .< 0] .= 0  # option: negative values are set to 0
 lo = round.(dat.lo)
 f = Figure(size = (650, 300))
 ax = Axis(f[1, 1]; xlabel = "Wawelength (nm)", ylabel = "Importance", xticks = lo)
-scatter!(ax, dat.avg, imp; color = (:red, .5))
+scatter!(ax, dat.avg, vi; color = (:red, .5))
 vlines!(ax, lo; color = :grey, linestyle = :dash, linewidth = 1)
 hlines!(ax, [0]; color = :grey)
 f
@@ -119,13 +119,13 @@ function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector
         # End
         res_rep[:, :, i] .= reduce(vcat, vres)
     end
-    imp = mean(res_rep, dims = 3)[:, :, 1]
+    vi = mean(res_rep, dims = 3)[:, :, 1]
     dat = hcat(itv, )
     dat = DataFrame(itv, [:start, :end, :mid])
     dat.lo = wl[dat.start]
     dat.up = wl[dat.end]
     dat.avg = wl[dat.mid]
-    (imp = imp, res_rep, dat)
+    (vi = vi, res_rep, dat)
 end
 
 

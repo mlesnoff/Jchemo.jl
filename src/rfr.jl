@@ -66,8 +66,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f  
     
 @names fitm.fitm
-imp = fitm.fitm.featim  # variable importances
-plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
+vi = fitm.fitm.featim  # variable importances
+plotsp(vi', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 ```
 """ 
 rfr(; kwargs...) = JchemoModel(rfr, nothing, kwargs)

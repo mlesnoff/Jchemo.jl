@@ -77,8 +77,8 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-imp = fitm.fitm.featim  # variable importances
-plotsp(imp', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
+vi = fitm.fitm.featim  # variable importances
+plotsp(vi', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 ```
 """ 
 rfda(; kwargs...) = JchemoModel(rfda, nothing, kwargs)
