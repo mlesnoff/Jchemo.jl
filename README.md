@@ -22,7 +22,7 @@ the package, it is recommended to have a look on [What's new](https://mlesnoff.g
 
 # <span style="color:green"> **Sample workflow** </span> 
 
-Let us assume training data `(X, Y)`, and new data `Xnew` for which we want predictions from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
+Let us assume training data `{X, Y}`, and new data `Xnew` for which we want predictions from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
 1) An object, e.g., `model` (any other name can be chosen), is built from the given learning model and its eventual parameters.
     This object contains three sub-objects 
     * `algo` (the learning algorithm) 

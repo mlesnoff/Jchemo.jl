@@ -7,7 +7,7 @@ Variable importance on Projections (VIP).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. If `nothing`, the maximal model is considered.
 
-For a PLS model  (or PCR, etc.) fitted on (X, Y) with a number of A latent variables, and for variable 
+For a PLS model (or PCR, etc.) fitted on {X, Y} with a number of A latent variables, and for variable 
 xj (column j of X): 
 * VIP(xj) = Sum.a(1,...,A) R2(Yc, ta) waj^2 / Sum.a(1,...,A) R2(Yc, ta) (1 / p) 
 where:
@@ -96,7 +96,7 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, 
         sst[a] = tr(theta' * theta * tt)
     end 
     A = rowsum(sst' .* W2)
-    B = sum(sst) * (1 / p)
+    B = sum(sst) / p
     vi = sqrt.(A / B)
     (vi = vi, W2, sst)
 end
@@ -119,7 +119,7 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothin
     W2 = vcol(W, 1:nlv).^2
     rdd = rd(fscale(Y, object.yscales), vcol(T, 1:nlv), weights)
     A = rowsum(rdd .* W2)
-    B = sum(rdd) * (1 / p)
+    B = sum(rdd) / p
     vi = sqrt.(A / B)
     (vi = vi, W2, rdd)
 end
