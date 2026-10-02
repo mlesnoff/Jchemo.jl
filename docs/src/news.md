@@ -3,6 +3,7 @@
 ## *Version 0.10.5 dev*
 
 - Modifications
+    - Variable importance functions: output 'imp' was renamed to 'vi'.
     - Code cleaning.
 
 ## *Version 0.10.4*
