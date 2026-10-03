@@ -4,6 +4,8 @@
 
 - News
     - Function **dw**: Return the Durbin-Watson statistic. 
+    - Function **coefmatb**: Build a matrix of b-coefficients of a LV-based model, 
+        for a given Y-variable.
 
 - Modifications
     - Variable importance functions: output 'imp' was renamed to 'vi'.

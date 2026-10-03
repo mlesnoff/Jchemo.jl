@@ -106,12 +106,14 @@ transf(object::Union{Pcr, Spcr}, X, nlv::Int) = transf(object.fitm, X, nlv)
 """
     coef(object::Pcr)
     coef(object::Pcr, nlv::Int)
-Compute the b-coefficients of a LV model.
+Compute the b-coefficients of a LV-based model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
-For a model fitted from X (n, p) and Y (n, q), the returned object `B` is a matrix (p, q). If `nlv` = 0, `B` is a matrix 
-of zeros. The returned object `int` is the intercept.
+For a model fitted from X (n, p) and Y (n, q), the returned objects are :
+* `B` : A matrix (p, q) of the coefficients of the p variables. 
+    If `nlv` = 0, `B` is a matrix of zeros. 
+* `int` : A matrix (1, q) of the intercept coefficients.
 """ 
 function coef(object::Pcr)
     theta = object.C'

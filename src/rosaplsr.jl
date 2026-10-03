@@ -219,7 +219,7 @@ end
 """
     coef(object::Rosaplsr)
     coef(object::Rosaplsr, nlv::Int)
-Compute the X b-coefficients of a model fitted with `nlv` LVs.
+Compute the b-coefficients of a model fitted with `nlv` LVs.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 

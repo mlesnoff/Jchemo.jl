@@ -146,7 +146,7 @@ end
 """
     coef(object::Dkplsr) = coef(object.fitm)
     coef(object::Dkplsr, nlv::Union{Nothing, Int})
-Compute the b-coefficients of a fitted model.
+Compute the coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider. 
 """ 

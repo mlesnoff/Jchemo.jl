@@ -189,7 +189,7 @@ end
 """
     coef(object::Kplsr)
     coef(object::Kplsr, nlv::Int)
-Compute the b-coefficients of a fitted model.
+Compute the coefficients of a fitted model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider. 
    

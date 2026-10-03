@@ -163,7 +163,12 @@ end
     coef(object::Cglsr, nlv::Int)
 Compute the b-coefficients of a fitted model.
 * `object` : The fitted model.
-* `nlv` : Nb. iterations to consider. 
+* `nlv` : Nb. iterations to consider.
+
+For a model fitted from X (n, p) and Y (n, q), the returned objects are :
+* `B` : A matrix (p, q) of the coefficients of the p variables. 
+    If `nlv` = 0, `B` is a matrix of zeros. 
+* `int` : A matrix (1, q) of the intercept coefficients.
 """ 
 function coef(object::Cglsr)
     W = Diagonal(object.yscales)    

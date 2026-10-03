@@ -160,7 +160,7 @@ end
 """
     coef(object::Krr)
     coef(object::Krr, lb::T) where T <: Float
-Compute the b-coefficients of a fitted model.
+Compute the coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 

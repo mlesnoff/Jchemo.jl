@@ -493,7 +493,7 @@ export
     occknn, occlknn,
     occmwpca,
     # Auxiliary
-    transf, coef, predict,
+    transf, coef, coefmatb, predict,
     transfbl, 
     # Validation
     residreg, residcla, 

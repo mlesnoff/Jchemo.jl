@@ -192,12 +192,13 @@ end
 """
     coef(object::Union{Plsr, Plswold, Splsr})
     coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
-Compute the b-coefficients of a LV model.
+Compute the b-coefficients of a LV-based model.
 * `object` : The fitted model.
 * `nlv` : Nb. LVs to consider.
 
 For a model fitted from X (n, p) and Y (n, q), the returned objects are :
-* `B` : A matrix (p, q) of the coefficients of the variables. If `nlv` = 0, `B` contains zeros. 
+* `B` : A matrix (p, q) of the coefficients of the p variables. 
+    If `nlv` = 0, `B` is a matrix of zeros. 
 * `int` : A matrix (1, q) of the intercept coefficients.
 """ 
 function coef(object::Union{Plsr, Plswold, Splsr})
@@ -217,6 +218,30 @@ function coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
     int = object.ymeans' .- object.xmeans' * B
     (B = B, int, nlv)
+end
+
+"""
+    coefmatb(object::Union{Plsr, Plswold, Splsr, Pcr, Spcr}, indvar::Int = 1)
+Build a matrix of b-coefficients of a LV-based model, for a given Y-variable
+    and the various nb. LVs contained in the model.
+* `object` : The fitted model.
+* `indvar`: The index of the Y-variable.
+
+For a model fitted from X (n, p) and Y (n, q), the returned object is :
+* `B` : A matrix (p, nlv) whose each column contains the coefficients of the p variables, 
+    for Y-variable of index `indvar`and LVs from 1 to nlv (where nlv is the maximum 
+    nb. LVs of the model). 
+""" 
+function coefmatb(object::Union{Plsr, Plswold, Splsr, Pcr, Spcr}, indvar::Int = 1)
+    if sum(in([:V]).(@names object)) == 1
+        B = similar(object.V)
+    else
+        B = similar(object.fitm.V) 
+    end
+    for j in axes(B, 2) 
+        B[:, j] = coef(object, j).B[:, indvar]
+    end 
+    B
 end
 
 """
