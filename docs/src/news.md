@@ -2,6 +2,9 @@
 
 ## *Version 0.10.5 dev*
 
+- News
+    - Function **dw**: Return the Durbin-Watson statistic. 
+
 - Modifications
     - Variable importance functions: output 'imp' was renamed to 'vi'.
     - Code cleaning.

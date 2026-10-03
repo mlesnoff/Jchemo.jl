@@ -326,6 +326,7 @@
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
 - **selwold** Wold's criterion to select dimensionality in LV models (e.g., PLSR)
+- **dw**: Durbin-Watson statistic 
 
 ## DATA PROCESSING
 

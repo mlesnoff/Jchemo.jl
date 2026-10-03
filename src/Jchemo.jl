@@ -183,6 +183,7 @@ include("gridcv.jl")
 include("predictcv.jl")
 
 include("selwold.jl")
+include("dw.jl")
 
 # Variable importance (direct methods) 
 include("isel.jl")
@@ -504,7 +505,7 @@ export
     gridscore, 
     gridcv, 
     predictcv,
-    selwold,
+    selwold, dw, 
     conf, 
     ######---- Sampling
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
