@@ -17,7 +17,7 @@ The function is a wrapper of package `DecisionTree.jl' to fit a single discrimin
 
 The working function is `DecisionTree.build_tree` (https://github.com/JuliaAI/DecisionTree.jl#regression-example). 
     
-The present function kept the same arguments as `DecisionTree.build_tree`, but with the particularity 
+The present function retained the same argument names as `DecisionTree.build_tree`, but with the particularity 
 that argument `min_purity_increase` has been constrained to be 0. 
 
 # References

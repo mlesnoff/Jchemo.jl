@@ -12,13 +12,14 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
+* `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl` to fit a random forest regression model.
 The working function is `DecisionTree.build_forest` (see its help page for details). 
     
-The present function kept the same arguments as `DecisionTree.build_forest`, but with the particularity 
+The present function retained the same argument names as `DecisionTree.build_forest`, but with the particularity 
 that argument `min_purity_increase` has been constrained to be 0. 
 
 `DecisionTree.jl` can return return a vector of feature importance calculated by Mean Decrease in Impurity (MDI).
@@ -103,8 +104,7 @@ function rfr(X, y; kwargs...)
         par.min_samples_leaf,
         par.min_samples_split,
         min_purity_increase;
-        #rng = Random.GLOBAL_RNG
-        #rng = 3
+        rng = par.rng
         ) 
     featur = collect(1:p)
     Treer(fitm, xscales, featur, par)
