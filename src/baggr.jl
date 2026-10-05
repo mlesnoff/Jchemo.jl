@@ -5,9 +5,9 @@ struct Baggr
 end
 
 """
-    baggr(X, Y; rep = 50, rowsamp = .7, replace = false, colsamp = 1, seed = nothing, fun::Function, kwargs...)
-    baggr(X, Y, weights::ProbabilityWeights; rep = 50, rowsamp = .7, replace = false, 
-        colsamp = 1, seed = nothing, fun::Function, kwargs...)
+    baggr(X, Y; rep = 50, replace = false, rowsamp = .7, colsamp = 1, seedsamp::Union{Nothing, Int} = nothing, fun::Function, kwargs...)
+    baggr(X, Y, weights::ProbabilityWeights; rep = 50, replace = false, rowsamp = .7, 
+        colsamp = 1, seedsamp::Union{Nothing, Int} = nothing, fun::Function, kwargs...)
 Bagging a regression model.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, p).
@@ -15,10 +15,10 @@ Bagging a regression model.
 Keyword arguments:
 * `fun` : Function defining the regression model.
 * `rep` : Nb. of bagging replications.
-* `rowsamp` : Proportion of rows sampled in `X` at each replication.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
+* `rowsamp` : Proportion of rows sampled in `X` at each replication.
 * `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
-* `seed` : Eventual seed for the `Random.MersenneTwister` generator.
+* `seedsamp` : Eventual seed for the `Random.MersenneTwister` generator used to select rows and columns.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
 # References
@@ -51,7 +51,7 @@ ytest = rmrow(y, s)
 
 rep = 500
 fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05) ; 
-#fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05, seed = 1234) ; 
+#fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05, seedsamp = 1234) ; 
 #fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep, rowsamp = .7, colsamp = .7) ; 
 @names fitm
 fitm.res_samp.srow
@@ -63,33 +63,28 @@ res = predict(fitm, Xtest) ;
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
 ```
 """ 
-function baggr(X, Y; fun::Function, rep::Int = 50, rowsamp::Q = .7, replace::Bool = false, colsamp::Q = 1., 
-        seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
+function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
+        colsamp::Q = 1., seedsamp::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seedsamp)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
-    args = fieldnames(Jchemo.defaults(fun))
     #@inbounds for i = 1:rep
     Threads.@threads for i in eachindex(fitm)
-        if in(:seed, args)
-            fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]); kwargs..., seed)
-        else
-            fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]); kwargs..., seed)
-        end
+        fitm[i] = fun(view(X, srow[i], scol[i]), vrow(Y, srow[i]); kwargs...)
     end
     Baggr(fitm, res_samp, nco(Y))
 end
 
-function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, rowsamp::Q = .7, replace::Bool = false, 
-        colsamp::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
+function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
+        colsamp::Q = 1., seedsamp::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seedsamp)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
