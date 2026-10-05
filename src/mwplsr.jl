@@ -1,4 +1,4 @@
-Base.@kwdef mutable struct ParMwplsr1
+Base.@kwdef mutable struct ParMwplsr
     npoint::Int = 21
     nlv::Int = 15
     K::Int = 5
@@ -7,12 +7,12 @@ Base.@kwdef mutable struct ParMwplsr1
     scal::Symbol = :none
 end 
 
-struct Mwplsr1{Q <: Float}
-    fitm_emb::Vector{Any}
+struct Mwplsr{Q <: Float}
+    fitm_emb::Vector{Plsr}
     nlv_emb::Vector{Int}
-    scor_emb::Vector{Int}
-    d_emb::Vector{Int}
-    w_emb::Vector{Int}
+    scor_emb::Vector{Q}
+    d_emb::Vector{Q}
+    w_emb::Vector{Q}
     vi::Vector{Q}
     window::Vector{UnitRange{Int}}
     xsel::Vector{Int}
@@ -48,18 +48,15 @@ function mwplsr(X, Y; kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
-    mwplsr(X, Y, weights; npoint, nlv, K, rep, h, scal)
+    mwplsr(X, Y, weights; kwargs...)
 end
 
 function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.ProbabilityWeights{Q}; 
     kwargs...) where Q <: Jchemo.Float
 
-    X = ensure_mat(X)
-    Y = ensure_mat(Y)
     n, p = size(X)
     q = nco(Y)                    
-
-    par = recovkw(ParMwplsr1{Q}, kwargs).par
+    par = recovkw(ParMwplsr, kwargs).par
     @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must an odd integer >= 1."
     
     nhwindow = Int((par.npoint - 1) / 2)  # half window
@@ -68,7 +65,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.Prob
     nmod = length(rangesel)
     
     window = list(UnitRange{Int}, nmod)
-    fitm_emb = list(nmod)
+    fitm_emb = list(Plsr, nmod)
     nlv_emb = list(Int, nmod)
     scor_emb = list(Q, nmod)
         
@@ -123,11 +120,11 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.Prob
         vi[j] = meanv(v[v .> -1])
     end
     
-    Mwplsr1(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, xsel) 
+    Mwplsr(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, xsel) 
 
 end
 
-function predict(object::Mwplsr1, X)
+function predict(object::Mwplsr, X)
     
     X = ensure_mat(X)
     Q = eltype(X)
