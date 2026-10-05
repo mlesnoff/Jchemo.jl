@@ -15,8 +15,16 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-The function is a wrapper of package `DecisionTree.jl' to fit a random forest discrimnation model.
-In DecisionTree.jl, 'y' component must have type `Int` or `String`.
+The function is a wrapper of package `DecisionTree.jl` to fit a random forest regression model.
+The working function is `DecisionTree.build_forest` (see its help page for details). 
+    
+In `DecisionTree.jl`, 'y' component must have type `Int` or `String`.
+
+The present function kept the same arguments as `DecisionTree.build_forest`, but with the particularity 
+that argument `min_purity_increase` has been constrained to be 0. 
+
+`DecisionTree.jl` can return return a vector of feature importance calculated by Mean Decrease in Impurity (MDI).
+See function `DecisionTree.impurity_importance` for details, and the example below.
 
 # References
 Breiman, L., 1996. Bagging predictors. Mach Learn 24, 123–140. https://doi.org/10.1007/BF00058655
@@ -30,6 +38,8 @@ Université Paris Sud - Paris XI.
 
 Gey, S., 2002. Bornes de risque, détection de ruptures, boosting : trois thèmes statistiques autour de CART en 
 régression (These de doctorat). Paris 11. http://www.theses.fr/2002PA112245
+
+Parr et al. 2018. https://explained.ai/rf-importance/index.html
 
 # Examples
 ```julia
@@ -77,7 +87,7 @@ res = predict(model, Xtest) ;
 errp(res.pred, ytest)
 conf(res.pred, ytest).cnt
 
-vi = fitm.fitm.featim  # variable importances
+vi = fitm.fitm.featim  # variable importances (decrease in impurity, MDI)
 plotsp(vi', wl; xlabel = "Wavelength (nm)", ylabel = "Importance").f
 ```
 """ 

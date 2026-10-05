@@ -399,9 +399,9 @@ Base.@kwdef mutable struct ParTree{Q <: Float}    # treer, treeda
 end 
 
 Base.@kwdef mutable struct ParRf{Q <: Float}    # rfr, rfda
-    n_trees::Int = 10   
+    n_trees::Int = 100   
     partial_sampling::Q = .7  
-    n_subfeatures::Q = 0   
+    n_subfeatures::Q = -1.   
     max_depth::Int = -1    
     min_samples_leaf::Int = 5  
     min_samples_split::Int = 5    

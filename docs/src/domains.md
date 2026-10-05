@@ -100,15 +100,18 @@
 - **pcr** Principal components regression (SVD factorization)
 - **rrr** Reduced rank regression (RRR), a.k.a  Redundancy analysis regression 
 
-*Robust*
-- **plsrout** Outlierness
+*Averaging PLSR models of different dimensionalities*
+- **plsravg** PLSR-AVG
 
 *Sparse*
 - **splsr** sPLSR *Lê Cao et al. 2008*
 - **spcr**  sPCR *Shen & Huang 2008*
 
-*Averaging PLSR models of different dimensionalities*
-- **plsravg** PLSR-AVG
+*Moving window*
+- **mwplsr** Moving window PLSR (MWPLSR)
+
+*Robust*
+- **plsrout** Outlierness
 
 *Non linear*
 - **kplsr** Non linear kernel (KPLSR) *Rosipal & Trejo 2001*
