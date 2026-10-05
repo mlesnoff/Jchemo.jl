@@ -149,6 +149,7 @@ include("xresid.jl")
 # Sparse
 include("splsr.jl")
 include("spcr.jl")
+include("mwplsr.jl")
 
 # Multiblock
 include("mbplsr.jl") 
@@ -436,6 +437,7 @@ export
     # Sparse 
     spcr, spcr!,
     splsr, splsr!, 
+    mwplsr,
     # Multi-block
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,

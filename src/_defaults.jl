@@ -76,6 +76,8 @@ function defaults(algo::Function)
         spcr Jchemo.ParSpca ;
         splsr Jchemo.ParSplsr ;
 
+        mwplsr Jchemo.ParMwplsr1 ;
+
         krr Jchemo.ParKrr ;
         kplsr Jchemo.ParKplsr ; 
         dkplsr Jchemo.ParKplsr ;
