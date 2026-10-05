@@ -395,6 +395,7 @@ Base.@kwdef mutable struct ParTree{Q <: Float}    # treer, treeda
     max_depth::Int = -1   
     min_samples_leaf::Int = 5       
     min_samples_split::Int = 5
+    rng = Random.GLOBAL_RNG
     scal::Symbol = :none              
 end 
 

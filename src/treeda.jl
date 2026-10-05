@@ -9,10 +9,16 @@ Keyword arguments:
 * `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
+* `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-The function is a wrapper of package `DecisionTree.jl' to fit a single discrimnation tree (CART).
+The function is a wrapper of package `DecisionTree.jl' to fit a single discrimination tree (CART).
+
+The working function is `DecisionTree.build_tree` (https://github.com/JuliaAI/DecisionTree.jl#regression-example). 
+    
+The present function kept the same arguments as `DecisionTree.build_tree`, but with the particularity 
+that argument `min_purity_increase` has been constrained to be 0. 
 
 # References
 Breiman, L., Friedman, J. H., Olshen, R. A., and Stone, C. J. Classification And Regression Trees. 
@@ -96,8 +102,7 @@ function treeda(X, y::Vector{String}; kwargs...)
         par.min_samples_leaf,
         par.min_samples_split,
         min_purity_increase;
-        #rng = Random.GLOBAL_RNG
-        #rng = 3
+        rng = par.rng
         )
     featur = collect(1:p)
     Treeda(fitm, xscales, featur, taby.n, priors, taby.lev, par)
