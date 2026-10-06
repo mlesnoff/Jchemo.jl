@@ -450,7 +450,7 @@ export
     lwplsr, lwplsravg,
     loessr,
     # Bagging
-    baggr,
+    baggr, vi_baggr,
     # Prototype
     protoplsr, protoclustplsr,
     # Variable selection/importance (direct methods) 

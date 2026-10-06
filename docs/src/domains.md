@@ -165,6 +165,7 @@
 
 - **baggr** Generic function for bagging a regression model
 - **sampbag** Sampling utility function for bagging
+- **vi_baggr**: Variable importance with the out-of-bag permutations method
 
 ## DISCRIMINATION ANALYSIS (DA)
 
@@ -288,6 +289,8 @@
 - **vip** Variable importance on projections (VIP)
 - **viperm!** Variable importance by direct permutations
 - **isel!** Interval variable selection (e.g., Interval PLSR)
+
+See also bagging methods.
 
 ## TUNING MODELS
 
