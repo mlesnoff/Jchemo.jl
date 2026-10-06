@@ -85,7 +85,7 @@ function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, rowsam
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed = seed)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -101,7 +101,7 @@ function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed = seed)
+    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -192,16 +192,12 @@ function vi_baggr(object::Baggr, X, Y; score::Function = rmsep, seed::Union{Noth
         # Predictions on X_oob 'i' after permuting each column 
         # Run over all the p variables of X but compute only when variable 'j' is in an oob group
         vX = similar(X, m, p)
-        if isnothing(seed)
-            seeds = [nothing for i in eachindex(object.fitm)]
-        else 
-            seeds = [seed + i - 1 for i in eachindex(object.fitm)]
-        end
-        @inbounds for j in axes(X, 2)           
+        @inbounds for j in axes(X, 2)  
+            vseed = isnothing(seed) ? seed : seed + j - 1          
             if in(j, scol)
                 # Permute rows for var 'j' (in 1:p) and compute predictions and score
                 vX .= vrow(X, srow_oob)
-                s = Jchemo.StatsBase.sample(MersenneTwister(seeds[i]), 1:m, m, replace = false)      
+                s = Jchemo.StatsBase.sample(MersenneTwister(vseed), 1:m, m, replace = false)      
                 vX[:, j] .= vX[s, j]
                 vpred .= predict(object.fitm[i], vX[:, scol]).pred
                 vscor = score(vpred, vY)
