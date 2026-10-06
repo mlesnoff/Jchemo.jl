@@ -1,6 +1,6 @@
 """
     isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector{Q} = Q.(collect(1:nco(X))); 
-        score::Function = rmsep, psamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
+        score::Function = rmsep, rowsamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
 Interval variable selection.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
@@ -8,7 +8,7 @@ Interval variable selection.
 * `wl` : Optional numeric labels (p) of the X-columns.
 Keyword arguments:  
 * `score` : Function computing the prediction score (an error rate).
-* `psamp` : Proportion of data used as validation set to compute the `score`.
+* `rowsamp` : Proportion of data used as validation set to compute the `score`.
 * `nint` : Nb. intervals. 
 * `rep` : Number of replications of the splitting calibration/validation (see below). 
 
@@ -81,7 +81,7 @@ f
 ```
 """
 function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector{Q} = Q.(collect(1:nco(X))); 
-        score::Function = rmsep, psamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
+        score::Function = rmsep, rowsamp::Q = .3, nint::Int = 5, rep::Int = 1) where Q <: Float
     X = ensure_mat(X)
     n, p = size(X)
     q = nco(Y)
@@ -89,7 +89,7 @@ function isel!(model, X::AbstractMatrix{Q}, Y::AbstMatVec{Q}, wl::AbstractVector
     itv = [z[1:nint] z[2:(nint + 1)] .- 1]
     itv = hcat(itv, round.(rowmean(itv)))
     itv = Int.(itv)
-    nval = round(Int, psamp * n)
+    nval = round(Int, rowsamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)

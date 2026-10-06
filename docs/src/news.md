@@ -10,6 +10,7 @@
 
 - Modifications
     - Variable importance functions: output 'imp' was renamed to 'vi'.
+    - Functions *umap* and *viperm!*: argument 'psamp' renamed to 'rowsamp'.
     - Code cleaning.
 
 ## *Version 0.10.4*

@@ -1,12 +1,12 @@
 """
-    viperm!(model, X, Y; score = rmsep, psamp = .3, rep = 50)
+    viperm!(model, X, Y; score = rmsep, rowsamp = .3, rep = 50)
 Variable importance by direct permutations.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
 Keyword arguments:
 * `score` : Function computing the prediction score (an error rate).
-* `psamp` : Proportion of data used as validation set to compute the `score`.
+* `rowsamp` : Proportion of data used as validation set to compute the `score`.
 * `rep` : Number of replications of the splitting calibration/validation. 
 
 *Note:* This is an inplace function that modifies the content of object `model` (only).
@@ -89,12 +89,12 @@ vlines!(ax, u; color = :grey, linewidth = 1)
 f
 ```
 """
-function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, psamp::Float = .3)
+function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, rowsamp::Float = .3)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    nval = round(Int, psamp * n)
+    nval = round(Int, rowsamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)
