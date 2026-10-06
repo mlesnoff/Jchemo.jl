@@ -46,8 +46,6 @@ db = joinpath(mypath, "data", "tecator.jld2")
 @names dat
 X = dat.X
 Y = dat.Y 
-wlst = names(X)
-wl = parse.(Float64, wlst) 
 ntot, p = size(X)
 typ = Y.typ
 namy = names(Y)[1:3]
@@ -61,6 +59,8 @@ ntrain = nro(Xtrain)
 ntest = nro(Xtest)
 ntot = ntrain + ntest
 (ntot = ntot, ntrain, ntest)
+wlst = names(X)
+wl = parse.(eltype(X[1, 1]), wlst) 
 
 # Work on the j-th y-variable 
 j = 2
@@ -70,26 +70,33 @@ ytest = Ytest[:, nam]
 
 model = plskern(nlv = 9)
 res = viperm!(model, Xtrain, ytrain; score = rmsep, rep = 50) ;
-z = vec(res.vi)
-f = Figure(size = (500, 400))
-ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
-scatter!(ax, wl, vec(z); color = (:red, .5))
+vi = vec(res.vi)
+col = (:red, .5)
+xticks = collect(wl[1]:20:wl[end])
+f = Figure(size = (600, 350))
+ax = Axis(f[1, 1]; xticks, xlabel = "Wavelength (nm)", ylabel = "Importance")
+scatter!(ax, wl, vi; color = col)
+lines!(ax, wl, vi; color = col, linewidth = .5)
 u = [910; 950]
-vlines!(ax, u; color = :grey, linewidth = 1)
+vlines!(ax, u; color = :grey, linestyle = :dash)
 f
 
 model = rfr(n_trees = 10, max_depth = 2000, min_samples_leaf = 5)
 res = viperm!(model, Xtrain, ytrain; rep = 50)
-z = vec(res.vi)
-f = Figure(size = (500, 400))
-ax = Axis(f[1, 1]; xlabel = "Wavelength (nm)", ylabel = "Importance")
-scatter!(ax, wl, vec(z); color = (:red, .5))
+vi = vec(res.vi)
+col = (:red, .5)
+xticks = collect(wl[1]:20:wl[end])
+f = Figure(size = (500, 300))
+ax = Axis(f[1, 1]; xticks, xlabel = "Wavelength (nm)", ylabel = "Importance")
+scatter!(ax, wl, vi; color = col)
+lines!(ax, wl, vi; color = col, linewidth = .5)
 u = [910; 950]
-vlines!(ax, u; color = :grey, linewidth = 1)
+vlines!(ax, u; color = :grey, linestyle = :dash)
 f
 ```
 """
-function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, rowsamp::Float = .3)
+function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, rowsamp::Float = .3,
+        seed::Union{Nothing, Int} = nothing)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
@@ -100,28 +107,29 @@ function viperm!(model, X, Y; score::Function = rmsep, rep::Int = 50, rowsamp::F
     Ycal = similar(X, ncal, q)
     Xval = similar(X, nval, p)
     Yval = similar(X, nval, q)
-    zs = list(Int, nval)
+    vs = list(Int, nval)
     res_rep = similar(X, p, q, rep)
     @inbounds for i = 1:rep
-        s = samprand(n, nval)
+        s = samprand(n, nval; seed)
         Xcal .= X[s.train, :]
         Ycal .= Y[s.train, :]
         Xval .= X[s.test, :]
         Yval .= Y[s.test, :]
         fit!(model, Xcal, Ycal)
         pred = predict(model, Xval).pred
-        scoreref = score(pred, Yval)
-        zXval = similar(Xval)
+        scor_ref = score(pred, Yval)
+        vXval = similar(Xval)
         @inbounds for j = 1:p
-            zXval .= copy(Xval)
+            vXval .= copy(Xval)
             # Permutation of variable j
-            zs .= StatsBase.sample(1:nval, nval, replace = false)
-            zXval[:, j] .= zXval[zs, j]
+            vseed = isnothing(seed) ? seed : seed + j - 1        
+            vs .= StatsBase.sample(MersenneTwister(vseed), 1:nval, nval; replace = false)
+            vXval[:, j] .= vXval[vs, j]
             # End  
-            pred .= predict(model, zXval).pred
-            res_rep[j, :, i] = score(pred, Yval) - scoreref
+            pred .= predict(model, vXval).pred
+            res_rep[j, :, i] = score(pred, Yval) - scor_ref
         end
     end
-    vi = reshape(mean(res_rep, dims = 3), p, q)
+    vi = mean(res_rep, dims = 3)[:, :, 1]
     (vi = vi, res_rep)
 end 

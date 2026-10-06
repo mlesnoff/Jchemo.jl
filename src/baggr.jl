@@ -75,8 +75,8 @@ xticks = collect(400:200:(1.1 * wl[end]))
 f = Figure(size = (900, 300))
 ax = Axis(f[1, 1]; xticks, xlabel = "Wavelength (nm)", ylabel = "VI")
 scatter!(ax, wl, vec(vi); color = col)
-xlims!(ax, (.9 * wl[1], 1.05 * wl[end]))    
 lines!(ax, wl, vec(vi); color = col, linewidth = .5)
+xlims!(ax, (.9 * wl[1], 1.05 * wl[end]))    
 f
 ```
 """ 
@@ -197,11 +197,10 @@ function vi_baggr(object::Baggr, X, Y; score::Function = rmsep, seed::Union{Noth
             if in(j, scol)
                 # Permute rows for var 'j' (in 1:p) and compute predictions and score
                 vX .= vrow(X, srow_oob)
-                s = Jchemo.StatsBase.sample(MersenneTwister(vseed), 1:m, m, replace = false)      
+                s = Jchemo.StatsBase.sample(MersenneTwister(vseed), 1:m, m; replace = false)      
                 vX[:, j] .= vX[s, j]
                 vpred .= predict(object.fitm[i], vX[:, scol]).pred
-                vscor = score(vpred, vY)
-                res[j, :, i] = vscor .- scor_ref
+                res[j, :, i] = score(vpred, vY) - scor_ref
             end
         end
     end

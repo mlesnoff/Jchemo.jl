@@ -43,7 +43,7 @@ function occlknn(X; kwargs...)
     if nsamp == n
         s = 1:n
     else
-        s = sample(MersenneTwister(par.seed), 1:n, nsamp, replace = false)
+        s = sample(MersenneTwister(par.seed), 1:n, nsamp; replace = false)
     end
     vX = vrow(X, s)
     k = min(par.k, n - 1)
