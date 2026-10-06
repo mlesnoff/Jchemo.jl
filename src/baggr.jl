@@ -49,19 +49,35 @@ Xtrain = X[s, :]
 ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
+wlst = names(Xtrain)
+wl = parse.(eltype(X[1, 1]), wlst)
 
-rep = 500
+rep = 200
 fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05) ; 
 #fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05, seed = 1234) ; 
-#fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep, rowsamp = .7, colsamp = .7) ; 
+#fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep, rowsamp = .7, colsamp = .5) ; 
+#fitm = baggr(Xtrain, ytrain; fun = treer, n_subfeatures = 0, rep, rowsamp = .7, colsamp = .2) ; 
 @names fitm
-fitm.res_samp.srow
-fitm.res_samp.srow_oob
-fitm.res_samp.scol
+fitm.res_samp.srow       # indexes of the observations used as training
+fitm.res_samp.srow_oob   # indexes of the oob observations
+fitm.res_samp.scol       # indexes of the selected X-columns  
 fitm.fitm[1]
 res = predict(fitm, Xtest) ; 
 @show rmsep(res.pred, ytest)
-plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", ylabel = "Observed").f
+plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction", 
+    ylabel = "Observed").f
+
+res = vi_baggr(fitm, Xtrain, ytrain; score = rmsep, seed = 1234) ;
+@names res 
+@head vi = res.vi
+col = (:blue, .5)
+xticks = collect(400:200:(1.1 * wl[end]))
+f = Figure(size = (900, 300))
+ax = Axis(f[1, 1]; xticks, xlabel = "Wavelength (nm)", ylabel = "VI")
+scatter!(ax, wl, vec(vi); color = col)
+xlims!(ax, (.9 * wl[1], 1.05 * wl[end]))    
+lines!(ax, wl, vec(vi); color = col, linewidth = .5)
+f
 ```
 """ 
 function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
@@ -164,7 +180,7 @@ function vi_baggr(object::Baggr, X, Y; score::Function = rmsep, seed::Union{Noth
     res = fill(Q.(NaN), p, q, rep)
     scor_ref = similar(X, 1, q)
     # End
-    @inbounds for i = 1:rep
+    @inbounds for i in eachindex(object.fitm)
         srow_oob = res_samp.srow_oob[i]   # indexes of the obs being in oob 'i' (variable length)
         scol .= res_samp.scol[i]          # indexes of the variables selected for rep 'i' (consistent length) 
         m = length(srow_oob)              # nb. obs in oob 'i' (variable)
@@ -176,11 +192,16 @@ function vi_baggr(object::Baggr, X, Y; score::Function = rmsep, seed::Union{Noth
         # Predictions on X_oob 'i' after permuting each column 
         # Run over all the p variables of X but compute only when variable 'j' is in an oob group
         vX = similar(X, m, p)
-        @inbounds for j = 1:p           
+        if isnothing(seed)
+            seeds = [nothing for i in eachindex(object.fitm)]
+        else 
+            seeds = [seed + i - 1 for i in eachindex(object.fitm)]
+        end
+        @inbounds for j in axes(X, 2)           
             if in(j, scol)
                 # Permute rows for var 'j' (in 1:p) and compute predictions and score
                 vX .= vrow(X, srow_oob)
-                s = Jchemo.StatsBase.sample(MersenneTwister(seed), 1:m, m, replace = false)      
+                s = Jchemo.StatsBase.sample(MersenneTwister(seeds[i]), 1:m, m, replace = false)      
                 vX[:, j] .= vX[s, j]
                 vpred .= predict(object.fitm[i], vX[:, scol]).pred
                 vscor = score(vpred, vY)

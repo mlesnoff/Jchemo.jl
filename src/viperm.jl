@@ -31,7 +31,7 @@ by the function are:
 * `vi` : average results (i.e. over the `rep` replications),
 * `res_rep` : results per replication.
 
-In general, this method returns similar results as the 'out-of-bag' permutation method such as the one 
+In general, this method returns similar results as the 'out-of-bag' permutation method (Breiman, 2000) such as the one 
 used in random forests.
 
 # References
@@ -46,8 +46,8 @@ db = joinpath(mypath, "data", "tecator.jld2")
 @names dat
 X = dat.X
 Y = dat.Y 
-wl_str = names(X)
-wl = parse.(Float64, wl_str) 
+wlst = names(X)
+wl = parse.(Float64, wlst) 
 ntot, p = size(X)
 typ = Y.typ
 namy = names(Y)[1:3]

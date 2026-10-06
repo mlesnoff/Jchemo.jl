@@ -39,8 +39,8 @@ db = joinpath(mypath, "data", "tecator.jld2")
 @names dat
 X = dat.X
 Y = dat.Y 
-wl_str = names(X)
-wl = parse.(Float64, wl_str) 
+wlst = names(X)
+wl = parse.(Float64, wlst) 
 ntot, p = size(X)
 typ = Y.typ
 namy = names(Y)[1:3]
