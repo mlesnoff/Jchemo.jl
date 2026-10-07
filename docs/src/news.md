@@ -7,6 +7,7 @@
     - Function **coefmatb**: Build a matrix of b-coefficients of a LV-based model, 
         for a given Y-variable.
     - Function **vi_baggr**: Variable importance with the out-of-bag permutations method.
+    - Function **viperm!**: new argument 'perm' and method. 
 
 - Modifications
     - Variable importance functions: output 'imp' was renamed to 'vi'.

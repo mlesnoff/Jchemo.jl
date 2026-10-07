@@ -40,7 +40,7 @@ res.ind
 ```
 """ 
 function getknn(Xtrain, X; metric::Symbol = :eucl, k::Int = 1)
-    #@assert in([:eucl, :mah, :cos, :sam, :cor])(metric) "Wrong value for argument 'metric'."
+    #@assert in(metric, [:eucl, :mah, :cos, :sam, :cor]) "Wrong value for argument 'metric'."
     Xtrain = ensure_mat(Xtrain)
     X = ensure_mat(X)
     n, p = size(Xtrain)
