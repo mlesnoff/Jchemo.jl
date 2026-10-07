@@ -295,7 +295,6 @@
 ## VARIABLE IMPORTANCE
 
 - **viperm!** Variable importance by direct permutations
-- **isel!** Interval variable selection (e.g., Interval PLSR)
 
 See also bagging methods.
 

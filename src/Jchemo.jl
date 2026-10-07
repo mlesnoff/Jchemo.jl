@@ -240,7 +240,6 @@ include("occmwpca.jl")
 
 ######---- Variable importance
 
-include("isel.jl")
 include("viperm.jl")
 
 ######---- Tuning models
@@ -528,7 +527,6 @@ export
 
     ######---- Variable importance 
     viperm!,
-    isel!,
 
     ######---- Sampling data
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
