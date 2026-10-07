@@ -77,7 +77,7 @@ include("plotconf.jl")
 
 ######---- Dimension reduction and exploratory
 
-include("fda.jl")  # here since ::Fda called in pcasvd
+include("fda.jl")      # here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
 include("pcaeigen.jl")
@@ -97,8 +97,6 @@ include("rpmat.jl")
 include("rp.jl")
 include("umap.jl")
 
-include("covsel.jl")
-
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -106,6 +104,8 @@ include("plstuck.jl")
 include("rasvd.jl")
 include("cpca.jl")
 include("comdim.jl")
+
+include("covsel.jl")
 
 ######---- Regression 
 
@@ -394,7 +394,7 @@ export
     difmean,
     eposvd,
     
-    ######---- Dimension redection and exploratory
+    ######---- Dimension reduction and exploratory
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
     pcaeigenk, pcaeigenk!,
@@ -407,7 +407,6 @@ export
     kpca,
     rpmatgauss, rpmatli, rp, rp!,
     umap,
-    covsel,
     # Multiblock
     rd, rv, 
     mbconcat, fconcat,
@@ -417,7 +416,12 @@ export
     plstuck, plstuck!,
     rasvd, rasvd!,
     cpca, cpca!,
-    comdim, comdim!, 
+    comdim, comdim!,
+    # Fcatorial DA
+    fda, fda!, 
+    fdasvd, fdasvd!,
+    # Partial covariances
+    covsel,
     
     ######---- Regression
     # Mlr
@@ -474,7 +478,6 @@ export
     xfit, xfit!, xresid, xresid!,
 
     ######---- Discrimination
-    fda, fda!, fdasvd, fdasvd!,
     mlrda,
     rrda, krrda,
     lda, qda, kdeda,

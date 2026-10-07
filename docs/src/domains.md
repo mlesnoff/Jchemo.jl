@@ -42,15 +42,6 @@
 - **umap**: Uniform manifold approximation and projection for 
     dimension reduction
 
-### Factorial discrimination analysis (FDA)
-
-- **fda** Eigen decomposition of the consensus "inter/intra"
-- **fdasvd** Weighted SVD of the class centers
-
-### Partial covariances
-
-- **covsel** Variable (feature) selection from partial covariance (Covsel) *Roger et al. 2011*
-
 ### Multiblock
 
 *2 blocks*
@@ -69,6 +60,15 @@
 - **mbconcat** Concatenation of multi-block X-data
 - **rd** Redundancy coefficients between two matrices
 - **rv** RV correlation coefficient
+
+### Partial covariances
+
+- **covsel** Variable (feature) selection from partial covariance (Covsel) *Roger et al. 2011*
+
+### Factorial discrimination analysis (FDA)
+
+- **fda** Eigen decomposition of the consensus "inter/intra"
+- **fdasvd** Weighted SVD of the class centers
 
 ## REGRESSION
 
