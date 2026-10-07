@@ -3,10 +3,10 @@
 ## *Version 0.10.5 dev*
 
 - News
-    - Function **dw**: Return the Durbin-Watson statistic. 
+    - Function **durbinw**: Return the Durbin-Watson statistic. 
     - Function **coefmatb**: Build a matrix of b-coefficients of a LV-based model, 
         for a given Y-variable.
-    - Function **vi_baggr**: Variable importance with the out-of-bag permutations method.
+    - Function **vi_baggr**: Out-of-bag permutation variable importance.
     - Function **viperm!**: new argument 'perm' and method. 
 
 - Modifications

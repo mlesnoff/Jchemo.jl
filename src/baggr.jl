@@ -148,7 +148,7 @@ end
 
 """ 
     vi_baggr(object::Baggr, X, Y; score::Function = rmsep, seed::Union{Nothing, Int} = nothing)
-Variable importance with the out-of-bag permutations method.
+Out-of-bag permutation variable importance.
 * `object` : Output of a bagging.
 * `X` : X-data that were used in the bagging.
 * `Y` : Y-data that were used in the bagging.

@@ -13,13 +13,13 @@
 *Allow missing data*
 - **pcanipalsmiss**: NIPALS algorithm allowing missing data
 
+*Sparse* 
+- **spca** Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD) *Shen & Huang 2008*
+
 *Robust* 
 - **pcasph** Spherical (with spatial median)
 - **pcapp** Projection pursuit
 - **pcaout** Outlierness
-
-*Sparse* 
-- **spca** Sparse PCA by regularized low rank matrix approximation (sPCA-rSVD) *Shen & Huang 2008*
 
 *Non linear*
 
@@ -123,6 +123,9 @@
 - **rosaplsr** ROSA *Liland et al. 2016*
 - **soplsr** Sequentially orthogonalized (SO-PLSR) 
 
+*Variable importance*
+- **vip** Variable importance on projections (VIP)
+
 ### Ridge (RR, KRR)
 
 *RR*
@@ -163,9 +166,9 @@
 
 ### Bagging
 
-- **baggr** Generic function for bagging a regression model
 - **sampbag** Sampling utility function for bagging
-- **vi_baggr**: Variable importance with the out-of-bag permutations method
+- **baggr** Generic function for bagging a regression model
+- **vi_baggr**: Out-of-bag permutation variable importance
 
 ## DISCRIMINATION ANALYSIS (DA)
 
@@ -187,6 +190,10 @@
 *Multiblock* 
 
 - **mbplsrda** MBPLSR-DA
+
+*Locally weighted*
+- **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
+- **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
 
 ### Probabilistic DA
 
@@ -223,13 +230,14 @@
     - **mbplsqda** MBPLS-QDA
     - **mbplskdeda** MBPLS-KDEDA
 
-### Locally weighted models
+* *Locally weighted*
 
-- **knnda** kNN-DA (Vote within neighbors)
-- **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
-- **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
-- **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
+    - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
+    - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
+
+### Vote within neighbors
+
+- **knnda** kNN-DA
 
 ### Support vector machines 
 
@@ -286,7 +294,6 @@
 
 ## VARIABLE IMPORTANCE
 
-- **vip** Variable importance on projections (VIP)
 - **viperm!** Variable importance by direct permutations
 - **isel!** Interval variable selection (e.g., Interval PLSR)
 
@@ -332,7 +339,7 @@ See also bagging methods.
 *Model dimensionality*
 - **aicplsr** AIC and Cp for PLSR
 - **selwold** Wold's criterion to select dimensionality in LV models (e.g., PLSR)
-- **dw**: Durbin-Watson statistic 
+- **durbinw**: Durbin-Watson statistic 
 
 ## DATA PROCESSING
 

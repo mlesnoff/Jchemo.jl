@@ -28,6 +28,7 @@ include("_struct_fun.jl")
 include("_model_work.jl")
 include("_pip.jl")
 # End
+
 include("_defaults.jl")
 
 ######---- Misc
@@ -74,34 +75,30 @@ include("plotlv.jl")
 include("plotgrid.jl")
 include("plotconf.jl")
 
-######---- Distributions
+######---- Dimension reduction and exploratory
 
-include("dmnorm.jl")
-include("dmnormlog.jl")
-include("dmkern.jl")
-
-######---- Exploratory
-
-include("fda.jl")  # Here since ::Fda called in pcasvd
+include("fda.jl")  # here since ::Fda called in pcasvd
 include("fdasvd.jl")     
 include("pcasvd.jl")
 include("pcaeigen.jl")
 include("pcaeigenk.jl")
 include("pcanipals.jl")
 include("pcanipalsmiss.jl")
+include("spca.jl")
 include("pcasph.jl") 
 include("pcapp.jl") 
 include("pcaout.jl") 
 include("kpca.jl")
-include("covsel.jl")
+
+include("xfit.jl")
+include("xresid.jl")
+
 include("rpmat.jl")
 include("rp.jl")
 include("umap.jl")
 
-# Sparse
-include("spca.jl")
+include("covsel.jl")
 
-# Multiblock 
 include("cca.jl")
 include("ccawold.jl")
 include("plscan.jl")
@@ -113,22 +110,6 @@ include("comdim.jl")
 ######---- Regression 
 
 include("mlr.jl")
-include("rr.jl")
-include("rrchol.jl")
-include("pcr.jl")
-include("rrr.jl") 
-include("plskern.jl")
-include("plsnipals.jl")
-include("plswold.jl") 
-include("plsrosa.jl")
-include("plssimp.jl")
-include("plsrout.jl")
-include("plsravg.jl")
-include("plsravg_unif.jl")
-include("cglsr.jl")
-include("krr.jl")
-include("kplsr.jl")
-include("dkplsr.jl")
 
 include("aov1.jl")
 include("manova.jl")
@@ -139,120 +120,106 @@ include("hotelling.jl")
 include("wilks.jl")
 include("waldtest.jl")
 
-include("dfplsr_cg.jl")
-include("aicplsr.jl")
-include("vip.jl") 
+include("plskern.jl")
+include("plsnipals.jl")
+include("plswold.jl") 
+include("plsrosa.jl")
+include("plssimp.jl")
+include("plsravg.jl")
+include("plsravg_unif.jl")
 
-include("xfit.jl")
-include("xresid.jl")
+include("cglsr.jl")
+include("pcr.jl")
+include("rrr.jl")
 
-# Sparse
 include("splsr.jl")
 include("spcr.jl")
+
 include("mwplsr.jl")
 
-# Multiblock
+include("plsrout.jl")
+
+include("kplsr.jl")
+include("dkplsr.jl")
+
 include("mbplsr.jl") 
 include("mbplswest.jl")
 include("rosaplsr.jl") 
-include("soplsr.jl") 
+include("soplsr.jl")
 
-# Local
+include("vip.jl") 
+
+include("rr.jl")
+include("rrchol.jl")
+include("krr.jl")
+
+include("loessr.jl")
 include("locw.jl")
 include("locwlv.jl")
 include("knnr.jl")
 include("lwmlr.jl")
 include("lwplsr.jl")
 include("lwplsravg.jl")
-include("loessr.jl")
-
-# Validation
-include("mpar.jl")
-include("scores_reg.jl")
-include("scores_da.jl")
-include("conf.jl")
-include("segmkf.jl")
-include("segmts.jl")
-
-include("gridscore.jl")
-include("gridscore_br.jl")
-include("gridscore_lv.jl")
-include("gridscore_lb.jl")
-
-include("gridcv.jl")
-
-include("predictcv.jl")
-
-include("selwold.jl")
-include("dw.jl")
-
-# Variable importance (direct methods) 
-include("isel.jl")
-include("viperm.jl")
-
-# Svm, Trees
-include("svmr.jl")
-include("treer.jl")
-include("rfr.jl")
-
-# Bagging 
-
-include("sampbag.jl")
-include("baggr.jl")
-
-# Prototypes
 
 include("protoplsr.jl")
 include("protoyclaplsr.jl")
 include("protoclustplsr.jl")
 
+include("svmr.jl")
+include("treer.jl")
+include("rfr.jl")
+
+include("sampbag.jl")
+include("baggr.jl")
+
 ######---- Discrimination 
+
+include("mlrda.jl")
+include("plsrda.jl") 
+include("rrda.jl")
+include("splsrda.jl")
+include("kplsrda.jl")
+include("dkplsrda.jl")
+include("krrda.jl")
+include("mbplsrda.jl") 
+
+include("lwmlrda.jl")
+include("lwplsrda.jl")
 
 include("lda.jl")
 include("qda.jl")
 include("rda.jl")
 include("kdeda.jl")
-include("mlrda.jl")
-include("rrda.jl")
-include("plsrda.jl") 
+
 include("plslda.jl")
 include("plsqda.jl")
 include("plskdeda.jl")
-include("krrda.jl")
-include("kplsrda.jl")
-include("kplslda.jl")
-include("kplsqda.jl")
-include("kplskdeda.jl")
-include("dkplsrda.jl")
-include("dkplslda.jl")
-include("dkplsqda.jl")
-include("dkplskdeda.jl")
 
-# Sparse
-include("splsrda.jl")
 include("splslda.jl")
 include("splsqda.jl")
 include("splskdeda.jl")
 
-# Local
-include("lwmlrda.jl")
-include("lwplsrda.jl")
-include("lwplslda.jl")
-include("lwplsqda.jl")
-include("knnda.jl")
+include("kplslda.jl")
+include("kplsqda.jl")
+include("kplskdeda.jl")
 
-# Svm, Trees
-include("svmda.jl")
-include("treeda.jl")
-include("rfda.jl")
+include("dkplslda.jl")
+include("dkplsqda.jl")
+include("dkplskdeda.jl")
 
-# Multiblock
-include("mbplsrda.jl") 
 include("mbplslda.jl") 
 include("mbplsqda.jl") 
 include("mbplskdeda.jl") 
 
-# One-class
+include("lwplslda.jl")
+include("lwplsqda.jl")
+
+include("knnda.jl")
+
+include("svmda.jl")
+include("treeda.jl")
+include("rfda.jl")
+
 include("outstah.jl")
 include("outeucl.jl")
 include("pcout.jl")
@@ -270,6 +237,42 @@ include("occstah.jl")
 include("occknn.jl")
 include("occlknn.jl")
 include("occmwpca.jl")
+
+######---- Variable importance
+
+include("isel.jl")
+include("viperm.jl")
+
+######---- Tuning models
+
+include("mpar.jl")
+
+include("conf.jl")
+include("segmkf.jl")
+include("segmts.jl")
+
+include("gridscore.jl")
+include("gridscore_br.jl")
+include("gridscore_lv.jl")
+include("gridscore_lb.jl")
+
+include("gridcv.jl")
+
+include("predictcv.jl")
+
+include("scores_reg.jl")
+include("scores_da.jl")
+
+include("dfplsr_cg.jl")
+include("aicplsr.jl")
+include("selwold.jl")
+include("durbinw.jl")
+
+######---- Distributions
+
+include("dmnorm.jl")
+include("dmnormlog.jl")
+include("dmkern.jl")
 
 ######---- Calibration transfer
 
@@ -301,9 +304,10 @@ export
     fit!,
     transf!,
     pip,
+    
     ######---- Utilities
     @head, @pmod, @names, @pars, @plist, @type,
-    ##
+    #
     aggmean, aggstat, 
     aggsumv,  
     sumv, meanv, medv, stdv, varv, madv, iqrv, normv, norm2v, kurtv, 
@@ -363,11 +367,13 @@ export
     tab, tabcont, tabdupl,
     vcatdf,
     vcol, vrow,
+
     ######---- Distributions
     dmnorm, dmnorm!,
     dmnormlog, dmnormlog!,
     dmkern,
-    # Pre-processing
+    
+    ######---- Pre-processing
     detrend_pol, detrend_lo,  
     detrend_asls, detrend_airpls, detrend_arpls,
     fdif,
@@ -382,11 +388,13 @@ export
     savgk, savgol,
     snorm,
     snv, 
+    
     ######---- Calibration ransfer
     calds, calpds,
     difmean,
     eposvd,
-    ######---- Exploratory
+    
+    ######---- Dimension redection and exploratory
     pcasvd, pcasvd!, 
     pcaeigen, pcaeigen!, 
     pcaeigenk, pcaeigenk!,
@@ -397,9 +405,9 @@ export
     pcaout, pcaout!,
     spca, spca!,
     kpca,
-    covsel,
     rpmatgauss, rpmatli, rp, rp!,
     umap,
+    covsel,
     # Multiblock
     rd, rv, 
     mbconcat, fconcat,
@@ -410,10 +418,17 @@ export
     rasvd, rasvd!,
     cpca, cpca!,
     comdim, comdim!, 
+    
     ######---- Regression
+    # Mlr
     mlr, mlr!, 
-    rr, rr!, rrchol, rrchol!,
-    pcr,
+    # Anova related
+    aov1, 
+    manova, decompx, asca, 
+    emm, 
+    permut, 
+    hotelling, waldtest, wilks,
+    # Plsr
     plskern, plskern!, 
     plsnipals, plsnipals!, 
     plsrosa, plsrosa!, 
@@ -421,44 +436,43 @@ export
     plswold, plswold!,
     plsravg, plsravg!,
     cglsr, cglsr!,
-    plsrout, plsrout!,
     rrr, rrr!,   
-    krr, krr!, kplsr, kplsr!, 
-    dkplsr, dkplsr!,
-    dfplsr_cg, aicplsr,
-    svmr,
-    treer, rfr, 
-    # Anova
-    aov1, 
-    manova, decompx, asca, 
-    emm, 
-    permut, 
-    hotelling, waldtest, wilks,
-    # Sparse 
-    spcr, spcr!,
     splsr, splsr!, 
     mwplsr,
-    # Multi-block
+    plsrout, plsrout!,
+    kplsr, kplsr!,
+    dkplsr, dkplsr!,
+    dfplsr_cg, aicplsr,     
     mbplsr, mbplsr!,
     mbplswest, mbplswest!,
     rosaplsr, rosaplsr!,
     soplsr,
+    vip,
+    # Ridge
+    rr, rr!, rrchol, rrchol!,
+    # Pcr
+    pcr,
+    spcr, spcr!,
+    krr, krr!, 
     # Local
+    loessr,
     locw, locwlv,
     knnr,
     lwmlr,
     lwplsr, lwplsravg,
-    loessr,
-    # Bagging
-    baggr, vi_baggr,
-    # Prototype
     protoplsr, protoclustplsr,
-    # Variable selection/importance (direct methods) 
-    vip, 
-    viperm!,
-    isel!,
+    # Svm and trees
+    svmr,
+    treer, rfr, 
+    # Bagging
+    sampbag, 
+    baggr, 
+    vi_baggr,
     # Utils
+    transf, coef, coefmatb, predict,
+    transfbl, 
     xfit, xfit!, xresid, xresid!,
+
     ######---- Discrimination
     fda, fda!, fdasvd, fdasvd!,
     mlrda,
@@ -476,14 +490,14 @@ export
     # Sparse 
     splsrda,
     splslda, splsqda, splskdeda,
+    # Multiblock
+    mbplsrda, 
+    mbplslda, mbplsqda, mbplskdeda,
     # Local 
     lwmlrda,
     lwplsrda, 
     lwplslda, lwplsqda,
     knnda,
-    # Multiblock
-    mbplsrda, 
-    mbplslda, mbplsqda, mbplskdeda,
     # One-class
     outstah, outeucl, 
     pcout,
@@ -494,10 +508,8 @@ export
     occstah,
     occknn, occlknn,
     occmwpca,
-    # Auxiliary
-    transf, coef, coefmatb, predict,
-    transfbl, 
-    # Validation
+    
+    ######---- Validation
     residreg, residcla, 
     ssr, msep, rmsep, rmsepstand, rmseprel, mae,
     bias, sep, cor2, r2, rpd, rpdr, mse, 
@@ -507,16 +519,24 @@ export
     gridscore, 
     gridcv, 
     predictcv,
-    selwold, dw, 
+    selwold, 
+    durbinw, 
     conf, 
-    ######---- Sampling
+
+    ######---- Variable importance 
+    viperm!,
+    isel!,
+
+    ######---- Sampling data
     sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
     sampdatf,
-    sampbag, 
+
     ######---- Distances
-    getknn, wdis, wtal, winvs, winvs!,
+    getknn, 
+    wdis, wtal, winvs, winvs!,
     eucl2, mah2, mah2chol,
     krbf, kpol,
+
     ######---- Graphics
     plotsp,
     plotxy, plotxyz,
