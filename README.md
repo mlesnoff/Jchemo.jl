@@ -1,6 +1,6 @@
 # Jchemo
 
-### Chemometrics and machine learning for high-dimensional data with Julia
+### A tool-box for chemometrics and machine learning
 
 [![Latest](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
@@ -388,7 +388,7 @@ contact: **matthieu.lesnoff@cirad.fr**
 
 ### **How to cite**
 
-Lesnoff, M. 2021. Jchemo: Chemometrics and machine learning for high-dimensional data with Julia. https://github.com/mlesnoff/Jchemo.jl. 
+Lesnoff, M. 2021. Jchemo: A Julia tool-box for chemometrics and machine learning. https://github.com/mlesnoff/Jchemo.jl. 
 UMR SELMET, Univ Montpellier, CIRAD, INRA, Institut Agro, Montpellier, France
 
 ###  **Acknowledgments**
