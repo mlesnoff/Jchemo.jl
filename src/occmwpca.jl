@@ -187,10 +187,11 @@ dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "(ref)"
 m = nro(dnew)
 tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
-f, ax = plotsp(d, centrw; color, 
-    xlabel = "Wavelength index", ylabel = "Outlierness (SD-OD)", label = "Train_ref")
+f, ax = plotsp(d, centrw; color, xlabel = "Wavelength index",  ylabel = "Outlierness (SD-OD)", 
+    label = "Train_ref")
 lines!(ax, centrw, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
-lines!(ax, centrw, vrow(dnew, i); color = :blue, linewidth = .5, label = "A new obs. $nam")
+lines!(ax, centrw, vrow(dnew, i); color = :blue, linewidth = .5, 
+    label = string("A new obs. ", "nam"))
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
