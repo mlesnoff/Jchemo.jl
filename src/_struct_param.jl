@@ -660,6 +660,7 @@ Base.@kwdef mutable struct ParOccknn{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParOccmwpca{Q <: Float}
+    npoint::Int = 21   
     fun::Function = pcasvd
     nlv::Int = 5
     pctvar::Q = .95
@@ -667,6 +668,5 @@ Base.@kwdef mutable struct ParOccmwpca{Q <: Float}
     cri::Q = 3.
     alpha::Q = .025 
     gamma::Q = .5
-    npoint::Int = 11   # total nb. points of the sliding window (must be odd)
 end 
 

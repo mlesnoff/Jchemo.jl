@@ -13,10 +13,10 @@ Keyword arguments:
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
 * `npoint` : Total number of points in the sliding window (must be odd).
 
-The function implements an Occ by moving window Pca (Mwpca; e.g., Lennox et al 2001, Jeng 2010), as follows.
+The function implements an Occ by moving window Pca (Mwpca) (e.g., Lennox et al 2001, Jeng 2010), as follows.
 
 1) The full range of the X-columns is divided into sliding windows of `npoint` columns. The center of each 
-    window is offset of one column from the center of the previous window. 
+    window is moved of one column from the previous window. 
 
 2) On each window:
     * a Pca model with `nlv` LVs (principal components) is fitted, and the minimum nb. of LVs that explains 
@@ -30,10 +30,10 @@ The function implements an Occ by moving window Pca (Mwpca; e.g., Lennox et al 2
         outlierness d are computed.
     
 3) For each observation (training or new), the proportion of windows for which the observation is 
-    predicted as an outlier for d (i.e., SD-OD `occsdod` consensus > cutoff) is computed. A second
+    predicted as an outlier for d (i.e., the SD-OD `occsdod` consensus > cutoff) is computed. A second
     (and final) cutoff is then determined on the n proportions computed on the training. 
     
-4) Observations that have a higher proportion of windows with outlier d than this second cutoff 
+4) Observations that have a higher proportion of windows with outliernes d higher than this second cutoff 
     are classified as 'out'. Others are classified as 'in'.
 
 This version of the function is different from the approach proposed by Fernández Pierna et al (2016) 
@@ -77,7 +77,7 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
+#### Build the data used in the present example
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xref = Xtrain[s, :]    
@@ -90,78 +90,83 @@ nnew_ref = nro(Xnew_ref)
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
-
-# Only used to compute classification error rates
+# Required to compute classification error rates
 ntot = nref + nnew_ref + nnew_out
 (ntot = ntot, nref, nnew_ref, nnew_out)
 yref = fill("in", nref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
-#### Fit a preliminary Pca model on the training reference data
+#### Preliminary data description
+# Fit a preliminary Pca model on the training reference data
 nlv = 15
-model0 = pcasvd(; nlv) 
-#model0 = pcaout(; nlv) 
-fit!(model0, Xref) 
-fitm0 = model0.fitm ;
-res = summary(model0, Xref).explvarx 
+model = pcasvd(; nlv) 
+#model = pcaout(; nlv) 
+fit!(model, Xref) 
+fitm = model.fitm ;
+res = summary(model, Xref).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
-Tref = fitm0.T
-
-#### To describe the data, 
-#### project the test observations in the fitted score space
-Tnew_ref = transf(model0, Xnew_ref)
-Tnew_out = transf(model0, Xnew_out)
+Tref = fitm.T
+# Project the test observations in the fitted score space)
+Tnew_ref = transf(model, Xnew_ref)
+Tnew_out = transf(model, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Tref, Tnew_ref, Tnew_out)
-group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+group = vcat(fill("1-Train_ref", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
 lev = mlev(group)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
 i = 1
 plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
+#### End
 
 #### Fit the Occ model
+npoint = 11
 nlv = 10
 pctvar = .98
 typcut = :q ; alpha = .10
 gamma = .5
-#gamma = 0. # only OD 
-npoint = 11
-model = occmwpca(; nlv, pctvar, typcut, alpha, gamma, npoint) 
+#gamma = 0. # i.e., only OD is computed
+model = occmwpca(; npoint, nlv, pctvar, typcut, alpha, gamma) 
 fit!(model, Xref)
 fitm = model.fitm ;
 @names fitm 
-@head fitm.rangemod          # range of each sliding windows
-@head xsel = fitm.xsel       # central point of each sliding windows
-@head fitm.nlv_emb           # nb. of LVs retained for each sliding window
-tab(fitm.nlv_emb)
-@head d = fitm.d             # outlierness of the training observations for each sliding window (1 column = 1 window)
-@head cutoff = fitm.cutoff   # cutoff(computed from d) of each sliding window
-@head pxout = fitm.pxout     # proportion of windows with outlierness d > cutoff, for the training observations 
-cut_pxout = fitm.cut_pxout   # final cutoff computed from pxout 
 
+@head fitm.window            # range of each sliding windows
+@head centrw = fitm.centrw   # central point of each sliding windows
+
+@head fitm.nlv_emb           # nb. of Pca LVs selected for each sliding window
+tab(fitm.nlv_emb)
+
+@head fitm.d                 # outlierness of the training observations for each sliding window 
+                             # (1 row = 1 observation, 1 column = 1 window)
+
+@head cutoff = fitm.cutoff   # cutoff (computed from d) of each sliding window
+@head pwout = fitm.pwout     # proportion of windows with outlierness d > cutoff, for each training observations 
+cut_pwout = fitm.cut_pwout   # final cutoff computed from pwout 
+
+d = fitm.d
 tsp = .2 ; color = (:orange, tsp)
-f, ax = plotsp(d, xsel; color, title = "Train", 
-    xlabel = "Wavelength index", ylabel = "Outlierness (SD-OD)", label = "Train")
-lines!(ax, xsel, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
+f, ax = plotsp(d, centrw; color, title = "Train", 
+    xlabel = "Window center", ylabel = "Outlierness (SD-OD)", label = "Train_ref")
+lines!(ax, centrw, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 tsp = .4 ; color = (:orange, tsp)
 f = Figure(size = (450, 300)) 
-ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "pxout") 
-rainclouds!(ax, fill(1, nref), pxout; clouds = hist, jitter_width = .1, color, markersize = 10)
-hlines!(ax, cut_pxout; color = :grey, linestyle = :dash, label = "Cutoff")
+ax = Axis(f[1, 1]; xticks = ([1], ["Train_ref"]), xlabel = "", ylabel = "pwout") 
+rainclouds!(ax, fill(1, nref), pwout; clouds = hist, jitter_width = .1, color, markersize = 10)
+hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-#### Predict the new reference observations
+#### Predict the new observations 'ref'
 res = predict(model, Xnew_ref) ;
 @names res
-@head pred = res.pred           # final predictions in/out
+@head pred = res.pred           # final predictions 'in/out'
 @head dnew_ref = res.d          # predicted outlierness d for each sliding window (1 column = 1 window)
-@head pxoutnew_ref = res.pxout  # predicted proportion of windows with outlierness d > cutoff
+@head pwoutnew_ref = res.pwout  # predicted proportion of windows with outlierness d > cutoff
 tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
@@ -171,32 +176,33 @@ res = predict(model, Xnew_out) ;
 @names res
 @head pred = res.pred 
 @head dnew_out = res.d
-@head pxoutnew_out = res.pxout 
+@head pwoutnew_out = res.pwout 
 tab(pred)
 errp(pred, ynew_out)
 conf(pred, ynew_out).cnt
 
-dnew = copy(dnew_ref) ; pxoutnew = copy(pxoutnew_ref) ; title = "New_ref"
-#dnew = copy(dnew_out) ; pxoutnew = copy(pxoutnew_out) ; title = "New_out"
+d = fitm.d
+dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "(ref)"
+#dnew = copy(dnew_out) ; pwoutnew = copy(pwoutnew_out) ; nam = "(out)"
 m = nro(dnew)
-tsp = .1 ; color = (:orange, tsp)
+tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
-f, ax = plotsp(d, xsel; color, title, 
-    xlabel = "Wavelength index", ylabel = "Outlierness (SD-OD)", label = "Train")
-lines!(ax, xsel, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
-lines!(ax, xsel, vrow(dnew, i); color = :blue, linewidth = .5, label = "New obs.")
+f, ax = plotsp(d, centrw; color, 
+    xlabel = "Wavelength index", ylabel = "Outlierness (SD-OD)", label = "Train_ref")
+lines!(ax, centrw, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
+lines!(ax, centrw, vrow(dnew, i); color = :blue, linewidth = .5, label = "A new obs. $nam")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-d = vcat(pxout, pxoutnew_ref, pxoutnew_out)
+v = vcat(pwout, pwoutnew_ref, pwoutnew_out)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
 groupnum = vcat(fill(1, nref), fill(2, nnew_ref), fill(3, nnew_out))
 cols = vcat(fill(color[1], nref), fill(color[2], nnew_ref), fill(color[3], nnew_out))
 CairoMakie.activate!()
 f = Figure(size = (600, 300))
-ax = Axis(f[1, 1]; xticks = (1:3, lev), xlabel = "", ylabel = "pxout") 
-rainclouds!(ax, groupnum, d; clouds = hist, jitter_width = .1, color = cols, markersize = 10)
-hlines!(ax, cut_pxout; color = :grey, linestyle = :dash, linewidth = 1, label = "cutoff")
+ax = Axis(f[1, 1]; xticks = (1:3, lev), xlabel = "", ylabel = "pwout") 
+rainclouds!(ax, groupnum, v; clouds = hist, jitter_width = .1, color = cols, markersize = 10)
+hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, linewidth = 1, label = "cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
@@ -208,22 +214,22 @@ function occmwpca(X; kwargs...)
     n, p = size(X)                    
     Q = eltype(X)    
     par = recovkw(ParOccmwpca{Q}, kwargs).par
-    @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must an odd integer >= 1."
+    @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must be an odd integer >= 1."
     nhwindow = Int((par.npoint - 1) / 2)  # half window
-    range_sel = (nhwindow + 1):(p - nhwindow)
-    xsel = collect(range_sel)
-    nmodel = length(range_sel)
-    fitm_emb = list(nmodel)
-    nlv_emb = list(Int, nmodel)
-    fitm_occ = list(Occsdod, nmodel)
-    d = similar(X, n, nmodel)
-    rangemod = list(UnitRange{Int}, nmodel)
+    rangetot = (nhwindow + 1):(p - nhwindow)
+    centrw = collect(rangetot)
+    nmod = length(rangetot)
+    # Pre-allocation
+    window = list(UnitRange{Int}, nmod)
+    fitm_emb = list(nmod)
+    nlv_emb = list(Int, nmod)
+    fitm_occ = list(Occsdod, nmod)
+    d = similar(X, n, nmod)
+    # End
     j = 1
-    @inbounds for i in range_sel
-        #i = range_sel[1]
-        rangemod[j] = (i - nhwindow):(i + nhwindow)
-        #@show (i, rangemod[j])
-        vX = vcol(X, rangemod[j])
+    @inbounds for i in rangetot  # define each window
+        window[j] = (i - nhwindow):(i + nhwindow)
+        vX = vcol(X,window[j])
         fitm_emb[j] = par.fun(vX; par.nlv)
         vres = summary(fitm_emb[j], vX).explvarx
         nlv_emb[j] = (1:par.nlv)[vres.cumpvar .> par.pctvar][1]
@@ -232,26 +238,25 @@ function occmwpca(X; kwargs...)
         d[:, j] = fitm_occ[j].d.d 
         j = j + 1
     end
-    #j = 1 ; summary(fitm_emb[j], vcol(X, rangemod[j])).explvarx
     cutoff = colquant(d, 1 - par.alpha)
-    pxout = rowsum(Q.(d .> cutoff')) / nmodel
-    cut_pxout = quantv(pxout, 1 - par.alpha)
-    Occmwpca(fitm_emb, nlv_emb, fitm_occ, d, cutoff, pxout, cut_pxout, rangemod, xsel)
+    pwout = rowsum(Q.(d .> cutoff')) / nmod
+    cut_pwout = quantv(pwout, 1 - par.alpha)
+    Occmwpca(fitm_emb, nlv_emb, fitm_occ, d, cutoff, pwout, cut_pwout,window, centrw)
 end
 
 function predict(object::Occmwpca, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
-    nmodel = length(object.rangemod)
-    d = similar(X, m, nmodel)
-    @inbounds for j in eachindex(object.rangemod)
-        d[:, j] = predict(object.fitm_occ[j], vcol(X, object.rangemod[j])).d.d
+    nmod = length(object.window)
+    d = similar(X, m, nmod)
+    @inbounds for j in eachindex(object.window)
+        d[:, j] = predict(object.fitm_occ[j], vcol(X, object.window[j])).d.d
     end
-    pxout = rowsum(Q.(d .> object.cutoff')) / nmodel
-    pred = [if pxout[i] <= object.cut_pxout "in" else "out" end for i in eachindex(pxout)]
+    pwout = rowsum(Q.(d .> object.cutoff')) / nmod
+    pred = [if pwout[i] <= object.cut_pwout "in" else "out" end for i in eachindex(pwout)]
     pred = reshape(pred, m, 1)
-    (pred = pred, d, pxout)
+    (pred = pred, d, pwout)
 end
 
 

@@ -15,7 +15,7 @@ struct Mwplsr{Q <: Float}
     w_emb::Vector{Q}
     vi::Vector{Q}
     window::Vector{UnitRange{Int}}
-    xsel::Vector{Int}
+    centrw::Vector{Int}
 end
 
 """
@@ -57,23 +57,23 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.Prob
     n, p = size(X)
     q = nco(Y)                    
     par = recovkw(ParMwplsr, kwargs).par
-    @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must an odd integer >= 1."
+    @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must be an odd integer >= 1."
     
     nhwindow = Int((par.npoint - 1) / 2)  # half window
-    rangesel = (nhwindow + 1):(p - nhwindow)
-    xsel = collect(rangesel)
-    nmod = length(rangesel)
+    rangetot = (nhwindow + 1):(p - nhwindow)
+    centrw = collect(rangetot)
+    nmod = length(rangetot)
     
     window = list(UnitRange{Int}, nmod)
     fitm_emb = list(Plsr, nmod)
     nlv_emb = list(Int, nmod)
     scor_emb = list(Q, nmod)
         
-    j = 1   # storing index
-    @inbounds for i in rangesel
+    j = 1   
+    @inbounds for i in rangetot  # define each window
     
         # Define the window
-        #i = rangesel[1]
+        #i = rangetot[1]
         window[j] = (i - nhwindow):(i + nhwindow)
         vX = vcol(X, window[j])
         
@@ -120,7 +120,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.Prob
         vi[j] = meanv(v[v .> -1])
     end
     
-    Mwplsr(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, xsel) 
+    Mwplsr(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, centrw) 
 
 end
 

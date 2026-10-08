@@ -857,8 +857,8 @@ struct Occmwpca{Q <: Float}
     fitm_occ::Vector{Occsdod}
     d::Matrix{Q}
     cutoff::Vector{Q}
-    pxout::Vector{Q}
-    cut_pxout::Q
-    rangemod::Vector{UnitRange{Int}}
-    xsel::Vector{Int}
+    pwout::Vector{Q}
+    cut_pwout::Q
+    window::Vector{UnitRange{Int}}
+    centrw::Vector{Int}
 end
