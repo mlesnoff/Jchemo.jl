@@ -1,6 +1,6 @@
 # Jchemo
 
-### A tool-box for chemometrics and machine learning
+### A Julia tool-box for chemometrics and machine learning
 
 [![Latest](https://img.shields.io/badge/docs-dev-blue.svg)](https://mlesnoff.github.io/Jchemo.jl/dev)
 [![Build Status](https://github.com/mlesnoff/Jchemo.jl/workflows/CI/badge.svg)](https://github.com/mlesnoff/Jchemo.jl/actions)
