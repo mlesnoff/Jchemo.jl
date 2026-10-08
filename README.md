@@ -11,7 +11,7 @@
 At the start of the project, **Jchemo** was built around **partial least squares regression (PLSR) and discrimination (PLSDA) 
 methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g., https://doi.org/10.1002/cem.3209). The package has then been expanded with [many other methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) of dimension reduction, regression, discrimination, and signal (e.g., spectra) preprocessing. 
 
-Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometrics for chemistry data. But most of the provided methods are generic and can be applied to other types of data. 
+Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometry to relate chemical variables to physical signals (spectra). But most of the provided methods are generic and can be applied to other types of data. 
 
 Related projects:  [JchemoData](https://github.com/mlesnoff/JchemoData.jl) (a "container" package gathering selected data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
 
