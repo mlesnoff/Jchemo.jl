@@ -28,7 +28,7 @@ Lemma 2 (`:soft` and `:hard`):
 * In Shen & Huang 2008 (see p.2020) the tuning parameter is a cardinality constraint defined by the 
     number of zero elements in the loadings vector, referred to as degree of sparsity. Conversely, the present 
     function `spca` uses the number of non-zero elements `nvar` (equal to p - degree of sparsity).
-* See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff 
+* See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff_d 
     'lambda' used inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares 
     may occur when the loadings vector contains tied values (in such cases, results can depend on the method 
     that computes the quantiles).

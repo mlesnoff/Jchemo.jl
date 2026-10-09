@@ -157,6 +157,7 @@ function defaults(algo::Function)
         occstah Jchemo.ParOccstah ;
         occknn Jchemo.ParOccknn ; 
         occlknn Jchemo.ParOccknn ;
+        occmwpca Jchemo.ParOccmwpca ;
         occmwpca Jchemo.ParOccmwpca 
 
         ]

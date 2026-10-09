@@ -99,8 +99,8 @@ function waldtest(L::AbstractMatrix{Q}, b::Vector{Q}, varb::AbstractMatrix{Q};
         d = Distributions.FDist(dfnum, dfden)
         val = val / dfnum
     end 
-    pval = Distributions.ccdf(d, val)
+    pval_d = Distributions.ccdf(d, val)
     val = round(val; digits)
-    pval = round(pval; digits)
+    pval_d = round(pval; digits)
     (val = val, pval, dfnum, dfden)
 end 

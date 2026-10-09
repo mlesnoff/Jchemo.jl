@@ -1008,7 +1008,7 @@ the Makie's backend (e.g., CairoMakie).
     - **occlknndis**: One-class classification (OCC) using "local" k-nearest neighbors distances.
 
 - Modifications
-    - **occsd**, **occod**, **occsdod**, **occstah**: The methods to compute the cutoff have changed.
+    - **occsd**, **occod**, **occsdod**, **occstah**: The methods to compute the cutoff_d have changed.
 
 ## *Version 0.0.22*
 

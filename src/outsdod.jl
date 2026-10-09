@@ -21,11 +21,15 @@ See functions `outsd` and `outod` for details on SD and OD, and function `outod`
 function outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
     X = ensure_mat(X)
     gamma = Q(gamma)
-    sd = outsd(fitm; nlv).d
-    od = outod(fitm, X; nlv).d
+    fitm_sd = outsd(fitm; nlv)
+    fitm_od = outod(fitm, X; nlv)  
+    sd = fitm_sd.d
+    od = fitm_od.d
     sigma_sd = fscal(sd)
     sigma_od = fscal(od) 
+    # Outlierness consensus
     d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od
-    (d = d, sigma_sd, sigma_od)
+    # End
+    (d = d, fitm_sd, fitm_od, sigma_sd, sigma_od)
 end
 

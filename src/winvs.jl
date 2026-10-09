@@ -68,8 +68,8 @@ function winvs!(d::Vector{T}; h::T = 2., criw::T = 4., squared::Bool = false) wh
     end
     sigma = madv(d)
     if sigma == 0 ; sigma = eps(T) ; end
-    cutoff = medv(d) + criw * sigma
-    @. d = ifelse(d <= cutoff, exp(-d / (h * sigma)), zero(T))
+    cutoff_d = medv(d) + criw * sigma
+    @. d = ifelse(d <= cutoff_d, exp(-d / (h * sigma)), zero(T))
     # Alternative, e.g.: 
     # d .= wdis(d; typw = :bisquare)
     dmax = maximum(d) 

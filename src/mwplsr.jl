@@ -29,12 +29,11 @@ Moving window Plsr (MWPLSR).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 * `K` : 
 * `rep` : 
 * `h` : 
-* `scal` : 
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+    `prt` (pareto) and `:mad` (MAD).
 
 # References
 
@@ -51,8 +50,8 @@ function mwplsr(X, Y; kwargs...)
     mwplsr(X, Y, weights; kwargs...)
 end
 
-function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.ProbabilityWeights{Q}; 
-    kwargs...) where Q <: Jchemo.Float
+function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; 
+    kwargs...) where Q <: Float
 
     n, p = size(X)
     q = nco(Y)                    
@@ -81,8 +80,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Jchemo.Prob
         segm = segmkf(n, par.K; par.rep)
         pars = mpar(scal = [par.scal])
         model = plskern()
-        res = gridcv(model, vX, Y; segm, score = rmsep, 
-            nlv = 0:par.nlv, pars).res
+        res = gridcv(model, vX, Y; segm, score = rmsep, nlv = 0:par.nlv, pars).res
         if q == 1
             vscor = res.y1
         else

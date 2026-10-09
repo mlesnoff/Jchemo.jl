@@ -7,7 +7,7 @@ One-class classification (OCC) using the Stahel-Donoho outlierness.
 * `X` : Training X-data (n, p) on which was fitted model `fitm`.
 Keyword arguments:
 * `nlv` : Nb. random directions on which `X` is projected. 
-* `typcut` : Type of cutoff. Possible values are: `:mad`, `:q`. See Thereafter.
+* `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
@@ -18,7 +18,7 @@ OCC using outlierness `d` as defined in function `outstah`.
 
 The directions used for projections are simulated by random binary (0/1) values. 
 
-See function `occsd` for details on the cutoff types and the outputs.
+See function `occsd` for details on the types of cutoffs and the outputs.
 
 # Examples
 ```julia
@@ -43,8 +43,8 @@ yclatest = Ytest.typ
 #### Build the data used in the example
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
-Xref = Xtrain[s, :]    
-nref = nro(Xref)
+Xtrain_ref = Xtrain[s, :]    
+ntrain_ref = nro(Xtrain_ref)
 # New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
@@ -55,40 +55,41 @@ Xnew_out = Xtest[s, :]
 nnew_out = nro(Xnew_out)
 
 # Only used to compute classification error rates
-ntot = nref + nnew_ref + nnew_out
-(ntot = ntot, nref, nnew_ref, nnew_out)
-yref = fill("in", nref)
+ntot = ntrain_ref + nnew_ref + nnew_out
+(ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
+yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
 #### Fit the Occ model
 model = occstah(; nlv = 5000, cri = 2., scal = :std)
 #model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
-fit!(model, Xref)
+fit!(model, Xtrain_ref)
 @names model 
 fitm = model.fitm ;
 @names fitm 
-@head dref = fitm.d
-cutoff = fitm.cutoff
+@head dtrain_ref = fitm.d
+cutoff_d = fitm.cutoff_d
 
-d = dref.d
-s = d .> cutoff
+d = dtrain_ref.d
+s = d .> cutoff_d
 tsp = .4 ; color = (:orange, tsp)
-f, ax = plotxy(1:nref, d; color, size = (500, 300), title = "Train (reference class)",  
+f, ax = plotxy(1:ntrain_ref, d; color, size = (500, 300), title = "Train (reference class)",  
     xlabel = "Observation index", ylabel = "Outlierness")
-hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
-scatter!(ax, (1:nref)[s], d[s]; color = color[1], label = "Extreme")
+hlines!(ax, cutoff_d; color = :grey, linestyle = :dot, label = "Cutoff")
+scatter!(ax, (1:ntrain_ref)[s], d[s]; color = color[1], label = "Extreme")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
 f = Figure(size = (450, 300)) 
-ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
-rainclouds!(ax, fill(1, nref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
-hlines!(ax, cutoff; color = :grey, linestyle = :dash, label = "Cutoff")
+ax = Axis(f[1, 1]; xticks = ([0], [""]), title = "Train (reference class)", 
+    xlabel = "", ylabel = "Outlierness") 
+rainclouds!(ax, fill(1, ntrain_ref), d; clouds = hist, jitter_width = .1, color, markersize = 10)
+hlines!(ax, cutoff_d; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
-#### Predict the new reference observations
+#### Predict the new observations 'ref'
 res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred
@@ -106,25 +107,24 @@ tab(pred)
 errp(pred, ynew_out)
 conf(pred, ynew_out).cnt
 
-d = vcat(dref.d, dnew_ref.d, dnew_out.d)
-group = vcat(fill("1-Train (ref)", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+d = vcat(dtrain_ref.d, dnew_ref.d, dnew_out.d)
+group = vcat(fill("1-Train_ref", ntrain_ref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
 lev = mlev(group)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
 f, ax = plotxy(1:length(d), d, group; color, size = (500, 300), leg = false, 
     xlabel = "Observation index", ylabel = "Outlierness")
-hlines!(ax, cutoff; color = :grey, linestyle = :dot, label = "Cutoff")
+hlines!(ax, cutoff_d; color = :grey, linestyle = :dot, label = "Cutoff")
 f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f
 
-d = vcat(dref.d, dnew_ref.d, dnew_out.d)
+d = vcat(dtrain_ref.d, dnew_ref.d, dnew_out.d)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
-groupnum = vcat(fill(1, nref), fill(2, nnew_ref), fill(3, nnew_out))
-cols = vcat(fill(color[1], nref), fill(color[2], nnew_ref), fill(color[3], nnew_out))
-CairoMakie.activate!()
+groupnum = vcat(fill(1, ntrain_ref), fill(2, nnew_ref), fill(3, nnew_out))
+cols = vcat(fill(color[1], ntrain_ref), fill(color[2], nnew_ref), fill(color[3], nnew_out))
 f = Figure(size = (600, 300))
 ax = Axis(f[1, 1]; xticks = (1:3, lev), xlabel = "", ylabel = "Outlierness") 
 rainclouds!(ax, groupnum, d; clouds = hist, jitter_width = .1, color = cols, markersize = 10)
-hlines!(ax, cutoff; color = :grey, linestyle = :dash, linewidth = 1, label = "cutoff")
+hlines!(ax, cutoff_d; color = :grey, linestyle = :dash, linewidth = 1, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
@@ -142,17 +142,17 @@ function occstah(X; kwargs...)
     res = outstah(X, V; scal = par.scal)
     d = res.d
     if par.typcut == :mad
-        cutoff = median(d) + par.cri * madv(d)
+        cutoff_d = median(d) + par.cri * madv(d)
     elseif par.typcut == :q
-        cutoff = quantile(d, 1 - par.alpha)
+        cutoff_d = quantile(d, 1 - par.alpha)
     end
     e_cdf = StatsBase.ecdf(d)
     d = DataFrame(
         d = d, 
-        dstand = d / cutoff, 
-        pval = pval(e_cdf, d)
+        dstand_cut = d / cutoff_d, 
+        pval_d = pval(e_cdf, d)
         )
-    Occstah(d, res, V, e_cdf, cutoff, par)
+    Occstah(d, res, V, e_cdf, cutoff_d, par)
 end
 
 """
@@ -175,10 +175,10 @@ function predict(object::Occstah, X)
     end
     d = DataFrame(
         d = d, 
-        dstand = d / object.cutoff, 
-        pval = pval(object.e_cdf, d)
+        dstand_cut = d / object.cutoff_d, 
+        pval_d = pval(object.e_cdf, d)
         )
-    pred = [if d.dstand[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
+    pred = [if d.dstand_cut[i] <= 1 "in" else "out" end for i in eachindex(d.d)]
     pred = reshape(pred, m, 1)
     (pred = pred, d)
 end

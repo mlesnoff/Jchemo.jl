@@ -4,6 +4,7 @@
 One-class classification (OCC) by moving window Pca (MWPCA).
 * `X` : Training (reference class) X-data (n, p).
 Keyword arguments:
+* `npoint` : Total number of points in the sliding window (must be odd).
 * `fun` : Function used to fit the Pca models (by default: `pcasvd`).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pca model.
 * `pctvar` : Minimum proportion (within ]0, 1]) of explained variance to consider in each Pca model.
@@ -11,7 +12,6 @@ Keyword arguments:
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
-* `npoint` : Total number of points in the sliding window (must be odd).
 
 The function implements an Occ by moving window Pca (Mwpca) (e.g., Lennox et al 2001, Jeng 2010), as follows.
 
@@ -23,17 +23,17 @@ The function implements an Occ by moving window Pca (Mwpca) (e.g., Lennox et al 
         at least a proportion `pctvar` of the total variance (of the window) is retained.
 
     * Function `occsdod` (SD-OD outlierness consensus) is applied on the fitted Pca model (with the retained 
-        nb. LVs) to compute the outlierness (d) of the training observations for the window, and a cutoff is 
+        nb. LVs) to compute the outlierness (d) of the training observations for the window, and a cutoff_d is 
         determined (see function `occsdod`).
     
     * New observations are predicted (for the considered window) from this fitted `occsdod` model and their 
         outlierness d are computed.
     
 3) For each observation (training or new), the proportion of windows for which the observation is 
-    predicted as an outlier for d (i.e., the SD-OD `occsdod` consensus > cutoff) is computed. A second
-    (and final) cutoff is then determined on the n proportions computed on the training. 
+    predicted as an outlier for d (i.e., the SD-OD `occsdod` consensus > cutoff_d) is computed. A second
+    (and final) cutoff_d is then determined on the n proportions computed on the training. 
     
-4) Observations that have a higher proportion of windows with outliernes d higher than this second cutoff 
+4) Observations that have a higher proportion of windows with outliernes d higher than this second cutoff_d 
     are classified as 'out'. Others are classified as 'in'.
 
 This version of the function is different from the approach proposed by Fernández Pierna et al (2016) 
@@ -80,8 +80,8 @@ yclatest = Ytest.typ
 #### Build the data used in the present example
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
-Xref = Xtrain[s, :]    
-nref = nro(Xref)
+Xtrain_ref = Xtrain[s, :]    
+ntrain_ref = nro(Xtrain_ref)
 # New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
 Xnew_ref = Xtest[s, :] 
@@ -91,9 +91,9 @@ s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
 # Required to compute classification error rates
-ntot = nref + nnew_ref + nnew_out
-(ntot = ntot, nref, nnew_ref, nnew_out)
-yref = fill("in", nref)
+ntot = ntrain_ref + nnew_ref + nnew_out
+(ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
+yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("in", nnew_out)
 
@@ -102,17 +102,17 @@ ynew_out = fill("in", nnew_out)
 nlv = 15
 model = pcasvd(; nlv) 
 #model = pcaout(; nlv) 
-fit!(model, Xref) 
+fit!(model, Xtrain_ref) 
 fitm = model.fitm ;
-res = summary(model, Xref).explvarx 
+res = summary(model, Xtrain_ref).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
 Tref = fitm.T
-# Project the test observations in the fitted score space)
+# Project the test observations in the fitted score space
 Tnew_ref = transf(model, Xnew_ref)
 Tnew_out = transf(model, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
 T = vcat(Tref, Tnew_ref, Tnew_out)
-group = vcat(fill("1-Train_ref", nref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+group = vcat(fill("1-Train_ref", ntrain_ref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
 lev = mlev(group)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
 i = 1
@@ -128,7 +128,7 @@ typcut = :q ; alpha = .10
 gamma = .5
 #gamma = 0. # i.e., only OD is computed
 model = occmwpca(; npoint, nlv, pctvar, typcut, alpha, gamma) 
-fit!(model, Xref)
+fit!(model, Xtrain_ref)
 fitm = model.fitm ;
 @names fitm 
 
@@ -141,22 +141,22 @@ tab(fitm.nlv_emb)
 @head fitm.d                 # outlierness of the training observations for each sliding window 
                              # (1 row = 1 observation, 1 column = 1 window)
 
-@head cutoff = fitm.cutoff   # cutoff (computed from d) of each sliding window
-@head pwout = fitm.pwout     # proportion of windows with outlierness d > cutoff, for each training observations 
-cut_pwout = fitm.cut_pwout   # final cutoff computed from pwout 
+@head cutoff_d = fitm.cutoff_d   # cutoff_d (computed from d) of each sliding window
+@head pwout = fitm.pwout     # proportion of windows with outlierness d > cutoff_d, for each training observations 
+cut_pwout = fitm.cut_pwout   # final cutoff_d computed from pwout 
 
 d = fitm.d
 tsp = .2 ; color = (:orange, tsp)
 f, ax = plotsp(d, centrw; color, title = "Train", 
     xlabel = "Window center", ylabel = "Outlierness (SD-OD)", label = "Train_ref")
-lines!(ax, centrw, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
+lines!(ax, centrw, cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 tsp = .4 ; color = (:orange, tsp)
 f = Figure(size = (450, 300)) 
 ax = Axis(f[1, 1]; xticks = ([1], ["Train_ref"]), xlabel = "", ylabel = "pwout") 
-rainclouds!(ax, fill(1, nref), pwout; clouds = hist, jitter_width = .1, color, markersize = 10)
+rainclouds!(ax, fill(1, ntrain_ref), pwout; clouds = hist, jitter_width = .1, color, markersize = 10)
 hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
@@ -166,7 +166,7 @@ res = predict(model, Xnew_ref) ;
 @names res
 @head pred = res.pred           # final predictions 'in/out'
 @head dnew_ref = res.d          # predicted outlierness d for each sliding window (1 column = 1 window)
-@head pwoutnew_ref = res.pwout  # predicted proportion of windows with outlierness d > cutoff
+@head pwoutnew_ref = res.pwout  # predicted proportion of windows with outlierness d > cutoff_d
 tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
@@ -189,7 +189,7 @@ tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
 f, ax = plotsp(d, centrw; color, xlabel = "Wavelength index",  ylabel = "Outlierness (SD-OD)", 
     label = "Train_ref")
-lines!(ax, centrw, cutoff; color = :grey, linewidth = 2, label = "Cutoff")
+lines!(ax, centrw, cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 lines!(ax, centrw, vrow(dnew, i); color = :blue, linewidth = .5, 
     label = string("A new obs. ", "nam"))
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
@@ -197,13 +197,12 @@ f
 
 v = vcat(pwout, pwoutnew_ref, pwoutnew_out)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
-groupnum = vcat(fill(1, nref), fill(2, nnew_ref), fill(3, nnew_out))
-cols = vcat(fill(color[1], nref), fill(color[2], nnew_ref), fill(color[3], nnew_out))
-CairoMakie.activate!()
+groupnum = vcat(fill(1, ntrain_ref), fill(2, nnew_ref), fill(3, nnew_out))
+cols = vcat(fill(color[1], ntrain_ref), fill(color[2], nnew_ref), fill(color[3], nnew_out))
 f = Figure(size = (600, 300))
 ax = Axis(f[1, 1]; xticks = (1:3, lev), xlabel = "", ylabel = "pwout") 
 rainclouds!(ax, groupnum, v; clouds = hist, jitter_width = .1, color = cols, markersize = 10)
-hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, linewidth = 1, label = "cutoff")
+hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, linewidth = 1, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
@@ -230,19 +229,21 @@ function occmwpca(X; kwargs...)
     j = 1
     @inbounds for i in rangetot  # define each window
         window[j] = (i - nhwindow):(i + nhwindow)
-        vX = vcol(X,window[j])
+        vX = vcol(X, window[j])
+        # Fit embedding model
         fitm_emb[j] = par.fun(vX; par.nlv)
         vres = summary(fitm_emb[j], vX).explvarx
         nlv_emb[j] = (1:par.nlv)[vres.cumpvar .> par.pctvar][1]
+        # End
         fitm_occ[j] = occsdod(fitm_emb[j], vX; nlv = nlv_emb[j], typcut = par.typcut, 
             cri = par.cri, alpha = par.alpha, gamma = par.gamma)
         d[:, j] = fitm_occ[j].d.d 
         j = j + 1
     end
-    cutoff = colquant(d, 1 - par.alpha)
-    pwout = rowsum(Q.(d .> cutoff')) / nmod
+    cutoff_d = colquant(d, 1 - par.alpha)
+    pwout = rowsum(Q.(d .> cutoff_d')) / nmod
     cut_pwout = quantv(pwout, 1 - par.alpha)
-    Occmwpca(fitm_emb, nlv_emb, fitm_occ, d, cutoff, pwout, cut_pwout,window, centrw)
+    Occmwpca(fitm_emb, nlv_emb, fitm_occ, d, cutoff_d, pwout, cut_pwout,window, centrw)
 end
 
 function predict(object::Occmwpca, X)
@@ -254,7 +255,7 @@ function predict(object::Occmwpca, X)
     @inbounds for j in eachindex(object.window)
         d[:, j] = predict(object.fitm_occ[j], vcol(X, object.window[j])).d.d
     end
-    pwout = rowsum(Q.(d .> object.cutoff')) / nmod
+    pwout = rowsum(Q.(d .> object.cutoff_d')) / nmod
     pred = [if pwout[i] <= object.cut_pwout "in" else "out" end for i in eachindex(pwout)]
     pred = reshape(pred, m, 1)
     (pred = pred, d, pwout)

@@ -48,7 +48,7 @@ metric = :eucl ; k = 15 ; algo = sum
 #algo = maximum
 res = outknn(X; metric, k, algo) ;
 @names res
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, typ; xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 
@@ -59,7 +59,7 @@ fit!(model, X)
 T = model.fitm.T
 metric = :eucl ; k = 15
 res = outknn(T; metric, k, scal = :std)
-f, ax = plotxy(1:n, res.d, typ, xlabel = "Obs. index", ylabel = "Outlierness")
+f, ax = plotxy(1:n, res.d, typ; xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```

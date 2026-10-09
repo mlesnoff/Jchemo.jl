@@ -788,7 +788,7 @@ struct Occstah{Q <: Float}
     res_stah::NamedTuple
     V::Matrix{Q}
     e_cdf::ECDF
-    cutoff::Q
+    cutoff_d::Q
     par::ParOccstah
 end
 
@@ -797,7 +797,7 @@ struct Occsd{Q <: Float}
     fitm
     tscales::Vector{Q}
     e_cdf::ECDF
-    cutoff::Q   
+    cutoff_d::Q   
     par::ParOcc
 end
 
@@ -805,18 +805,18 @@ struct Occod{Q <: Float}
     d::DataFrame
     fitm
     e_cdf::ECDF
-    cutoff::Q   
+    cutoff_d::Q   
     par::ParOcc
 end
 
 struct Occsdod{Q <: Float}
     d::DataFrame
-    fitm
     e_cdf::ECDF
-    cutoff::Q
-    sd::NamedTuple   
-    od::NamedTuple   
-    sdod::NamedTuple
+    cutoff_d::Q
+    fitm
+    fitm_sdod::NamedTuple
+    fitm_sd::NamedTuple   
+    fitm_od::NamedTuple   
     coefs::Vector{Q}
     par::ParOccsdod
 end
@@ -826,7 +826,7 @@ struct Occdds{Q <: Float}
     fitm
     e_cdf::ECDF
     nu::Int
-    cutoff::Q
+    cutoff_d::Q
     sd2::NamedTuple   
     od2::NamedTuple   
     coefs::Vector{Q}
@@ -837,7 +837,7 @@ struct Occknn{Q <: Float}
     d::DataFrame
     X::Matrix{Q}
     e_cdf::ECDF
-    cutoff::Q
+    cutoff_d::Q
     xscales::Vector{Q}
     par::ParOccknn
 end
@@ -846,7 +846,7 @@ struct Occlknn{Q <: Float}
     d::DataFrame
     X::Matrix{Q}
     e_cdf::ECDF
-    cutoff::Q
+    cutoff_d::Q
     xscales::Vector{Q}
     par::ParOccknn
 end
@@ -856,7 +856,7 @@ struct Occmwpca{Q <: Float}
     nlv_emb::Vector{Int}
     fitm_occ::Vector{Occsdod}
     d::Matrix{Q}
-    cutoff::Vector{Q}
+    cutoff_d::Vector{Q}
     pwout::Vector{Q}
     cut_pwout::Q
     window::Vector{UnitRange{Int}}

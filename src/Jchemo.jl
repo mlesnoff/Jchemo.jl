@@ -220,6 +220,8 @@ include("svmda.jl")
 include("treeda.jl")
 include("rfda.jl")
 
+######---- Occ
+
 include("outstah.jl")
 include("outeucl.jl")
 include("pcout.jl")
@@ -237,6 +239,7 @@ include("occstah.jl")
 include("occknn.jl")
 include("occlknn.jl")
 include("occmwpca.jl")
+include("occmwpls.jl")
 
 ######---- Variable importance
 
@@ -510,6 +513,7 @@ export
     occstah,
     occknn, occlknn,
     occmwpca,
+    occmwpls,
     
     ######---- Validation
     residreg, residcla, 
