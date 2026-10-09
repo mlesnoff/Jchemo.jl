@@ -84,7 +84,7 @@ ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
-ynew_out = fill("in", nnew_out)
+ynew_out = fill("out", nnew_out)
 
 #### Preliminary data description
 # Fit a preliminary Pca model on the training reference data
@@ -109,7 +109,13 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 #### End
 
-#### Fit the Occ model based on the fitted score space 
+#### Define the embedding model to consider
+nlv = 10 
+model = pcasvd(; nlv)
+fit!(model, Xtrain_ref)
+fitm0 = model.fitm ;
+
+#### Fit the Occ model based on the embedding 
 model = occsd(cri = 2.5)
 #model = occsd(typcut = :std, cri = 2.5)
 #model = occsd(typcut = :q, alpha = .01)

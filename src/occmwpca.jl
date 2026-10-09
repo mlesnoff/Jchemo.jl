@@ -95,7 +95,7 @@ ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
-ynew_out = fill("in", nnew_out)
+ynew_out = fill("out", nnew_out)
 
 #### Preliminary data description
 # Fit a preliminary Pca model on the training reference data

@@ -823,12 +823,12 @@ end
 
 struct Occdds{Q <: Float}
     d::DataFrame
-    fitm
     e_cdf::ECDF
     nu::Int
     cutoff_d::Q
-    sd2::NamedTuple   
-    od2::NamedTuple   
+    fitm
+    res_sd::NamedTuple   
+    res_od::NamedTuple   
     coefs::Vector{Q}
     par::ParOccdds
 end

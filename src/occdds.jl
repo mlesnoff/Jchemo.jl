@@ -39,25 +39,26 @@ or, equivalently, by:
 
 Outlier `d` is assumed to approximately follow (for the training set) a Chi-square distribution with 
 nu = nu1 + nu2 dofs (assuming independance between the SD^2 and OD^2 distributions). This distribution 
-is used to compute a parametric cutoff_d for `d` for a given risk-I level `alpha`. 
-Striclty speeking, this cutoff should only be applied to the training observations but, in practice, it 
+is used to compute a parametric cutoff for `d` (`cutoff_d`) for a given risk-I level `alpha`. 
+Strictly speeking, this cutoff should only be applied to the training observations but, in practice, it 
 is also used to classify the new observations.
 
-Parameters {mu1, mu2} and {nu1, nu2} are estimated by the moments method on the training set. 
+Parameters {mu1, mu2} and {nu1, nu2} are estimated by the *moments method* on the training set. 
 
 **Details:**
 
-Let us note Z to represent either SD^2 or OD^2. The method assumes that Z ~ g * Chi-square(nu) or, equivalently, 
-(1 / g) * Z ~ Chi-square(nu). If mu and sigma^2 represent the expectation and variance of Z (i.e., mu = E[Z] 
-and sigma^2 = Var[Z]), it follows from the properties of the Chi-square distribution that:
+Let us note the random variable Z to represent either SD^2 or OD^2. The method assumes that 
+Z ~ g * Chi-square(nu) or, equivalently, (1 / g) * Z ~ Chi-square(nu). If mu and sigma^2 represent 
+the expectation and variance of Z (i.e., mu = E[Z] and sigma^2 = Var[Z]), it follows from 
+the properties of the Chi-square distribution that:
 * g = mu / nu = sigma^2 / (2 * mu)
 * nu = 2 * (mu / sigma)^2 
 
 On a paper focusing on OD^2, Nomikos & MacGregor (1995) proposed to estimate parameters {mu, sigma^2} 
 (and therefore {g, nu}) by the moments method. This consists to estimate {mu, sigma^2} by the sample mean 
-(or other center statistic) and variance (or other scale statistic), respectively, of the observed (training) 
-distribution of Z. In DD-Simca, the same approach is applied to both SD^2 and OD^2. This allows to 
-easily compute an assumed Chi-square distribution for a consensus between SD^2 and OD^2 (outlierness `d`).
+(or other center statistic) and variance (or other scale statistic), respectively, of the observed 
+(training) distribution of Z. In DD-Simca, the same approach is applied to both SD^2 and OD^2. This allows
+to easily compute an assumed Chi-square distribution for a consensus between SD^2 and OD^2 (outlierness `d`).
 
 # References
 Kucheryavskiy, S., Rodionova, O., Pomerantsev, A., 2024. A comprehensive tutorial on Data-Driven SIMCA: Theory 
@@ -115,7 +116,7 @@ ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
-ynew_out = fill("in", nnew_out)
+ynew_out = fill("out", nnew_out)
 
 #### Preliminary data description
 # Fit a preliminary Pca model on the training reference data
@@ -140,7 +141,13 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 #### End
 
-#### Fit the Occ model based on the fitted score space 
+#### Define the embedding model to consider
+nlv = 10 
+model = pcasvd(; nlv)
+fit!(model, Xtrain_ref)
+fitm0 = model.fitm ;
+
+#### Fit the Occ model based on the embedding 
 model = occdds()
 #model = occdds(nlv = 5)
 fit!(model, fitm0, Xtrain_ref)
@@ -169,15 +176,15 @@ Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 d = dtrain_ref.d
-sd2mu = dtrain_ref.sd2mu
-od2mu = dtrain_ref.od2mu
+sd2stand = dtrain_ref.sd2stand_mu
+od2stand = dtrain_ref.od2stand_mu
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 s = d .> cutoff_d
 tsp = .4 ; color = (:orange, tsp)
-f, ax = plotxy(sd2mu, od2mu; color, title = "Train (reference class)", xlabel = "SD2 / mu", 
+f, ax = plotxy(sd2stand, od2stand; color, title = "Train (reference class)", xlabel = "SD2 / mu", 
     ylabel = "OD2 / mu")
-scatter!(ax, sd2mu[s], od2mu[s]; color = color[1], label = "Extreme")
+scatter!(ax, sd2stand[s], od2stand[s]; color = color[1], label = "Extreme")
 ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash, label = "Cutoff")
 f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
@@ -220,15 +227,15 @@ Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 d = dtrain_ref.d
-sd2mu = dtrain_ref.sd2mu
-od2mu = dtrain_ref.od2mu
+sd2stand_mu = dtrain_ref.sd2stand_mu
+od2stand_mu = dtrain_ref.od2stand_mu
 a = fitm.coefs[1]
 b = fitm.coefs[2]
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
-f, ax = plotxy(sd2mu, od2mu; size = (600, 300), color = color[1], xlabel = "SD2 / mu", 
+f, ax = plotxy(sd2stand_mu, od2stand_mu; size = (600, 300), color = color[1], xlabel = "SD2 / mu", 
     ylabel = "OD2 / mu", label = "1-Train_ref")
-scatter!(ax, dnew_ref.sd2mu, dnew_ref.od2mu; color = color[2], label = "2-New_ref")
-scatter!(ax, dnew_out.sd2mu, dnew_out.od2mu; color = color[3], label = "3-New_out")
+scatter!(ax, dnew_ref.sd2stand_mu, dnew_ref.od2stand_mu; color = color[2], label = "2-New_ref")
+scatter!(ax, dnew_out.sd2stand_mu, dnew_out.od2stand_mu; color = color[3], label = "3-New_out")
 ablines!(ax, a, b; color = :grey, linewidth = .7, linestyle = :dash, label = "Cutoff")
 f[1, 2] = Legend(f, ax, "Type of obs."; framevisible = false)
 f
@@ -246,47 +253,57 @@ function occdds(fitm, X; kwargs...)
     else
         par.nlv = min(par.nlv, nco(fitm.T))
     end
-    sd = outsd(fitm; par.nlv)
-    od = outod(fitm, X; par.nlv)
+
+    fitm_sdod = outsdod(fitm, X; nlv = par.nlv, fscal = par.fscal)
+    fitm_sd = fitm_sdod.fitm_sd
+    fitm_od = fitm_sdod.fitm_od
+
     # Estimates for SD^2
-    d = sd.d.^2 
+    d = fitm_sd.d.^2 
     mu = par.fcentr(d)
     sigma = par.fscal(d)
     g = sigma^2 / (2 * mu)
     nu = 2 * (mu / sigma)^2
     nu = max(1, round(Int, nu))
     cutoff_d = mu / nu * quantile(Chisq(nu), 1 - par.alpha)
-    sd2 = (d = d, mu, sigma, g, nu, cutoff_d, tscales = sd.tscales)
+    res_sd = (d = d, mu, sigma, g, nu, cutoff_d, tscales = fitm_sd.tscales)
+
     # Estimates for OD^2
-    d = od.d.^2 
+    d = fitm_od.d.^2 
     mu = par.fcentr(d)
     sigma = par.fscal(d)
     g = sigma^2 / (2 * mu)
     nu = 2 * (mu / sigma)^2
     nu = max(1, round(Int, nu))
     cutoff_d = mu / nu * quantile(Chisq(nu), 1 - par.alpha)
-    od2 = (d = d, mu, sigma, g, nu, cutoff_d)
-    # Consensus
-    nu = sd2.nu + od2.nu
+    res_od = (d = d, mu, sigma, g, nu, cutoff_d)
+
+    # Outlierness consensus
+    nu = res_sd.nu + res_od.nu   
+    d = (res_sd.nu / res_sd.mu) * res_sd.d + (res_od.nu / res_od.mu) * res_od.d 
+    # End
+
     cutoff_d = quantile(Chisq(nu), 1 - par.alpha)
-    d = sd2.nu / sd2.mu * sd2.d + od2.nu / od2.mu * od2.d 
     e_cdf = StatsBase.ecdf(d)
+
     d = DataFrame(
         d = d, 
         dstand_cut = d / cutoff_d, 
         pval_d = pval(e_cdf, d), 
-        sd2 = sd2.d,
-        od2 = od2.d,
-        sd2mu = sd2.d / sd2.mu,
-        od2mu = od2.d / od2.mu,
-        gh = sd2.d / par.nlv
+        sd2 = res_sd.d,
+        od2 = res_od.d,
+        sd2stand_mu = res_sd.d / res_sd.mu,
+        od2stand_mu = res_od.d / res_od.mu,
+        gh = res_sd.d / par.nlv
         )
-    # Coefs for graphic SD2/mu - OD2/mu
-    a = 1 / od2.nu * cutoff_d 
-    b = -sd2.nu / od2.nu
+    
+    # Coefs for graphic {SD2/mu, OD2/mu}
+    a = 1 / res_od.nu * cutoff_d 
+    b = -res_sd.nu / res_od.nu
     coefs = [a; b]
-    # 
-    Occdds(d, fitm, e_cdf, nu, cutoff_d, sd2, od2, coefs, par) 
+    # End 
+    
+    Occdds(d, e_cdf, nu, cutoff_d, fitm, res_sd, res_od, coefs, par) 
 end
 
 """
@@ -297,27 +314,29 @@ Compute predictions from a fitted model.
 """ 
 function predict(object::Occdds, X)
     nlv = object.par.nlv
-    tscales = object.sd2.tscales    
+    tscales = object.res_sd.tscales    
+
     # SD^2
     T = transf(object.fitm, X, nlv)
     Q = eltype(T)
     m = nro(T)
     fscale!(T, tscales)
     sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
+    
     # OD^2
     E = xresid(object.fitm, X, nlv)
     od2 = rownorm2(E)
-    # Consensus
-    d = object.sd2.nu / object.sd2.mu * sd2 + object.od2.nu / object.od2.mu * od2
-    # End
+    # Outlierness consensus
+    d = (object.res_sd.nu / object.res_sd.mu) * sd2 + (object.res_od.nu / object.res_od.mu) * od2
+    
     d = DataFrame(
         d = d, 
         dstand_cut = d / object.cutoff_d, 
         pval_d = pval(object.e_cdf, d),
         sd2 = sd2,
         od2 = od2, 
-        sd2mu = sd2 / object.sd2.mu,
-        od2mu = od2 / object.od2.mu,
+        sd2stand_mu = sd2 / object.res_sd.mu,
+        od2stand_mu = od2 / object.res_od.mu,
         gh = sd2 / nlv
         )
     pred = [if d.dstand_cut[i] <= 1 "in" else "out" end for i in eachindex(d.d)]

@@ -67,7 +67,7 @@ ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
-ynew_out = fill("in", nnew_out)
+ynew_out = fill("out", nnew_out)
 
 #### Fit the Occ model
 nsamp = 150 ; k = 5 ; cri = 2.5

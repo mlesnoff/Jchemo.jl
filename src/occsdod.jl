@@ -56,7 +56,7 @@ ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
-ynew_out = fill("in", nnew_out)
+ynew_out = fill("out", nnew_out)
 
 #### Preliminary data description
 # Fit a preliminary Pca model on the training reference data
@@ -81,7 +81,13 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
     xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
 #### End
 
-#### Fit the Occ model based on the fitted score space 
+#### Define the embedding model to consider
+nlv = 10 
+model = pcasvd(; nlv)
+fit!(model, Xtrain_ref)
+fitm0 = model.fitm ;
+
+#### Fit the Occ model based on the embedding 
 model = occsdod(cri = 2.5)
 #model = occsdod(typcut = :q, alpha = .01)
 #model = occsdod(typcut = :std, cri = 2.5, fscal = stdv)
@@ -182,7 +188,6 @@ function occsdod(fitm, X; kwargs...)
     X = ensure_mat(X) 
     Q = eltype(X)
     par = recovkw(ParOccsdod{Q}, kwargs).par 
-    gamma = par.gamma
     @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     if isnothing(par.nlv)
@@ -190,7 +195,7 @@ function occsdod(fitm, X; kwargs...)
     else
         par.nlv = min(par.nlv, nco(fitm.T))
     end
-    fitm_sdod = outsdod(fitm, X; par.nlv, gamma, fscal = par.fscal)
+    fitm_sdod = outsdod(fitm, X; nlv = par.nlv, gamma = par.gamma, fscal = par.fscal)
     fitm_sd = fitm_sdod.fitm_sd
     fitm_od = fitm_sdod.fitm_od
     ##
@@ -214,10 +219,10 @@ function occsdod(fitm, X; kwargs...)
         gh = fitm_sd.d.^2 / par.nlv
         )
     # Coefs for graphic SD/sigma - OD/sigma
-    #a = cutoff_d * fitm_sdod.sigma_od / (1 - gamma)
-    #b = -gamma / (1 - gamma) * fitm_sdod.sigma_od / fitm_sdod.sigma_sd
-    a = cutoff_d / (1 - gamma)
-    b = -gamma / (1 - gamma)
+    #a = cutoff_d * fitm_sdod.sigma_od / (1 - par.gamma)
+    #b = -par.gamma / (1 - par.gamma) * fitm_sdod.sigma_od / fitm_sdod.sigma_sd
+    a = cutoff_d / (1 - par.gamma)
+    b = -par.gamma / (1 - par.gamma)
     coefs = [a; b]
     ##
     Occsdod(d, e_cdf, cutoff_d, 

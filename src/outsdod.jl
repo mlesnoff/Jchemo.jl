@@ -25,9 +25,9 @@ function outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function
     fitm_od = outod(fitm, X; nlv)  
     sd = fitm_sd.d
     od = fitm_od.d
+    # Outlierness consensus
     sigma_sd = fscal(sd)
     sigma_od = fscal(od) 
-    # Outlierness consensus
     d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od
     # End
     (d = d, fitm_sd, fitm_od, sigma_sd, sigma_od)
