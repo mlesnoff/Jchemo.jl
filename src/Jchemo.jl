@@ -231,11 +231,11 @@ include("outsdod.jl")
 include("outknn.jl")
 include("outlknn.jl")
 
+include("occstah.jl")
 include("occsd.jl")
 include("occod.jl") 
 include("occsdod.jl")
 include("occdds.jl")
-include("occstah.jl")
 include("occknn.jl")
 include("occlknn.jl")
 include("occmwpca.jl")
@@ -504,13 +504,14 @@ export
     lwplslda, lwplsqda,
     knnda,
     # One-class
-    outstah, outeucl, 
+    outstah, 
+    outeucl, 
     pcout,
     outsd, outod, outsdod,
     outknn, outlknn,
+    occstah,
     occsd, occod, occsdod, 
     occdds,
-    occstah,
     occknn, occlknn,
     occmwpca,
     occmwpls,

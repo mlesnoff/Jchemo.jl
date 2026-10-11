@@ -1,6 +1,6 @@
 # News
 
-## *Version 0.10.5 dev*
+## *Version 0.11.0 dev*
 
 - News
     - Function **durbinw**: Return the Durbin-Watson statistic. 
@@ -9,10 +9,14 @@
     - Function **vi_baggr**: Out-of-bag permutation variable importance.
     - Function **viperm!**: new argument 'perm' and method. 
 
-- Modifications
+- Breakings
+    - Internals of Occ functions have changed (the methods are the same but many changes
+        in output names) 
     - Variable importance functions: output 'imp' was renamed to 'vi'.
     - Functions *umap* and *viperm!*: argument 'psamp' renamed to 'rowsamp'.
     - Function *isel!* was removed.
+
+- Modifications
     - Code cleaning.
 
 ## *Version 0.10.4*
