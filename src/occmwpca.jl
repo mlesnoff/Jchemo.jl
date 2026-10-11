@@ -243,7 +243,7 @@ function occmwpca(X; kwargs...)
     cutoff_d = colquant(d, 1 - par.alpha)
     pwout = rowsum(Q.(d .> cutoff_d')) / nmod
     cut_pwout = quantv(pwout, 1 - par.alpha)
-    Occmwpca(fitm_emb, nlv_emb, fitm_occ, d, cutoff_d, pwout, cut_pwout,window, centrw)
+    Occmwpca(fitm_emb, d, cutoff_d, pwout, cut_pwout, nlv_emb, fitm_occ, window, centrw)
 end
 
 function predict(object::Occmwpca, X)

@@ -97,7 +97,7 @@ function occmwpls(X, Y; kwargs...)
     cutoff_d = colquant(d, 1 - par.alpha)
     pwout = rowsum(Q.(d .> cutoff_d')) / nmod
     cut_pwout = quantv(pwout, 1 - par.alpha)
-    Occmwpls(fitm_emb, nlv_emb, fitm_occ, d, cutoff_d, pwout, cut_pwout,window, centrw)
+    Occmwpls(d, cutoff_d, pwout, cut_pwout, fitm_emb, nlv_emb, fitm_occ, window, centrw)
 end
 
 function predict(object::Occmwpls, X)

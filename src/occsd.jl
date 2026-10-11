@@ -1,12 +1,12 @@
 """
     occsd(; kwargs...)
-    occsd(fitm; kwargs...)
+    occsd(fitm_emb; kwargs...)
 One-class classification (OCC) using (PCA/PLS) score distance (SD).
-* `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+* `fitm_emb` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `fitm`.
+    defined in model `fitm_emb`.
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -113,14 +113,14 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 nlv = 10 
 model = pcasvd(; nlv)
 fit!(model, Xtrain_ref)
-fitm0 = model.fitm ;
+fitm_emb = model.fitm ;
 
 #### Fit the Occ model based on the embedding 
 model = occsd(cri = 2.5)
 #model = occsd(typcut = :std, cri = 2.5)
 #model = occsd(typcut = :q, alpha = .01)
 #model = occsd(nlv = 5, cri = 2.5)
-fit!(model, fitm0) 
+fit!(model, fitm_emb) 
 @names model 
 fitm = model.fitm ;
 @names fitm 
@@ -185,17 +185,17 @@ f
 """
 occsd(; kwargs...) = JchemoModel(occsd, nothing, kwargs)
 
-function occsd(fitm; kwargs...)
-    Q = eltype(fitm.T)
+function occsd(fitm_emb; kwargs...)
+    Q = eltype(fitm_emb.T)
     par = recovkw(ParOcc{Q}, kwargs).par
     @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     if isnothing(par.nlv)
-        par.nlv = nco(fitm.T)
+        par.nlv = nco(fitm_emb.T)
     else
-        par.nlv = min(par.nlv, nco(fitm.T))
+        par.nlv = min(par.nlv, nco(fitm_emb.T))
     end
-    res = outsd(fitm; par.nlv)
+    res = outsd(fitm_emb; par.nlv)
     d = res.d
     if par.typcut == :std
         cutoff_d = meanv(d) + par.cri * stdv(d)    
@@ -211,7 +211,7 @@ function occsd(fitm; kwargs...)
         pval_d = pval(e_cdf, d), 
         gh = d.^2 / par.nlv
         )
-    Occsd(d, fitm, res.tscales, e_cdf, cutoff_d, par)
+    Occsd(d, e_cdf, cutoff_d, fitm_emb, res.tscales, par)
 end
 
 """
@@ -222,7 +222,7 @@ Compute predictions from a fitted model.
 """ 
 function predict(object::Occsd, X)
     nlv = object.par.nlv
-    T = transf(object.fitm, X, nlv)
+    T = transf(object.fitm_emb, X, nlv)
     m = nro(T)
     Q = eltype(T)
     # Mahalanobis distance to center (zero)

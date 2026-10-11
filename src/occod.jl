@@ -1,13 +1,13 @@
 """
     occod(; kwargs...)
-    occod(fitm, X; kwargs...)
+    occod(fitm_emb, X; kwargs...)
 One-class classification (OCC) using (PCA/PLS) orthognal distance (OD).
-* `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+* `fitm_emb` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
-* `X` : Training X-data (n, p) on which was fitted model `fitm`.
+* `X` : Training X-data (n, p) on which was fitted model `fitm_emb`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `fitm`.
+    defined in model `fitm_emb`.
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -83,14 +83,14 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 nlv = 10 
 model = pcasvd(; nlv)
 fit!(model, Xtrain_ref)
-fitm0 = model.fitm ;
+fitm_emb = model.fitm ;
 
 #### Fit the Occ model based on the embedding 
 model = occod(cri = 2.5)
 #model = occod(typcut = :std, cri = 2.5)
 #model = occod(typcut = :q, alpha = .01)
 #model = occod(nlv = 5, cri = 2.5)
-fit!(model, fitm0, Xtrain_ref)
+fit!(model, fitm_emb, Xtrain_ref)
 @names model 
 fitm = model.fitm ;
 @names fitm 
@@ -155,18 +155,18 @@ f
 """ 
 occod(; kwargs...) = JchemoModel(occod, nothing, kwargs)
 
-function occod(fitm, X; kwargs...)
+function occod(fitm_emb, X; kwargs...)
     X = ensure_mat(X)
     Q = eltype(X)
     par = recovkw(ParOcc{Q}, kwargs).par 
     @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     if isnothing(par.nlv)
-        par.nlv = nco(fitm.T)
+        par.nlv = nco(fitm_emb.T)
     else
-        par.nlv = min(par.nlv, nco(fitm.T))
+        par.nlv = min(par.nlv, nco(fitm_emb.T))
     end
-    d = outod(fitm, X; par.nlv).d
+    d = outod(fitm_emb, X; par.nlv).d
     if par.typcut == :std
         cutoff_d = meanv(d) + par.cri * stdv(d)    
     elseif par.typcut == :mad
@@ -180,7 +180,7 @@ function occod(fitm, X; kwargs...)
         dstand_cut = d / cutoff_d, 
         pval_d = pval(e_cdf, d), 
         )
-    Occod(d, fitm, e_cdf, cutoff_d, par)
+    Occod(d, e_cdf, cutoff_d, fitm_emb, par)
 end
 
 """
@@ -192,7 +192,7 @@ Compute predictions from a fitted model.
 function predict(object::Occod, X)
     m = nro(X)
     # Orthogonal distance
-    E = xresid(object.fitm, X, object.par.nlv)
+    E = xresid(object.fitm_emb, X, object.par.nlv)
     d = rownorm(E)
     # End
     d = DataFrame(

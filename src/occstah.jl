@@ -174,7 +174,7 @@ function occstah(X; kwargs...)
         dstand_cut = d / cutoff_d, 
         pval_d = pval(e_cdf, d)
         )
-    Occstah(d, res, V, e_cdf, cutoff_d, par)
+    Occstah(d, e_cdf, cutoff_d, res, V, par)
 end
 
 """

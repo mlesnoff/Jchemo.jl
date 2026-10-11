@@ -2,12 +2,12 @@
     occsdod(; kwargs...)
     occsdod(fitm, X; kwargs...)
 One-class classification (OCC) using a consensus between (PCA/PLS) score (SD) and orthogonal distances (OD).
-* `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+* `fitm_emb` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
-* `X` : Training X-data (n, p) on which was fitted model `fitm`.
+* `X` : Training X-data (n, p) on which was fitted model `fitm_emb`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `fitm`.
+    defined in model `fitm_emb`.
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
@@ -85,14 +85,14 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 nlv = 10 
 model = pcasvd(; nlv)
 fit!(model, Xtrain_ref)
-fitm0 = model.fitm ;
+fitm_emb = model.fitm ;
 
 #### Fit the Occ model based on the embedding 
 model = occsdod(cri = 2.5)
 #model = occsdod(typcut = :q, alpha = .01)
 #model = occsdod(typcut = :std, cri = 2.5, fscal = stdv)
 #model = occsdod(nlv = 5, cri = 2.5)
-fit!(model, fitm0, Xtrain_ref)
+fit!(model, fitm_emb, Xtrain_ref)
 @names model 
 fitm = model.fitm ;
 @names fitm 
@@ -184,18 +184,18 @@ f
 """ 
 occsdod(; kwargs...) = JchemoModel(occsdod, nothing, kwargs)
 
-function occsdod(fitm, X; kwargs...) 
+function occsdod(fitm_emb, X; kwargs...) 
     X = ensure_mat(X) 
     Q = eltype(X)
     par = recovkw(ParOccsdod{Q}, kwargs).par 
     @assert in(par.typcut, [:std, :mad, :q]) "Argument 'typcut' must be :std, :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     if isnothing(par.nlv)
-        par.nlv = nco(fitm.T)
+        par.nlv = nco(fitm_emb.T)
     else
-        par.nlv = min(par.nlv, nco(fitm.T))
+        par.nlv = min(par.nlv, nco(fitm_emb.T))
     end
-    fitm_sdod = outsdod(fitm, X; nlv = par.nlv, gamma = par.gamma, fscal = par.fscal)
+    fitm_sdod = outsdod(fitm_emb, X; nlv = par.nlv, gamma = par.gamma, fscal = par.fscal)
     fitm_sd = fitm_sdod.fitm_sd
     fitm_od = fitm_sdod.fitm_od
     ##
@@ -226,7 +226,7 @@ function occsdod(fitm, X; kwargs...)
     coefs = [a; b]
     ##
     Occsdod(d, e_cdf, cutoff_d, 
-        fitm, 
+        fitm_emb, 
         fitm_sdod, fitm_sd, fitm_od, 
         coefs, par)  
 end
@@ -245,14 +245,14 @@ function predict(object::Occsdod, X)
     sigma_sd = object.fitm_sdod.sigma_sd
     sigma_od = object.fitm_sdod.sigma_od
     # SD
-    T = transf(object.fitm, X, nlv)
+    T = transf(object.fitm_emb, X, nlv)
     Q = eltype(T)
     m = nro(T)
     fscale!(T, tscales)
     sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     sd = sqrt.(sd2)
     # OD
-    E = xresid(object.fitm, X, nlv)
+    E = xresid(object.fitm_emb, X, nlv)
     od = rownorm(E)
     # Outlierness consensus
     d = gamma * sd / sigma_sd + (1 - gamma) * od / sigma_od

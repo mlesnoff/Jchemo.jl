@@ -1,13 +1,13 @@
 """
     occdds(; kwargs...)
-    occdds(fitm, X; kwargs...)
+    occdds(fitm_emb, X; kwargs...)
 One-class classification (OCC) using (PCA/PLS) DD-Simca.
-* `fitm` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+* `fitm_emb` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
-* `X` : Training X-data (n, p) on which was fitted model `fitm`.
+* `X` : Training X-data (n, p) on which was fitted model `fitm_emb`.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
-    defined in model `fitm`.
+    defined in model `fitm_emb`.
 * `fcentr` : A function that computes the centers of the empirical distributions of the squared score and orthogonal 
     distances (SD^2 and OD^2). By default, `fcentr = meanv`.
 * `fscal` : A function that computes the scale (dispersion) of the empirical distributions of SD^2 and OD^2. 
@@ -145,12 +145,12 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 nlv = 10 
 model = pcasvd(; nlv)
 fit!(model, Xtrain_ref)
-fitm0 = model.fitm ;
+fitm_emb = model.fitm ;
 
 #### Fit the Occ model based on the embedding 
 model = occdds()
 #model = occdds(nlv = 5)
-fit!(model, fitm0, Xtrain_ref)
+fit!(model, fitm_emb, Xtrain_ref)
 @names model 
 fitm = model.fitm ;
 @names fitm 
@@ -243,18 +243,18 @@ f
 """ 
 occdds(; kwargs...) = JchemoModel(occdds, nothing, kwargs)
 
-function occdds(fitm, X; kwargs...) 
+function occdds(fitm_emb, X; kwargs...) 
     X = ensure_mat(X)
     Q = eltype(X)
     par = recovkw(ParOccdds{Q}, kwargs).par 
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."    
     if isnothing(par.nlv)
-        par.nlv = nco(fitm.T)
+        par.nlv = nco(fitm_emb.T)
     else
-        par.nlv = min(par.nlv, nco(fitm.T))
+        par.nlv = min(par.nlv, nco(fitm_emb.T))
     end
 
-    fitm_sdod = outsdod(fitm, X; nlv = par.nlv, fscal = par.fscal)
+    fitm_sdod = outsdod(fitm_emb, X; nlv = par.nlv, fscal = par.fscal)
     fitm_sd = fitm_sdod.fitm_sd
     fitm_od = fitm_sdod.fitm_od
 
@@ -303,7 +303,7 @@ function occdds(fitm, X; kwargs...)
     coefs = [a; b]
     # End 
     
-    Occdds(d, e_cdf, nu, cutoff_d, fitm, res_sd, res_od, coefs, par) 
+    Occdds(d, e_cdf, cutoff_d, nu, fitm_emb, res_sd, res_od, coefs, par) 
 end
 
 """
@@ -317,14 +317,14 @@ function predict(object::Occdds, X)
     tscales = object.res_sd.tscales    
 
     # SD^2
-    T = transf(object.fitm, X, nlv)
+    T = transf(object.fitm_emb, X, nlv)
     Q = eltype(T)
     m = nro(T)
     fscale!(T, tscales)
     sd2 = vec(eucl2(T, zeros(Q, 1, nlv)))
     
     # OD^2
-    E = xresid(object.fitm, X, nlv)
+    E = xresid(object.fitm_emb, X, nlv)
     od2 = rownorm2(E)
     # Outlierness consensus
     d = (object.res_sd.nu / object.res_sd.mu) * sd2 + (object.res_od.nu / object.res_od.mu) * od2
