@@ -10,7 +10,7 @@ Build training vs. test sets from each column of a dataframe.
 Keyword arguments:
 * `meth` : Type of sampling for the test set. Possible values are: `:rand` = random sampling, `:sys` = systematic 
     sampling over each sorted `Y`-column (see the principle in function `sampsys`).  
-* `seed` : When `meth = :rand`, eventual seed for the `Random.MersenneTwister` generator.
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator used When `meth = :rand`.
 
 # Examples
 ```julia

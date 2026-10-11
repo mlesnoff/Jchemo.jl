@@ -23,7 +23,7 @@ Keyword arguments:
     `criw` and `squared` of `winvs` can also be specified here).
 * `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is scaled by its 
     uncorrected standard deviation before implementing the PLSR.
-* `seed` : Eventual seed for the `Random.MersenneTwister` generator, used when `typsamp` = `:rand`. 
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator used when `typsamp` = `:rand`. 
 
 Function `protoplsr` implements an averaging of prototype PLSR models.
 

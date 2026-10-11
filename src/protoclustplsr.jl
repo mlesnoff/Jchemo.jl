@@ -19,7 +19,7 @@ Keyword arguments:
     `criw` and `squared` of `winvs` can also be specified here).
 * `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is scaled by its 
     uncorrected standard deviation before implementing the PLSR.
-* `seed` : Eventual seed for the `Random.MersenneTwister` generator, used to initialize the kmeans algorithm. 
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator used to initialize the kmeans algorithm. 
 
 Function `protoclustplsr` implements an averaging of prototype PLSR models.
 

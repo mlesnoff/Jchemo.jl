@@ -11,8 +11,8 @@ Keyword arguments:
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
-* `seed` : Eventual seed for the `Random.MersenneTwister` generator (used when simulating
-    random projcetion directions). 
+* `seed` : Eventual seed for the `Random.MersenneTwister` generator used when simulating
+    random projection directions. 
 
 OCC using outlierness `d` as defined in function `outstah`.
 
@@ -22,7 +22,7 @@ See function `occsd` for details on the types of cutoffs and the outputs.
 
 # Examples
 ```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, GLMakie, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
@@ -40,7 +40,7 @@ Xtest = Xp[s, :]
 Ytest = Y[s, :]
 yclatest = Ytest.typ 
 
-#### Build the data used in the example
+#### Build the data used in the present example
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xtrain_ref = Xtrain[s, :]    
@@ -53,13 +53,35 @@ nnew_ref = nro(Xnew_ref)
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
-
-# Only used to compute classification error rates
+# Required to compute classification error rates
 ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
 ynew_ref = fill("in", nnew_ref)
 ynew_out = fill("out", nnew_out)
+
+#### Preliminary data description
+# Fit a preliminary Pca model on the training reference data
+nlv = 15
+model = pcasvd(; nlv) 
+#model = pcaout(; nlv) 
+fit!(model, Xtrain_ref) 
+fitm = model.fitm ;
+res = summary(model, Xtrain_ref).explvarx 
+plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
+Ttrain_ref = fitm.T
+# Project the test observations in the fitted score space
+Tnew_ref = transf(model, Xnew_ref)
+Tnew_out = transf(model, Xnew_out)
+#GLMakie.activate!()   # requires GLMakie
+T = vcat(Ttrain_ref, Tnew_ref, Tnew_out)
+group = vcat(fill("1-Train_ref", ntrain_ref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
+lev = mlev(group)
+tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
+i = 1
+plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of obs.", 
+    xlabel = string("PC", i), ylabel = string("PC", i + 1), zlabel = string("PC", i + 2)).f
+#### End
 
 #### Fit the Occ model
 model = occstah(; nlv = 5000, cri = 2., scal = :std)
