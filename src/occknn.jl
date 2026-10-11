@@ -177,7 +177,7 @@ function occknn(X; kwargs...)
         dstand_cut = d / cutoff_d, 
         pval_d = pval(e_cdf, d)
         )
-    Occknn(d, X, e_cdf, cutoff_d, xscales, par)
+    Occknn(d, e_cdf, cutoff_d, X, xscales, par)
 end
 
 function predict(object::Occknn, X)

@@ -2,7 +2,7 @@
     occsdod(; kwargs...)
     occsdod(fitm, X; kwargs...)
 One-class classification (OCC) using a consensus between (PCA/PLS) score (SD) and orthogonal distances (OD).
-* `fitm_emb` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+* `fitm_emb` : The preliminary embedding model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
 * `X` : Training X-data (n, p) on which was fitted model `fitm_emb`.
 Keyword arguments:

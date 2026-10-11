@@ -2,7 +2,7 @@
     occsd(; kwargs...)
     occsd(fitm_emb; kwargs...)
 One-class classification (OCC) using (PCA/PLS) score distance (SD).
-* `fitm_emb` : The preliminary model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
+* `fitm_emb` : The preliminary embedding model (e.g., object `fitm` returned by functions `pcasvd` or `plskern`) 
     that was fitted on the training data assumed to represent the reference (= target) class.
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
