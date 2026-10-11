@@ -85,7 +85,7 @@ cutoff_d = fitm.cutoff_d
 d = dtrain_ref.d
 s = d .> cutoff_d
 tsp = .4 ; color = (:orange, tsp)
-f, ax = plotxy(1:nsamp, d; color, size = (500, 300), title = "Train (reference class)",  
+f, ax = plotxy(1:nsamp, d; color, size = (500, 300), title = "Train_ref",  
     xlabel = "Observation index", ylabel = "Outlierness")
 hlines!(ax, cutoff_d; color = :grey, linestyle = :dot, label = "Cutoff")
 scatter!(ax, (1:nsamp)[s], d[s]; color = color[1], label = "Extreme")
@@ -93,7 +93,7 @@ f[1, 2] = Legend(f, ax, ""; framevisible = false)
 f
 
 f = Figure(size = (450, 300)) 
-ax = Axis(f[1, 1]; xticks = ([1], ["Train"]), xlabel = "", ylabel = "Outlierness") 
+ax = Axis(f[1, 1]; xticks = ([0], [""]), title = "Train_ref", xlabel = "", ylabel = "Outlierness") 
 rainclouds!(ax, fill(cutoff_d, nsamp), d; clouds = hist, jitter_width = .1, color, markersize = 10)
 hlines!(ax, cutoff_d; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)

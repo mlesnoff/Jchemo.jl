@@ -855,7 +855,7 @@ struct Occmwpca{Q <: Float}
     d::Matrix{Q}
     cutoff_d::Vector{Q}
     pwout::Vector{Q}
-    cut_pwout::Q
+    cutoff_pwout::Q
     fitm_emb::Vector{Any}
     nlv_emb::Vector{Int}
     fitm_occ::Vector{Occsdod}

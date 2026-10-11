@@ -59,7 +59,7 @@ https://doi.org/10.1002/bit.1102
 
 # Examples
 ```julia
-using Jchemo, JchemoData, JLD2, CairoMakie
+using Jchemo, JchemoData, JLD2, GLMakie, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
@@ -106,12 +106,12 @@ fit!(model, Xtrain_ref)
 fitm = model.fitm ;
 res = summary(model, Xtrain_ref).explvarx 
 plotgrid(res.nlv, res.pvar; step = 2, xlabel = "Nb. LVs", ylabel = "% Variance explained").f
-Tref = fitm.T
+Ttrain_ref = fitm.T
 # Project the test observations in the fitted score space
 Tnew_ref = transf(model, Xnew_ref)
 Tnew_out = transf(model, Xnew_out)
 #GLMakie.activate!()   # requires GLMakie
-T = vcat(Tref, Tnew_ref, Tnew_out)
+T = vcat(Ttrain_ref, Tnew_ref, Tnew_out)
 group = vcat(fill("1-Train_ref", ntrain_ref), fill("2-New_ref", nnew_ref), fill("3-New_out", nnew_out))
 lev = mlev(group)
 tsp = .5 ; color = [(:orange, tsp), (:green, tsp), (:purple, tsp)]
@@ -132,41 +132,46 @@ fit!(model, Xtrain_ref)
 fitm = model.fitm ;
 @names fitm 
 
-@head fitm.window            # range of each sliding windows
-@head centrw = fitm.centrw   # central point of each sliding windows
+@head fitm.window            # range of each window
+@head centrw = fitm.centrw   # central point of each window
 
-@head fitm.nlv_emb           # nb. of Pca LVs selected for each sliding window
+@head fitm.nlv_emb           # nb. of LVs selected for each window
 tab(fitm.nlv_emb)
 
-@head fitm.d                 # outlierness of the training observations for each sliding window 
+@head fitm.d                 # outlierness of the training observations for each window 
                              # (1 row = 1 observation, 1 column = 1 window)
 
-@head cutoff_d = fitm.cutoff_d   # cutoff_d (computed from d) of each sliding window
-@head pwout = fitm.pwout     # proportion of windows with outlierness d > cutoff_d, for each training observations 
-cut_pwout = fitm.cut_pwout   # final cutoff_d computed from pwout 
+@head cutoff_d = fitm.cutoff_d    # cutoff (computed from d) of each window
+@head pwout = fitm.pwout          # proportion of windows with outlierness d > cutoff_d, for each training observations 
+cutoff_pwout = fitm.cutoff_pwout  # final cutoff computed from pwout 
 
 d = fitm.d
 tsp = .2 ; color = (:orange, tsp)
 f, ax = plotsp(d, centrw; color, title = "Train", 
-    xlabel = "Window center", ylabel = "Outlierness (SD-OD)", label = "Train_ref")
+    xlabel = "Window center", ylabel = "Outlierness", label = "Train_ref")
 lines!(ax, centrw, cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 tsp = .4 ; color = (:orange, tsp)
 f = Figure(size = (450, 300)) 
-ax = Axis(f[1, 1]; xticks = ([1], ["Train_ref"]), xlabel = "", ylabel = "pwout") 
+ax = Axis(f[1, 1]; xticks = ([0], [""]), title = "Train_ref", 
+    xlabel = "", ylabel = "pwout") 
 rainclouds!(ax, fill(1, ntrain_ref), pwout; clouds = hist, jitter_width = .1, color, markersize = 10)
-hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, label = "Cutoff")
+hlines!(ax, cutoff_pwout; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
 #### Predict the new observations 'ref'
 res = predict(model, Xnew_ref) ;
 @names res
-@head pred = res.pred           # final predictions 'in/out'
-@head dnew_ref = res.d          # predicted outlierness d for each sliding window (1 column = 1 window)
+@head pred = res.pred       # final predictions 'in/out'
+
+@head dnew_ref = res.d      # predicted outlierness of the new observations for each window 
+                            # (1 row = 1 observation, 1 column = 1 window)
+
 @head pwoutnew_ref = res.pwout  # predicted proportion of windows with outlierness d > cutoff_d
+
 tab(pred)
 errp(pred, ynew_ref)
 conf(pred, ynew_ref).cnt
@@ -177,13 +182,14 @@ res = predict(model, Xnew_out) ;
 @head pred = res.pred 
 @head dnew_out = res.d
 @head pwoutnew_out = res.pwout 
+
 tab(pred)
 errp(pred, ynew_out)
 conf(pred, ynew_out).cnt
 
 d = fitm.d
-dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "(ref)"
-#dnew = copy(dnew_out) ; pwoutnew = copy(pwoutnew_out) ; nam = "(out)"
+dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "ref"
+#dnew = copy(dnew_out) ; pwoutnew = copy(pwoutnew_out) ; nam = "out"
 m = nro(dnew)
 tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
@@ -191,7 +197,7 @@ f, ax = plotsp(d, centrw; color, xlabel = "Wavelength index",  ylabel = "Outlier
     label = "Train_ref")
 lines!(ax, centrw, cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 lines!(ax, centrw, vrow(dnew, i); color = :blue, linewidth = .5, 
-    label = string("A new obs. ", "nam"))
+    label = string("An obs. in New_", nam))
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
@@ -202,7 +208,7 @@ cols = vcat(fill(color[1], ntrain_ref), fill(color[2], nnew_ref), fill(color[3],
 f = Figure(size = (600, 300))
 ax = Axis(f[1, 1]; xticks = (1:3, lev), xlabel = "", ylabel = "pwout") 
 rainclouds!(ax, groupnum, v; clouds = hist, jitter_width = .1, color = cols, markersize = 10)
-hlines!(ax, cut_pwout; color = :grey, linestyle = :dash, linewidth = 1, label = "Cutoff")
+hlines!(ax, cutoff_pwout; color = :grey, linestyle = :dash, linewidth = 1, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 ```
@@ -242,8 +248,8 @@ function occmwpca(X; kwargs...)
     end
     cutoff_d = colquant(d, 1 - par.alpha)
     pwout = rowsum(Q.(d .> cutoff_d')) / nmod
-    cut_pwout = quantv(pwout, 1 - par.alpha)
-    Occmwpca(fitm_emb, d, cutoff_d, pwout, cut_pwout, nlv_emb, fitm_occ, window, centrw)
+    cutoff_pwout = quantv(pwout, 1 - par.alpha)
+    Occmwpca(d, cutoff_d, pwout, cutoff_pwout, fitm_emb, nlv_emb, fitm_occ, window, centrw)
 end
 
 function predict(object::Occmwpca, X)
@@ -256,7 +262,7 @@ function predict(object::Occmwpca, X)
         d[:, j] = predict(object.fitm_occ[j], vcol(X, object.window[j])).d.d
     end
     pwout = rowsum(Q.(d .> object.cutoff_d')) / nmod
-    pred = [if pwout[i] <= object.cut_pwout "in" else "out" end for i in eachindex(pwout)]
+    pred = [if pwout[i] <= object.cutoff_pwout "in" else "out" end for i in eachindex(pwout)]
     pred = reshape(pred, m, 1)
     (pred = pred, d, pwout)
 end

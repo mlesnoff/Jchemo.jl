@@ -17,7 +17,7 @@ struct Occmwpls{Q <: Float}
     d::Matrix{Q}
     cutoff_d::Vector{Q}
     pwout::Vector{Q}
-    cut_pwout::Q
+    cutoff_pwout::Q
     window::Vector{UnitRange{Int}}
     centrw::Vector{Int}
 end
@@ -96,8 +96,8 @@ function occmwpls(X, Y; kwargs...)
     end
     cutoff_d = colquant(d, 1 - par.alpha)
     pwout = rowsum(Q.(d .> cutoff_d')) / nmod
-    cut_pwout = quantv(pwout, 1 - par.alpha)
-    Occmwpls(d, cutoff_d, pwout, cut_pwout, fitm_emb, nlv_emb, fitm_occ, window, centrw)
+    cutoff_pwout = quantv(pwout, 1 - par.alpha)
+    Occmwpls(d, cutoff_d, pwout, cutoff_pwout, fitm_emb, nlv_emb, fitm_occ, window, centrw)
 end
 
 function predict(object::Occmwpls, X)
@@ -110,7 +110,7 @@ function predict(object::Occmwpls, X)
         d[:, j] = predict(object.fitm_occ[j], vcol(X, object.window[j])).d.d
     end
     pwout = rowsum(Q.(d .> object.cutoff_d')) / nmod
-    pred = [if pwout[i] <= object.cut_pwout "in" else "out" end for i in eachindex(pwout)]
+    pred = [if pwout[i] <= object.cutoff_pwout "in" else "out" end for i in eachindex(pwout)]
     pred = reshape(pred, m, 1)
     (pred = pred, d, pwout)
 end
