@@ -18,26 +18,28 @@ The function implements an Occ by moving window Pca (Mwpca) (e.g., Lennox et al 
 1) The full range of the X-columns is divided into sliding windows of `npoint` columns. The center of each 
     window is moved of one column from the previous window. 
 
-2) On each window:
-    * a Pca model with `nlv` LVs (principal components) is fitted, and the minimum nb. of LVs that explains 
-        at least a proportion `pctvar` of the total variance (of the window) is retained.
+2) For each window:
 
-    * Function `occsdod` (SD-OD outlierness consensus) is applied on the fitted Pca model (with the retained 
-        nb. LVs) to compute the outlierness (d) of the training observations for the window, and a cutoff_d is 
-        determined (see function `occsdod`).
+    * a Pca model with a maximal number of `nlv` LVs (principal components) is fitted. The minimum nb. 
+        of LVs that explains at least a proportion `pctvar` of the total variance (of the window) is retained.
+
+    * Function `occsdod` (SD-OD outlierness consensus) is applied on the fitted Pca model with the retained 
+        nb. LVs to compute the outlierness (`d`) of the training observations for the window. A cutoff 
+        (`cutoff_d`) is determined (see function `occsdod`).
     
-    * New observations are predicted (for the considered window) from this fitted `occsdod` model and their 
-        outlierness d are computed.
+    * New observations are predicted (for the considered window) from the fitted `occsdod` model, and their 
+        outlierness `d` are computed.
     
 3) For each observation (training or new), the proportion of windows for which the observation is 
-    predicted as an outlier for d (i.e., the SD-OD `occsdod` consensus > cutoff_d) is computed. A second
-    (and final) cutoff_d is then determined on the n proportions computed on the training. 
+    predicted as an outlier for `d` (i.e., the SD-OD `occsdod` consensus > `cutoff_d`) is computed (`pwout`). 
+    A second (and final) cutoff (`cutoff_pwout`) is then determined on the n proportions computed 
+    on the training. 
     
-4) Observations that have a higher proportion of windows with outliernes d higher than this second cutoff_d 
-    are classified as 'out'. Others are classified as 'in'.
+4) Observations that have a higher proportion of windows with outliernes `d` higher than this second 
+    `cutoff_pwout` are classified as 'out'. Others are classified as 'in'.
 
 This version of the function is different from the approach proposed by Fernández Pierna et al (2016) 
-in two ways. First, it is not a local (KNN) approach. Second, for each window, the SD-OD outlierness is 
+in two ways. First, it is not a local (i.e., KNN) approach. Second, for each window, the SD-OD outlierness is 
 computed from the full window (instead of only on the central point of the window).
 
 See function `outsdod` for other details, and the examples below for the outputs.
