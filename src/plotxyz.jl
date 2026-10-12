@@ -15,6 +15,8 @@
 Keyword arguments:
 * `size` : Size (horizontal, vertical) of the figure.
 * `color` : Set color(s). If `group` if used, `color` must be a vector of same length as the number of levels in `group`.
+* `perspectiveness` : See https://docs.makie.org/v0.21/reference/blocks/axis3.
+* `azimuth` : See https://docs.makie.org/v0.21/reference/blocks/axis3. 
 *  `xlabel` : Label for the x-axis.
 *  `ylabel` : Label for the y-axis.
 *  `zlabel` : Label for the z-axis.
@@ -66,15 +68,14 @@ f
 ```
 """ 
 function plotxyz(x, y, z; 
-        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1,
+        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, azimuth::Q = 1.275pi,
         xlabel::String = "", ylabel::String = "", zlabel::String = "", 
         title::String = "", kwargs...) where Q <: Float
     x = vec(x)
     y = vec(y)
     z = vec(z)
     f = Figure(; size)
-    ax = Axis3(f[1, 1]; xlabel = xlabel, ylabel = ylabel, zlabel = zlabel, title = title, 
-        perspectiveness = perspectiveness) 
+    ax = Axis3(f[1, 1]; xlabel, ylabel, zlabel, title, perspectiveness, azimuth) 
     if isnothing(color) ; color = (:blue, .3) ; end
     scatter!(ax, x, y, z; color, kwargs...)
     f[1, 1] = ax
@@ -82,7 +83,7 @@ function plotxyz(x, y, z;
 end
 
 function plotxyz(x, y, z, group; 
-        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, 
+        size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, azimuth::Q = 1.275pi, 
         xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
         leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
     x = vec(x)
@@ -92,8 +93,7 @@ function plotxyz(x, y, z, group;
     nlev = length(lev)
     lab = string.(lev)    
     f = Figure(; size)
-    ax = Axis3(f[1, 1]; xlabel = xlabel, ylabel = ylabel, zlabel = zlabel, title = title, 
-        perspectiveness = perspectiveness)
+    ax = Axis3(f[1, 1]; xlabel, ylabel, zlabel, title, perspectiveness, azimuth)
     if isnothing(color)
         @inbounds for i in eachindex(lev)
             s = group .== lev[i]
