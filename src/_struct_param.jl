@@ -670,3 +670,16 @@ Base.@kwdef mutable struct ParOccmwpca{Q <: Float}
     gamma::Q = .5
 end 
 
+Base.@kwdef mutable struct ParOccmwpls{Q <: Float}
+    npoint::Int = 21   
+    nlv::Int = 5
+    K::Int = 5
+    rep::Int = 10
+    typcut::Symbol = :mad   
+    cri::Q = 3.
+    alpha::Q = .025 
+    gamma::Q = .5
+    scal::Symbol = :none
+end 
+
+

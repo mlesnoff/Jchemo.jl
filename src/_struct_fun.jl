@@ -862,3 +862,15 @@ struct Occmwpca{Q <: Float}
     window::Vector{UnitRange{Int}}
     centrw::Vector{Int}
 end
+
+struct Occmwpls{Q <: Float}
+    d::Matrix{Q}
+    cutoff_d::Vector{Q}
+    pwout::Vector{Q}
+    cutoff_pwout::Q
+    fitm_emb::Vector{Any}
+    nlv_emb::Vector{Int}
+    fitm_occ::Vector{Occsdod}
+    window::Vector{UnitRange{Int}}
+    centrw::Vector{Int}
+end

@@ -51,7 +51,7 @@ nnew_ref = nro(Xnew_ref)
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
-# Required to compute classification error rates
+# Required to compute classification error rates (define the final class variable)
 ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)

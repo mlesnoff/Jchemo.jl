@@ -92,7 +92,7 @@ nnew_ref = nro(Xnew_ref)
 s = yclatest .== "PEE"
 Xnew_out = Xtest[s, :] 
 nnew_out = nro(Xnew_out)
-# Required to compute classification error rates
+# Required to compute classification error rates (define the final class variable)
 ntot = ntrain_ref + nnew_ref + nnew_out
 (ntot = ntot, ntrain_ref, nnew_ref, nnew_out)
 yref = fill("in", ntrain_ref)
@@ -157,8 +157,7 @@ f
 
 tsp = .4 ; color = (:orange, tsp)
 f = Figure(size = (450, 300)) 
-ax = Axis(f[1, 1]; xticks = ([0], [""]), title = "Train_ref", 
-    xlabel = "", ylabel = "pwout") 
+ax = Axis(f[1, 1]; xticks = ([0], [""]), title = "Train", xlabel = "", ylabel = "pwout") 
 rainclouds!(ax, fill(1, ntrain_ref), pwout; clouds = hist, jitter_width = .1, color, markersize = 10)
 hlines!(ax, cutoff_pwout; color = :grey, linestyle = :dash, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
