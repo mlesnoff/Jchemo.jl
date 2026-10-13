@@ -31,7 +31,8 @@ Keyword arguments:
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
 * `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
 * `rep` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
-* `h` : 
+* `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
+    sharper is the function. See function `winvs` for details. 
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
