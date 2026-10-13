@@ -13,7 +13,8 @@ Keyword arguments:
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
 
-The function implements an Occ by moving window Pca (Mwpca) (e.g., Lennox et al 2001, Jeng 2010), as follows.
+The function implements an Occ by moving (i.e., sliding) window Pca (Mwpca) (e.g., Lennox et al 2001, Jeng 2010), 
+as follows.
 
 1) The full range of the X-columns is divided into sliding windows of `npoint` columns. The center of each 
     window is moved of one column from the previous window. 

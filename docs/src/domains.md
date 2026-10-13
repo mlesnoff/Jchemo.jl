@@ -266,6 +266,7 @@
 - **occdds**  SD2-OD2 consensus (with the DD-Simca approach)
 
 - **occmwpca** Moving window Pca (MWPCA)
+- **occmwpca** Moving window Pls (MWPLS)
 
 ### From kNN distance 
 

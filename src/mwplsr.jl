@@ -36,7 +36,32 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-# References
+The function implements a moving (i.e., sliding) window Pls regression (Mwpls), as follows.
+
+1) The full range of the X-columns is divided into sliding windows of `npoint` columns. The center of each 
+    window is moved of one column from the previous window. Assume that the total number of windows is 'k'. 
+
+2) For each window:
+
+    * a Plsr model with a maximal number of `nlv` LVs (principal components) is fitted.
+    
+    * A repeated K-fold cross validation is run between 0:`nlv` on the training observations, and the model 
+        showing the minimum average RMSEP-CV is selected and stored. 
+    
+    * The new observations are predicted (for the considered window) from the selected model re-fitted on all 
+        the training observations. The predictions are stored.
+         
+3) A performance discrepancy is computed for each of the k selected models. Let A be the minumum RMSEP-CV 
+    observed between the k models, then:
+    * discr(model i) = RMSEP-CV(model i) - A ; i = 1:k.
+    Then, a weight is computed for each model i using a parameterized decreasing weighting function
+    (function `winvs`). This returns a vector of model weights of length k, `w_emb`.   
+
+4) The final prediction for an observation is the weighted (`w_emb`) average of the k predictions
+    for this observation. 
+    
+5) The variable (`X` column) importance (`vi`) is the simple average of the model weights of all the models 
+    (within the k models) that used this variable.  
 
 # Examples
 ```julia

@@ -16,7 +16,7 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-The function implements an Occ by moving window Pls (Mwpls). This is the same principle as function `occmwpca` except
+The function implements an Occ by moving (i.e., sliding) window Pls (Mwpls). This is the same principle as function `occmwpca` except
 that a Pls {X, Y} is run on each window, instead of a Pca. For each window, the nb. LVs is selected by a repeated K-fold 
 cross validation, see function `mwplsr`. 
 
