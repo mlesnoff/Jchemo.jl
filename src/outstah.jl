@@ -5,7 +5,7 @@ Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `V` : A projection matrix (p, nlv) representing the directions of the projection pursuit.
 Keyword arguments:
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` by the Stahel-Donoho method detailed in Maronna and Yohai 1995. 

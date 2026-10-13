@@ -17,7 +17,7 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : A range of nb. of latent variables (LVs) to compute for the local (i.e. inside each neighborhood) models.
-* `scal` : Symbol defining the column scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` (and of the global `Y` if there 
     is a preliminary PLS reduction dimension) is scaled (before the computation of the distances and local weights), 
     and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.

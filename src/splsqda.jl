@@ -17,7 +17,7 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).       
 
 Same as function `plsqda` (PLSR-QDA) except that a sparse PLSR (function `splsr`), instead of a PLSR, 

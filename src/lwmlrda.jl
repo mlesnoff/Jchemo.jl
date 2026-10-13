@@ -13,7 +13,7 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 * `verbose` : Boolean. If `true`, predicting information are printed.
 

@@ -12,7 +12,7 @@ Keyword arguments:
     before each X-deflation. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.

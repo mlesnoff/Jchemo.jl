@@ -423,7 +423,7 @@ end
 """
     def_colscal(scal::Symbol = :std)
 Define the function of column scaling.
-* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 ```
 """

@@ -29,16 +29,80 @@ Moving window Plsr (MWPLSR).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
-* `K` : 
-* `rep` : 
+* `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
+* `rep` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
 * `h` : 
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 # References
 
 # Examples
 ```julia
+using Jchemo, JchemoData, DataFrames, JLD2, CairoMakie
+mypath = dirname(dirname(pathof(JchemoData)))
+db = joinpath(mypath, "data", "tecator.jld2") 
+@load db dat
+@names dat
+X = dat.X
+Y = dat.Y 
+wlst = names(X)
+wl = parse.(Float64, wlst) 
+ntot, p = size(X)
+typ = Y.typ
+namy = names(Y)[1:3]
+plotsp(X, wl; xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
+
+s = typ .== "train"
+Xtrain = X[s, :]
+Ytrain = Y[s, namy]
+Xtest = rmrow(X, s)
+Ytest = rmrow(Y[:, namy], s)
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+ntot = ntrain + ntest
+(ntot = ntot, ntrain, ntest)
+
+# Work on the j-th y-variable 
+j = 2
+nam = namy[j]
+ytrain = Ytrain[:, nam]
+ytest = Ytest[:, nam]
+###### End
+
+h = .2
+#h = 1.
+model = mwplsr(; h)
+fit!(model, Xtrain, ytrain) 
+fitm = model.fitm ;
+@names fitm 
+@head fitm.window 
+@head fitm.centrw 
+
+tab(fitm.nlv_emb)
+
+@head w_emb = fitm.w_emb   # model weight for each window
+@head vi = fitm.vi         # variable importances
+
+res = predict(fitm, Xtest) ;
+@names res 
+@head pred = res.pred    # final predictions (weighted averages over the windiows)
+size(res.pred_mod)       # predictions for each window
+
+@show rmsep(pred, ytest) 
+plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
+    ylabel = "Observed").f
+
+x = wl[fitm.centrw]
+xticks = collect(wl[1]:15:(wl[end]))
+f, ax = plotxy(x, w_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "Model weight")
+lines!(x, w_emb; linewidth = .5)
+f 
+
+xticks = collect(wl[1]:15:(wl[end]))
+f, ax = plotxy(wl, vi; size = (800, 300), xticks, xlabel = "Wavelength (nm)", ylabel = "Variable importance")
+lines!(wl, vi; linewidth = .5)
+f 
 ```
 """
 mwplsr(; kwargs...) = JchemoModel(mwplsr, nothing, kwargs)
@@ -101,11 +165,12 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
     end
 
     # Model weights
-    d_emb = scor_emb .- minimum(scor_emb)
+    scor_best = minimum(scor_emb)
+    d_emb = scor_emb .- scor_best   # model performance discrepancy
     criw = 3. ; squared = false
     w_emb = winvs(d_emb; h = par.h, criw, squared)
     wtot = sum(w_emb)
-    @. w_emb /= wtot
+    @. w_emb /= wtot                # sum(w_emb) = 1
 
     # Variable importances 
     V = -ones(Q, nmod, p)

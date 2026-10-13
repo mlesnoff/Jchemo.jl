@@ -14,7 +14,7 @@ Keyword arguments:
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 The general principle is in two steps: 

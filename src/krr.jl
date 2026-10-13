@@ -11,7 +11,7 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
     `krbf` and `kpol` for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 KRR is also referred to as least squared SVM regression (LS-SVMR). The method is close to the particular case of 

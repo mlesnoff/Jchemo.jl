@@ -12,7 +12,7 @@ Keyword arguments:
 * `degree` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 Kernel types: 

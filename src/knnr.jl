@@ -14,7 +14,7 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances and local weights). 
-    Possible values are: `:none`, `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    Possible values are: `:none` (default), `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
 
 The general principle of this function is as follows (many other variants of kNNR pipelines can be built):
 a) For each new observation to predict, the prediction is the weighted mean of `y` over a selected neighborhood

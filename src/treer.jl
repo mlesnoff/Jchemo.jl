@@ -10,7 +10,7 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RNG. 
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a single regression tree (CART).

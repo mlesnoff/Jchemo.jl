@@ -10,7 +10,7 @@ Keyword arguments:
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the normal equation residual 
     vectors is done.
 * `filt` : Boolean. If `true`, CG filter factors are computed (output `F`). Default = `false`.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the part of the code computing the 

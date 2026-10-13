@@ -65,7 +65,7 @@ end
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 # Examples
@@ -137,7 +137,7 @@ end
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the scaling. Possible values are: `:none`, `std` (uncorrected STD), 
+* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
 # Examples
