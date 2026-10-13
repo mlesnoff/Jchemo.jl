@@ -435,7 +435,7 @@ function convertdf(datf::DataFrame, typ::Vector{DataType}; miss = nothing)
     for i in eachindex(typ)
         z = dat[:, i]
         if typ[i] == String
-            if sum(ismissing.(z)) == 0 ; z = string.(z) ; end
+            if sum(ismissing.(z)) == 0 ; z = String.(z) ; end
         elseif typ[i] == Symbol
             if sum(ismissing.(z)) == 0 ; z = Symbol.(z) ; end
         elseif in(typ[i], [Integer, Int32, Int64]) 
