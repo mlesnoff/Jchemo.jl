@@ -1,6 +1,11 @@
 # News
 
-## *Version 0.11.0 dev*
+## *Version 0.11.1 dev*
+
+- Modifications
+    - Code cleaning.
+
+## *Version 0.11.0*
 
 - News
     - Function **occmwpls**: Occ by oving window Pls.    
