@@ -24,7 +24,8 @@ The general principle is in two steps:
     class), or 'in' otherwise. 
 
 The method to compute outlierness is defined in function `outlknn` (see for details). 
-See function `occknn` for examples, and function `occsd` for the possible cutoff_d types and the outputs.
+
+See function `occknn` for examples, and function `occsd` for the possible cutoff types (`typcut`) and the outputs.
 """ 
 occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 

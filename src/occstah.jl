@@ -18,7 +18,7 @@ OCC using outlierness `d` as defined in function `outstah`.
 
 The directions used for projections are simulated by random binary (0/1) values. 
 
-See function `occsd` for details on the types of cutoffs and the outputs.
+See function `occsd` for details on the types of cutoffs (`typcut`) and the outputs.
 
 # Examples
 ```julia

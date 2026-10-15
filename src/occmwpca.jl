@@ -43,7 +43,8 @@ This version of the function is different from the approach proposed by Fernánd
 in two ways. First, it is not a local (i.e., KNN) approach. Second, for each window, the SD-OD outlierness is 
 computed from the full window (instead of only on the central point of the window).
 
-See function `outsdod` for other details, and the examples below for the outputs.
+See function `outsdod` for other details, function `occsd` for the possible cutoff types (`typcut`),
+and the examples below for the outputs.
 
 # References
 Fernández Pierna, J.A., Vincke, D., Baeten, V., Grelet, C., Dehareng, F., Dardenne, P., 2016. 

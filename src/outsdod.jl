@@ -8,7 +8,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. By default, it is the maximum nb. of LVs
     defined in model `fitm`.
 * `gamma` : Proportion (∈ [0, 1]) of scaled SD in the consensus (see below).
-* `fscal` : Function used to scale SD and OD in the consensus.
+* `fscal` : Function used to scale SD and OD in the consensus (default to `madv`).
 
 This function computes outlierness `d` of each observation (row) of `X` by a *consensus* (weighted mean of scaled SD and OD
 of the observation): 

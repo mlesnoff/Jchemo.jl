@@ -26,7 +26,8 @@ The general principle is in two steps:
     class), or 'in' otherwise. 
 
 The method to compute outlierness is defined in function `outknn` (see for details). 
-See also function `occsd` for the possible cutoff_d types and the outputs.
+
+See also function `occsd` for the possible cutoff types (`typcut`) and the outputs.
 
 # Examples
 ```julia

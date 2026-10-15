@@ -12,11 +12,11 @@ Keyword arguments:
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
-* `fscal` : Function used to scale SD and OD in the consensus (by default, this is `stdv`; see function `outsdod`). 
+* `fscal` : Function used to scale SD and OD in the consensus (see function `outsdod`). 
 
 OCC using outlierness `d` as defined in function `outsdod`.
 
-See function `occsd` for details on the types of cutoffs and the outputs.
+See function `occsd` for details on the types of cutoffs (`typcut`) and the outputs.
 
 # Examples
 ```julia
