@@ -48,13 +48,16 @@ CRC Press, Boca Raton.
 
 # Examples
 ```julia
-using Jchemo, JchemoData, JLD2, GLMakie, CairoMakie
+using Jchemo, JchemoData, JLD2, DataFrames
+using GLMakie, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
 @names dat
 X = dat.X    
 Y = dat.Y
+wlst = names(X) 
+wl = parse.(Float64, wlst) 
 model = savgol(npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 

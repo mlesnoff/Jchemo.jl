@@ -102,10 +102,12 @@ model = mwplsr(; h)
 fit!(model, Xtrain, ytrain) 
 fitm = model.fitm ;
 @names fitm 
-@head fitm.window 
-@head fitm.centrw 
 
-tab(fitm.nlv_emb)
+@head fitm.window            # range of each window 
+@head centrw = fitm.centrw   # central point of each window
+
+@head fitm.nlv_emb           # nb. of LVs selected for each window
+tab(fitm.nlv_emb) 
 
 @head w_emb = fitm.w_emb   # model weight for each window
 @head vi = fitm.vi         # variable importances
@@ -119,10 +121,9 @@ size(res.pred_mod)       # predictions for each window
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
     ylabel = "Observed").f
 
-x = wl[fitm.centrw]
 xticks = collect(wl[1]:15:(wl[end]))
-f, ax = plotxy(x, w_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "Model weight")
-lines!(x, w_emb; linewidth = .5)
+f, ax = plotxy(wl[centrw], w_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "Model weight")
+lines!(wl[centrw], w_emb; linewidth = .5)
 f 
 
 xticks = collect(wl[1]:15:(wl[end]))

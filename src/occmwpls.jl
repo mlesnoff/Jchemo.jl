@@ -29,13 +29,16 @@ and the examples below for the outputs.
 
 # Examples
 ```julia
-using Jchemo, JchemoData, JLD2, GLMakie, CairoMakie
+using Jchemo, JchemoData, JLD2, DataFrames
+using GLMakie, CairoMakie
 path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/challenge2018.jld2") 
 @load db dat
 @names dat
 X = dat.X    
 Y = dat.Y
+wlst = names(X) 
+wl = parse.(Float64, wlst) 
 model = savgol(npoint = 21, deriv = 2, degree = 3)
 fit!(model, X) 
 Xp = transf(model, X) 
@@ -46,7 +49,7 @@ conctrain = Ytrain.conc
 yclatrain = Ytrain.typ
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
-yclatest = Ytest.typ 
+yclatest = Ytest.typ
 
 #### Build the data used in the present example
 # "EHH" = Training reference class (= target = 'in')
@@ -119,9 +122,9 @@ cutoff_pwout = fitm.cutoff_pwout  # final cutoff computed from pwout
 
 d = fitm.d
 tsp = .2 ; color = (:orange, tsp)
-f, ax = plotsp(d, centrw; color, title = "Train", 
+f, ax = plotsp(d, wl[centrw]; color, title = "Train", 
     xlabel = "Window center", ylabel = "Outlierness", label = "Train_ref")
-lines!(ax, centrw, cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
+lines!(ax, wl[centrw], cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
 
@@ -164,10 +167,10 @@ dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "ref"
 m = nro(dnew)
 tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
-f, ax = plotsp(d, centrw; color, xlabel = "Wavelength index",  ylabel = "Outlierness (SD-OD)", 
+f, ax = plotsp(d, wl[centrw]; color, xlabel = "Wavelength index",  ylabel = "Outlierness (SD-OD)", 
     label = "Train_ref")
-lines!(ax, centrw, cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
-lines!(ax, centrw, vrow(dnew, i); color = :blue, linewidth = .5, 
+lines!(ax, wl[centrw], cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
+lines!(ax, wl[centrw], vrow(dnew, i); color = :blue, linewidth = .5, 
     label = string("An obs. in New_", nam))
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
