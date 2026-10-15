@@ -426,7 +426,6 @@ See also bagging methods.
 - **summ** Summarize the columns
 - **aggstat** Column-wise statistics by group 
 - **aggmean** Column-wise means by group
-- **aggsumv** Sum by group of a categorical variable
 
 *Tables*
 - **tab**, **tabdupl** Tabulations for categorical variables
@@ -465,6 +464,8 @@ See also bagging methods.
 - **cosv** Cosinus 
 - **covv** Covariances
 - **corv** Correlations
+
+- **aggsumv** Sum by group of a categorical variable
 
 *Operations on a matrix*
 - **cosm** Cosinus matrix
