@@ -95,7 +95,7 @@ tab(fitm.nlv_emb)
 res = predict(fitm, Xtest) ;
 @names res 
 @head pred = res.pred    # final predictions (weighted averages over the windiows)
-size(res.pred_mod)       # predictions for each window
+size(res.predw)          # predictions for each window
 
 @show rmsep(pred, ytest) 
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
@@ -202,17 +202,17 @@ function predict(object::Mwplsr, X)
     q = length(object.fitm_emb[1].ymeans) 
     nmod = length(object.fitm_emb)
 
-    pred_mod = similar(X, m, q, nmod)
+    predw = similar(X, m, q, nmod)
     @inbounds for i in eachindex(object.fitm_emb)
-        pred_mod[:, :, i] = predict(object.fitm_emb[i], vcol(X, object.window[i])).pred
+        predw[:, :, i] = predict(object.fitm_emb[i], vcol(X, object.window[i])).pred
     end
 
     pred = zeros(Q, m, q)
     @inbounds for k in 1:nmod
-        pred = pred + object.w_emb[k] * pred_mod[:, :, k] 
+        pred = pred + object.w_emb[k] * predw[:, :, k] 
     end
 
-    (pred = pred, pred_mod)
+    (pred = pred, predw)
 
 end
 

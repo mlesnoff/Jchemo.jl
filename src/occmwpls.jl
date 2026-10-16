@@ -123,7 +123,7 @@ cutoff_pwout = fitm.cutoff_pwout  # final cutoff computed from pwout
 d = fitm.d
 tsp = .2 ; color = (:orange, tsp)
 f, ax = plotsp(d, wl[centrw]; color, title = "Train", 
-    xlabel = "Window center", ylabel = "Outlierness", label = "Train_ref")
+    xlabel = "Window center (nm)", ylabel = "Outlierness", label = "Train_ref")
 lines!(ax, wl[centrw], cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
@@ -167,7 +167,7 @@ dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "ref"
 m = nro(dnew)
 tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
-f, ax = plotsp(d, wl[centrw]; color, xlabel = "Wavelength (nm) (window center)",  ylabel = "Outlierness (SD-OD)", 
+f, ax = plotsp(d, wl[centrw]; color, xlabel = "Window center (nm)",  ylabel = "Outlierness (SD-OD)", 
     label = "Train_ref")
 lines!(ax, wl[centrw], cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 lines!(ax, wl[centrw], vrow(dnew, i); color = :blue, linewidth = .5, 
