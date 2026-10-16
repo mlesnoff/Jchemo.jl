@@ -263,6 +263,15 @@ end
 Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
+Base.@kwdef mutable struct ParMwplsr
+    npoint::Int = 21
+    nlv::Int = 15
+    K::Int = 5
+    rep::Int = 10
+    h::Float = .5                    
+    scal::Symbol = :none
+end 
+
 Base.@kwdef mutable struct ParPlsravg
     algo::Symbol = :unif                   
     nlv::AbstractVector{Int} = 1:1                    

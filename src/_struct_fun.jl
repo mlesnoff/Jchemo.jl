@@ -407,6 +407,17 @@ struct Spcr{Q <: Float}
     par::ParSpca
 end
 
+struct Mwplsr{Q <: Float}
+    fitm_emb::Vector{Plsr}
+    nlv_emb::Vector{Int}
+    scor_emb::Vector{Q}
+    d_emb::Vector{Q}
+    w_emb::Vector{Q}
+    vi::Vector{Q}
+    window::Vector{UnitRange{Int}}
+    centrw::Vector{Int}
+end
+
 struct Plsravgunif
     fitm::Plsr
     par::ParPlsravgunif

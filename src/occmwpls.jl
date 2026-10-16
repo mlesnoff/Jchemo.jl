@@ -45,7 +45,7 @@ Xp = transf(model, X)
 s = Bool.(Y.test)
 Xtrain = rmrow(Xp, s)
 Ytrain = rmrow(Y, s)
-conctrain = Ytrain.conc
+yconctrain = Ytrain.conc
 yclatrain = Ytrain.typ
 Xtest = Xp[s, :]
 Ytest = Y[s, :]
@@ -55,7 +55,7 @@ yclatest = Ytest.typ
 # "EHH" = Training reference class (= target = 'in')
 s = yclatrain .== "EHH"
 Xtrain_ref = Xtrain[s, :]    
-conctrain_ref = conctrain[s]
+yconctrain_ref = yconctrain[s]
 ntrain_ref = nro(Xtrain_ref)
 # New reference observations ("EHH") to be predicted ==> should be predicted 'in'
 s = yclatest .== "EHH"
@@ -103,7 +103,7 @@ typcut = :q ; alpha = .10
 gamma = .5
 #gamma = 0. # i.e., only OD is computed
 model = occmwpls(; npoint, nlv, pctvar, typcut, alpha, gamma) 
-fit!(model, Xtrain_ref, conctrain_ref)
+fit!(model, Xtrain_ref, yconctrain_ref)
 fitm = model.fitm ;
 @names fitm 
 
@@ -167,7 +167,7 @@ dnew = copy(dnew_ref) ; pwoutnew = copy(pwoutnew_ref) ; nam = "ref"
 m = nro(dnew)
 tsp = .2 ; color = (:orange, tsp)
 i = 1  # new observation to plot
-f, ax = plotsp(d, wl[centrw]; color, xlabel = "Wavelength index",  ylabel = "Outlierness (SD-OD)", 
+f, ax = plotsp(d, wl[centrw]; color, xlabel = "Wavelength (nm) (window center)",  ylabel = "Outlierness (SD-OD)", 
     label = "Train_ref")
 lines!(ax, wl[centrw], cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
 lines!(ax, wl[centrw], vrow(dnew, i); color = :blue, linewidth = .5, 

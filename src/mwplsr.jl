@@ -1,23 +1,3 @@
-Base.@kwdef mutable struct ParMwplsr
-    npoint::Int = 21
-    nlv::Int = 15
-    K::Int = 5
-    rep::Int = 10
-    h::Float = .5                    
-    scal::Symbol = :none
-end 
-
-struct Mwplsr{Q <: Float}
-    fitm_emb::Vector{Plsr}
-    nlv_emb::Vector{Int}
-    scor_emb::Vector{Q}
-    d_emb::Vector{Q}
-    w_emb::Vector{Q}
-    vi::Vector{Q}
-    window::Vector{UnitRange{Int}}
-    centrw::Vector{Int}
-end
-
 """
     mwplsr(; kwargs...)
     mwplsr(X, Y; kwargs...)
