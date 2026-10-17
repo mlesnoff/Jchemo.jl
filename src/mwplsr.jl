@@ -9,8 +9,8 @@ Moving window Plsr (MWPLSR).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
-* `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
-* `rep` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
+* `Kcv` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
+* `repcv` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details. 
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
@@ -148,7 +148,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         vX = vcol(X, window[j])
         
         # Cross-validate to select the model
-        segm = segmkf(n, par.K; par.rep)
+        segm = segmkf(n, par.Kcv; rep = par.repcv)
         pars = mpar(scal = [par.scal])
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = rmsep, nlv = 0:par.nlv, pars).res
