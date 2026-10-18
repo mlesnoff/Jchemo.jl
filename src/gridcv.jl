@@ -82,7 +82,7 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
 res_rep = rescv.res_rep
 f, ax = plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV")
 for i = 1:rep, j = 1:K
-    zres = res_rep[res_rep.rep .== i .&& res_rep.segm .== j, :]
+    zres = res_rep[res_rep.repl .== i .&& res_rep.segm .== j, :]
     lines!(ax, zres.nlv, zres.y1; color = (:grey, .2))
 end
 lines!(ax, res.nlv, res.y1; color = :red, linewidth = 1)
@@ -390,7 +390,7 @@ function  gridcv(model, X, Y; segm::Vector{Vector{Vector{Int64}}},
         end
         ncomb = nro(zres[1])
         zres = reduce(vcat, zres)
-        dat = DataFrame(rep = fill(i, nsegm * ncomb), segm = repeat(1:nsegm, inner = ncomb))
+        dat = DataFrame(repl = fill(i, nsegm * ncomb), segm = repeat(1:nsegm, inner = ncomb))
         zres = hcat(dat, zres)
         res_rep[i] = zres
     end
