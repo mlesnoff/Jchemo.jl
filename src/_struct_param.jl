@@ -266,8 +266,8 @@ end
 Base.@kwdef mutable struct ParMwplsr
     npoint::Int = 21
     nlv::Int = 15
-    Kcv::Int = 5      # not 'K' to escape conflict when gridcv
-    repcv::Int = 10   # same about 'rep'
+    K::Int = 5      
+    rep::Int = 10   
     h::Float = .5                    
     scal::Symbol = :none
 end 
