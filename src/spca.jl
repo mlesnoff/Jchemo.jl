@@ -164,7 +164,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = sort(unique(reduce(vcat, sellv)))
-    Spca(T, V, sv, beta, xmeans, xscales, weights, niter, sellv, sel, par) 
+    Spca(T, V, sv, beta, sel, sellv, xmeans, xscales, weights, niter, par) 
 end
 
 """ 

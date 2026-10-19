@@ -107,12 +107,12 @@ struct Spca{Q <: Float}
     V::Matrix{Q}
     sv::Vector{Q}
     beta::Matrix{Q}
+    sel::Vector{Int}
+    sellv::Vector{Vector{Int}}
     xmeans::Vector{Q}
     xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
     par::ParSpca
 end
 
@@ -134,6 +134,7 @@ end
 struct Covsel{Q <: Float}
     sel::Vector{Int}
     selc::Vector{Q}
+    C::Matrix{Q}
     xss::Vector{Q}
     yss::Vector{Q}
     xsstot::Q

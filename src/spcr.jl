@@ -103,6 +103,8 @@ function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwarg
     Spcr(fitm, Matrix(theta'), ymeans, yscales, par) 
 end
 
+# Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C 
+# (regression coefs on the scores) 
 """
     predict(object::Spcr, X)
     predict(object::Spcr, X, nlv::Union{Int, AbstractVector{Int}})
@@ -111,7 +113,6 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
-# Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C (regression coefs on the scores) 
 function predict(object::Spcr, X)
     T = transf(object, X)
     theta = object.C'
