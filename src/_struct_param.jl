@@ -264,7 +264,7 @@ Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
 Base.@kwdef mutable struct ParMwplsr
-    npoint::Int = 21
+    npoint::Int = 31
     nlv::Int = 15
     K::Int = 5      
     rep::Int = 10   
