@@ -147,9 +147,9 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         sel[i] = argmax(c)
         selc[i] = c[sel[i]]
         C[i, :] .= c
-        # Orthogonal projection of X and Y on variable x 
-        # and deflations X - X_hat and Y - Y_hat 
-        # P_proj (n, n) = x * inv(x' * x) * x' = x * x' / dot(x, x)
+        # Deflation of X and Y from variable x
+        # P_proj (n, n) matrix of orthogonal projection of X and Y on variable x 
+        # = x * inv(x' * x) * x' = x * x' / dot(x, x)
         # x * x' is heavy ==> not computed
         x .= vcol(X, sel[i])
         Kx .= x' * X
