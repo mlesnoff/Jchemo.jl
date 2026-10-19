@@ -61,10 +61,10 @@ fit!(model, X, y)
 fitm = model.fitm ;
 @names fitm
 
-fitm.sel    # indexes of selected variables for each LV
+fitm.sel      # index of the selected variable for each LV
 wl[fitm.sel]
 
-fitm.selc   # associated squared covariances
+fitm.selc     # associated squared covariance
 
 @head fitm.C  # square covariance profile for each LV
 

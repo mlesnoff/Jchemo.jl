@@ -56,8 +56,8 @@ typeof(fitm.fitm)
 
 fitm.fitm.niter
 
-fitm.fitm.sellv
 fitm.fitm.sel
+fitm.fitm.sellv
 
 @head transf(model, Xtrain)
 @head fitm.fitm.T

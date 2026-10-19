@@ -82,8 +82,8 @@ typeof(fitm)
 
 fitm.niter
 
-fitm.sellv 
-fitm.sel
+fitm.sel       # indexes of the selected variables  
+fitm.sellv     # indexes of the selected variables for each LV   
 
 V = fitm.V
 
