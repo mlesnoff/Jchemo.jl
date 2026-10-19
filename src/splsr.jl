@@ -211,12 +211,15 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         C[:, a] .= c
         TT[a] = tt
         sellv[a] = findall(abs.(w) .> 0)
-     end
-     sel = sort(unique(reduce(vcat, sellv)))
-     Splsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, 
-         niter,      # related to sparseness: q = 1 ==> 1 (no iteration), q > 1 ==> output of snipals_shen
-         sellv, sel, # add compared to ::Plsr
-         par)
+    end
+    sel = sort(unique(reduce(vcat, sellv)))
+    Splsr(T, V, R, W, C, TT, 
+        # Add compared to ::Plsr
+        sel, sellv, 
+        # End
+        xmeans, xscales, ymeans, yscales, weights, 
+        niter,  # related to sparseness: q = 1 ==> 1 (no iteration), q > 1 ==> output of snipals_shen
+        par)
 end
 
 

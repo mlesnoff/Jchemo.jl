@@ -388,14 +388,14 @@ struct Splsr{Q <: Float}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
+    sel::Vector{Int}
+    sellv::Vector{Vector{Int}}
     xmeans::Vector{Q}
     xscales::Vector{Q}
     ymeans::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}   # snipals_shen when Y with q > 1
-    sellv::Vector{Vector{Int}}
-    sel::Vector{Int}
     par::ParSplsr
 end
 
