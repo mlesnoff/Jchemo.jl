@@ -1,6 +1,6 @@
 """
     vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, Int} = nothing)
-    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothing, Int} = nothing)
+    vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y::Union{DataFrame, AbstractArray}, nlv::Union{Nothing, Int} = nothing)
 Variable importance on Projections (VIP).
 * `object` : The fitted model.
 * `Y` : The Y-data that was used to fit the model.
@@ -101,7 +101,7 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, nlv::Union{Nothing, 
     (vi = vi, W2, sst)
 end
 
-function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y, nlv::Union{Nothing, Int} = nothing)
+function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y::Union{DataFrame, AbstractArray}, nlv::Union{Nothing, Int} = nothing)
     Y = ensure_mat(Y)
     if isa(object, Plsr)
         W = object.W
