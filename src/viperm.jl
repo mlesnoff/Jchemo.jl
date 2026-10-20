@@ -15,28 +15,29 @@ Keyword arguments:
 
 The principle is as follows:
 1) The observations (rows of data {`X`, `Y`}) are splitted randomly in two sets: a calibration set {Xcal, Ycal}
-    and a validation {Xval, Yval}.
+    and a validation set {Xval, Yval}.
 2) Model `model` is fitted on {Xcal, Ycal} and used to compute predictions from Xval. 
     The error rate (`score`) is computed by comparing these predictions to Yval, giving the *reference* 
     error rate.
-3) Then, consider vX = Xval (if `perm = :val`) or Xcal (if `perm = :cal`). The rows of each variable j
-    (column of vX) are permuted and the validation error is recomputed. The variable importance 
-    for j is the difference between this new error rate and the reference error rate.
+3) Then, consider vX = Xval if `perm = :val`, or Xcal if `perm = :cal`. The rows of each variable 'j'
+    (column of vX) are permuted (rows of other variables than 'j' are not permuted) and the validation error
+    is recomputed. The variable importance for 'j' is the difference between this new error rate 
+    and the reference error rate.
 4) Steps 1-3 are replicated `rep` times. The final variance importances are the averages over
     the `rep` replications.
 
 The outputs returned by the function are:
-* `vi` : average results over the `rep` replications,
+* `vi` : average results over the `rep` replications.
 * `res_rep` : results per replication.
 
 In general, method `perm = :val` returns similar results as the 'out-of-bag' permutation method (Breiman, 2000) 
 such as the one used in random forests.
 
-*Warning*: The permutation method is biased when the variables are multicolinear (masking effects). Low values
-can be returned for variables important for the model but that are correlated with others (when these variables 
-are permuted, the model has still access to the others and the prediction performance is poorly affected).  
-See for instance an illustration
-at 'https://scikit-learn.org/stable/modules/permutation_importance.html#misleading-values-on-strongly-correlated-features' 
+*Warning*: The permutation method is biased for multicolinear variables. Multicolinearity generates 
+masking effects. Low values can be returned for variables that are important for the model but that 
+are correlated with others (when these variables are permuted, the model has still access to the others 
+and the prediction performance is poorly affected).  See for instance an illustration
+at 'https://scikit-learn.org/stable/modules/permutation_importance.html#misleading-values-on-strongly-correlated-features',
 and in the iris example below.  
 
 # References
