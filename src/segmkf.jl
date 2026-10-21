@@ -28,8 +28,8 @@ rep = 4
 segm = segmkf(n, K; rep)
 #segm = segmkf(n, K; rep, seed = 1234)
 i = 1 
-segm[i]
-segm[i][1]
+segm[i]     # replication 'i'
+segm[i][1]  # 1st segment of replication 'i'        
 
 n = 10 
 group = ["A", "B", "C", "D", "E", "A", "B", "C", "D", "E"]    # blocks of the observations
@@ -37,8 +37,8 @@ tab(group)
 K = 3 ; rep = 4 
 segm = segmkf(group, K; rep)
 i = 1 
-segm[i]
-segm[i][1]
+segm[i]             
+segm[i][1]         
 group[segm[i][1]]
 group[segm[i][2]]
 group[segm[i][3]]
