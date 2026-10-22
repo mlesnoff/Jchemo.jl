@@ -7,12 +7,13 @@ Working function for `gridscore`.
 Specific, and faster than `gridscore_br`, for models using latent variables (e.g., PLSR). 
 Argument `pars` must not contain `nlv`.
 
+The function works for mono- and multiblock X data.
+
 See function `gridscore` for examples.
 """
 function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function, 
         pars::Union{Nothing, NamedTuple} = nothing, 
         nlv::Union{Int, AbstractVector{Int}}, verbose::Bool = false)
-    # The function works for mono- and multiblock X
     # Monoblock
     if isa(Xtrain[1, 1], Number)
         Xtrain = ensure_mat(Xtrain)
@@ -23,9 +24,9 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
     else  
         Xtrain = ensure_mat_mb(Xtrain)
         X = ensure_mat_mb(X)
-        n = nco(Xtrain[1])
+        n = nro(Xtrain[1])
         p = sum(nco.(Xtrain))
-        Q = eltype(Xtrain[1, 1])
+        Q = eltype(Xtrain[1])
     end
     if eltype(Ytrain) == String
         Ytrain = vec(Ytrain)
