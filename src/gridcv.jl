@@ -69,7 +69,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv) ;
 @names rescv
 res = rescv.res 
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = plskern(; nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
@@ -94,7 +94,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
 typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = plskern(nlv = res.nlv[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
@@ -110,7 +110,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, lb) ;
 res = rescv.res 
 loglb = log.(10, res.lb)
 plotgrid(loglb, res.y1; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP-CV").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = rr(lb = res.lb[u])
 fit!(model, Xtrain, ytrain)
@@ -126,7 +126,7 @@ res = rescv.res
 loglb = log.(10, res.lb)
 typ = string.(res.scal)
 plotgrid(loglb, res.y1, typ; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP-CV").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = rr(lb = res.lb[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
@@ -145,7 +145,7 @@ res = rescv.res
 lgamma = round.(log.(10, res.gamma), digits = 1)
 plotgrid(res.nlv, res.y1, lgamma; step = 2, xlabel = "Nb. LVs",  ylabel = "RMSEP-CV", 
     leg_title = "Log(gamma)").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = kplsr(nlv = res.nlv[u], gamma = res.gamma[u])
 fit!(model, Xtrain, ytrain)
@@ -163,7 +163,7 @@ length(pars[1])
 model = knnr()
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true) ;
 res = rescv.res 
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u])
 fit!(model, Xtrain, ytrain)
@@ -183,7 +183,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv, verbose = 
 res = rescv.res 
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = lwplsr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u], 
     nlv = res.nlv[u])
@@ -202,7 +202,7 @@ length(pars[1])
 model = lwplsravg()
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true) ;
 res = rescv.res 
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = lwplsravg(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u], 
   nlv = res.nlv[u])
@@ -225,7 +225,7 @@ rescv = gridcv(model, Xbltrain, ytrain; segm, score = rmsep, pars, nlv) ;
 res = rescv.res 
 group = res.bscal 
 plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP-CV").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = mbplsr(bscal = res.bscal[u], nlv = res.nlv[u])
 fit!(model, Xbltrain, ytrain)
@@ -251,7 +251,7 @@ segm = segmkf(ntrain, 3; rep = 2)
 res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, nlv).res ;
 @head res
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model3 = plskern(nlv = res.nlv[u])
 model = pip(model1, model2, model3)
@@ -276,7 +276,7 @@ model2 = svmr()
 # Pipeline
 model = pip(model1, model2)
 res = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, verbose = true).res ;
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model2 = svmr(kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u], epsilon = res.epsilon[u])
 model = pip(model1, model2) 
@@ -321,7 +321,7 @@ rescv = gridcv(model, Xtrain, ytrain; segm, score = errp, pars, nlv)
 res = rescv.res
 typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "ERR").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = plslda(nlv = res.nlv[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)

@@ -44,7 +44,7 @@ pars = mpar(scal = [:std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv = 0:10)
 res = rescv.res
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]  # best model
 
 # Within-CV predictions for the best model

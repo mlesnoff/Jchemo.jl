@@ -69,7 +69,7 @@ model = plskern()
 nlv = 0:30
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv)
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = plskern(nlv = res.nlv[u])
 fit!(model, Xtrain, ytrain)
@@ -83,7 +83,7 @@ pars = mpar(scal = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv)
 typ = string.(res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = plskern(nlv = res.nlv[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
@@ -98,7 +98,7 @@ model = rr()
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, lb)
 loglb = log.(10, res.lb)
 plotgrid(loglb, res.y1; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = rr(lb = res.lb[u])
 fit!(model, Xtrain, ytrain)
@@ -113,7 +113,7 @@ res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, lb)
 loglb = log.(10, res.lb)
 typ = string.(res.scal)
 plotgrid(loglb, res.y1, typ; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = rr(lb = res.lb[u], scal = res.scal[u])
 fit!(model, Xtrain, ytrain)
@@ -131,7 +131,7 @@ res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv)
 lgamma = round.(log.(10, res.gamma), digits = 1)
 plotgrid(res.nlv, res.y1, lgamma; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP",
     leg_title = "Log(gamma)").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = kplsr(nlv = res.nlv[u], gamma = res.gamma[u])
 fit!(model, Xtrain, ytrain)
@@ -148,7 +148,7 @@ pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k)
 length(pars[1]) 
 model = knnr()
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = knnr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], k = res.k[u])
 fit!(model, Xtrain, ytrain)
@@ -167,7 +167,7 @@ model = lwplsr()
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv, verbose = true)
 group = string.("h=", res.h, " k=", res.k)
 plotgrid(res.nlv, res.y1, group; xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = lwplsr(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
     k = res.k[u], nlv = res.nlv[u])
@@ -185,7 +185,7 @@ pars = mpar(nlvdis = nlvdis, metric = metric, h = h, k = k, nlv = nlv)
 length(pars[1]) 
 model = lwplsravg()
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = lwplsravg(nlvdis = res.nlvdis[u], metric = res.metric[u], h = res.h[u], 
     k = res.k[u], nlv = res.nlv[u])
@@ -209,7 +209,7 @@ nlv = 0:30
 res = gridscore(model, Xblcal, ycal, Xblval, yval; score = rmsep, pars, nlv)
 group = res.bscal 
 plotgrid(res.nlv, res.y1, group; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = mbplsr(bscal = res.bscal[u], nlv = res.nlv[u])
 fit!(model, Xbltrain, ytrain)
@@ -234,7 +234,7 @@ model = pip(model1, model2, model3)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, nlv) ;
 @head res
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model3 = plskern(nlv = res.nlv[u])
 model = pip(model1, model2, model3)
@@ -259,7 +259,7 @@ model2 = svmr()
 # Pipeline
 model = pip(model1, model2)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, verbose = true)
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model2 = svmr(kern = res.kern[u], gamma = res.gamma[u], cost = res.cost[u], epsilon = res.epsilon[u])
 model = pip(model1, model2) 
@@ -306,7 +306,7 @@ pars = mpar(prior = prior, scal = scal)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = errp, pars, nlv)
 typ = string.(res.prior, "-", res.scal)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
-u = findall(res.y1 .== minimum(res.y1))[1] 
+u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
 model = plslda(nlv = res.nlv[u], prior = res.prior[u])
 fit!(model, Xtrain, ytrain)
