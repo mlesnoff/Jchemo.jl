@@ -471,6 +471,7 @@ See also bagging methods.
 - **cosm** Cosinus matrix
 - **covm** Covariances matrix
 - **corm** Correlations matrix
+- **corvar** Correlations to a reference variable in a matrix
 - **frob**, **frob2** Frobenius norm
 - **matB**, **matW**, **matWc** Between- and within-class covariance matrices
 

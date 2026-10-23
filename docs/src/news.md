@@ -2,6 +2,9 @@
 
 ## *Version 0.11.1 dev*
 
+- News
+    - - Function **corvar**: Correlations to a reference variable in a matrix.
+
 - Modifications
     - Code cleaning.
 
