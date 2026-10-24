@@ -610,16 +610,21 @@ db = joinpath(path_jdat, "data/cassav.jld2")
 @load db dat
 @names dat
 X = dat.X 
+p = nco(X)
 wlst = names(X)
 wl = parse.(eltype(X[1, 1]), wlst)
 
 j = 300  # reference variable for correlation
 v = corvar(Matrix(X), j) 
 
-xticks = wl[1]:100:wl[end]
-f, ax = plotxy(wl, v; size = (900, 250), xticks, xlabel = "Wavelength (nm)", ylabel = "Correlation")
-lines!(wl, v; linewidth = .5)
-vlines!(wl[j]; color = "red")
+j = 140
+zwl = wlst[j]
+v = corvar(Matrix(X), j)
+xticks = 1:50:p
+f, ax = plotxy(1:p, v; size = (900, 250), title = string("Wavelength ",  zwl, " nm"), xticks, 
+    xlabel = "X-Column index", ylabel = "Correlation")
+lines!(1:p, v; linewidth = .5)
+vlines!(j; color = "red")
 f
 ```
 """
