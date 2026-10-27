@@ -23,7 +23,7 @@ The function implements a moving (i.e., sliding) window Pls regression (Mwpls), 
 
 2) For each window:
 
-    * a Plsr model with a maximal number of `nlv` LVs (principal components) is fitted.
+    * a Plsr model with a maximal number of `nlv` LVs is fitted.
     
     * A repeated K-fold cross validation is run between 0:`nlv` on the training observations, and the model 
         showing the minimum average RMSEP-CV is selected and stored. 
@@ -33,8 +33,8 @@ The function implements a moving (i.e., sliding) window Pls regression (Mwpls), 
          
 3) A performance discrepancy is computed for each of the k selected models. Let A be the minumum RMSEP-CV 
     observed between the k models, then:
-    * discr(model i) = RMSEP-CV(model i) - A ; i = 1:k.
-    Then, a weight is computed for each model i using a parameterized decreasing weighting function
+    * discr(model 'i') = RMSEP-CV(model 'i') - A ; i = 1:k
+    Then, a weight is computed for each model 'i' using a parameterized decreasing weighting function
     (function `winvs`). This returns a vector of model weights of length k, `w_emb`.   
 
 4) The final prediction for an observation is the weighted (`w_emb`) average of the k predictions
@@ -42,6 +42,22 @@ The function implements a moving (i.e., sliding) window Pls regression (Mwpls), 
     
 5) The variable (`X` column) importance (`vi`) is the simple average of the model weights of all the models 
     (within the k models) that used this variable.  
+
+This pipeline is different from the 'Mwplsr' pipeline of Jiang et al 2002 (seminal article)
+and the 'Sepa-Mwplsr' pipeline of Yang et al. 2020 that both use training residual sums of squares
+of Plsr models to identify important areas and have different ways to compute the final predictions. 
+
+# References
+
+Jiang, J.-H., Berry, R.J., Siesler, H.W., Ozaki, Y., 2002. Wavelength Interval Selection 
+in Multicomponent Spectral Analysis by Moving Window Partial Least-Squares Regression with Applications 
+to Mid-Infrared and Near-Infrared Spectroscopic Data. Anal. Chem. 74, 3555–3565. 
+https://doi.org/10.1021/ac011177u 
+
+Yang, W., Wang, W., Zhang, R., Zhang, F., Xiong, Y., Wu, T., Chen, W., Du, Y., 2020. A Modified Moving-Window
+Partial Least-Squares Method by Coupling with Sampling Error Profile Analysis for Variable Selection 
+in Near-Infrared Spectral Analysis. ANAL. SCI. 36, 303–309. 
+https://doi.org/10.2116/analsci.19P283
 
 # Examples
 ```julia

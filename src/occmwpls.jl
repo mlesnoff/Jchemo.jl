@@ -21,8 +21,7 @@ The function implements an Occ by moving (i.e., sliding) window Pls (Mwpls).
 This is the same principle as function `occmwpca` except that a Pls{X, Y} is run on each window, 
 instead of a Pca. 
 
-* For each window, the nb. LVs is selected by a repeated K-fold cross validation, 
-see function `mwplsr`. 
+* For each window, the nb. LVs is selected by a repeated K-fold cross validation, see function `mwplsr`. 
 
 * See function `outsdod` for other details, function `occsd` for the possible cutoff types (`typcut`),
 and the examples below for the outputs.
