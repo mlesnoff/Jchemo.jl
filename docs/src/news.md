@@ -1,9 +1,15 @@
 # News
 
-## *Version 0.11.1 dev*
+## *Version 0.11.2 dev*
+
+- Modifications
+    - Code cleaning.
+
+
+## *Version 0.11.1 *
 
 - News
-    - - Function **corvar**: Correlations to a reference variable in a matrix.
+    - Function **corvar**: Correlations to a reference variable in a matrix.
 
 - Modifications
     - Code cleaning.
