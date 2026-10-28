@@ -6,7 +6,7 @@
     - Code cleaning.
 
 
-## *Version 0.11.1 *
+## *Version 0.11.1*
 
 - News
     - Function **corvar**: Correlations to a reference variable in a matrix.
