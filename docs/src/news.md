@@ -4,6 +4,9 @@
 
 - Modifications
     - Code cleaning.
+    - Knn-Lwplsda functions: Correction of the structure of the returned output 
+        (a previous change made that case 'nlvdis = 0' was not working anymore;
+         works now). 
 
 
 ## *Version 0.11.1*
