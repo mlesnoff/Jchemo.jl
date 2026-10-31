@@ -1,6 +1,11 @@
 # News
 
-## *Version 0.11.2 dev*
+## *Version 0.11.3 dev*
+
+- Modifications
+
+
+## *Version 0.11.2*
 
 - Modifications
     - Code cleaning.
