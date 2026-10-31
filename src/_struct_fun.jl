@@ -740,34 +740,34 @@ struct Lwmlrda{Q <: Float}
 end
 
 struct Lwplsrda{Q <: Float}
-    fitm
+    fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
-    priors::Vector{Q}
+    priors::Union{Nothing, Vector{Q}}
     lev::Vector{String}
     par::ParLwplsda
 end
 
 struct Lwplslda{Q <: Float}   
-    fitm
+    fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
-    priors::Vector{Q}
+    priors::Union{Nothing, Vector{Q}}
     lev::Vector{String}
     par::ParLwplsda
 end
 
 struct Lwplsqda{Q <: Float}
-    fitm
+    fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
     xscales::Vector{Q}
     ni::Vector{Int}
-    priors::Vector{Q}
+    priors::Union{Nothing, Vector{Q}}
     lev::Vector{String}
     par::ParLwplsqda
 end
