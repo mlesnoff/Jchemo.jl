@@ -8,12 +8,16 @@ Build training vs. test sets using a stratified sampling.
 Keyword arguments:
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator.  
 
-Two outputs are returned (= row indexes of the data): 
-* `train` (n - `k`),
-* `test` (`k`). 
+In each class 'i' (with 'ni' observations), the nb. of sampled test observations is ki = `k`, or ki = `k[i]` 
+if `k` is a vector.
 
-If `y` = `nothing`, the sampling ( within each class) of the `k` test observations is random, else it is systematic 
-over the sorted `y` (see the principle in function `sampsys`).
+Two outputs are returned (= row indexes of the data): 
+* `train` (n - m),
+* `test` (m), 
+where m = sum(ki).
+
+If `y = nothing`, the sampling of the test observations in each class is random, else it is 
+systematic over the sorted `y` (see the principle in function `sampsys`).
 
 # References
 Naes, T., 1987. The design of calibration in near infra-red reflectance analysis by clustering. 
@@ -65,5 +69,3 @@ function sampcla(x::Vector{String}, k::Union{Int, Vector{Int}}, y = nothing; see
     zn = collect(1:n)
     (train = zn[setdiff(1:end, s)], test = s, ni, lev, k)
 end
-
-

@@ -391,7 +391,7 @@ See also bagging methods.
 
 - **samprand** Random (without replacement)
 - **sampsys** Systematic over a quantitative variable
-- **sampcla** Stratified by class
+- **sampcla**, **sampclapct** Stratified by class
 - **sampdatf** From each column of a dataframe (where missing values are allowed)
 
 - **sampks** Kennard-Stone 

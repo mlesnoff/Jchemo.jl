@@ -2,7 +2,11 @@
 
 ## *Version 0.11.3 dev*
 
+- News
+    - Function **sampclapct**: Build training vs. test sets using a stratified (proportion) sampling.
+
 - Modifications
+    - Code cleaning.
 
 
 ## *Version 0.11.2*

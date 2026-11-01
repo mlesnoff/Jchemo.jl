@@ -291,6 +291,7 @@ include("sampwsp.jl")
 include("samprand.jl")
 include("sampsys.jl")
 include("sampcla.jl")
+include("sampclapct.jl")
 include("sampdatf.jl")
 
 include("distances.jl")
@@ -535,7 +536,7 @@ export
     viperm!,
 
     ######---- Sampling data
-    sampks, sampdp, sampwsp, samprand, sampsys, sampcla, 
+    sampks, sampdp, sampwsp, samprand, sampsys, sampcla, sampclapct, 
     sampdatf,
 
     ######---- Distances
