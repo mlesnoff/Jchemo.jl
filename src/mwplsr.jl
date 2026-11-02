@@ -210,25 +210,18 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
 end
 
 function predict(object::Mwplsr, X)
-    
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
     q = length(object.fitm_emb[1].ymeans) 
     nw = length(object.fitm_emb)
-
     predw = similar(X, m, q, nw)
+    pred = zeros(Q, m, q)
     @inbounds for i in eachindex(object.fitm_emb)
         predw[:, :, i] = predict(object.fitm_emb[i], vcol(X, object.window[i])).pred
+        pred = pred + object.w_emb[i] * predw[:, :, i] 
     end
-
-    pred = zeros(Q, m, q)
-    @inbounds for k in 1:nw
-        pred = pred + object.w_emb[k] * predw[:, :, k] 
-    end
-
     (pred = pred, predw)
-
 end
 
 
