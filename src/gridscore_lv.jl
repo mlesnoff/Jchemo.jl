@@ -37,11 +37,13 @@ function gridscore_lv(Xtrain, Ytrain, X, Y; algo::Function, score::Function,
     end
     q = nco(Ytrain)
     # Rebuild 'nlv' to ensure consistency with training dimensionality
-    le_nlv = length(nlv)
-    if le_nlv == 1
-        nlv = minimum([maximum(nlv); n - 1; p - 1])
+    # v = [maximum(nlv); n - 1; p - 1]  # old version
+    v = [maximum(nlv); n; p]
+    if length(nlv) == 1
+        nlv = minimum(v)
+        le_nlv = 1
     else
-        nlv = minimum(nlv):minimum([maximum(nlv); n - 1; p - 1])
+        nlv = minimum(nlv):minimum(v)
         le_nlv = length(nlv)
     end
     # End
