@@ -133,13 +133,13 @@ nlv = 10
 pctvar = .98
 typcut = :q ; alpha = .10
 gamma = .5
-#gamma = 0. # i.e., only OD is computed
+#gamma = 0. # i.e., only OD is considered
 model = occmwpca(; npoint, nlv, pctvar, typcut, alpha, gamma) 
 fit!(model, Xtrain_ref)
 fitm = model.fitm ;
 @names fitm 
 
-@head fitm.window            # range of each window
+@head fitm.d                 # standardized outlierness ('dstand_cut' in 'outsdod') of the training observations for each window 
 @head centrw = fitm.centrw   # central point of each window
 
 @head fitm.nlv_emb           # nb. of LVs selected for each window
@@ -202,7 +202,7 @@ i = 1  # new observation to plot
 f, ax = plotsp(d, wl[centrw]; color, xlabel = "Window center (nm)",  ylabel = "Outlierness (SD-OD)", 
     label = "Train_ref")
 lines!(ax, wl[centrw], cutoff_d; color = :grey, linewidth = 2, label = "Cutoff")
-lines!(ax, wl[centrw], vrow(dnew, i); color = :blue, linewidth = .5, 
+lines!(ax, wl[centrw], vrow(dnew, i); color = :red, linewidth = 1, 
     label = string("An obs. in New_", nam))
 Legend(f[1, 2], ax, ""; nbanks = 1, rowgap = 10, framevisible = false)
 f
@@ -230,13 +230,13 @@ function occmwpca(X; kwargs...)
     nhwindow = Int((par.npoint - 1) / 2)  # half window
     rangetot = (nhwindow + 1):(p - nhwindow)
     centrw = collect(rangetot)
-    nmod = length(rangetot)
+    nw = length(rangetot)
     # Pre-allocation
-    window = list(UnitRange{Int}, nmod)
-    fitm_emb = list(nmod)
-    nlv_emb = list(Int, nmod)
-    fitm_occ = list(Occsdod, nmod)
-    d = similar(X, n, nmod)
+    window = list(UnitRange{Int}, nw)
+    fitm_emb = list(nw)
+    nlv_emb = list(Int, nw)
+    fitm_occ = list(Occsdod, nw)
+    d = similar(X, n, nw)
     # End
     j = 1
     @inbounds for i in rangetot  # define each window
@@ -249,11 +249,13 @@ function occmwpca(X; kwargs...)
         # End
         fitm_occ[j] = occsdod(fitm_emb[j], vX; nlv = nlv_emb[j], typcut = par.typcut, 
             cri = par.cri, alpha = par.alpha, gamma = par.gamma)
-        d[:, j] = fitm_occ[j].d.d 
+        # Here the *standardized* outliernesss 'dstand_cut' is used (instead of 'd')
+        # since this value must have the same scale between the windows while the nb. LVs vary  
+        d[:, j] = fitm_occ[j].d.dstand_cut 
         j = j + 1
     end
-    cutoff_d = colquant(d, 1 - par.alpha)
-    pwout = rowsum(Q.(d .> cutoff_d')) / nmod
+    cutoff_d = fill(Q(1), nw)  # = colquant(d, 1 - par.alpha)
+    pwout = rowsum(Q.(d .> cutoff_d')) / nw
     cutoff_pwout = quantv(pwout, 1 - par.alpha)
     Occmwpca(d, cutoff_d, pwout, cutoff_pwout, fitm_emb, nlv_emb, fitm_occ, window, centrw)
 end
@@ -262,12 +264,12 @@ function predict(object::Occmwpca, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
-    nmod = length(object.window)
-    d = similar(X, m, nmod)
+    nw = length(object.window)
+    d = similar(X, m, nw)
     @inbounds for j in eachindex(object.window)
-        d[:, j] = predict(object.fitm_occ[j], vcol(X, object.window[j])).d.d
+        d[:, j] = predict(object.fitm_occ[j], vcol(X, object.window[j])).d.dstand_cut
     end
-    pwout = rowsum(Q.(d .> object.cutoff_d')) / nmod
+    pwout = rowsum(Q.(d .> object.cutoff_d')) / nw
     pred = [if pwout[i] <= object.cutoff_pwout "in" else "out" end for i in eachindex(pwout)]
     pred = reshape(pred, m, 1)
     (pred = pred, d, pwout)

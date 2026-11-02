@@ -147,12 +147,12 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
     nhwindow = Int((par.npoint - 1) / 2)  # half window
     rangetot = (nhwindow + 1):(p - nhwindow)
     centrw = collect(rangetot)
-    nmod = length(rangetot)
+    nw = length(rangetot)
     
-    window = list(UnitRange{Int}, nmod)
-    fitm_emb = list(Plsr, nmod)
-    nlv_emb = list(Int, nmod)
-    scor_emb = list(Q, nmod)
+    window = list(UnitRange{Int}, nw)
+    fitm_emb = list(Plsr, nw)
+    nlv_emb = list(Int, nw)
+    scor_emb = list(Q, nw)
         
     j = 1   
     @inbounds for i in rangetot  # define each window
@@ -195,7 +195,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
     @. w_emb /= wtot                # sum(w_emb) = 1
 
     # Variable importances 
-    V = -ones(Q, nmod, p)
+    V = -ones(Q, nw, p)
     @inbounds for i in eachindex(fitm_emb)
         V[i, window[i]] .= w_emb[i]
     end
@@ -215,15 +215,15 @@ function predict(object::Mwplsr, X)
     Q = eltype(X)
     m = nro(X)
     q = length(object.fitm_emb[1].ymeans) 
-    nmod = length(object.fitm_emb)
+    nw = length(object.fitm_emb)
 
-    predw = similar(X, m, q, nmod)
+    predw = similar(X, m, q, nw)
     @inbounds for i in eachindex(object.fitm_emb)
         predw[:, :, i] = predict(object.fitm_emb[i], vcol(X, object.window[i])).pred
     end
 
     pred = zeros(Q, m, q)
-    @inbounds for k in 1:nmod
+    @inbounds for k in 1:nw
         pred = pred + object.w_emb[k] * predw[:, :, k] 
     end
 
