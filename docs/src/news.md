@@ -6,6 +6,7 @@
     - Function **sampclapct**: Build training vs. test sets using a stratified (proportion) sampling.
 
 - Modifications
+    - Function **mwplsr**: new argument 'score'.
     - Code cleaning.
 
 

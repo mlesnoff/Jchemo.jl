@@ -268,7 +268,8 @@ Base.@kwdef mutable struct ParMwplsr
     nlv::Int = 15
     K::Int = 3      
     rep::Int = 10   
-    h::Float = 1.                    
+    h::Float = 1. 
+    score::Function = rmsep                    
     scal::Symbol = :none
 end 
 

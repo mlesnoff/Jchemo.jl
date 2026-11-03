@@ -166,7 +166,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         segm = segmkf(n, par.K; rep = par.rep)
         pars = mpar(scal = [par.scal])
         model = plskern()
-        res = gridcv(model, vX, Y; segm, score = rmsep, nlv = 0:par.nlv, pars).res
+        res = gridcv(model, vX, Y; segm, score = par.score, nlv = 0:par.nlv, pars).res
         if q == 1
             vscor = res.y1
         else
