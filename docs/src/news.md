@@ -5,6 +5,7 @@
 - News
     - Function - **getind**: Return the indexes found in a vector of values existing in another vector. 
     - Function **sampclapct**: Build training vs. test sets using a stratified (proportion) sampling.
+    - Macro **@in**: Determine whether items of a vector is in a given collection.
 
 - Modifications
     - Function **mwplsr**: new argument 'score'.

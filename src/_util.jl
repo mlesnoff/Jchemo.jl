@@ -315,36 +315,6 @@ function getind_uniq(x::Vector{String})
 end
 
 """
-    @head X
-Display the first rows of a dataset.
-
-# Examples
-```julia
-using Jchemo
-
-X = rand(100, 5)
-@head X
-```
-"""
-function head(X)
-    n = nro(X) 
-    m = min(3, n)
-    if isa(X, AbstractVector)
-        display(X[1:m])
-    else
-        display(X[1:m, :])
-    end
-    if n > 3
-        println("... ", size(X))
-    end
-    println(" ")
-end
-
-macro head(X)
-    esc( :( Jchemo.head($X) ))
-end
-
-"""
     list(n::Int)
 Create a Vector{Any}(nothing, n).
 
@@ -795,18 +765,60 @@ vcol(X::DataFrame, j) = view(Matrix(X), :, j)
 
 ########### Macros 
 
-""" 
-    @pmod fun
-Shortcut for function `parentmodule`.
-* `fun` : The name of a function.
+"""
+    @head X
+Display the first rows of a dataset.
 
 # Examples
 ```julia
-@pmod rand
+using Jchemo
+
+X = rand(100, 5)
+@head X
 ```
 """
-macro pmod(fun)
-    esc( :( parentmodule($fun) ))
+function head(X)
+    n = nro(X) 
+    m = min(3, n)
+    if isa(X, AbstractVector)
+        display(X[1:m])
+    else
+        display(X[1:m, :])
+    end
+    if n > 3
+        println("... ", size(X))
+    end
+    println(" ")
+end
+
+macro head(X)
+    esc( :( Jchemo.head($X) ))
+end
+
+
+""" 
+    @in x y
+Determine whether items of a vector are in a given collection
+* `x` : A vector.
+* `y` : A vector (given collection).
+
+Wrapper for function `in` to avoid broadcasting syntax.
+
+# Examples
+```julia
+using Jchemo
+
+x = ["b", "a"]
+#x = ["b", "a", "a"]
+#x = ["b", "a", "z", "a"]
+y = ["a", "d", "e", "b", "a", "c", "a"]
+
+@in x y 
+@in(x, y) 
+```
+"""
+macro in(x, y)
+    esc( :( in($x).($y) ))
 end
 
 """ 
@@ -852,6 +864,20 @@ function plist(x)
         println(x[i])
         println("")
     end
+end
+
+""" 
+    @pmod fun
+Shortcut for function `parentmodule`.
+* `fun` : The name of a function.
+
+# Examples
+```julia
+@pmod rand
+```
+"""
+macro pmod(fun)
+    esc( :( parentmodule($fun) ))
 end
 
 """ 
