@@ -417,7 +417,7 @@ See also bagging methods.
 
 *Macros*
 - **@head** Display the first rows of a dataset
-- **@in** Determine whether items of a vector is in a given collection
+- **@in** Determine whether items of a vector is in a given collection 
 - **@pmod** Shortcut for function **parentmodule**
 - **@names** Return the names of the sub-objects contained in a object
 - **@pars** Display the keyword arguments (with their default values) of a function
