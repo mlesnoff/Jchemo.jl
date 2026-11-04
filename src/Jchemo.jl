@@ -309,7 +309,7 @@ export
     pip,
     
     ######---- Utilities
-    @head, @in, @names, @pars, @plist, @pmod, @type,
+    @head, @in, @names, @pars, @plist, @pmod, @type, 
     #
     aggmean, aggstat, 
     aggsumv,  
