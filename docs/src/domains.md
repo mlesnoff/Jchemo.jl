@@ -345,7 +345,8 @@ See also bagging methods.
 
 ### Checking
 
-- **finduniq** Find the first indexes of a vector making unique the levels in this vector
+- **getind** Return the indexes found in a vector of values existing in another vector
+- **getind_uniq** Return the indexes of the values made unique in a vector
 - **dupl** Find replicated rows in a dataset
 - **tabdupl** Tabulate duplicated values in a vector
 - **findmiss** Find rows with missing data in a dataset
@@ -428,7 +429,7 @@ See also bagging methods.
 - **aggmean** Column-wise means by group
 
 *Tables*
-- **tab**, **tabdupl** Tabulations for categorical variables
+- **tab**, **tabdupl** Tabulate a categorical variable
 - **tabcont** Tabulate a continuous variable
 - **mbin** Build histogram-bin intervals
 

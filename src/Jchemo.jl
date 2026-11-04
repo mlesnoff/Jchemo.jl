@@ -360,7 +360,7 @@ export
     recod_miss, 
     expand_tab2d, expand_grid,
     rmcol, rmrow, 
-    finduniq,
+    getind, getind_uniq,
     simpphub, simppsph,   
     snipals_shen,
     thresh_soft, thresh_hard, 

@@ -254,11 +254,50 @@ function findmiss(X)
 end
 
 """
-    finduniq(x)
-Find the first indexes of a vector making unique the levels in this vector.
-* `x` : A categorical variable (n) (e.g. IDs). Must be a `Vector{String}`.
+    getind(x::Vector{String}, y::Vector{String})
+Return the indexes found in a vector of values existing in another vector.
+* `x` : A vector (n) (e.g.; a variable 'ID'). Must be a `Vector{String}`.
+* `y` : A vector in which are searched the indexes. Must be a `Vector{String}`.
+    Values of `x` must be found in `y`. 
 
-Can be used to remove duplicated rows (for instance, identified by a single ID variable) in a dataset.
+The function returns a vector of indexes, as follows:
+    
+* For each element of `x`, the returned index is the one where the value of this element is found in `y`. 
+    If several values of `y` correspond to the given value, the function returns the first index.
+    
+* The returned index vector is in the same order as `x` and of same length as `x`.
+
+* Values of `x` not found in `y` return an error.
+
+# Examples
+```julia
+using Jchemo
+
+x = ["b", "a"]
+#x = ["b", "a", "a"]
+#x = ["b", "a", "z", "a"]
+y = ["a", "d", "e", "b", "a", "c", "a"]
+
+s = getind(x, y)  # indexes 
+y[s]
+```
+"""
+function getind(x::Vector{String}, y::Vector{String})
+    s = fill(Int(0), length(x)) 
+    for i in eachindex(x)
+        v = findall(y .== x[i])
+        @assert length(v) > 0 "Value $(x[i]) not found in y."  
+        s[i] = first(v)
+    end
+    s
+end
+
+"""
+    getind_uniq(x)
+Return the indexes of the values made unique in a vector.
+* `x` : A vector (n) (e.g.; a variable 'ID'). Must be a `Vector{String}`.
+
+Can be used to remove duplicated rows (idendified by dupliactes in a ID variable) in a dataset.
 
 # Examples
 ```julia
@@ -266,20 +305,13 @@ using Jchemo
 
 v = ["a", "d", "c", "b", "a", "d", "a"]  # a vector of IDs
 
-s = finduniq(v)  # first indexes of v making v without duplicates
+s = getind_uniq(v)  # indexes of the values made unique (and sorted) in v
 v[s]  
 ```
 """
-function finduniq(x::Vector{String})
-    n = length(x)
-    res = tabdupl(x)
-    xd = res.lev
-    s = list(Int, 0) 
-    for i in eachindex(xd)
-        zs = findall(x .== xd[i])
-        append!(s, zs[2:end])
-    end
-    rmrow(collect(1:n), s)
+function getind_uniq(x::Vector{String})
+    x_uniq = sort(unique(x))
+    getind(x_uniq, x)
 end
 
 """

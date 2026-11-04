@@ -3,6 +3,7 @@
 ## *Version 0.11.3 dev*
 
 - News
+    - Function - **getind**: Return the indexes found in a vector of values existing in another vector. 
     - Function **sampclapct**: Build training vs. test sets using a stratified (proportion) sampling.
 
 - Modifications
@@ -284,7 +285,7 @@ in particular in functions having arguments 'nlv' (latent variables) and 'lb' (r
 
 - News
     - Function **aggmean**: Compute column-wise means by class in a dataset.
-    - Function **finduniq**: Find the indexes making unique the IDs in a ID vector.
+    - Function **getind_uniq**: Find the indexes making unique the IDs in a ID vector.
     - Function **mae**: Compute the mean absolute error.
     - Function **rmseprel**: Compute the relative RMSEP.
 

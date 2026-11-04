@@ -82,35 +82,6 @@ function tabdupl(x::AbstractVector)
 end
 
 """
-    mbin(q::Vector{Q}) where Q <: Float
-Build histogram-bin intervals.
-* `q` : Numerical values (K) defining the limits of the intervals. 
-
-For a given vector `q` of length K, the function returns K + 1 intervals: 
-* (-Inf, q[1]]
-* (q[1], q[2]]
-* etc.
-* (q[K - 1], q[K]]
-* (q[K], Inf)
-
-# Examples
-```julia
-using Jchemo
-
-q = [.01; .5; .500001; .9; 1.1]
-mbin(q)
-```
-"""
-function mbin(q::Vector{Q}) where Q <: Float
-    zq = vcat(-Inf, q, Inf)
-    bin = list(Vector{Q}, length(q) + 1)
-    for i in eachindex(bin)
-        bin[i] = [zq[i]; zq[i + 1]]
-    end
-    bin
-end
-
-"""
     tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
 Tabulate a continuous variable.
 * `x` : A continuous variable (n).
@@ -151,5 +122,36 @@ function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
     val
     DataFrame(bin = bin, lev = lev, n = val)
 end
+
+"""
+    mbin(q::Vector{Q}) where Q <: Float
+Build histogram-bin intervals.
+* `q` : Numerical values (K) defining the limits of the intervals. 
+
+For a given vector `q` of length K, the function returns K + 1 intervals: 
+* (-Inf, q[1]]
+* (q[1], q[2]]
+* etc.
+* (q[K - 1], q[K]]
+* (q[K], Inf)
+
+# Examples
+```julia
+using Jchemo
+
+q = [.01; .5; .500001; .9; 1.1]
+mbin(q)
+```
+"""
+function mbin(q::Vector{Q}) where Q <: Float
+    zq = vcat(-Inf, q, Inf)
+    bin = list(Vector{Q}, length(q) + 1)
+    for i in eachindex(bin)
+        bin[i] = [zq[i]; zq[i + 1]]
+    end
+    bin
+end
+
+
 
 
