@@ -9,6 +9,7 @@
 
 - Modifications
     - Function **mwplsr**: new argument 'score'.
+    - Bug correction in function **@pars**. 
     - Code cleaning.
 
 
