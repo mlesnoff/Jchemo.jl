@@ -213,7 +213,7 @@ Base.@kwdef mutable struct ParMlr
     noint::Bool = false                      
 end 
 
-Base.@kwdef mutable struct ParPlsr    # except plswold
+Base.@kwdef mutable struct ParPlsr    # all except plswold
     nlv::Int = 1                    
     scal::Symbol = :none 
 end 
@@ -390,7 +390,7 @@ end
 
 # Svm, Trees
 
-Base.@kwdef mutable struct ParSvm{Q <: Float64}    # svmr, svmda    LIBSVM requires Float64
+Base.@kwdef mutable struct ParSvm{Q <: Float64}    # svmr, svmda   # !!!: LIBSVM requires Float64
     kern::Symbol = :krbf    
     gamma::Q = 1.  
     coef0::Q = 0.   
@@ -424,7 +424,7 @@ end
 ############---- Discrimination
 
 Base.@kwdef mutable struct ParMlrda{Q <: Float}
-    prior::Union{Symbol, Vector{Q}} = :prop                     
+    prior::Union{Symbol, Vector{Q}} = :prop                   
 end 
 
 Base.@kwdef mutable struct ParPlsda{Q <: Float}    # plsrda, plslda

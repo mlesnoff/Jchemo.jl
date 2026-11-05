@@ -4,9 +4,9 @@ function defaults(algo::Function)
 
         detrend_pol Jchemo.ParDetrendpol ;
         detrend_lo Jchemo.ParDetrendlo ;
-        detrend_asls Jchemo.ParDetrendasls ;
-        detrend_airpls Jchemo.ParDetrendairpls ;
-        detrend_arpls Jchemo.ParDetrendarpls ;
+        detrend_asls Jchemo.ParDetrendasls{Float64} ;
+        detrend_airpls Jchemo.ParDetrendairpls{Float64} ;
+        detrend_arpls Jchemo.ParDetrendarpls{Float64} ;
         fdif Jchemo.ParFdif ;
         interpl Jchemo.ParInterpl ;
         mavg Jchemo.ParMavg ;
@@ -64,7 +64,7 @@ function defaults(algo::Function)
 
         plskern Jchemo.ParPlsr ; 
         plsnipals Jchemo.ParPlsr ; 
-        plswold Jchemo.ParPlsr ; 
+        plswold Jchemo.ParPlswold ; 
         plsrosa Jchemo.ParPlsr ; 
         plssimp Jchemo.ParPlsr ; 
         plsravg Jchemo.ParPlsravg ; 
@@ -96,7 +96,7 @@ function defaults(algo::Function)
         lwplsravg Jchemo.ParLwplsravg ;
         loessr Jchemo.ParLoessr ;
 
-        protoplsr Jchemo.ParProtoplsr ;
+        protoplsr Jchemo.ParProtoplsr{Float64} ;
         protoclustplsr Jchemo.ParProtoclustplsr ;
 
         mbplsr Jchemo.ParMbplsr ; 
@@ -110,15 +110,15 @@ function defaults(algo::Function)
         dmnormlog Jchemo.ParDmnorm ;
         dmkern Jchemo.ParDmkern ;
 
-        lda Jchemo.ParLda ;
+        lda Jchemo.ParLda{Float64} ;
         qda Jchemo.ParQda ;
         rda Jchemo.ParRda ;
         kdeda Jchemo.ParKdeda ;
         
-        mlrda Jchemo.ParMlrda ;
+        mlrda Jchemo.ParMlrda{Float64} ;
         rrda Jchemo.ParRrda ;
-        plsrda Jchemo.ParPlsda ; 
-        plslda Jchemo.ParPlsda ;
+        plsrda Jchemo.ParPlsda{Float64} ;
+        plslda Jchemo.ParPlsda{Float64} ;
         plsqda Jchemo.ParPlsqda ;
         plskdeda Jchemo.ParPlskdeda ;
 
@@ -143,8 +143,8 @@ function defaults(algo::Function)
         lwplslda Jchemo.ParLwplsda ;
         lwplsqda Jchemo.ParLwplsqda ;
 
-        mbplsrda Jchemo.ParMbplsda ; 
-        mbplslda Jchemo.ParMbplsda ;
+        mbplsrda Jchemo.ParMbplsda{Float64} ;
+        mbplslda Jchemo.ParMbplsda{Float64} ;
         mbplsqda Jchemo.ParMbplsqda ;
         mbplskdeda Jchemo.ParMbplskdeda ;
 
@@ -166,4 +166,3 @@ function defaults(algo::Function)
     first(defs[s, 2])
 
 end
-
