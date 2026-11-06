@@ -1,20 +1,29 @@
 """
-    viperm!(model, X, Y; perm = :val, score = rmsep, psamprow = .3, rep = 50)
+    viperm!(model, X, Y; perm::Symbol = :val, score::Function = rmsep, rep::Int = 50, 
+        psamp::Float = .3, seed::Union{Nothing, Int} = nothing)
+    viperm!(model, X, Y, group::Vector{String}; perm::Symbol = :val, score::Function = rmsep, 
+        rep::Int = 50, psamp::Float = .3, seed::Union{Nothing, Int} = nothing)
 Permutation variable importance.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).  
+* `group` : A vector (n) defining groups of observations. Must be a Vector{String}. 
 Keyword arguments:
 * `perm` : Type of permutation. If `:val` (default), permutations are done on the validation set. 
     If `:cal', they are done one the calibration set. 
 * `score` : Function computing the prediction score (an error rate).
-* `psamprow` : Proportion of data used as validation set to compute the `score`.
+* `psamp` : Proportion of observations, or groups (if `group` is used), used as validation set to compute 
+    the `score`.
 * `rep` : Number of replications of the splitting calibration/validation. 
 
 *Note:* This is an inplace function that modifies the content of object `model` (only).
 
+If `group` is used: for the split calibration/validation (see step-1 below), the function samples groups of observations 
+instead of single observations. Such a group-sampling is required when the data are structured by groups and when 
+the response to predict is correlated within groups. This prevents underestimation of the generalization error.
+
 The principle is as follows:
-1) The observations (rows of data {`X`, `Y`}) are splitted randomly in two sets: a calibration set {Xcal, Ycal}
+1) The observations or groups (rows of data {`X`, `Y`}) are splitted randomly in two sets: a calibration set {Xcal, Ycal}
     and a validation set {Xval, Yval}.
 2) Model `model` is fitted on {Xcal, Ycal} and used to compute predictions from Xval. 
     The error rate (`score`) is computed by comparing these predictions to Yval, giving the *reference* 
@@ -76,18 +85,18 @@ res.vi
 ```
 """
 function viperm!(model, X, Y; perm::Symbol = :val, score::Function = rmsep, rep::Int = 50, 
-        psamprow::Float = .3, seed::Union{Nothing, Int} = nothing)
+        psamp::Float = .3, seed::Union{Nothing, Int} = nothing)
     @assert in(perm, [:val, :cal])  "Wrong value for argument 'perm'. Must be ':val' or ':cal'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    nval = round(Int, psamprow * n)
+    nval = round(Int, psamp * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
-    Ycal = similar(X, ncal, q)
+    Ycal = similar(Y, ncal, q)
     Xval = similar(X, nval, p)
-    Yval = similar(X, nval, q)
+    Yval = similar(Y, nval, q)
     res_rep = similar(X, p, q, rep)
     @inbounds for i = 1:rep
         vseed = isnothing(seed) ? seed : seed + i - 1
@@ -96,6 +105,55 @@ function viperm!(model, X, Y; perm::Symbol = :val, score::Function = rmsep, rep:
         Ycal .= Y[s.train, :]
         Xval .= X[s.test, :]
         Yval .= Y[s.test, :]
+        fit!(model, Xcal, Ycal)
+        pred = predict(model, Xval).pred
+        scor_ref = score(pred, Yval)
+        vXcal = similar(Xcal)
+        vXval = similar(Xval)
+        @inbounds for j = 1:p
+            vseed = isnothing(seed) ? seed : seed + j - 1        
+            if perm == :val
+                vXval .= copy(Xval)
+                # Permutation of variable j
+                vs = StatsBase.sample(MersenneTwister(vseed), 1:nval, nval; replace = false)
+                vXval[:, j] .= vXval[vs, j]
+                # End  
+                pred .= predict(model, vXval).pred
+            else
+                vXcal .= copy(Xcal)
+                # Permutation of variable j
+                vs = StatsBase.sample(MersenneTwister(vseed), 1:ncal, ncal; replace = false)
+                vXcal[:, j] .= vXcal[vs, j]
+                # End  
+                fit!(model, vXcal, Ycal)
+                pred .= predict(model, Xval).pred
+            end
+            res_rep[j, :, i] = score(pred, Yval) - scor_ref
+        end
+    end
+    vi = mean(res_rep, dims = 3)[:, :, 1]
+    (vi = vi, res_rep)
+end 
+
+function viperm!(model, X, Y, group::Vector{String}; perm::Symbol = :val, score::Function = rmsep, 
+        rep::Int = 50, psamp::Float = .3, seed::Union{Nothing, Int} = nothing)
+    @assert in(perm, [:val, :cal])  "Wrong value for argument 'perm'. Must be ':val' or ':cal'." 
+    X = ensure_mat(X)
+    Y = ensure_mat(Y) 
+    p = nco(X)
+    q = nco(Y)
+    lev = mlev(group)
+    ngroup = length(lev)
+    k = round(Int, psamp * ngroup)
+    res_rep = similar(X, p, q, rep)
+    @inbounds for i = 1:rep
+        vseed = isnothing(seed) ? seed : seed + i - 1
+        s = samprand(group, k; seed = vseed)
+        Xcal = X[s.train, :]
+        Ycal = Y[s.train, :]
+        Xval = X[s.test, :]
+        Yval = Y[s.test, :]
+        nval = nro(Xval)
         fit!(model, Xcal, Ycal)
         pred = predict(model, Xval).pred
         scor_ref = score(pred, Yval)

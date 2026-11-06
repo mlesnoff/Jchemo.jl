@@ -12,9 +12,9 @@ Two outputs are returned (= row indexes of the data):
 * `train` (`n` - `k`),
 * `test` (`k`). 
 
-If `group` is used (must be a vector of length `n`), the function samples groups of observations instead of single 
-observations. Such a group-sampling is required when the data are structured by groups and when the response to predict 
-is correlated within groups. This prevents underestimation of the generalization error.
+If `group` is used, the function samples groups of observations instead of single observations. Such a group-sampling 
+is required when the data are structured by groups and when the response to predict is correlated within groups. 
+This prevents underestimation of the generalization error.
 
 # Examples
 ```julia
