@@ -213,8 +213,8 @@ include("mbplsqda.jl")
 include("mbplskdeda.jl") 
 
 include("soplslda.jl")
-#include("soplsrqa.jl")
-#include("soplskdedada.jl")   
+include("soplsqda.jl")
+#include("soplskdeda.jl")   
 
 include("lwplslda.jl")
 include("lwplsqda.jl")
@@ -506,8 +506,8 @@ export
     mbplsrda, 
     mbplslda, mbplsqda, mbplskdeda,
     soplsrda,
-    soplslda,
-    # soplsqda, soplsqda,
+    soplslda, soplsqda, 
+    #soplskdeda,
     # Local 
     lwmlrda,
     lwplsrda, 

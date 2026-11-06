@@ -9,8 +9,8 @@ Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993)
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Boolean. If `true`, each column of `X` and `Y` is scaled by its uncorrected 
-    standard deviation.
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 **Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of de Jong (2013).
 

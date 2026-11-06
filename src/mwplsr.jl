@@ -15,8 +15,8 @@ Keyword arguments:
 * `rep` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details. 
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
-    `prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD).
 
 The function implements a moving (i.e., sliding) window Pls regression (Mwpls).
     

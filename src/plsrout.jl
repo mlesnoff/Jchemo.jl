@@ -10,8 +10,8 @@ Robust PLSR using outlierness.
 Keyword arguments:
 * `nlv` : Nb. of latent variables (LVs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness 
-    and by its uncorrected standard deviation when computing weighted PCA. 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). 
 
 Robust PLSR combining outlyingness measures and weighted PLSR (WPLSR). This is the same principle as function 
 `pcaout` (see the help page) but the final step is a weighted PLSR instead of a weighted PCA.  

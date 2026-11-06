@@ -13,8 +13,8 @@ Keyword arguments:
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
 * `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `std` (uncorrected STD), 
-    `prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl` to fit a random forest regression model.
 The working function is `DecisionTree.build_forest` (see its help page for details). 
