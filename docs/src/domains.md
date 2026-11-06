@@ -88,7 +88,7 @@
 
 ### Partial least squares (PLSR)
 
-*Usual (asymetric regression mode)*
+*Usual ('asymetric regression mode')*
 - **plskern** Fast "improved kernel #1" algorithm of *Dayal & McGregor 1997*
 - **plsnipals** Nipals
 - **plswold** Nipals *Wold 1984*
@@ -147,8 +147,8 @@
 *Averaging*
 - **lwplsravg** kNN-LWPLSR-AVG 
 
-*Prototype models*
-- **protoplsr** Averaging prototype PLSR models (built on the neighborhood of prototype observations)
+*Prototype-based models*
+- **protoplsr** Averaging prototype-based PLSR models (built on the neighborhood of prototype observations)
 - **protoclustplsr** Clustered PLSR
 
 ### Support vector machines
@@ -210,38 +210,38 @@
 
 *On PLS latent variables*
 
-* *PLSDA*
-- **plslda** PLS-LDA
-- **plsqda** PLS-QDA (with continuum)
-- **plskdeda**  PLS-KDEDA
+- *PLSDA*
+    - **plslda** PLS-LDA
+    - **plsqda** PLS-QDA (with continuum)
+    - **plskdeda**  PLS-KDEDA
 
-* *Sparse*
-- **splslda**: Sparse PLS-LDA
-- **splsqda**: Sparse PLS-QDA
-- **splskdeda**: Sparse PLS-KDEDA
+- *Sparse*
+    - **splslda**: Sparse PLS-LDA
+    - **splsqda**: Sparse PLS-QDA
+    - **splskdeda**: Sparse PLS-KDEDA
 
-* *Non linear*
-- **kplslda** KPLS-LDA
-- **kplsqda** KPLS-QDA
-- **kplskdeda** KPLS-KDEDA
-- **dkplslda** Direct KPLS-LDA
-- **dkplsqda** Direct KPLS-QDA
-- **dkplskdeda** Direct KPLS-KDEDA
+- *Non linear*
+    - **kplslda** KPLS-LDA
+    - **kplsqda** KPLS-QDA
+    - **kplskdeda** KPLS-KDEDA
+    - **dkplslda** Direct KPLS-LDA
+    - **dkplsqda** Direct KPLS-QDA
+    - **dkplskdeda** Direct KPLS-KDEDA
 
-* *Multiblock* 
-- **mbplslda** MBPLS-LDA
-- **mbplsqda** MBPLS-QDA
-- **mbplskdeda** MBPLS-KDEDA
+- *Multiblock* 
+    - **mbplslda** MBPLS-LDA
+    - **mbplsqda** MBPLS-QDA
+    - **mbplskdeda** MBPLS-KDEDA
 
-*SOPLS*
-- **soplslda** SOPLS-LDA
-- **soplsqda** SOPLS-QDA
-- **soplskdeda** SOPLS-KDEDA
+    *SOPLS*
+    - **soplslda** SOPLS-LDA
+    - **soplsqda** SOPLS-QDA
+    - **soplskdeda** SOPLS-KDEDA
 
-* *Locally weighted*
+- *Locally weighted*
 
-- **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
+    - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
+    - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
 ### Vote within neighbors
 
