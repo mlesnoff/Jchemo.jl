@@ -3,7 +3,7 @@
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
-Discrimination based on multiblock partial least squares regression (MBPLSR-DA).
+Discrimination by multiblock partial least squares regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -13,8 +13,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy. Possible values are: `:none` (default), `std` (uncorrected STD), 
-    `prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy (before the block scaling). 
+    Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The approach is as follows:
 

@@ -40,7 +40,7 @@ Scale multiblock X-data.
 Keyword arguments:
 * `centr` : Boolean. If `true`, each column of blocks in `Xbl` is centered (before the block scaling).
 * `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:sd`. See thereafter.
 
 If implemented, the data transformations follow the order: column centering, column scaling and finally block scaling. 

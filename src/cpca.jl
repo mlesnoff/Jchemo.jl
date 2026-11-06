@@ -12,7 +12,7 @@ Keyword arguments:
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 CPCA Nipals algorithm (Westerhuis et a; 1998), also known as MBPCA, and referred to as CPCA-W in Smilde et al. 2003. 
 Besides an eventual block scaling, CPCA is equivalent to a PCA on the horizontally concatenated matrix X = [X1 X2 ... Xk],

@@ -2,7 +2,7 @@
     dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
     dkplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-Discrimination based on direct kernel partial least squares regression (KPLSR-DA).
+Discrimination by direct kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 

@@ -13,16 +13,18 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
 * `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 # References
-Biancolillo et al. , 2015. Combining SO-PLS and linear discriminant analysis for multi-block classification. 
-Chemometrics and Intelligent Laboratory Systems, 141, 58-67.
+Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
+PhD. University of Copenhagen.
 
-Biancolillo, A. 2016. Method development in the area of multi-block analysis focused on food analysis. PhD. 
-University of copenhagen.
+Biancolillo, A., Måge, I., Næs, T., 2015. Combining SO-PLS and linear discriminant analysis 
+for multi-block classification. Chemometrics and Intelligent Laboratory Systems 141, 58–67. 
+https://doi.org/10.1016/j.chemolab.2014.12.001
 
-Menichelli et al., 2014. SO-PLS as an exploratory toolfor path modelling. Food Quality and Preference, 36, 122-134.
+Menichelli et al., 2014. SO-PLS as an exploratory tool for path modelling. 
+Food Quality and Preference, 36, 122-134.
 
 # Examples
 ```julia

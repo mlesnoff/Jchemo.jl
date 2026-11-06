@@ -607,7 +607,7 @@ has changed, with the use of the new function **model**:
     - **hconcat** Transformer contatenating multi-block X-data.
     - **blockscal** Scaling of multiblock X-data. Replace functions
         'fblockscal_...".
-    - **mbplsrda** Discrimination based on multiblock partial 
+    - **mbplsrda** Discrimination by multiblock partial 
         least squares regression (MBPLSR-DA).
 
 - Modifications
@@ -816,7 +816,7 @@ Some specific modified points are:
 ## *Version 0.1.16* 
 
 - New
-    - **dkplsrda** Discrimination based on direct kernel partial least 
+    - **dkplsrda** Discrimination by direct kernel partial least 
         squares regression (DKPLSR-DA)
     - **treer_dt** Regression tree (CART) with DecisionTree.jl
     - **rfr_dt** Random forest regression with DecisionTree.jl

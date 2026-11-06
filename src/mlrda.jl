@@ -2,7 +2,7 @@
     mlrda(; kwargs...)
     mlrda(X, y; kwargs...)
     mlrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-Discrimination based on multple linear regression (MLR-DA).
+Discrimination by multple linear regression (MLR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 

@@ -12,7 +12,7 @@ Keyword arguments:
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
  
 See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y.hat be the fitted values of the regression 
 of `Y` on `X`. The scores `Ty` are the PCA scores of Y.hat. The scores `Tx` are the fitted values of the 

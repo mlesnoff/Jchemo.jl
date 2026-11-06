@@ -41,12 +41,30 @@ end
     soplsrda(Xbl, y; kwargs...)
     soplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
+Discrimination by multiblock sequentially orthorgonalized Plsr (SOPLSR-DA).
+* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
+* `y` : Univariate class membership (n). Must be a `Vector{String}`.
+* `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
+Keyword arguments:
+* `nlv` : Nb. latent variables (LVs; = scores) to compute.
+* `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
+    `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
+    (in case of vector, it must be sorted in the same order as `mlev(y)`).
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy (before the block scaling). 
+    Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 # Examples
 ```julia
 ```
 
 # References
+Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
+PhD. University of Copenhagen.
+
+Biancolillo, A., Måge, I., Næs, T., 2015. Combining SO-PLS and linear discriminant analysis 
+for multi-block classification. Chemometrics and Intelligent Laboratory Systems 141, 58–67. 
+https://doi.org/10.1016/j.chemolab.2014.12.001
+
 """
 soplsrda(; kwargs...) = JchemoModel(soplsrda, nothing, kwargs)
 

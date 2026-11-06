@@ -14,7 +14,7 @@ Keyword arguments:
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This function implements the Nipals ccawold algorithm presented by Tenenhaus 1998 p.204 (related to Wold et al. 1984). 
 

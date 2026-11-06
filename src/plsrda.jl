@@ -2,7 +2,7 @@
     plsrda(; kwargs...)
     plsrda(X, y; kwargs...)
     plsrda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-Discrimination based on partial least squares regression (PLSR-DA).
+Discrimination by partial least squares regression (PLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
@@ -23,7 +23,7 @@ This is the usual and simplest "PLSDA". The approach is as follows:
 2) Then, a multivariate PLSR (PLSR2) is run on the data {`X`, Ydummy}, returning predictions of the dummy variables 
     (= object `posterior` returned by fuction `predict`).  These predictions can be considered as unbounded 
     estimates (i.e. eventually outside of [0, 1]) of the class membership probabilities.
-    
+
 3) For a given observation, the final prediction is the class corresponding to the dummy variable for which 
     the probability estimate is the highest.
 

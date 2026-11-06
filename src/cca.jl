@@ -12,7 +12,7 @@ Keyword arguments:
 * `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 
 

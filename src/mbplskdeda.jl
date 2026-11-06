@@ -14,8 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Keyword arguments of function `dmkern` (bandwidth definition) can also be specified here.
-* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy. Possible values are: `:none` (default), `std` (uncorrected STD), 
-    `prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy (before the block scaling). 
+    Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 Same as function `mbplsqda` except that the class densities are estimated from `dmkern` instead of `dmnorm`.
 

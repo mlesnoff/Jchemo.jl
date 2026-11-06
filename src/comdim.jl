@@ -12,7 +12,7 @@ Keyword arguments:
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
-    `std` (uncorrected STD), `prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 ComDim "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
