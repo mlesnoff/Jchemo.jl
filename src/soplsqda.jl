@@ -19,9 +19,7 @@ Keyword arguments:
 
 Same as PLS-QDA but QDA is run on SOPLSR scores (computed using the class dummy table, Ydummy).
 
-# Examples
-```julia
-```
+See function `soplslda` for examples.
 
 # References
 Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
@@ -42,7 +40,7 @@ function soplsqda(Xbl, y; kwargs...)
     Q = eltype(Xbl[1])
     prior = recovkw(ParSoplsqda{Q}, kwargs).par.prior
     weights = pweightcla(Q, y; prior)
-    Soplsprobda(Xbl, y, weights; kwargs...)
+    soplsqda(Xbl, y, weights; kwargs...)
 end
 
 function soplsqda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
@@ -57,16 +55,5 @@ function soplsqda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::Probabilit
     Soplsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par) 
 end
 
-"""
-    predict(object::Soplsprobda, Xbl)
-Compute Y-predictions from a fitted model.
-* `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
-""" 
-function predict(object::Soplsprobda, Xbl)
-    T = transf(object.fitm_emb, Xbl)
-    res = predict(object.fitm_da, T)
-    (pred = res.pred, posterior = res.posterior, nlv = nco(T))
-end
 
 

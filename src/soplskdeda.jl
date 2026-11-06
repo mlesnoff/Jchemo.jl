@@ -13,14 +13,13 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
+* Eventual keyword arguments of function `dmkern` (bandwidth definition).
 * `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy (before the block scaling). 
     Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 Same as PLS-KDE-DA but KDE-DA is run on SOPLSR scores (computed using the class dummy table, Ydummy).
 
-# Examples
-```julia
-```
+See function `soplslda` for examples.
 
 # References
 Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
@@ -41,31 +40,19 @@ function soplskdeda(Xbl, y; kwargs...)
     Q = eltype(Xbl[1])
     prior = recovkw(ParSoplsqda{Q}, kwargs).par.prior
     weights = pweightcla(Q, y; prior)
-    Soplsprobda(Xbl, y, weights; kwargs...)
+    soplskdeda(Xbl, y, weights; kwargs...)
 end
 
 function soplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
-    par = recovkw(ParSoplsqda{Q}, kwargs).par
+    par = recovkw(ParSoplskdeda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n
     priors = aggsumv(weights.values, y).val  # output not used, only for information
     fitm_emb = soplsr(Xbl, res.Y, weights; kwargs...)
     par.nlv = fitm_emb.par.nlv
-    fitm_da = qda(fitm_emb.T, y, weights; kwargs...)
+    fitm_da = kdeda(fitm_emb.T, y, weights; kwargs...)
     Soplsprobda(fitm_emb, fitm_da, ni, priors, res.lev, par) 
-end
-
-"""
-    predict(object::Soplsprobda, Xbl)
-Compute Y-predictions from a fitted model.
-* `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
-""" 
-function predict(object::Soplsprobda, Xbl)
-    T = transf(object.fitm_emb, Xbl)
-    res = predict(object.fitm_da, T)
-    (pred = res.pred, posterior = res.posterior, nlv = nco(T))
 end
 
 

@@ -1,24 +1,3 @@
-Base.@kwdef mutable struct ParSoplsda{Q <: Float}  # soplsrda, soplslda
-    nlv::Union{Int, Vector{Int}} = 1     
-    prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
-end 
-
-Base.@kwdef mutable struct ParSoplsqda{Q <: Float}  
-    nlv::Union{Int, Vector{Int}} = 1       
-    prior::Union{Symbol, Vector{Q}} = :prop 
-    alpha::Q = 0.   
-    scal::Symbol = :none                    
-end 
-
-Base.@kwdef mutable struct ParSoplskdeda{Q <: Float}  
-    nlv::Union{Int, Vector{Int}} = 1     
-    prior::Union{Symbol, Vector{Q}} = :prop 
-    h::Union{Nothing, Q, Vector{Q}} = nothing  
-    a::Q = 1.  
-    scal::Symbol = :none                    
-end 
-
 struct Soplsrda{Q <: Float}
     fitm_emb::Soplsr 
     ni::Vector{Int}
@@ -41,7 +20,7 @@ end
     soplsrda(Xbl, y; kwargs...)
     soplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
-Discrimination by multiblock sequentially orthorgonalized Plsr (SOPLSR-DA).
+Discrimination by multiblock sequentially orthorgonalized PLSR (SOPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -58,6 +37,25 @@ Same as PLSR-DA but the Ydummy (class dummy table Ydummy) predictions are comput
 
 # Examples
 ```julia
+nlv = [2, 0, 2]
+scal = :none
+#scal = :std
+model = soplsrda(; nlv, scal) ;
+fit!(model, Xbl, y)
+fitm = model.fitm ;
+
+@head T = fitm.fitm_emb.T
+@head transf(fitm, Xbl)
+
+Tnew = transf(fitm, Xblnew)
+
+res = predict(fitm, Xblnew) ;
+@names res 
+
+res.posterior 
+
+pred = res.pred
+errp(pred, ynew)
 ```
 
 # References
@@ -79,7 +77,7 @@ function soplsrda(Xbl, y; kwargs...)
     Q = eltype(Xbl[1])
     prior = recovkw(ParSoplsda{Q}, kwargs).par.prior
     weights = pweightcla(Q, y; prior)
-    Soplsrda(Xbl, y, weights; kwargs...)
+    soplsrda(Xbl, y, weights; kwargs...)
 end
 
 function soplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
