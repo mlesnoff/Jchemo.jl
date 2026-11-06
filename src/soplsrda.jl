@@ -1,20 +1,3 @@
-struct Soplsrda{Q <: Float}
-    fitm_emb::Soplsr 
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::ParSoplsda
-end
-
-struct Soplsprobda{Q <: Float}    # soplslda, soplsqda, soplskdeda  
-    fitm_emb::Soplsr
-    fitm_da::Union{Lda, Qda, Kdeda}   
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::Union{ParSoplsda, ParSoplsqda, ParSoplskdeda}
-end
-
 """
     soplsrda(; kwargs...)
     soplsrda(Xbl, y; kwargs...)

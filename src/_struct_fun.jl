@@ -610,28 +610,12 @@ struct Mlrda{Q <: Float}
     par::ParMlrda
 end
 
-struct Plsrda{Q <: Float}
-    fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::Union{ParPlsda, ParSplsda, ParKplsda}
-end
-
 struct Rrda{Q <: Float}
     fitm_emb::Union{Rr, Krr}  
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
     par::Union{ParRrda, ParKrrda}
-end
-
-struct Mbplsrda{Q <: Float}
-    fitm_emb::Mbplsr 
-    ni::Vector{Int}
-    priors::Vector{Q}
-    lev::Vector{String}
-    par::ParMbplsda
 end
 
 struct Dmnorm{Q <: Float}
@@ -700,6 +684,14 @@ struct Rda{Q <: Float}
     par::ParRda
 end
 
+struct Plsrda{Q <: Float}
+    fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::Union{ParPlsda, ParSplsda, ParKplsda}
+end
+
 struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Union{Vector{Lda}, Vector{Qda}, Vector{Kdeda}}  
@@ -710,6 +702,14 @@ struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda
         ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
+struct Mbplsrda{Q <: Float}
+    fitm_emb::Mbplsr 
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::ParMbplsda
+end
+
 struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda  
     fitm_emb::Mbplsr
     fitm_da::Union{Vector{Lda}, Vector{Qda}, Vector{Kdeda}}   
@@ -717,6 +717,23 @@ struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda
     priors::Vector{Q}
     lev::Vector{String}
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
+end
+
+struct Soplsrda{Q <: Float}
+    fitm_emb::Soplsr 
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::ParSoplsda
+end
+
+struct Soplsprobda{Q <: Float}    # soplslda, soplsqda, soplskdeda  
+    fitm_emb::Soplsr
+    fitm_da::Union{Lda, Qda, Kdeda}   
+    ni::Vector{Int}
+    priors::Vector{Q}
+    lev::Vector{String}
+    par::Union{ParSoplsda, ParSoplsqda, ParSoplskdeda}
 end
 
 # Local (from below, fitm not yet specified)
