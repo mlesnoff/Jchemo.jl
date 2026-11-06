@@ -182,6 +182,7 @@ include("kplsrda.jl")
 include("dkplsrda.jl")
 include("krrda.jl")
 include("mbplsrda.jl") 
+include("soplsrda.jl") 
 
 include("lwmlrda.jl")
 include("lwplsrda.jl")
@@ -500,6 +501,7 @@ export
     # Multiblock
     mbplsrda, 
     mbplslda, mbplsqda, mbplskdeda,
+    soplsrda,
     # Local 
     lwmlrda,
     lwplsrda, 

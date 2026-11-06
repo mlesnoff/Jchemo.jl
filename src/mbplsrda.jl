@@ -123,8 +123,8 @@ function mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::Probabilit
 end
 
 """ 
-    transf(object::Mbplsrda, Xbl)
-    transf(object::Mbplsrda, Xbl, nlv::Int)
+    transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl)
+    transf(object::Union{Mbplsrda, Mbplsprobda}, Xbl, nlv::Int)
 Compute latent variables (LVs; = scores) from a fitted model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.

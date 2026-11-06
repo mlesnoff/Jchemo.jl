@@ -136,6 +136,7 @@ function mbplslda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::Probabilit
 end
 
 """
+    predict(object::Mbplsprobda, Xbl)
     predict(object::Mbplsprobda, Xbl, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
