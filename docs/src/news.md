@@ -3,7 +3,7 @@
 ## *Version 0.11.3 dev*
 
 - News
-    - Function - **getind**: Return the indexes found in a vector of values existing in another vector. 
+    - Function **getind**: Return the indexes found in a vector of values existing in another vector. 
     - Function **sampclapct**: Build training vs. test sets using a stratified (proportion) sampling.
     - Functions **soplsrda**, **soplslda**, **soplsqda**, **soplskdeda**: SO-PLSDAs.
     - Macro **@in**: Determine whether items of a vector is in a given collection.
