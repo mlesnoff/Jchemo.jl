@@ -140,7 +140,7 @@ Base.@kwdef mutable struct ParRp{Q <: Float}
 end 
 
 Base.@kwdef mutable struct ParUmap{Q <: Float}
-    rowsamp::Q = 1.     
+    psamprow::Q = 1.     
     nlv::Int = 1
     metric = Distances.Euclidean()
     n_neighbors::Int = 15 

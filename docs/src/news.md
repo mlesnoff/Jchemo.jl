@@ -45,7 +45,7 @@
     - Internals of Occ functions have changed (the methods are the same but many changes
         in output names) 
     - Variable importance functions: output 'imp' was renamed to 'vi'.
-    - Functions *umap* and *viperm!*: argument 'psamp' renamed to 'rowsamp'.
+    - Functions *umap* and *viperm!*: argument 'psamp' renamed to 'psamprow'.
     - Function *isel!* was removed.
 
 - Modifications

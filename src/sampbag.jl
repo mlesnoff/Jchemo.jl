@@ -1,16 +1,16 @@
 """
-    sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, rowsamp::Q = .7, 
-        colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+    sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, psamprow::Q = .7, 
+        psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
     sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50, replace::Bool = true, 
-        rowsamp::Q = .7, colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+        psamprow::Q = .7, psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
 Sampling for bagging.
 * `n`, `p` : Nb. total of observations and variables, respectively, considered in the bagging.
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `rep` : Number of replications of the bagging.
 * `replace`: Boolean. If `true`, observations are sampled with replacement.
-* `rowsamp` : Proportion of observations to sample within `n at each replication`.
-* `colsamp`: Proportion of observations to sample within `p` (without replacement) at each replication.
+* `psamprow` : Proportion of observations to sample within `n at each replication`.
+* `psampcol`: Proportion of observations to sample within `p` (without replacement) at each replication.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator used to select rows and columns.
 
 # Examples
@@ -18,20 +18,20 @@ Keyword arguments:
 using Jchemo  
 
 n = 10 ; p = 4 ; q = 2
-res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7) ;
-#res = sampbag(n, p; rep = 4, rowsamp = .7, colsamp = .7, seed = 1234) ;
+res = sampbag(n, p; rep = 4, psamprow = .7, psampcol = .7) ;
+#res = sampbag(n, p; rep = 4, psamprow = .7, psampcol = .7, seed = 1234) ;
 @names res
 res.srow
 res.srow_oob
 res.scol
 ```
 """ 
-function sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, rowsamp::Q = .7, 
-        colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+function sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, psamprow::Q = .7, 
+        psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
     range_n = collect(1:n)
     range_p = collect(1:p) 
-    mrow = Int(round(rowsamp * n))
-    mcol = max(1, Int(round(colsamp * p)))    
+    mrow = Int(round(psamprow * n))
+    mcol = max(1, Int(round(psampcol * p)))    
     ##
     srow = list(Vector{Int}, rep)
     srow_oob = list(Vector{Int}, rep)
@@ -45,7 +45,7 @@ function sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, rowsamp::Q
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
         # Columns
-        if colsamp == 1
+        if psampcol == 1
             scol[i] = range_p
         else
             s = StatsBase.sample(MersenneTwister(vseed), range_p, mcol; replace = false, ordered)
@@ -56,11 +56,11 @@ function sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, rowsamp::Q
 end
 
 function sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50, replace::Bool = true, 
-        rowsamp::Q = .7, colsamp::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+        psamprow::Q = .7, psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
     range_n = collect(1:n)
     range_p = collect(1:p) 
-    mrow = Int(round(rowsamp * n))
-    mcol = max(1, Int(round(colsamp * p)))    
+    mrow = Int(round(psamprow * n))
+    mcol = max(1, Int(round(psampcol * p)))    
     ##
     srow = list(Vector{Int}, rep)
     srow_oob = list(Vector{Int}, rep)
@@ -75,7 +75,7 @@ function sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50
         srow[i] = s
         srow_oob[i] = range_n[setdiff(1:end, s)]
         # Columns
-        if colsamp == 1
+        if psampcol == 1
             scol[i] = range_p
         else
             colweight.values[colweight.values .== 0] .= eps(eltype(colweight.values))

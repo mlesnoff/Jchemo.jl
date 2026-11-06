@@ -5,10 +5,10 @@ struct Baggr
 end
 
 """
-    baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
-        colsamp::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
-    baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
-        colsamp::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
+    baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
+    baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
 Bagging a regression model.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, p).
@@ -17,8 +17,8 @@ Keyword arguments:
 * `fun` : Function defining the regression model.
 * `rep` : Nb. of bagging replications.
 * `replace`: Boolean. If `false` (default), observations are sampled without replacement.
-* `rowsamp` : Proportion of rows sampled in `X` at each replication.
-* `colsamp` : Proportion of columns sampled (without replacement) in `X` at each replication.
+* `psamprow` : Proportion of rows sampled in `X` at each replication.
+* `psampcol` : Proportion of columns sampled (without replacement) in `X` at each replication.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator used to select rows and columns.
 * `kwargs` : Optional named arguments to pass in 'fun`.
 
@@ -53,10 +53,10 @@ wlst = names(Xtrain)
 wl = parse.(eltype(X[1, 1]), wlst)
 
 rep = 200
-fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05) ; 
-#fitm = baggr(Xtrain, ytrain; fun = mlr, rep, rowsamp = .5, colsamp = .05, seed = 1234) ; 
-#fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep, rowsamp = .7, colsamp = .5) ; 
-#fitm = baggr(Xtrain, ytrain; fun = treer, n_subfeatures = 0, rep, rowsamp = .7, colsamp = .2) ; 
+fitm = baggr(Xtrain, ytrain; fun = mlr, rep, psamprow = .5, psampcol = .05) ; 
+#fitm = baggr(Xtrain, ytrain; fun = mlr, rep, psamprow = .5, psampcol = .05, seed = 1234) ; 
+#fitm = baggr(Xtrain, ytrain; fun = plskern, nlv = 15, rep, psamprow = .7, psampcol = .5) ; 
+#fitm = baggr(Xtrain, ytrain; fun = treer, n_subfeatures = 0, rep, psamprow = .7, psampcol = .2) ; 
 @names fitm
 fitm.res_samp.srow       # indexes of the observations used as training
 fitm.res_samp.srow_oob   # indexes of the oob observations
@@ -80,12 +80,12 @@ xlims!(ax, (.9 * wl[1], 1.05 * wl[end]))
 f
 ```
 """ 
-function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
-        colsamp::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
+function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
+    res_samp = sampbag(n, p; rep, psamprow, replace, psampcol, seed)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)
@@ -96,12 +96,12 @@ function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, rowsam
     Baggr(fitm, res_samp, nco(Y))
 end
 
-function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, rowsamp::Q = .7, 
-        colsamp::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
+function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
-    res_samp = sampbag(n, p; rep, rowsamp, replace, colsamp, seed)
+    res_samp = sampbag(n, p; rep, psamprow, replace, psampcol, seed)
     srow = res_samp.srow
     scol = res_samp.scol
     fitm = list(rep)

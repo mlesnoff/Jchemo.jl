@@ -1,5 +1,5 @@
 """
-    viperm!(model, X, Y; perm = :val, score = rmsep, rowsamp = .3, rep = 50)
+    viperm!(model, X, Y; perm = :val, score = rmsep, psamprow = .3, rep = 50)
 Permutation variable importance.
 * `model` : Model to evaluate.
 * `X` : X-data (n, p).
@@ -8,7 +8,7 @@ Keyword arguments:
 * `perm` : Type of permutation. If `:val` (default), permutations are done on the validation set. 
     If `:cal', they are done one the calibration set. 
 * `score` : Function computing the prediction score (an error rate).
-* `rowsamp` : Proportion of data used as validation set to compute the `score`.
+* `psamprow` : Proportion of data used as validation set to compute the `score`.
 * `rep` : Number of replications of the splitting calibration/validation. 
 
 *Note:* This is an inplace function that modifies the content of object `model` (only).
@@ -75,14 +75,14 @@ res = viperm!(model, Xtrain, ytrain; perm, rep = 200) ;
 res.vi
 ```
 """
-function viperm!(model, X, Y; perm::Symbol = :val, score::Function = rmsep, rep::Int = 50, rowsamp::Float = .3,
-        seed::Union{Nothing, Int} = nothing)
+function viperm!(model, X, Y; perm::Symbol = :val, score::Function = rmsep, rep::Int = 50, 
+        psamprow::Float = .3, seed::Union{Nothing, Int} = nothing)
     @assert in(perm, [:val, :cal])  "Wrong value for argument 'perm'. Must be ':val' or ':cal'." 
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
     n, p = size(X)
     q = nco(Y)
-    nval = round(Int, rowsamp * n)
+    nval = round(Int, psamprow * n)
     ncal = n - nval
     Xcal = similar(X, ncal, p)
     Ycal = similar(X, ncal, q)
