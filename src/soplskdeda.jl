@@ -3,7 +3,7 @@
     soplskdeda(Xbl, y; kwargs...)
     soplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
-KDE-DA on SOPLS latent variables (SOPLS-KDE-DA).
+KDEDA on SOPLS latent variables (SOPLS-KDEDA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -17,7 +17,7 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy (before the block scaling). 
     Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
-Same as PLS-KDE-DA but KDE-DA is run on SOPLSR scores (computed using the class dummy table, Ydummy).
+Same as PLS-KDEDA but KDEDA is run on SOPLSR scores (computed using the class dummy table, Ydummy).
 
 See function `soplslda` for examples.
 

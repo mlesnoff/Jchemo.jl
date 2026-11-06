@@ -5,6 +5,7 @@
 - News
     - Function - **getind**: Return the indexes found in a vector of values existing in another vector. 
     - Function **sampclapct**: Build training vs. test sets using a stratified (proportion) sampling.
+    - Functions **soplsrda**, **soplslda**, **soplsqda**, **soplskdeda**: SO-PLSDAs.
     - Macro **@in**: Determine whether items of a vector is in a given collection.
 
 - Modifications
@@ -687,7 +688,7 @@ Some specific modified points are:
     - **splsrda**: Sparse PLSR-DA.
     - **splslda**: Sparse PLS-LDA.
     - **splsqda**: Sparse PLS-QDA.
-    - **splskdeda**: Sparse PLS-KDE-DA.
+    - **splskdeda**: Sparse PLS-KDEDA.
 
 - Modifications
     - Code improvement.
@@ -756,8 +757,8 @@ Some specific modified points are:
 
 - New
     - **kdeda**: Discriminant analysis using non-parametric kernel Gaussian 
-        density estimation (KDE-DA).
-    - **plskdeda**: PLS-KDE-DA 
+        density estimation (KDEDA).
+    - **plskdeda**: PLS-KDEDA 
 
 - Modifications
     - Code improvement.

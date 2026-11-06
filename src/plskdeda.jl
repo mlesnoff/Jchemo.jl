@@ -2,7 +2,7 @@
     plskdeda(; kwargs...)
     plskdeda(X, y; kwargs...)
     plskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-KDE-DA on PLS latent variables (PLS-KDEDA).
+KDEDA on PLS latent variables (PLS-KDEDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).

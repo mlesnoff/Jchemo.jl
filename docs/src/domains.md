@@ -191,6 +191,9 @@
 
 - **mbplsrda** MBPLSR-DA
 
+*SOPLS*
+    - **soplsrda** SOPLSR-DA
+
 *Locally weighted*
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
 - **lwplsrda** kNN Locally weighted PLSR-DA (kNN-LWPLSR-DA)
@@ -203,7 +206,7 @@
 - **rda** Regularized discriminant analysis (RDA)
 
 *Non parametric*
-- **kdeda** DA by kernel Gaussian density estimation (KDE-DA)
+- **kdeda** DA by kernel Gaussian density estimation (KDEDA)
 
 *On PLS latent variables*
 
@@ -229,6 +232,11 @@
     - **mbplslda** MBPLS-LDA
     - **mbplsqda** MBPLS-QDA
     - **mbplskdeda** MBPLS-KDEDA
+
+*SOPLS*
+    - **soplslda** SOPLS-LDA
+    - **soplsqda** SOPLS-QDA
+    - **soplskdeda** SOPLS-KDEDA
 
 * *Locally weighted*
 

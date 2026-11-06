@@ -2,7 +2,7 @@
     kdeda(; kwargs...)
     kdeda(X, y; kwargs...)
     kdeda(X::AbstractMatrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-Discriminant analysis using non-parametric kernel Gaussian density estimation (KDE-DA).
+Discriminant analysis using non-parametric kernel Gaussian density estimation (KDEDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:

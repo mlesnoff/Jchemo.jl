@@ -2,7 +2,7 @@
     splskdeda(; kwargs...)
     splskdeda(X, y; kwargs...)
     splskdeda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-Sparse PLS-KDE-DA.
+Sparse PLS-KDEDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`). 
