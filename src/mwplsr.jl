@@ -6,7 +6,7 @@
 Moving window Plsr (MWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
-* `group` : A vector (n) defining groups (blocks) of observations. Must be a `Vector{String}`.
+* `group` : A vector (n) defining groups (batches) of observations. Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
