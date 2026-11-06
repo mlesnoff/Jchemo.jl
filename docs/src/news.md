@@ -8,7 +8,8 @@
     - Macro **@in**: Determine whether items of a vector is in a given collection.
 
 - Modifications
-    - Function **mwplsr**: new argument 'score'.
+    - Function **mwplsr**: add of argument 'score'.
+    - Function **viperm!**: add of argument 'group'.
     - Bug correction in function **@pars**.  
     - Code cleaning.
 
