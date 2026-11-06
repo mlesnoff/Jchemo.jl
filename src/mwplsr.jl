@@ -1,10 +1,12 @@
 """
     mwplsr(; kwargs...)
-    mwplsr(X, Y; kwargs...)
-    mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    mwplsr(X, Y, group::Union{Nothing, Vector{String}} = nothing; kwargs...)
+    mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q},
+        group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
 Moving window Plsr (MWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
+* `group` : A vector (n) defining groups (blocks) of observations. Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
@@ -16,20 +18,26 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `std` (uncorrected STD), 
     `prt` (pareto) and `:mad` (MAD).
 
-The function implements a moving (i.e., sliding) window Pls regression (Mwpls), as follows.
+The function implements a moving (i.e., sliding) window Pls regression (Mwpls).
+    
+If `group` is used: for the cross-validation (see step-2 below), the function samples groups 
+of observations instead of single observations. Such a group-sampling is required when the data are structured 
+by groups and when the response to predict is correlated within groups. This prevents underestimation 
+of the generalization error.
+    
+The principle is as follows.
 
 1) The full range of the X-columns is divided into sliding windows of `npoint` columns. The center of each 
     window is moved of one column from the previous window. Assume that the total number of windows is 'k'. 
 
 2) For each window:
-
-    * a Plsr model with a maximal number of `nlv` LVs is fitted.
     
-    * A repeated K-fold cross validation is run between 0:`nlv` on the training observations, and the model 
-        showing the minimum average RMSEP-CV is selected and stored. 
+    * A repeated K-fold cross validation is run for a Plsr between 0:`nlv` on the training observations
+        (for the considered window), and the model showing the minimum RMSEP-CV (average over the `rep`
+         replications) is selected and stored. 
     
-    * The new observations are predicted (for the considered window) from the selected model re-fitted on all 
-        the training observations. The predictions are stored.
+    * The new observations are predicted from the selected model re-fitted on all the training 
+        observations (for the considered window). The predictions are stored.
          
 3) A performance discrepancy is computed for each of the k selected models. Let A be the minumum RMSEP-CV 
     observed between the k models, then:
@@ -129,41 +137,38 @@ f
 """
 mwplsr(; kwargs...) = JchemoModel(mwplsr, nothing, kwargs)
 
-function mwplsr(X, Y; kwargs...)
+function mwplsr(X, Y, group::Union{Nothing, Vector{String}} = nothing; kwargs...)
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     weights = pweight(ones(eltype(X), nro(X)))
-    mwplsr(X, Y, weights; kwargs...)
+    mwplsr(X, Y, weights, group; kwargs...)
 end
 
-function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; 
-    kwargs...) where Q <: Float
-
+function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q},
+    group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
     n, p = size(X)
     q = nco(Y)                    
     par = recovkw(ParMwplsr, kwargs).par
     @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must be an odd integer >= 1."
-    
     nhwindow = Int((par.npoint - 1) / 2)  # half window
     rangetot = (nhwindow + 1):(p - nhwindow)
     centrw = collect(rangetot)
     nw = length(rangetot)
-    
     window = list(UnitRange{Int}, nw)
     fitm_emb = list(Plsr, nw)
     nlv_emb = list(Int, nw)
     scor_emb = list(Q, nw)
-        
     j = 1   
     @inbounds for i in rangetot  # define each window
-    
         # Define the window
-        #i = rangetot[1]
         window[j] = (i - nhwindow):(i + nhwindow)
         vX = vcol(X, window[j])
-        
         # Cross-validate to select the model
-        segm = segmkf(n, par.K; rep = par.rep)
+        if isnothing(group) 
+            segm = segmkf(n, par.K; rep = par.rep)
+        else
+            segm = segmkf(group, par.K; rep = par.rep)
+        end
         pars = mpar(scal = [par.scal])
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = par.score, nlv = 0:par.nlv, pars).res
@@ -176,16 +181,12 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         end
         u = findall(vscor .== minimum(vscor))[1] 
         res[u, :]
-
         # Fit the selected model        
         nlv_emb[j] = res.nlv[u]
         fitm_emb[j] = plskern(vX, Y, weights; nlv = nlv_emb[j]) #, scal = par.scal)
         scor_emb[j] = vscor[u]
-                
         j = j + 1
-    
     end
-
     # Model weights
     scor_best = minimum(scor_emb)
     d_emb = scor_emb .- scor_best   # model performance discrepancy
@@ -193,8 +194,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
     w_emb = winvs(d_emb; h = par.h, criw, squared)
     wtot = sum(w_emb)
     @. w_emb /= wtot                # sum(w_emb) = 1
-
-    # Variable importances 
+    # Variable importance 
     V = -ones(Q, nw, p)
     @inbounds for i in eachindex(fitm_emb)
         V[i, window[i]] .= w_emb[i]
@@ -204,9 +204,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         v = vcol(V, j)
         vi[j] = meanv(v[v .> -1])
     end
-    
     Mwplsr(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, centrw) 
-
 end
 
 function predict(object::Mwplsr, X)

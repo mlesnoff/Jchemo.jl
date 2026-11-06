@@ -9,7 +9,7 @@
 
 - Modifications
     - Function **mwplsr**: add of argument 'score'.
-    - Function **viperm!**: add of argument 'group'.
+    - Function **mwplsr** and **viperm!**: add of argument 'group'.
     - Bug correction in function **@pars**.  
     - Code cleaning.
 

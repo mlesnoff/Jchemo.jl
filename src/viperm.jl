@@ -18,9 +18,10 @@ Keyword arguments:
 
 *Note:* This is an inplace function that modifies the content of object `model` (only).
 
-If `group` is used: for the split calibration/validation (see step-1 below), the function samples groups of observations 
-instead of single observations. Such a group-sampling is required when the data are structured by groups and when 
-the response to predict is correlated within groups. This prevents underestimation of the generalization error.
+If `group` is used: for the split calibration/validation (see step-1 below), the function samples groups 
+of observations instead of single observations. Such a group-sampling is required when the data are structured 
+by groups and when the response to predict is correlated within groups. This prevents underestimation 
+of the generalization error.
 
 The principle is as follows:
 1) The observations or groups (rows of data {`X`, `Y`}) are splitted randomly in two sets: a calibration set {Xcal, Ycal}
