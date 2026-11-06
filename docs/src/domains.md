@@ -192,7 +192,7 @@
 - **mbplsrda** MBPLSR-DA
 
 *SOPLS*
-    - **soplsrda** SOPLSR-DA
+- **soplsrda** SOPLSR-DA
 
 *Locally weighted*
 - **lwmlrda** kNN locally weighted MLR-DA (kNN-LWMLR-DA)
@@ -211,37 +211,37 @@
 *On PLS latent variables*
 
 * *PLSDA*
-    - **plslda** PLS-LDA
-    - **plsqda** PLS-QDA (with continuum)
-    - **plskdeda**  PLS-KDEDA
+- **plslda** PLS-LDA
+- **plsqda** PLS-QDA (with continuum)
+- **plskdeda**  PLS-KDEDA
 
 * *Sparse*
-    - **splslda**: Sparse PLS-LDA
-    - **splsqda**: Sparse PLS-QDA
-    - **splskdeda**: Sparse PLS-KDEDA
+- **splslda**: Sparse PLS-LDA
+- **splsqda**: Sparse PLS-QDA
+- **splskdeda**: Sparse PLS-KDEDA
 
 * *Non linear*
-    - **kplslda** KPLS-LDA
-    - **kplsqda** KPLS-QDA
-    - **kplskdeda** KPLS-KDEDA
-    - **dkplslda** Direct KPLS-LDA
-    - **dkplsqda** Direct KPLS-QDA
-    - **dkplskdeda** Direct KPLS-KDEDA
+- **kplslda** KPLS-LDA
+- **kplsqda** KPLS-QDA
+- **kplskdeda** KPLS-KDEDA
+- **dkplslda** Direct KPLS-LDA
+- **dkplsqda** Direct KPLS-QDA
+- **dkplskdeda** Direct KPLS-KDEDA
 
 * *Multiblock* 
-    - **mbplslda** MBPLS-LDA
-    - **mbplsqda** MBPLS-QDA
-    - **mbplskdeda** MBPLS-KDEDA
+- **mbplslda** MBPLS-LDA
+- **mbplsqda** MBPLS-QDA
+- **mbplskdeda** MBPLS-KDEDA
 
 *SOPLS*
-    - **soplslda** SOPLS-LDA
-    - **soplsqda** SOPLS-QDA
-    - **soplskdeda** SOPLS-KDEDA
+- **soplslda** SOPLS-LDA
+- **soplsqda** SOPLS-QDA
+- **soplskdeda** SOPLS-KDEDA
 
 * *Locally weighted*
 
-    - **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
-    - **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
+- **lwplslda** kNN Locally weighted PLS-LDA (kNN-LWPLS-LDA)
+- **lwplsqda** kNN Locally weighted PLS-QDA (kNN-LWPLS-QDA, with continuum)
 
 ### Vote within neighbors
 
