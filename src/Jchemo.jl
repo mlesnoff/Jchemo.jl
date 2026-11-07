@@ -135,7 +135,6 @@ include("rrr.jl")
 include("splsr.jl")
 include("spcr.jl")
 
-include("mwr.jl")
 include("mwplsr.jl")
 
 include("plsrout.jl")
@@ -452,7 +451,7 @@ export
     cglsr, cglsr!,
     rrr, rrr!,   
     splsr, splsr!, 
-    mwr, mwplsr,
+    mwplsr,
     plsrout, plsrout!,
     kplsr, kplsr!,
     dkplsr, dkplsr!,

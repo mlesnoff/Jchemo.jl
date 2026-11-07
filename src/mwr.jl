@@ -1,3 +1,23 @@
+Base.@kwdef mutable struct ParMwr
+    npoint::Int = 21
+    fun::Function = plskern
+    K::Int = 3      
+    rep::Int = 10   
+    h::Float = 1. 
+    score::Function = rmsep                    
+    scal::Symbol = :none
+end 
+
+struct Mwr{Q <: Float}
+    fitm_emb::Vector{Plsr}
+    scor_emb::Vector{Q}
+    d_emb::Vector{Q}
+    w_emb::Vector{Q}
+    vi::Vector{Q}
+    window::Vector{UnitRange{Int}}
+    centrw::Vector{Int}
+end
+
 """
     mwr(; kwargs...)
     mwr(X, Y, group::Union{Nothing, Vector{String}} = nothing; kwargs...)
@@ -15,7 +35,7 @@ Keyword arguments:
 * `rep` : Number of repetitions of the K-fold cross validation (CV) used to select the nb. LVs for each window.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details.
-* `score` : Function computing the error rate (to minimize) in the CV (default: `rmsep`). 
+* `score` : Function computing the error rate (to minimize) in the CV (by default, `score = rmsep`). 
 
 The function implements a moving (i.e., sliding) window regression (MWR). The regression model is defined by `fun`.
     

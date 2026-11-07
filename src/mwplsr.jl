@@ -15,7 +15,7 @@ Keyword arguments:
 * `rep` : Number of repetitions of the K-fold cross validation (CV) used to select the nb. LVs for each window.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details. 
-* `score` : Function computing the error rate (to minimize) in the CV (default: `rmsep`).
+* `score` : Function computing the error rate (to minimize) in the CV (by default, `score = rmsep`).
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
