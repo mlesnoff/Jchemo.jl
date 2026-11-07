@@ -534,7 +534,7 @@ end
 Base.@kwdef mutable struct ParMwplsqda{Q <: Float}
     npoint::Int = 21
     K::Int = 3      
-    rep::Int = 10   
+    rep::Int = 3   
     h::Float = 1. 
     score::Function = errp                    
     nlv::Int = 15

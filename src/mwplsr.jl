@@ -101,8 +101,8 @@ ytrain = Ytrain[:, nam]
 ytest = Ytest[:, nam]
 ###### End
 
-h = .2
-#h = 1.
+h = 1.
+#h = .2   # sharper
 model = mwplsr(; h)
 fit!(model, Xtrain, ytrain) 
 fitm = model.fitm ;
@@ -124,6 +124,11 @@ size(res.predw)              # predictions for each window
 @show rmsep(pred, ytest) 
 plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
     ylabel = "Observed").f
+
+xticks = collect(wl[1]:15:(wl[end]))
+f, ax = plotxy(wl[centrw], fitm.scor_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "RMSEP-CV")
+lines!(wl[centrw], fitm.scor_emb; linewidth = .5)
+f 
 
 xticks = collect(wl[1]:15:(wl[end]))
 f, ax = plotxy(wl[centrw], w_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "Model weight")

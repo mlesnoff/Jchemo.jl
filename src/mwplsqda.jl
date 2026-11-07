@@ -30,6 +30,67 @@ of a PLSR. The final class prediction is the weighted vote computed over the win
 
 # Examples
 ```julia
+using Jchemo, JchemoData, JLD2, CairoMakie
+path_jdat = dirname(dirname(pathof(JchemoData)))
+db = joinpath(path_jdat, "data/forages2.jld2")
+@load db dat
+@names dat
+X = dat.X
+Y = dat.Y
+n = nro(X) 
+s = Bool.(Y.test)
+Xtrain = rmrow(X, s)
+ytrain = rmrow(Y.typ, s)
+Xtest = X[s, :]
+ytest = Y.typ[s]
+wlst = names(X)
+wl = parse.(eltype(X[1, 1]), wlst) 
+ntrain = nro(Xtrain)
+ntest = nro(Xtest)
+(ntot = n, ntrain, ntest)
+tab(ytrain)
+tab(ytest)
+
+h = 1.
+#h = .2       # sharper
+alpha = .1    # consensus .1 QDA * .9 LDA
+#alpha = .0   # QDA
+#alpha = 1.   # LDA
+model = mwplsqda(; npoint = 31, rep = 1, h, alpha)
+fit!(model, Xtrain, ytrain) 
+fitm = model.fitm ;
+@names fitm 
+@head fitm.window            # range of each window 
+@head centrw = fitm.centrw   # central point of each window
+
+@head fitm.nlv_emb           # nb. of LVs selected for each window
+tab(fitm.nlv_emb) 
+
+@head w_emb = fitm.w_emb     # model weight for each window
+@head vi = fitm.vi           # variable importances
+
+res = predict(fitm, Xtest) ;
+@names res 
+@head pred = res.pred        # final predictions (weighted averages over the windiows)
+size(res.predw)              # predictions for each window
+
+@show errp(pred, ytest) 
+conf(pred, ytest).pct
+
+xticks = collect(wl[1]:100:(wl[end]))
+f, ax = plotxy(wl[centrw], fitm.scor_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "ERRP-CV")
+lines!(wl[centrw], fitm.scor_emb; linewidth = .5)
+f 
+
+xticks = collect(wl[1]:100:(wl[end]))
+f, ax = plotxy(wl[centrw], w_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "Model weight")
+lines!(wl[centrw], w_emb; linewidth = .5)
+f 
+
+xticks = collect(wl[1]:100:(wl[end]))
+f, ax = plotxy(wl, vi; size = (800, 300), xticks, xlabel = "Wavelength (nm)", ylabel = "Variable importance")
+lines!(wl, vi; linewidth = .5)
+f 
 ```
 """
 mwplsqda(; kwargs...) = JchemoModel(mwplsqda, nothing, kwargs)

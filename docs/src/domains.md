@@ -220,6 +220,9 @@
     - **splsqda**: Sparse PLS-QDA
     - **splskdeda**: Sparse PLS-KDEDA
 
+- *Moving window*
+    - **mwplsqda** Moving window PLS-QDA (MWPLS-QDA)
+
 - *Non linear*
     - **kplslda** KPLS-LDA
     - **kplsqda** KPLS-QDA
