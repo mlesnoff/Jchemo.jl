@@ -150,8 +150,8 @@ function defaults(algo::Function)
 
         soplsrda Jchemo.ParSoplsda{Float64} ;
         soplslda Jchemo.ParSoplsda{Float64} ;
-        #soplsqda Jchemo.ParSoplsqda ;
-        #soplskdeda Jchemo.ParSoplskdeda ;
+        soplsqda Jchemo.ParSoplsqda ;
+        soplskdeda Jchemo.ParSoplskdeda ;
 
         ##
 
