@@ -263,6 +263,16 @@ end
 Base.@kwdef mutable struct ParSpcr  # same ParSpca
 end 
 
+Base.@kwdef mutable struct ParMwr
+    npoint::Int = 21
+    fun::Function = plskern
+    K::Int = 3      
+    rep::Int = 10   
+    h::Float = 1. 
+    score::Function = rmsep                    
+    scal::Symbol = :none
+end 
+
 Base.@kwdef mutable struct ParMwplsr
     npoint::Int = 21
     nlv::Int = 15

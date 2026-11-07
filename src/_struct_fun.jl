@@ -408,6 +408,16 @@ struct Spcr{Q <: Float}
     par::ParSpca
 end
 
+struct Mwr{Q <: Float}
+    fitm_emb::Vector{Plsr}
+    scor_emb::Vector{Q}
+    d_emb::Vector{Q}
+    w_emb::Vector{Q}
+    vi::Vector{Q}
+    window::Vector{UnitRange{Int}}
+    centrw::Vector{Int}
+end
+
 struct Mwplsr{Q <: Float}
     fitm_emb::Vector{Plsr}
     nlv_emb::Vector{Int}

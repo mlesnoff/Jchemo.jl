@@ -12,11 +12,12 @@ Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
 * `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
-* `rep` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
+* `rep` : Number of repetitions of the K-fold cross validation (CV) used to select the nb. LVs for each window.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details. 
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `score` : Function computing the error rate (to minimize) in the CV (default: `rmsep`).
+* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The function implements a moving (i.e., sliding) window Pls regression (Mwpls).
     
@@ -159,11 +160,10 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
     nlv_emb = list(Int, nw)
     scor_emb = list(Q, nw)
     j = 1   
-    @inbounds for i in rangetot  # define each window
-        # Define the window
-        window[j] = (i - nhwindow):(i + nhwindow)
+    @inbounds for i in rangetot                     # run for each window 'j'
+        window[j] = (i - nhwindow):(i + nhwindow)   # window 'j'
         vX = vcol(X, window[j])
-        # Cross-validate to select the model
+        # Cross-validate (only nlv) to select the model
         if isnothing(group) 
             segm = segmkf(n, par.K; rep = par.rep)
         else
@@ -183,7 +183,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         res[u, :]
         # Fit the selected model        
         nlv_emb[j] = res.nlv[u]
-        fitm_emb[j] = plskern(vX, Y, weights; nlv = nlv_emb[j]) #, scal = par.scal)
+        fitm_emb[j] = plskern(vX, Y, weights; nlv = nlv_emb[j], scal = par.scal)
         scor_emb[j] = vscor[u]
         j = j + 1
     end

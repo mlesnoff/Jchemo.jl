@@ -8,7 +8,7 @@ Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
 * `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
-* `rep` : Number of repetitions of the K-fold cross validation used to select the nb. LVs for each window.
+* `rep` : Number of repetitions of the K-fold cross validation (CV) used to select the nb. LVs for each window.
 * `typcut` : Type of cutoffs. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:std` or `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
