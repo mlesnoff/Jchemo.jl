@@ -265,11 +265,11 @@ end
 
 Base.@kwdef mutable struct ParMwplsr
     npoint::Int = 21
-    nlv::Int = 15
     K::Int = 3      
     rep::Int = 10   
     h::Float = 1. 
     score::Function = rmsep                    
+    nlv::Int = 15
     scal::Symbol = :none
 end 
 
@@ -529,6 +529,18 @@ Base.@kwdef mutable struct ParSplskdeda{Q <: Float}
     tol::Q = 1e-8 
     maxit::Int = 200   
     scal::Symbol = :none 
+end 
+
+Base.@kwdef mutable struct ParMwplsqda{Q <: Float}
+    npoint::Int = 21
+    K::Int = 3      
+    rep::Int = 10   
+    h::Float = 1. 
+    score::Function = errp                    
+    nlv::Int = 15
+    prior::Union{Symbol, Vector{Q}} = :prop
+    alpha::Q = 0. 
+    scal::Symbol = :none
 end 
 
 Base.@kwdef mutable struct ParKplsda{Q <: Float}    # kplsrda, kplslda

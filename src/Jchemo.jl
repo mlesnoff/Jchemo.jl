@@ -200,6 +200,8 @@ include("splslda.jl")
 include("splsqda.jl")
 include("splskdeda.jl")
 
+include("mwplsqda.jl")
+
 include("kplslda.jl")
 include("kplsqda.jl")
 include("kplskdeda.jl")
@@ -502,6 +504,7 @@ export
     # Sparse 
     splsrda,
     splslda, splsqda, splskdeda,
+    mwplsqda,
     # Multiblock
     mbplsrda, 
     mbplslda, mbplsqda, mbplskdeda,

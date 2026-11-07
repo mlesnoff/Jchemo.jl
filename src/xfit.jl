@@ -56,7 +56,7 @@ fitm = model.fitm ;
 @head xfit(fitm, X)
 @head xresid(fitm, X)
 
-#### Pls
+#### PLS
 
 nlv = 3
 scal = :none

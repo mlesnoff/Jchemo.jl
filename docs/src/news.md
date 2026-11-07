@@ -36,7 +36,7 @@
 
 - News
     - Function **occmwpls**: Occ by oving window Pls.    
-    - Function **mwplsr**: Moving window Plsr (MWPLSR).    
+    - Function **mwplsr**: Moving window PLSR (MWPLSR).    
     - Function **durbinw**: Return the Durbin-Watson statistic. 
     - Function **coefmatb**: Build a matrix of b-coefficients of a LV-based model, 
         for a given Y-variable.

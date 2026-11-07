@@ -3,23 +3,23 @@
     mwplsr(X, Y, group::Union{Nothing, Vector{String}} = nothing; kwargs...)
     mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q},
         group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
-Moving window Plsr (MWPLSR).
+Moving window PLSR (MWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
 * `group` : A vector (n) defining groups (batches) of observations. Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
-* `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
 * `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
 * `rep` : Number of repetitions of the K-fold cross validation (CV) used to select the nb. LVs for each window.
 * `h` : A scalar defining the shape of the weight function computed by function `winvs`. Lower is h, 
     sharper is the function. See function `winvs` for details. 
 * `score` : Function computing the error rate (to minimize) in the CV (by default, `score = rmsep`).
+* `nlv` : Maximum nb. of latent variables (LVs) to consider in each PLS model.
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
-The function implements a moving (i.e., sliding) window Pls regression (Mwpls).
+The function implements a moving (i.e., sliding) window PLS regression (Mwpls).
     
 If `group` is used: for the cross-validation (see step-2 below), the function samples groups 
 of observations instead of single observations. Such a group-sampling is required when the data are structured 
@@ -179,12 +179,11 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
             A = Matrix(res[:, (s - q + 1):end])
             vscor = sqrt.(rowsum(A).^2)
         end
-        u = findall(vscor .== minimum(vscor))[1] 
-        res[u, :]
-        # Fit the selected model        
-        nlv_emb[j] = res.nlv[u]
-        fitm_emb[j] = plskern(vX, Y, weights; nlv = nlv_emb[j], scal = par.scal)
+        u = first(findall(vscor .== minimum(vscor))) 
         scor_emb[j] = vscor[u]
+        nlv_emb[j] = res.nlv[u]
+        # Fit the selected model        
+        fitm_emb[j] = plskern(vX, Y, weights; nlv = nlv_emb[j], scal = par.scal)
         j = j + 1
     end
     # Model weights

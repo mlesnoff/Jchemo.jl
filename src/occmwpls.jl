@@ -1,12 +1,12 @@
 """
     occmwpls(; kwargs...)
     occmwpls(X; kwargs...)
-One-class classification (OCC) by moving window Pls (MWPLS).
+One-class classification (OCC) by moving window PLS (MWPLS).
 * `X` : Training (reference class) X-data (n, p).
 * `Y` : Training (reference class) Y-data (n, q).
 Keyword arguments:
 * `npoint` : Total number of points in the sliding window (must be odd).
-* `nlv` : Maximum nb. of latent variables (LVs) to consider in each Pls model.
+* `nlv` : Maximum nb. of latent variables (LVs) to consider in each PLS model.
 * `K` : Number of folds in the K-fold cross validation used to select the nb. LVs for each window. 
 * `rep` : Number of repetitions of the K-fold cross validation (CV) used to select the nb. LVs for each window.
 * `typcut` : Type of cutoffs. Possible values are: `:std`, `:mad`, `:q`. See Thereafter.
@@ -16,9 +16,9 @@ Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
-The function implements an Occ by moving (i.e., sliding) window Pls (Mwpls). 
+The function implements an Occ by moving (i.e., sliding) window PLS (Mwpls). 
     
-This is the same principle as function `occmwpca` except that a Pls{X, Y} is run on each window, 
+This is the same principle as function `occmwpca` except that a PLS{X, Y} is run on each window, 
 instead of a Pca. 
 
 * For each window, the nb. LVs is selected by a repeated K-fold cross validation, see function `mwplsr`. 

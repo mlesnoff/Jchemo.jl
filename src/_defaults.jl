@@ -127,6 +127,8 @@ function defaults(algo::Function)
         splsqda Jchemo.ParSplsqda ;
         splskdeda Jchemo.ParSplskdeda ;
 
+        mwplsqda Jchemo.ParMwplsqda ;
+
         krrda Jchemo.ParKrrda ;
         kplsrda Jchemo.ParKplsda ; 
         kplslda Jchemo.ParKplsda ; 

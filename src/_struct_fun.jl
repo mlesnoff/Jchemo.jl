@@ -702,6 +702,17 @@ struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda
         ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
+struct Mwplsqda{Q <: Float}
+    fitm_emb::Vector{Plsprobda}
+    nlv_emb::Vector{Int}
+    scor_emb::Vector{Q}
+    d_emb::Vector{Q}
+    w_emb::Vector{Q}
+    vi::Vector{Q}
+    window::Vector{UnitRange{Int}}
+    centrw::Vector{Int}
+end
+
 struct Mbplsrda{Q <: Float}
     fitm_emb::Mbplsr 
     ni::Vector{Int}
