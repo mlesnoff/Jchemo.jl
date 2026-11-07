@@ -26,7 +26,7 @@ Keyword arguments:
 The function implements a moving (i.e., sliding) window PLS discrimination by QDA.
 
 See function `mwplsr` for details. The principle is the same except that a PLS-QDA is run instead
-of a PLSR. 
+of a PLSR. The final class prediction is the weighted vote computed over the windows. 
 
 # Examples
 ```julia
@@ -97,16 +97,14 @@ end
 
 function predict(object::Mwplsqda, X)
     X = ensure_mat(X)
-    Q = eltype(X)
     m = nro(X)
     nw = length(object.fitm_emb)
-    predw = similar(X, m, 1, nw)
-    pred = zeros(Q, m, q)
-    # Computing votes
-    @inbounds for i in eachindex(object.fitm_emb)
-        predw[:, :, i] = predict(object.fitm_emb[i], vcol(X, object.window[i])).pred
-        pred = pred + object.w_emb[i] * predw[:, :, i] 
+    predw = Array{String, 2}(undef, m, nw)
+    #pred = Array{String, 2}(undef, m, 1)
+    @inbounds for j in eachindex(object.fitm_emb)
+        predw[:, j] = predict(object.fitm_emb[j], vcol(X, object.window[j])).pred
     end
+    pred = reshape([findmax_cla(predw[i, :], object.w_emb) for i in axes(predw, 1)], m, 1)
     (pred = pred, predw)
 end
 
