@@ -3,6 +3,8 @@
 ## *Version 0.11.4 dev*
 
 - Modifications
+    
+    - Functions **mwplsr**, **mwplsqda**: Internal changes, more compact outputs.
     - Code cleaning.
 
 ## *Version 0.11.3*

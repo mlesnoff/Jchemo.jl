@@ -52,9 +52,7 @@ tab(ytest)
 
 h = 1.
 #h = .2       # sharper
-alpha = .1    # consensus .1 QDA * .9 LDA
-#alpha = .0   # QDA
-#alpha = 1.   # LDA
+alpha = [.01, .8] 
 model = mwplsqda(; npoint = 31, rep = 1, h, alpha)
 fit!(model, Xtrain, ytrain) 
 fitm = model.fitm ;
@@ -62,8 +60,8 @@ fitm = model.fitm ;
 @head fitm.window            # range of each window 
 @head centrw = fitm.centrw   # central point of each window
 
-@head fitm.nlv_emb           # nb. of LVs selected for each window
-tab(fitm.nlv_emb) 
+@head rescv = fitm.rescv     # Parameters selected for each window
+tab(rescv.nlv) 
 
 @head w_emb = fitm.w_emb     # model weight for each window
 @head vi = fitm.vi           # variable importances
@@ -111,9 +109,9 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
     centrw = collect(rangetot)
     nw = length(rangetot)
     window = list(UnitRange{Int}, nw)
-    fitm_emb = list(Plsprobda, nw)
-    nlv_emb = list(Int, nw)
+    vrescv = list(DataFrameRow, nw)
     scor_emb = list(Q, nw)
+    fitm_emb = list(Plsprobda, nw)
     j = 1   
     @inbounds for i in rangetot                     # run for each window 'j'
         window[j] = (i - nhwindow):(i + nhwindow)   # window 'j'
@@ -124,19 +122,22 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         else
             segm = segmkf(group, par.K; rep = par.rep)
         end
-        vprior = isa(par.alpha, Vector{Symbol}) ? par.prior : [par.prior]        
-        vscal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
-        pars = mpar(alpha = par.alpha, prior = vprior, scal = vscal)
+        nlv = 1:par.nlv
+        prior = isa(par.alpha, Vector{Symbol}) ? par.prior : [par.prior]        
+        scal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
+        pars = mpar(alpha = par.alpha, prior = prior, scal = scal)
         model = plsqda()
-        res = gridcv(model, vX, y; segm, score = par.score, nlv = 1:par.nlv, pars).res
+        res = gridcv(model, vX, y; segm, score = par.score, nlv, pars).res
         u = first(findall(res.y1 .== minimum(res.y1))) 
+        vrescv[j] = res[u, :] 
         scor_emb[j] = res.y1[u]
-        nlv_emb[j] = res.nlv[u]
         # Fit the selected model        
-        fitm_emb[j] = plsqda(vX, y, weights; nlv = nlv_emb[j], alpha = par.alpha, 
-            prior = par.prior, scal = par.scal)
+        fitm_emb[j] = plsqda(vX, y, weights; nlv = res.nlv[u], alpha = res.alpha[u],
+            prior = res.prior[u], scal = res.scal[u])
         j = j + 1
     end
+    rescv = reduce(vcat, DataFrame.(vrescv))
+    rescv.scor_tot = scor_emb  # for homogeneity in outputs with mwplsr
     # Model weights
     scor_min = minimum(scor_emb)
     d_emb = scor_emb .- scor_min   # model performance discrepancy
@@ -154,7 +155,7 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         v = vcol(V, j)
         vi[j] = meanv(v[v .> -1])
     end
-    Mwplsqda(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, centrw) 
+    Mwplsqda(fitm_emb, d_emb, w_emb, rescv, vi, window, centrw) 
 end
 
 function predict(object::Mwplsqda, X)

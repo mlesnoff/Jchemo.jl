@@ -539,7 +539,7 @@ Base.@kwdef mutable struct ParMwplsqda{Q <: Float}
     score::Function = errp                    
     nlv::Int = 15
     prior::Union{Symbol, Vector{Symbol}} = :prop
-    alpha::Union{Q, Vector{Symbol}} = 0. 
+    alpha::Union{Q, Vector{Q}} = 0. 
     scal::Union{Symbol, Vector{Symbol}} = :none
 end 
 
