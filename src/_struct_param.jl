@@ -270,7 +270,7 @@ Base.@kwdef mutable struct ParMwplsr
     h::Float = 1. 
     score::Function = rmsep                    
     nlv::Int = 15
-    scal::Symbol = :none
+    scal::Union{Symbol, Vector{Symbol}} = :none
 end 
 
 Base.@kwdef mutable struct ParPlsravg
@@ -538,9 +538,9 @@ Base.@kwdef mutable struct ParMwplsqda{Q <: Float}
     h::Float = 1. 
     score::Function = errp                    
     nlv::Int = 15
-    prior::Union{Symbol, Vector{Q}} = :prop
-    alpha::Q = 0. 
-    scal::Symbol = :none
+    prior::Union{Symbol, Vector{Symbol}} = :prop
+    alpha::Union{Q, Vector{Symbol}} = 0. 
+    scal::Union{Symbol, Vector{Symbol}} = :none
 end 
 
 Base.@kwdef mutable struct ParKplsda{Q <: Float}    # kplsrda, kplslda

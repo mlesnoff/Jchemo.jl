@@ -17,8 +17,7 @@ Keyword arguments:
 * `score` : Function computing the error rate (to minimize) in the CV (by default, `score = errp`).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each PLS model.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
-    `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
-    (in case of vector, it must be sorted in the same order as `mlev(y)`).
+    `:unif` (uniform).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
@@ -78,8 +77,8 @@ size(res.predw)              # predictions for each window
 conf(pred, ytest).pct
 
 xticks = collect(wl[1]:100:(wl[end]))
-f, ax = plotxy(wl[centrw], fitm.scor_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "ERRP-CV")
-lines!(wl[centrw], fitm.scor_emb; linewidth = .5)
+f, ax = plotxy(wl[centrw], rescv.scor_tot; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "ERRP-CV")
+lines!(wl[centrw], rescv.scor_tot; linewidth = .5)
 f 
 
 xticks = collect(wl[1]:100:(wl[end]))
@@ -125,7 +124,9 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         else
             segm = segmkf(group, par.K; rep = par.rep)
         end
-        pars = mpar(alpha = par.alpha, prior = [par.prior], scal = [par.scal])
+        vprior = isa(par.alpha, Vector{Symbol}) ? par.prior : [par.prior]        
+        vscal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
+        pars = mpar(alpha = par.alpha, prior = vprior, scal = vscal)
         model = plsqda()
         res = gridcv(model, vX, y; segm, score = par.score, nlv = 1:par.nlv, pars).res
         u = first(findall(res.y1 .== minimum(res.y1))) 
@@ -137,8 +138,8 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         j = j + 1
     end
     # Model weights
-    scor_best = minimum(scor_emb)
-    d_emb = scor_emb .- scor_best   # model performance discrepancy
+    scor_min = minimum(scor_emb)
+    d_emb = scor_emb .- scor_min   # model performance discrepancy
     criw = 3. ; squared = false
     w_emb = winvs(d_emb; h = par.h, criw, squared)
     wtot = sum(w_emb)

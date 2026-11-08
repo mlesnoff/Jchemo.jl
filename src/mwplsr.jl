@@ -110,8 +110,8 @@ fitm = model.fitm ;
 @head fitm.window            # range of each window 
 @head centrw = fitm.centrw   # central point of each window
 
-@head fitm.nlv_emb           # nb. of LVs selected for each window
-tab(fitm.nlv_emb) 
+@head rescv = fitm.rescv     # Parameters selected for each window
+tab(rescv.nlv) 
 
 @head w_emb = fitm.w_emb     # model weight for each window
 @head vi = fitm.vi           # variable importances
@@ -126,8 +126,8 @@ plotxy(pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",
     ylabel = "Observed").f
 
 xticks = collect(wl[1]:15:(wl[end]))
-f, ax = plotxy(wl[centrw], fitm.scor_emb; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "RMSEP-CV")
-lines!(wl[centrw], fitm.scor_emb; linewidth = .5)
+f, ax = plotxy(wl[centrw], rescv.scor_tot; size = (800, 300), xticks, xlabel = "Window center (nm)", ylabel = "RMSEP-CV")
+lines!(wl[centrw], rescv.scor_tot; linewidth = .5)
 f 
 
 xticks = collect(wl[1]:15:(wl[end]))
@@ -161,9 +161,9 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
     centrw = collect(rangetot)
     nw = length(rangetot)
     window = list(UnitRange{Int}, nw)
-    fitm_emb = list(Plsr, nw)
-    nlv_emb = list(Int, nw)
+    vrescv = list(DataFrameRow, nw)
     scor_emb = list(Q, nw)
+    fitm_emb = list(Plsr, nw)
     j = 1   
     @inbounds for i in rangetot                     # run for each window 'j'
         window[j] = (i - nhwindow):(i + nhwindow)   # window 'j'
@@ -174,7 +174,8 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         else
             segm = segmkf(group, par.K; rep = par.rep)
         end
-        pars = mpar(scal = [par.scal])
+        vscal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
+        pars = mpar(scal = vscal)
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = par.score, nlv = 0:par.nlv, pars).res
         if q == 1
@@ -182,18 +183,20 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         else
             s = nco(res)
             A = Matrix(res[:, (s - q + 1):end])
-            vscor = sqrt.(rowsum(A).^2)
+            vscor = sqrt.(rowsum(A.^2))
         end
-        u = first(findall(vscor .== minimum(vscor))) 
+        u = first(findall(vscor .== minimum(vscor)))
+        vrescv[j] = res[u, :] 
         scor_emb[j] = vscor[u]
-        nlv_emb[j] = res.nlv[u]
         # Fit the selected model        
-        fitm_emb[j] = plskern(vX, Y, weights; nlv = nlv_emb[j], scal = par.scal)
+        fitm_emb[j] = plskern(vX, Y, weights; nlv = res.nlv[u], scal = res.scal[u])
         j = j + 1
     end
+    rescv = reduce(vcat, DataFrame.(vrescv))
+    rescv.scor_tot = scor_emb 
     # Model weights
-    scor_best = minimum(scor_emb)
-    d_emb = scor_emb .- scor_best   # model performance discrepancy
+    scor_min = minimum(scor_emb)
+    d_emb = scor_emb .- scor_min   # model performance discrepancy
     criw = 3. ; squared = false
     w_emb = winvs(d_emb; h = par.h, criw, squared)
     wtot = sum(w_emb)
@@ -208,7 +211,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         v = vcol(V, j)
         vi[j] = meanv(v[v .> -1])
     end
-    Mwplsr(fitm_emb, nlv_emb, scor_emb, d_emb, w_emb, vi, window, centrw) 
+    Mwplsr(fitm_emb, d_emb, w_emb, rescv, vi, window, centrw) #, scor_emb
 end
 
 function predict(object::Mwplsr, X)

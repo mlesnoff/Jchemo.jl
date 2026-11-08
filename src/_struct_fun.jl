@@ -410,10 +410,9 @@ end
 
 struct Mwplsr{Q <: Float}
     fitm_emb::Vector{Plsr}
-    nlv_emb::Vector{Int}
-    scor_emb::Vector{Q}
     d_emb::Vector{Q}
     w_emb::Vector{Q}
+    rescv::DataFrame
     vi::Vector{Q}
     window::Vector{UnitRange{Int}}
     centrw::Vector{Int}
