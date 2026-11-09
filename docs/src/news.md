@@ -7,6 +7,7 @@
     - Functions **mwplsr**, **mwplsqda**: Internal changes, more compact outputs.
     - Code cleaning.
 
+
 ## *Version 0.11.3*
 
 - News
