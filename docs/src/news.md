@@ -4,6 +4,7 @@
 
 - Modifications
     
+    - Function **blockscal**: Now allow different column centering and scaling betwwen blocks.
     - Functions **mwplsr**, **mwplsqda**: Internal changes, more compact outputs.
     - Code cleaning.
 
