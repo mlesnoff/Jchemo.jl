@@ -8,8 +8,8 @@ Discrimination by kernel ridge regression (KRR-DA).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments: 
 * `lb` : Ridge regularization parameter "lambda".
-* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective 
-    functions `krbf` and `kpol` for their keyword arguments.
+* `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), and `kpol`. 
+    See the respective functions for their keyword arguments.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
@@ -41,7 +41,7 @@ tab(ytrain)
 tab(ytest)
 
 lb = 1e-5
-kern = :krbf ; gamma = .001 
+kern = krbf ; gamma = .001 
 scal = :std
 model = krrda(; lb, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)

@@ -7,8 +7,8 @@ Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
-* `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:krbf`, `:kpol`. See respective functions `krbf` 
-    and `kpol` for their keyword arguments.
+* `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), and `kpol`. 
+    See the respective functions for their keyword arguments.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
@@ -43,7 +43,7 @@ Xtrain = X[s.train, :]
 Xtest = X[s.test, :]
 
 nlv = 3
-kern = :krbf ; gamma = 1e-4
+kern = krbf ; gamma = 1e-4
 model = kpca(; nlv, kern, gamma) 
 fit!(model, Xtrain)
 fitm = model.fitm ;
@@ -80,8 +80,7 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <
         X = fscale(X, xscales)
     end
     # End
-    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))  
-    K = fkern(X, X; kwargs...)  # in the future?: fkern!(K, X, X; kwargs...)
+    K = par.kern(X, X; kwargs...)  
     sqrtw = sqrt.(weights.values)
     Kt = K'    
     DKt = fweightr(Kt, weights.values)
@@ -110,8 +109,7 @@ transf(object::Kpca, X) = transf(object, X, object.par.nlv)
 
 function transf(object::Kpca, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
     w = object.weights.values
     DKt = fweightr(K', w)
     vtot = sum(DKt; dims = 1)  # keep matrix format

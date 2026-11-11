@@ -60,7 +60,7 @@ ntest = nro(Xtest)
 tab(ytrain)
 tab(ytest)
 
-kern = :krbf ; gamma = 1e4
+kern = krbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
 model = svmda(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)

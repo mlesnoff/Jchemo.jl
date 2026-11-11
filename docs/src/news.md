@@ -1,6 +1,10 @@
 # News
 
-## *Version 0.11.4 dev*
+## *Version 0.12.0 dev*
+
+- Breaking changes 
+    - Functions implementing kernel regressions and discrimination (except svmr/da):
+        argument 'kernè has changed (must be a function, see the help pages).
 
 - Modifications
     
@@ -53,7 +57,7 @@
     - Function **vi_baggr**: Out-of-bag permutation variable importance.
     - Function **viperm!**: new argument 'perm' and method. 
 
-- Breakings
+- Breaking changes
     - Internals of Occ functions have changed (the methods are the same but many changes
         in output names) 
     - Variable importance functions: output 'imp' was renamed to 'vi'.
@@ -105,7 +109,7 @@
 **Warning:** Major **breaking changes** have been made in this version compared to versions 0.9s, 
 in particular in functions having arguments 'nlv' (latent variables) and 'lb' (ridge).  
 
-- Breakings:
+- Breaking changes:
     - All functions using a class membership variable (e.g., functions for discrimination):
         this variable must be a 'Vector{String}'. 
     - All functions having arguments 'nlv' or 'lb': **deep** restructuration of functions *transf*, *coef* 
@@ -221,7 +225,7 @@ in particular in functions having arguments 'nlv' (latent variables) and 'lb' (r
 
 ## *Version 0.9.0*
 
-- Breaking changes
+- Breaking changes changes
     - All the PLS-based DA methods: output 'fitm' has been split into 'fitm_emb' (the embedding model) and 
         'fitm_da' (the DA models for each number of latent variables). This was done to simplify the code.
 
@@ -348,7 +352,7 @@ in particular in functions having arguments 'nlv' (latent variables) and 'lb' (r
 
 ## *Version 0.8.0*
 
-- Breaking
+- Breaking changes
    - Object 'P' when representing matrix of laodings in Pca, Pls etc.:
    renamed to 'V'  in the code of functions and their outputs.
 
@@ -358,7 +362,7 @@ in particular in functions having arguments 'nlv' (latent variables) and 'lb' (r
 
 ## *Version 0.7.0*
 
-- Breaking
+- Breaking changes
     - **dummy**: To improve time computations, the output 'Y' is now a BitMatrix.
     - **fweight**: remaned to **wdis**.
     - **iqr**: renamed to **iqrv**.
@@ -395,7 +399,7 @@ in particular in functions having arguments 'nlv' (latent variables) and 'lb' (r
     - **parsemiss** Parsing a string vector allowing missing data.
     - **recod_miss** Declare data as missing in a dataset.
 
-- Breaking
+- Breaking changes
     - **miss**: renamed to **findmiss**.
     - **tabdf**: renamed to **tab**.
     - **aggstat**, **tabdf**: arguments 'groups' and 'vars' renamed to 'vary' and 'sel'.
@@ -433,7 +437,7 @@ or equivalently
 - New
     - **umap**: new argument 'psamp'.
 
-- Breaking
+- Breaking changes
     - **sampdf**: argument 'msamp' renamed to 'meth'.
     - Output 'fmpls' renamed to 'fitm_emb' in PLSDA functions.
     - Functions **dtlo**, **dtpol**, **dtasls**, **dtarpls*, **dtairpls** 
@@ -454,7 +458,7 @@ or equivalently
         (with package Loess.jl).
     - **dtlo** Baseline correction of each row of X-data by LOESS regression.
 
-- Breaking
+- Breaking changes
     - **detrend**, **asls**, **airpls**, **arpls**: renamed to 
         **dtpol**, **dtasls**, **dtairpls**, **dtarpls**.
 
@@ -474,7 +478,7 @@ or equivalently
         - **airpls** adaptive iteratively reweighted penalized least squares algorithm (AIRPLS).
         - **arpls** asymmetrically reweighted penalized least squares smoothing (ARPLS).
 
-- Breaking
+- Breaking changes
     - Function **defpar** renamed to **default**.
 
 - Modifications
@@ -490,7 +494,7 @@ or equivalently
     - **umap**: UMAP: Uniform manifold approximation and projection for 
     dimension reduction (uses package **UMAP.jl** added as dependence).
 
-- Breaking
+- Breaking changes
     - Argument 'nlvdis' removed from **knnr** and **knnda** (there is no possible dimension 
         reduction anymore).
     - Renaming of functions:  
@@ -518,7 +522,7 @@ or equivalently
     - **pcaout**, **pcaout!**: Robust PCA using outlierness.
     - **plsrout**, **plsrout!**: Robust PLSR using outlierness.
 
-- Breaking
+- Breaking changes
     - **stah**: Renamed to **outstah** and improved. 
 
 - Modifications
@@ -534,7 +538,7 @@ or equivalently
 
 ## *Version 0.4.1*
 
-- Breaking
+- Breaking changes
     - **savgk**: order of arguments have changed. 
 
 - Modifications
@@ -565,7 +569,7 @@ has changed, with the use of the new function **model**:
     - **rownorm**: Row-wise norms.
     - **snorm**: Row-wise norming of X-data.
 
-- Breaking
+- Breaking changes
     - **confusion**: renamed to **conf**, and output 'accuracy' renamed to 'accpct' 
         and modified. 
 
@@ -598,7 +602,7 @@ has changed, with the use of the new function **model**:
 - Modifications
     - Code improvement. 
     - **calds**, **calpds**: Function 'fit!' was added.
-- Breaking
+- Breaking changes
     - **rmgap**: works now with a function 'transf'. 
         Function **rmgap!** was removed.
 
@@ -607,7 +611,7 @@ has changed, with the use of the new function **model**:
 - Modifications
     - Code improvement. 
 
-- Breaking
+- Breaking changes
     - **hconcat** renamed to **mbconcat**
     - **recodnum2cla** renamed to **recodnum2int**
     - **viperm!** renamed to **viperm**
@@ -677,7 +681,7 @@ Some specific modified points are:
     - **baggr** has been parallelized (multi-threading).
     - Code improvement.
 
-- Breaking changes
+- Breaking changes changes
     - **sampks**, **sampdp**, **samprand**, **sampsys**, **sampcla**: order of arguments have changed.
     - **mtest**: Arguments have changed, and function has been improved. 
     - **plotxy**: The number of methods have been reduced (for simplification). 
@@ -728,7 +732,7 @@ Some specific modified points are:
 - Modifications
     - Code improvement.
 
-- Breaking changes
+- Breaking changes changes
     - **covsel** has been removed and integrated into **covselr** that was
         extended and made faster. 
 
@@ -745,7 +749,7 @@ Some specific modified points are:
     - **dmnorm**: new argument 'simpl'. 
     - Code improvement.
 
-- Breaking changes
+- Breaking changes changes
     - **checkdupl**, **checkmiss**: renamed to **dupl** and **miss**.
     - **fda**, **fdasvd** : argument 'pseudo' has been replaced by 'lb'
         (ridge regularization).
@@ -759,7 +763,7 @@ Some specific modified points are:
 - Modifications
     - Code improvement.
 
-- Breaking changes
+- Breaking changes changes
     - **calds**, **calpds**: Order of arguments 'Xt' and 'X' were inverted
         (required to be useable by **gridscore** etc.).
 
@@ -773,7 +777,7 @@ Some specific modified points are:
 - Modifications
     - Code improvement.
 
-- Breaking changes
+- Breaking changes changes
     - **lda**, **qda**: returned output 'ds' renamed to 'dens'.
 
 ## *Version 0.1.20*
@@ -787,7 +791,7 @@ Some specific modified points are:
     - **plotxy**: accept a matrix (n, 2) as input.
     - Code improvement.
 
-- Breaking changes
+- Breaking changes changes
     - **dens**: removed and replaced by **dmkern**.
 
 ## *Version 0.1.19*
@@ -819,7 +823,7 @@ Some specific modified points are:
     - **lwmlr_s**: Add arguments 'psamp' and 'samp' for large nb. observations. 
     - Code cleaning.
 
-- Breaking changes
+- Breaking changes changes
     - **lwplsr_s**: Arguments and pipeline changed to be consistent 
         with **lwmlr_s**. 
     - **sampclas**: remamed to **sampcla**.
@@ -838,7 +842,7 @@ Some specific modified points are:
     - **selwold** :  add argument 'step'- 
     - Code cleaning.
 
-- Breaking changes
+- Breaking changes changes
     - **Warning**: Difficult breaking bugs appeared in C++ dll from Julia v1.8.4 
         (still present in v1.9-betas) that removed the possibility to use packages 
         LIBSVM.jl and XGBoost.jl under Windows. For this reason, Jchemo.jl stopped to use 
@@ -875,7 +879,7 @@ Some specific modified points are:
     - **plotxy**: add of arguments 'circle' and 'zeros'. 
     - Code cleaning.
 
-- Breaking changes
+- Breaking changes changes
     - **aggstat** has changed (arguments).
     - **baggr_vi** renamed to **vi_baggr**
     - **baggr_oob** renamed to **oob_baggr**
@@ -913,7 +917,7 @@ Some specific modified points are:
 - Modifications
     - Code cleaning.
 
-- Breaking changes
+- Breaking changes changes
     - **mbmang** renamed to **mbunif** (Unified multiblock analysis).
     - **ramang** renamed to **rrr** (Reduced rank regression).
 
@@ -924,7 +928,7 @@ Some specific modified points are:
     - **ramang** Redundancy analysis regression = Reduced rank regression (RRR)
     - **mbplswest** MBPLSR - Nipals algorithm (Westerhuis et al. 1998) 
 
-- Breaking changes
+- Breaking changes changes
     - All the functions **..._avg** and **..._stack** renamed 
         to **...avg** and **...stack** (e.g., **plsr_avg** to 
         **plsravg**).

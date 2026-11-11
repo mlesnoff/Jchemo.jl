@@ -9,8 +9,8 @@ Direct kernel partial least squares regression (DKPLSR) (Bennett & Embrechts 200
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
-* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`. See respective functions 
-    `krbf` and `kpol` for their keyword arguments.
+* `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), 
+    and `kpol`. See the respective functions.
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
@@ -43,7 +43,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-kern = :krbf ; gamma = 1e-1 ; scal = :none
+kern = krbf ; gamma = 1e-1 ; scal = :none
 #gamma = 1e-4 ; scal = :std
 model = dkplsr(; nlv, kern, gamma, scal) ;
 fit!(model, Xtrain, ytrain)
@@ -117,8 +117,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         fscale!(Y, yscales)
     end
     # End
-    fkern = eval(Meta.parse(string("Jchemo.", par.kern)))
-    K = fkern(X, X; kwargs...)     
+    K = par.kern(X, X; kwargs...)     
     fitm = plskern!(K, Y, weights; kwargs...)
     Dkplsr(fitm, X, K, xscales, yscales, kwargs, par) 
 end
@@ -132,14 +131,12 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to consider.
 """ 
 function transf(object::Dkplsr, X)
-    fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
+    K = object.par.kern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
     transf(object.fitm, K)
 end
 
 function transf(object::Dkplsr, X, nlv::Int)
-    fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
+    K = object.par.kern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
     transf(object.fitm, K, nlv)
 end
 
@@ -163,8 +160,7 @@ Compute Y-predictions from a fitted model.
 * `nlv` : Nb. LVs, or collection of nb. LVs, to consider. 
 """ 
 function predict(object::Dkplsr, X)
-    fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
     pred = predict(object.fitm, K).pred * Diagonal(object.yscales)
     (pred = pred, nlv = object.par.nlv) 
 end
@@ -176,8 +172,7 @@ function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
     else
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
-    fkern = eval(Meta.parse(String(object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
     pred = predict(object.fitm, K, nlv).pred
     D = Diagonal(object.yscales)
     @inbounds for i in eachindex(nlv)
