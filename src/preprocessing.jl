@@ -689,7 +689,7 @@ wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
 model = snv() 
-#model = snv(scal = false) 
+#model = snv(scal = :none) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)

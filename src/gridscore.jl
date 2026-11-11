@@ -222,7 +222,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 
 ####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
 # model1
-model1 = snv(scal = false)
+model1 = snv(scal = :none)
 # model2 
 npoint = 5 ; deriv = 0 ; degree = 2
 model2 = savgol(; npoint, deriv, degree)
