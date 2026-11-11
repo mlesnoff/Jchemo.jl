@@ -250,7 +250,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 nlv = 15 ; scal = :std
 model1 = pcasvd(; nlv, scal)
 # model2
-kern = [:krbf]
+kern = [:rbf]
 gamma = (10).^(-5:1.:5)
 cost = (10).^(1:3)
 epsilon = [.1, .2, .5]

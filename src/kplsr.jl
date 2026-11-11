@@ -9,8 +9,8 @@ Kernel partial least squares regression (KPLSR) implemented with a Nipals algori
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
-* `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), and `kpol`. 
-    See the respective functions for their keyword arguments.
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
+    See functions `krbf` and `kpol`, respectively, for their keyword arguments.
 * `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
@@ -38,7 +38,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-kern = krbf ; gamma = 1e-1
+kern = :rbf ; gamma = 1e-1
 model = kplsr(; nlv, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 @names model
@@ -65,7 +65,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 nlv = 2
-kern = krbf ; gamma = 1 / 3
+kern = :rbf ; gamma = 1 / 3
 model = kplsr(; nlv, kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
@@ -91,7 +91,7 @@ end
 
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
-    @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
+    @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
@@ -108,8 +108,9 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
-    # End
-    K = par.kern(X, X; kwargs...)   
+    # End    
+    fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
+    K = fkern(X, X; kwargs...)
     Kt = K'    
     DKt = fweightr(Kt, weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
@@ -177,7 +178,8 @@ transf(object::Kplsr, X) = transf(object, X, object.par.nlv)
 
 function transf(object::Kplsr, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
+    fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values) 
     vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', object.weights.values))  
@@ -203,8 +205,8 @@ function coef(object::Kplsr, nlv::Int)
 end
 
 """
-    predictpredict(object::Kplsr, X)
-    predictpredict(object::Kplsr, X, nlv::Union{Int, AbstractVector{Int}})
+    predict(object::Kplsr, X)
+    predict(object::Kplsr, X, nlv::Union{Int, AbstractVector{Int}})
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.

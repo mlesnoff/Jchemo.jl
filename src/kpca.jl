@@ -7,8 +7,8 @@ Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
-* `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), and `kpol`. 
-    See the respective functions for their keyword arguments.
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
+    See functions `krbf` and `kpol`, respectively, for their keyword arguments.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
@@ -43,7 +43,7 @@ Xtrain = X[s.train, :]
 Xtest = X[s.test, :]
 
 nlv = 3
-kern = krbf ; gamma = 1e-4
+kern = :rbf ; gamma = 1e-4
 model = kpca(; nlv, kern, gamma) 
 fit!(model, Xtrain)
 fitm = model.fitm ;
@@ -69,7 +69,7 @@ end
 
 function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKpca{Q}, kwargs).par
-    @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
+    @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     n, p = size(X)
     nlv = min(par.nlv, n)
     # Scaling of X
@@ -80,7 +80,8 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <
         X = fscale(X, xscales)
     end
     # End
-    K = par.kern(X, X; kwargs...)  
+    fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
+    K = fkern(X, X; kwargs...)  
     sqrtw = sqrt.(weights.values)
     Kt = K'    
     DKt = fweightr(Kt, weights.values)
@@ -109,7 +110,8 @@ transf(object::Kpca, X) = transf(object, X, object.par.nlv)
 
 function transf(object::Kpca, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
+    fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     w = object.weights.values
     DKt = fweightr(K', w)
     vtot = sum(DKt; dims = 1)  # keep matrix format

@@ -3,8 +3,8 @@
 ## *Version 0.12.0 dev*
 
 - Breaking changes 
-    - Functions implementing kernel regressions and discrimination (except svmr/da):
-        argument 'kernè has changed (must be a function, see the help pages).
+    - Functions implementing kernel regressions and discrimination:
+        symbols in argument 'kern' has changed (see the help pages).
 
 - Modifications
     

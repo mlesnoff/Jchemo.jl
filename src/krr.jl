@@ -9,8 +9,8 @@ Kernel ridge regression (KRR) implemented by SVD factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
-* `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), and `kpol`. 
-    See the respective functions for their keyword arguments.
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
+    See functions `krbf` and `kpol`, respectively, for their keyword arguments.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
@@ -56,7 +56,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 lb = 1e-3
-kern = krbf ; gamma = 1e-1
+kern = :rbf ; gamma = 1e-1
 model = krr(; lb, kern, gamma) ;
 fit!(model, Xtrain, ytrain)
 @names model
@@ -76,7 +76,7 @@ res = predict(model, Xtest, [.1; .01])
 @head res.pred[2]
 
 lb = 1e-3
-kern = kpol ; degree = 1
+kern = :pol ; degree = 1
 model = krr(; lb, kern, degree) 
 fit!(model, Xtrain, ytrain)
 res = predict(model, Xtest)
@@ -90,7 +90,7 @@ n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
 lb = 1e-1
-kern = krbf ; gamma = 1 / 3
+kern = :rbf ; gamma = 1 / 3
 model = krr(; lb, kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
@@ -116,7 +116,7 @@ end
 
 function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKrr{Q}, kwargs).par
-    @assert in([:krbf ; :kpol])(par.kern) "Wrong value for argument 'kern'." 
+    @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     p = nco(X)
     # - No need to center X (what is centered is the kernel)
     # - No need to scale Y
@@ -129,7 +129,8 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
         fscale!(X, xscales)
     end
     # End
-    K = par.kern(X, X; kwargs...)
+    fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
+    K = fkern(X, X; kwargs...)
     sqrtw = sqrt.(weights.values)
     DKt = fweightr(K', weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
@@ -174,7 +175,8 @@ Compute Y-predictions from a fitted model.
 * `lb` : Regularization parameter, or collection of regularization parameters, 'lambda' to consider. 
 """ 
 function predict(object::Krr, X)
-    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
+    fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values
@@ -185,7 +187,8 @@ function predict(object::Krr, X)
 end
 
 function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
-    K = object.par.kern(fscale(X, object.xscales), object.X; object.kwargs...)
+    fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
+    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values

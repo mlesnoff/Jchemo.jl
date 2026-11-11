@@ -5,8 +5,8 @@ Support vector machine for discrimination "C-SVC" (SVM-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 Keyword arguments:
-* `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:krbf`, `:kpol`, 
-    `:klin`, `:ktanh`. See below.  
+* `kern` : Type of kernel used to compute the Gram matrices.Possible values are: `:rbf`, `:pol`, 
+    `:lin`, `:tan`. See below.  
 * `gamma` : `kern` parameter, see below.
 * `degree` : `kern` parameter, see below.
 * `coef0` : `kern` parameter, see below.
@@ -16,10 +16,10 @@ Keyword arguments:
     `:prt` (pareto) and `:mad` (MAD).
 
 Kernel types: 
-* :krbf -- radial basis function: exp(-gamma * ||x - y||^2)
-* :kpol -- polynomial: (gamma * x' * y + coef0)^degree
-* "klin -- linear: x' * y
-* :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
+* :rbf -- radial basis function: exp(-gamma * ||x - y||^2)
+* :pol -- polynomial: (gamma * x' * y + coef0)^degree
+* :lin -- linear: x' * y
+* :tan -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
 to fit a C-SVC discriminiation model.
@@ -60,7 +60,7 @@ ntest = nro(Xtest)
 tab(ytrain)
 tab(ytest)
 
-kern = krbf ; gamma = 1e4
+kern = :rbf ; gamma = 1e4
 cost = 1000 ; epsilon = .5
 model = svmda(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
@@ -91,7 +91,7 @@ function svmda(X, y::Vector{String}; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
-    @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
+    @assert in([:rbf, :pol, :lin, :tan])(kern) "Wrong value for argument 'kern'." 
     taby = tab(y)
     priors = taby.n / n  # output not used, only for information  
     xscales = ones(Q, p)
@@ -100,13 +100,13 @@ function svmda(X, y::Vector{String}; kwargs...)
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    if kern == :krbf
+    if kern == :rbf
         fkern = LIBSVM.Kernel.RadialBasis
-    elseif kern == :kpol
+    elseif kern == :pol
         fkern = LIBSVM.Kernel.Polynomial
-    elseif kern == :klin
+    elseif kern == :lin
         fkern = LIBSVM.Kernel.Linear
-    elseif kern == :ktanh
+    elseif kern == :tan
         fkern = LIBSVM.Kernel.Sigmoid
     end
     fitm = svmtrain(X', y;

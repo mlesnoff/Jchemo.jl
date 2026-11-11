@@ -276,7 +276,7 @@ Consider a Gaussian kernel partial least squares regression (KPLSR), using funct
 
 ```julia
 nlv = 15  # nb. latent variables
-kern = krbf ; gamma = .001 
+kern = :rbf ; gamma = .001 
 model = kplsr(; nlv, kern, gamma)
 fit!(model, Xtrain, ytrain)
 
@@ -331,7 +331,7 @@ Consider a support vector machine regression model implemented on preliminary co
 
 ```julia
 nlv = 20
-kern = krbf
+kern = :rbf
 gamma = 1e4 ; cost = 1000 ; epsilon = .7
 model1 = plskern(; nlv)
 model2 = svmr(; kern, gamma, cost, epsilon)
@@ -346,7 +346,7 @@ Step(s) of data preprocessing can obviously be implemented before the model(s)
 
 ```julia
 nlv = 20
-kern = krbf
+kern = :rbf
 gamma = 1e4 ; cost = 1000 ; epsilon = .7
 model1 = detrend_pol(; degree = 2)   # polynomial de-trending with polynom degree = 2
 model2 = plskern(; nlv)

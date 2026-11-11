@@ -125,7 +125,7 @@ end
 
 Base.@kwdef mutable struct ParKpca{Q <: Float}
     nlv::Int = 1 
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1        
@@ -286,7 +286,7 @@ end
 
 Base.@kwdef mutable struct ParKplsr{Q <: Float} 
     nlv::Int = 1 
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1 
@@ -324,7 +324,7 @@ end
 
 Base.@kwdef mutable struct ParKrr{Q <: Float} 
     lb::Q = 1e-6
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1                       
@@ -391,7 +391,7 @@ end
 # Svm, Trees
 
 Base.@kwdef mutable struct ParSvm{Q <: Float64}    # svmr, svmda   # !!!: LIBSVM requires Float64
-    kern::Function = krbf    
+    kern::Symbol = :rbf    
     gamma::Q = 1.  
     coef0::Q = 0.   
     degree::Int = 1    
@@ -435,7 +435,7 @@ end
 
 Base.@kwdef mutable struct ParKrrda{Q <: Float}
     lb::Q = 1e-6
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1      
@@ -545,7 +545,7 @@ end
 
 Base.@kwdef mutable struct ParKplsda{Q <: Float}    # kplsrda, kplslda
     nlv::Int = 1
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1      
@@ -555,7 +555,7 @@ end
 
 Base.@kwdef mutable struct ParKplsqda{Q <: Float}
     nlv::Int = 1
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1 
@@ -566,7 +566,7 @@ end
 
 Base.@kwdef mutable struct ParKplskdeda{Q <: Float}
     nlv::Int = 1
-    kern::Function = krbf     
+    kern::Symbol = :rbf     
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1 

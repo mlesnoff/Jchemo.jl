@@ -5,8 +5,8 @@ Support vector machine for regression (Epsilon-SVR).
 * `X` : X-data (n, p).
 * `y` : Univariate y-data (n).
 Keyword arguments:
-* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:krbf`, `:kpol`, 
-    `:klin`, `:ktanh`. See below.  
+* `kern` : Type of kernel used to compute the Gram matrices. Possible values are: `:rbf`, `:pol`, 
+    `:lin`, `:tan`. See below.  
 * `gamma` : `kern` parameter, see below.
 * `coef0` : `kern` parameter, see below.
 * `degree` : `kern` parameter, see below.
@@ -16,10 +16,10 @@ Keyword arguments:
     `:prt` (pareto) and `:mad` (MAD).
 
 Kernel types: 
-* :krbf -- radial basis function: exp(-gamma * ||x - y||^2)
-* :kpol -- polynomial: (gamma * x' * y + coef0)^degree
-* :klin -- linear: x' * y
-* :ktan -- sigmoid: tanh(gamma * x' * y + coef0)
+* :rbf -- radial basis function: exp(-gamma * ||x - y||^2)
+* :pol -- polynomial: (gamma * x' * y + coef0)^degree
+* :lin -- linear: x' * y
+* :tan -- sigmoid: tanh(gamma * x' * y + coef0)
 
 The function is a wrapper to package LIBSVM.jl (that is an interface to library LIBSVM of Chang & Li 2001)
 to fit a SVM regression model.
@@ -57,7 +57,7 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 p = nco(X)
 
-kern = krbf ; gamma = .1
+kern = :rbf ; gamma = .1
 cost = 1000 ; epsilon = 1
 model = svmr(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
@@ -77,7 +77,7 @@ x[x .== 0] .= 1e-5
 n = length(x)
 zy = sin.(abs.(x)) ./ abs.(x) 
 y = zy + .2 * randn(n) 
-kern = krbf ; gamma = .1
+kern = :rbf ; gamma = .1
 model = svmr(; kern, gamma) 
 fit!(model, x, y)
 pred = predict(model, x).pred 
@@ -97,20 +97,20 @@ function svmr(X, y; kwargs...)
     Q = eltype(X)
     par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
-    @assert in([:krbf, :kpol, :klin, :ktanh])(kern) "Wrong value for argument 'kern'." 
+    @assert in([:rbf, :pol, :lin, :tan])(kern) "Wrong value for argument 'kern'." 
     xscales = ones(Q, p)
     if par.scal != :none
         colscal = def_colscal(par.scal) 
         xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
-    if kern == :krbf
+    if kern == :rbf
         fkern = LIBSVM.Kernel.RadialBasis
-    elseif kern == :kpol
+    elseif kern == :pol
         fkern = LIBSVM.Kernel.Polynomial
-    elseif kern == :klin
+    elseif kern == :lin
         fkern = LIBSVM.Kernel.Linear
-    elseif kern == :ktanh
+    elseif kern == :tan
         fkern = LIBSVM.Kernel.Sigmoid
     end
     fitm = svmtrain(X', y;
