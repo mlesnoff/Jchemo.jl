@@ -9,9 +9,9 @@
 # <span style="color:green"> **About** </span> 
 
 At the start of the project, **Jchemo** was built around **partial least squares regression (PLSR) and discrimination (PLSDA) 
-methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g., https://doi.org/10.1002/cem.3209). The package has then been expanded with [many other methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) of dimension reduction, regression, discrimination, and signal (e.g., spectra) preprocessing. 
+methods** and their non-linear extensions, in particular locally weighted PLS models (**kNN-LWPLS-R** & **-DA**; e.g., https://doi.org/10.1002/cem.3209). The package has then been expanded with [many other methods](https://mlesnoff.github.io/Jchemo.jl/dev/domains/) of signal (e.g., spectra) preprocessing, dimension reduction, regression and discrimination. 
 
-Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometry to relate chemical variables to physical signals (spectra). But most of the provided methods are generic and can be applied to other types of data. 
+Why the name **Jchemo**? Since it is oriented towards **chemometrics**, in brief the use of biometry to correlate chemical variables to physical signals (spectra). But most of the provided methods are generic and can be applied to other types of data. 
 
 Related projects:  [JchemoData](https://github.com/mlesnoff/JchemoData.jl) (a "container" package gathering selected data sets used in the examples) and [JchemoDemo](https://github.com/mlesnoff/JchemoDemo) (a pedagogical environment).
 
@@ -22,8 +22,8 @@ the package, it is recommended to have a look on [What's new](https://mlesnoff.g
 
 # <span style="color:green"> **Sample workflow** </span> 
 
-Let us assume training data `{X, Y}`, and new data `Xnew` for which we want predictions from a PLSR model with 15 latent variables (LVs). The workflow is has follows 
-1) An object, e.g., `model` (any other name can be chosen), is built from the given learning model and its eventual parameters.
+Let us assume training data `{X, Y}`, and new data `Xnew` for which we want predictions. For a PLSR model with 15 latent variables (LVs), the workflow is has follows 
+1) An object, e.g., `model` (any other name can be chosen), has to be built consisting in the given learning model and its eventual parameters.
     This object contains three sub-objects 
     * `algo` (the learning algorithm) 
     * `fitm` (the fitted model, empty at this stage) 
@@ -32,7 +32,7 @@ Let us assume training data `{X, Y}`, and new data `Xnew` for which we want pred
 3) Function `predict` computes the predictions.   
 
 ```julia
-model = plskern(nlv = 15, scal = :std)
+model = plskern(; nlv = 15, scal = :std)  # ';' (start of keyword arguments) is not mandotory here but used for syntax consistency   
 fit!(model, X, Y)
 pred = predict(model Xnew).pred  # '.pred' is specified here since functio 'predict' can return several objects for some models 
 ```
@@ -45,11 +45,18 @@ We can check the contents of object `model`
 (:algo, :fitm, :kwargs)
 ```
 
-An alternative syntax to specify the keyword arguments is 
+Alternative syntaxes to specify the keyword arguments are for instance 
 
 ```julia
 nlv = 15 ; scal = :std
 model = plskern(; nlv, scal)
+```
+
+or 
+
+```julia
+nlv = 15
+model = plskern(; nlv, scal = :std)
 ```
 
 After model fitting, the matrices of the PLS scores can be obtained from function `transf`
@@ -293,7 +300,7 @@ Consider a data preprocessing by standard-normal-variation transformation (SNV) 
 ```julia
 ## Model definitions
 model1 = snv()
-model2 = savgol(npoint = 5, deriv = 1, degree = 2)
+model2 = savgol(; npoint = 5, deriv = 1, degree = 2)
 model3 = detrend_pol()  
 
 ## Pipeline building and fitting
@@ -308,7 +315,7 @@ Xptest = transf(model, Xtest)
 Note that a more direct syntax to define `model` is
 
 ```julia
-model = pip(snv(), savgol(npoint = 5, deriv = 1, degree = 2), detrend_pol())
+model = pip(snv(), savgol(; npoint = 5, deriv = 1, degree = 2), detrend_pol())
 ```
 
 or 
@@ -341,7 +348,7 @@ Step(s) of data preprocessing can obviously be implemented before the model(s)
 nlv = 20
 kern = :krbf
 gamma = 1e4 ; cost = 1000 ; epsilon = .7
-model1 = detrend_pol(degree = 2)   # polynomial de-trending with polynom degree = 2
+model1 = detrend_pol(; degree = 2)   # polynomial de-trending with polynom degree = 2
 model2 = plskern(; nlv)
 model3 = svmr(; kern, gamma, cost, epsilon)
 model = pip(model1, model2, model3)
