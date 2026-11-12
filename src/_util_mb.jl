@@ -43,7 +43,7 @@ Keyword arguments:
     each column of the considered block in `Xbl` is centered (before the block scaling).
     If not a vector, the same value is applied to each block.
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:std`. 

@@ -14,7 +14,7 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 

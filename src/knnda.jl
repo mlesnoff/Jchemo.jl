@@ -74,7 +74,6 @@ knnda(; kwargs...) = JchemoModel(knnda, nothing, kwargs)
 
 function knnda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     taby = tab(y)    
@@ -94,7 +93,6 @@ Compute the y-predictions from the fitted model.
 function predict(object::Knnda, X)
     X = ensure_mat(X)
     m = nro(X)
-    Q = eltype(object.X)
     # Getknn
     metric = object.par.metric
     h = object.par.h

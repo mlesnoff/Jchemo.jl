@@ -59,7 +59,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f    
 
 # With preliminary dimension reduction
-model1 = pcasvd(nlv = 15)
+model1 = pcasvd(; nlv = 15)
 metric = :eucl ; h = 1. ; k = 3 
 model2 = knnr(; metric, h, k) 
 model = pip(model1, model2)
@@ -90,7 +90,6 @@ knnr(; kwargs...) = JchemoModel(knnr, nothing, kwargs)
 function knnr(X, Y; kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
@@ -111,7 +110,6 @@ function predict(object::Knnr, X)
     X = ensure_mat(X)
     m = nro(X)
     q = nco(object.Y)
-    Q = eltype(object.X)
     # Getknn
     metric = object.par.metric
     h = object.par.h
@@ -133,7 +131,7 @@ function predict(object::Knnr, X)
         listw[i] = w
     end
     # End
-    pred = zeros(Q, m, q)
+    pred = similar(object.X, m, q)
     @inbounds for i = 1:m
         weights = pweight(listw[i])
         pred[i, :] .= colmean(vrow(object.Y, res.ind[i]), weights)

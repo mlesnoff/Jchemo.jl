@@ -184,8 +184,8 @@ end
 struct Blockscal{Q <: Float}
     xmeans::Vector{Vector{Q}}
     xscales::Vector{Vector{Q}}
-    par::ParBlock
     bscales::Vector{Q}
+    par::ParBlock
 end
 
 struct Mbconcat
