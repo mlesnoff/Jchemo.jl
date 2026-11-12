@@ -11,7 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
@@ -49,14 +49,10 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # Row metric
     sqrtw = sqrt.(weights.values)
@@ -111,5 +107,5 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     end
     fweightr!(Tx, 1 ./ sqrtw) 
     Rx = Wx * inv(Vx' * Wx)
-    Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
+    Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, ymeans, xscales, yscales, weights, niter, par)
 end

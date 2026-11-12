@@ -11,8 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), 
     and `kpol`. See the respective functions.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The method builds kernel Gram matrices and then runs a usual PLSR algorithm on them. This is faster (but not equivalent) to the 
 "true" KPLSR (Nipals) algorithm (function `kplsr`) described in Rosipal & Trejo (2001).
@@ -107,14 +107,10 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     p = nco(X)
     q = nco(Y)
     # ScalingX, Y
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))

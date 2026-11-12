@@ -5,8 +5,8 @@ Compute the Stahel-Donoho outlierness.
 * `X` : X-data (n, p).
 * `V` : A projection matrix (p, nlv) representing the directions of the projection pursuit.
 Keyword arguments:
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` by the Stahel-Donoho method detailed in Maronna and Yohai 1995. 
 A projection-pursuit approach is used: 
@@ -42,11 +42,9 @@ function outstah(X, V; scal::Symbol = :none)
 end
 
 function outstah!(X::AbstractMatrix{Q}, V::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
-    n, p = size(X)
-    xscales = ones(Q, p) 
+    n = nro(X)
+    xscales = colscal(X, scal)
     if scal != :none
-        colscal = def_colscal(scal) 
-        xscales .= colscal(X)
         fscale!(X, xscales)
     end
     # Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))

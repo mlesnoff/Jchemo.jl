@@ -4,8 +4,8 @@
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` by the Euclidean distance between the observation and a 
 robust estimate of the center of the data (in the present function, the spatial median). Such outlierness was for instance 
@@ -37,16 +37,11 @@ function outeucl(X; scal::Symbol = :none)
 end
 
 function outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
-    p = nco(X)
     xmeans = Jchemo.colmedspa(X)
-    xscales = ones(Q, p)
+    xscales = colscal(X, scal)
     if scal != :none
-        colscal = def_colscal(scal) 
-        xscales .= colscal(X)
         fscale!(X, xscales)
     end
-    @head X
-    @show size(xmeans')
     d = vec(sqrt.(eucl2(X, xmeans')))
     (d = d, xmeans, xscales)
 end

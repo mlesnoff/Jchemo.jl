@@ -13,8 +13,9 @@ Keyword arguments:
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances and local weights). 
-    Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
+    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto)
+    and `:mad` (MAD).
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
     
@@ -95,15 +96,9 @@ lwmlr(; kwargs...) = JchemoModel(lwmlr, nothing, kwargs)
 function lwmlr(X, Y; kwargs...) 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
-    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
-    xscales = ones(Q, p)
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        X = fscale(X, xscales)
-    end
+    xscales = colscal(X, par.scal)
     Lwmlr(X, Y, xscales, par)
 end
 
@@ -115,8 +110,6 @@ Compute the Y-predictions from the fitted model.
 """ 
 function predict(object::Lwmlr, X)
     X = ensure_mat(X)
-    m = nro(X)
-    Q = eltype(object.X)
     # Getknn
     metric = object.par.metric
     k = object.par.k

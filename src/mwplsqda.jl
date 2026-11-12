@@ -19,7 +19,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
-* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The function implements a moving (i.e., sliding) window PLS discrimination by QDA.

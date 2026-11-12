@@ -12,8 +12,8 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
  
 Reduced rank regression, also referred to as redundancy analysis (RA) regression. In this function, 
 the RA uses the Nipals algorithm presented in Mangamana et al 2021, section 2.1.1.
@@ -104,14 +104,10 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # Row metric
     sqrtw = sqrt.(weights.values)
@@ -189,7 +185,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
      end
      Rx = Wx * inv(Vx' * Wx)
      fweightr!(Tx, invsqrtw)
-     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, xscales, ymeans, yscales, weights, niter, par)
+     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, ymeans, xscales, yscales, weights, niter, par)
 end
 
 

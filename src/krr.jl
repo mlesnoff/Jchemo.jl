@@ -11,8 +11,8 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 KRR is also referred to as least squared SVM regression (LS-SVMR). The method is close to the particular case of 
 SVM regression where there is no marge excluding the observations (epsilon coefficient set to zero). The difference 
@@ -122,10 +122,8 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     # - No need to scale Y
     ymeans = colmean(Y, weights)
     #fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     # End

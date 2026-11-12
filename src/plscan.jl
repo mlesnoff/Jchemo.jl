@@ -102,9 +102,9 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
+        fcolscal = def_fcolscal(par.scal) 
+        xscales .= fcolscal(X, weights)
+        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end

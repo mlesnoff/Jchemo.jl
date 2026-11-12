@@ -105,9 +105,9 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
+        fcolscal = def_fcolscal(par.scal) 
+        xscales .= fcolscal(X, weights)
+        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
@@ -152,7 +152,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     # End
     fweightr!(Tx, invsqrtw)
     fweightr!(Ty, invsqrtw)   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, xscales, ymeans, yscales, weights, par)
+    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, ymeans, xscales, yscales, weights, par)
 end
 
 """ 

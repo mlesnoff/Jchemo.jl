@@ -17,10 +17,10 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : A range of nb. of latent variables (LVs) to compute for the local (i.e. inside each neighborhood) models.
-* `scal` : Symbol defining the column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` (and of the global `Y` if there 
-    is a preliminary PLS reduction dimension) is scaled (before the computation of the distances and local weights), 
-    and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.
+* `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
+    the computation of the distances and local weights), and (b) the X scaling is also done within each 
+    neighborhood (local level) for the weighted PLSR.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 Ensemblist method where the predictions are computed by averaging the predictions of a set of models built with 
@@ -90,11 +90,7 @@ function lwplsravg(X, Y; kwargs...)
     else
         fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
-    xscales = ones(Q, p)
-    if isnothing(fitm) && (par.scal != :none)
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X)
-    end
+    xscales = colscal(X, par.scal)
     Lwplsravg(fitm, X, Y, xscales, par)
 end
 
@@ -106,8 +102,6 @@ Compute the Y-predictions from the fitted model.
 """ 
 function predict(object::Lwplsravg, X) 
     X = ensure_mat(X)
-    m = nro(X)
-    Q = eltype(object.X)
     nlv = object.par.nlv
     # Getknn
     metric = object.par.metric

@@ -12,8 +12,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 FDA by a weighted SVD factorization of the matrix of the class centers (after spherical transformaton). The function 
 gives the same results as function `fda`.
@@ -41,10 +41,8 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     res = matW(X, y, weights)

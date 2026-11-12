@@ -14,8 +14,8 @@ Keyword arguments:
     of variables for each LV), or a vector of integers (of length `nlv`).   
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).    
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).    
 
 Sparse partial least squares regression algorihm of Lê Cao et al. 2008, but with the fast 
 "improved kernel algorithm #1" of Dayal & McGregor (1997) used instead Nipals (results are the same). 
@@ -134,19 +134,15 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     elseif par.meth == :hard 
         fthresh = thresh_hard
     end
-    # Centering/scaling of Y
+    # Y centering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # XtY 
     fweightr!(Y, weights.values)
@@ -217,7 +213,7 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         # Add compared to ::Plsr
         sel, sellv, 
         # End
-        xmeans, xscales, ymeans, yscales, weights, 
+        xmeans, ymeans, xscales, yscales, weights, 
         niter,  # related to sparseness: q = 1 ==> 1 (no iteration), q > 1 ==> output of snipals_shen
         par)
 end

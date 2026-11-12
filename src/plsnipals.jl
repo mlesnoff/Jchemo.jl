@@ -9,7 +9,7 @@ Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced by a direct computation of the 
@@ -50,14 +50,10 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # Pre-allocation
     XtY = similar(X, p, q)
@@ -98,6 +94,6 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         TT[a] = tt
     end
     R = W * inv(V' * W)
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
+    Plsr(T, V, R, W, C, TT, xmeans, ymeans, xscales, yscales, weights, par)
 end
 

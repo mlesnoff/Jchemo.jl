@@ -8,8 +8,8 @@ PCA by SVD factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing a SVD factorization of sqrt(D) * X:
@@ -80,10 +80,8 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     # by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]

@@ -43,16 +43,16 @@ Keyword arguments:
     each column of the considered block in `Xbl` is centered (before the block scaling).
     If not a vector, the same value is applied to each block.
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling (before the block scaling) in the considered block in `Xbl`. Possible values 
-    are: `:none`, `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
-    If not a vector, the same value is applied to each block.
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 * `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:std`. 
     See thereafter.
 
-If implemented, the transformations follow the order:
-* column centering, 
-* column scaling 
-* and finally block scaling. 
+If implemented, the successive operations are:
+1) column centering, 
+2) column scaling 
+3) and finally block scaling. 
 
 Types of block scaling:
 * `:none` : No block scaling. 
@@ -110,8 +110,8 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
     xmeans = list(Vector{Q}, nbl)
     xscales = list(Vector{Q}, nbl)
     bscales = ones(Q, nbl)
-    for k in eachindex(Xbl)
-        # xmeans for column centering
+    for k in eachindex(Xbl)  # operations in each block 
+        # Column centering
         zX = copy(Xbl[k])
         pbl = nco(zX)
         xmeans[k] = zeros(Q, pbl)  # if no centering, 'zeros' is required for 'transf'  
@@ -120,13 +120,12 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
             xmeans[k] .= colmean(Xbl[k], weights)
             fcenter!(zX, xmeans[k])
         end
-        # xscales for column scaling
+        # Column scaling
+        xscales[k] = colscal(Xbl[k], weights, par.scal[k])
         if par.scal[k] != :none
-            colscal = def_colscal(par.scal[k]) 
-            xscales[k] .= colscal(Xbl[k], weights)
             fscale!(zX, xscales[k])
         end
-        # bscales for block scaling
+        # Xbl centering and scaling, and block scaling
         if par.bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif par.bscal == :mfa
@@ -138,7 +137,7 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
             bscales[k] = sqrt(sum(colvar(zX, weights)))
         end
     end
-    Blockscal(bscales, xmeans, xscales, par)
+    Blockscal(xmeans, xscales, bscales, par)
 end
 
 """ 

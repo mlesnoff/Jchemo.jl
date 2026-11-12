@@ -65,7 +65,7 @@ end
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+* `scal` : Symbol defining the X scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (pareto) and `:mad` (MAD).
 
 # Examples
@@ -105,11 +105,7 @@ end
 
 function scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParScale, kwargs).par 
-    xscales = ones(Q, nco(X)) 
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-    end
+    xscales = colscal(X, weights, par.scal)
     Scale(xscales)
 end
 
@@ -143,8 +139,8 @@ Keyword arguments:
 # Examples
 ```julia
 using Jchemo, JchemoData, JLD2, CairoMakie
-path_jdat = dirname(dirname(pathof(JchemoData)))
 
+path_jdat = dirname(dirname(pathof(JchemoData)))
 db = joinpath(path_jdat, "data/cassav.jld2") 
 @load db dat
 @names dat
@@ -179,13 +175,8 @@ end
 
 function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParScale, kwargs).par 
-    p = nco(X) 
     xmeans = colmean(X, weights)
-    xscales = ones(Q, p) 
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-    end
+    xscales = colscal(X, weights, par.scal)
     Cscale(xmeans, xscales)
 end
 

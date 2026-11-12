@@ -12,8 +12,10 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 
 The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (latent variables LVs) are not normed to 1.
@@ -91,15 +93,10 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     par.nlv = nlv
     fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = true, scal = par.scal)
     transf!(fitm_bl, Xbl)
-    # Centering/scaling of Y
+    # Y centering and scaling
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
     yscales = ones(Q, q)
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        yscales .= colscal(Y, weights)
-        fscale!(Y, yscales)
-    end
     # Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)
     V  = similar(W)

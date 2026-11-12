@@ -16,10 +16,10 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
-* `scal` : Symbol defining the column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` (and of the global `Y` if there 
-    is a preliminary PLS reduction dimension) is scaled (before the computation of the distances and local weights), 
-    and (b) the X and Y scaling is also done within each neighborhood (local level) for the weighted PLSR.
+* `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
+    the computation of the distances and local weights), and (b) the X scaling is also done within each 
+    neighborhood (local level) for the weighted PLSR.
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
@@ -121,11 +121,7 @@ function lwplsr(X, Y; kwargs...)
     else
         fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
-    xscales = ones(Q, p)
-    if isnothing(fitm) && (par.scal != :none)
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X)
-    end
+    xscales = colscal(X, par.scal)
     Lwplsr(fitm, X, Y, xscales, par)
 end
 
@@ -143,8 +139,6 @@ end
 
 function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     X = ensure_mat(X)
-    m = nro(X)
-    Q = eltype(object.X)
     a = object.par.nlv
     if isa(nlv, Int)
         nlv = min(nlv, a)
@@ -170,7 +164,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
         res = getknn(object.fitm.T, transf(object.fitm, X); metric, k) 
     end
     listw = similar(res.d)
-    #@inbounds for i = 1:m
+    #@inbounds for i in eachindex(res.d)
     Threads.@threads for i in eachindex(res.d)
         w = winvs(res.d[i]; h, criw, squared)
         @. w[w < tolw] = tolw

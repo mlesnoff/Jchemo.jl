@@ -114,9 +114,9 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
+        fcolscal = def_fcolscal(par.scal) 
+        xscales .= fcolscal(X, weights)
+        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
@@ -221,7 +221,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     fweightr!(Ty, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     Ry = Wy * inv(Vy' * Wy)
-    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, xscales, ymeans, yscales, 
+    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, ymeans, xscales, yscales, 
         weights, niter, par)
 end
 

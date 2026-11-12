@@ -8,8 +8,8 @@ Keyword arguments:
 * `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
     within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
     
 The function fits a LOESS model using package `Loess.jl'. 
 
@@ -59,10 +59,8 @@ function loessr(X, y; kwargs...)
     p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParLoessr{Q}, kwargs).par
-    xscales = ones(Q, p)
+    xscales = colscal(X, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     fitm = Loess.loess(X, y; span = par.span, degree = par.degree) 

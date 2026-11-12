@@ -21,10 +21,10 @@ Keyword arguments:
     used to compute the distances. In the local models, the priors are not used since the weights are given by the 
     distance-based decreasing weight function.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
-* `scal` : Boolean. If `true`, (a) each column of the global `X` (and of the global `Y` if there 
-    is a preliminary PLS reduction dimension) is scaled by its uncorrected standard deviation before to compute 
-    the distances and the weights, and (b) the X and Y scaling is also done within each neighborhood (local level) 
-    for the weighted PLSR.
+* `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
+    the computation of the distances and local weights), and (b) the X scaling is also done within each 
+    neighborhood (local level) for the weighted PLSR.
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
@@ -90,7 +90,6 @@ lwplsrda(; kwargs...) = JchemoModel(lwplsrda, nothing, kwargs)
 
 function lwplsrda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParLwplsda{Q}, kwargs).par 
     taby = tab(y)    
@@ -102,12 +101,7 @@ function lwplsrda(X, y::Vector{String}; kwargs...)
         priors = aggsumv(weights.values, y).val
         fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scal = par.scal)
     end
-    xscales = ones(Q, p)
-    if isnothing(fitm) && (par.scal != :none)
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        X = fscale(X, xscales)
-    end
+    xscales = colscal(X, par.scal)
     Lwplsrda(fitm, X, y, xscales, taby.n, priors, taby.lev, par)
 end
 
@@ -125,7 +119,6 @@ function predict(object::Lwplsrda, X)
 end
 
 function predict(object::Lwplsrda, X, nlv::Union{Int, AbstractVector{Int}})
-    Q = eltype(object.X)
     X = ensure_mat(X)
     m = nro(X)
     a = object.par.nlv

@@ -12,8 +12,10 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
-* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 
 # References
 Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
@@ -107,11 +109,6 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     transf!(fitm_bl, Xbl)
     # Scaling of Y
     yscales = ones(Q, q)
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        yscales .= colscal(Y, weights)
-        fscale!(Y, yscales)
-    end
     # End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)

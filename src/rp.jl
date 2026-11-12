@@ -10,8 +10,8 @@ Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective functions 
     `rpmatgauss` and `rpmatli` for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 # Examples
 ```julia
@@ -49,10 +49,8 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <:
     # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     # End

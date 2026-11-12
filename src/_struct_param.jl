@@ -170,41 +170,41 @@ end
 
 Base.@kwdef mutable struct ParCpca{Q <: Float}
     nlv::Int = 1     
-    bscal::Symbol = :none   
     tol::Q = 1e-8   
     maxit::Int = 200    
-    scal::Symbol = :none  
+    scal::Union{Symbol, Vector{Symbol}} = :none 
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParCca{Q <: Float}
     nlv::Int = 1     
-    bscal::Symbol = :none   
     tau::Q = 1e-8
     tol::Q = 1e-8   
     maxit::Int = 200    
     scal::Symbol = :none  
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParCcawold{Q <: Float}
     nlv::Int = 1     
-    bscal::Symbol = :none   
     tau::Q = 1e-8
     tol::Q = 1e-8   
     maxit::Int = 200    
     scal::Symbol = :none  
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParPls2bl    # plscan, plstuck
     nlv::Int = 1     
-    bscal::Symbol = :none   
     scal::Symbol = :none  
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParRasvd{Q <: Float}
     nlv::Int = 1     
-    bscal::Symbol = :none   
     tau::Q = 1e-8
     scal::Symbol = :none  
+    bscal::Symbol = :none   
 end 
 
 ############---- Regression
@@ -299,20 +299,20 @@ end
 
 Base.@kwdef mutable struct ParMbplsr{Q <: Float}
     nlv::Int = 1 
-    bscal::Symbol = :none   
     tol::Q = 1e-8  # mbplswest
     maxit::Int = 200               # mbplswest     
-    scal::Symbol = :none  
+    scal::Union{Symbol, Vector{Symbol}} = :none  
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParRosaplsr
     nlv::Int = 1     
-    scal::Symbol = :none  
+    scal::Union{Symbol, Vector{Symbol}} = :none   
 end 
 
 Base.@kwdef mutable struct ParSoplsr
     nlv::Union{Int, Vector{Int}} = 1     
-    scal::Symbol = :none  
+    scal::Union{Symbol, Vector{Symbol}} = :none   
 end 
 
 # End
@@ -580,26 +580,26 @@ end
 
 Base.@kwdef mutable struct ParMbplsda{Q <: Float}  # mbplsrda, mbplslda
     nlv::Int = 1
-    bscal::Symbol = :none   
     prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
+    scal::Union{Symbol, Vector{Symbol}} = :none                    
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParMbplsqda{Q <: Float}  
     nlv::Int = 1
-    bscal::Symbol = :none   
     prior::Union{Symbol, Vector{Q}} = :prop 
     alpha::Q = 0.   
-    scal::Symbol = :none                    
+    scal::Union{Symbol, Vector{Symbol}} = :none                    
+    bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParMbplskdeda{Q <: Float}  
     nlv::Int = 1
-    bscal::Symbol = :none   
     prior::Union{Symbol, Vector{Q}} = :prop 
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1.  
-    scal::Symbol = :none                    
+    scal::Union{Symbol, Vector{Symbol}} = :none                   
+    bscal::Symbol = :none   
 end 
 
 # 
@@ -607,14 +607,14 @@ end
 Base.@kwdef mutable struct ParSoplsda{Q <: Float}  # soplsrda, soplslda
     nlv::Union{Int, Vector{Int}} = 1     
     prior::Union{Symbol, Vector{Q}} = :prop   
-    scal::Symbol = :none                    
+    scal::Union{Symbol, Vector{Symbol}} = :none                     
 end 
 
 Base.@kwdef mutable struct ParSoplsqda{Q <: Float}  
     nlv::Union{Int, Vector{Int}} = 1       
     prior::Union{Symbol, Vector{Q}} = :prop 
     alpha::Q = 0.   
-    scal::Symbol = :none                    
+    scal::Union{Symbol, Vector{Symbol}} = :none                  
 end 
 
 Base.@kwdef mutable struct ParSoplskdeda{Q <: Float}  
@@ -622,7 +622,7 @@ Base.@kwdef mutable struct ParSoplskdeda{Q <: Float}
     prior::Union{Symbol, Vector{Q}} = :prop 
     h::Union{Nothing, Q, Vector{Q}} = nothing  
     a::Q = 1.  
-    scal::Symbol = :none                    
+    scal::Union{Symbol, Vector{Symbol}} = :none                     
 end 
 
 # 
@@ -713,6 +713,7 @@ Base.@kwdef mutable struct ParOccmwpca{Q <: Float}
     cri::Q = 3.
     alpha::Q = .025 
     gamma::Q = .5
+    scal::Symbol = :none
 end 
 
 Base.@kwdef mutable struct ParOccmwpls{Q <: Float}

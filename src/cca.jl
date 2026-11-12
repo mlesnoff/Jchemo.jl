@@ -113,9 +113,9 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
+        fcolscal = def_fcolscal(par.scal) 
+        xscales .= fcolscal(X, weights)
+        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
@@ -161,7 +161,7 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     d = d[1:nlv]
     Tx = fweightr(X * Wx, invsqrtw) 
     Ty = fweightr(Y * Wy, invsqrtw)
-    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, xscales, ymeans, yscales, weights, par)
+    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, ymeans, xscales, yscales, weights, par)
 end
 
 """ 

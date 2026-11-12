@@ -9,8 +9,8 @@ Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 See function `rr` for details and examples.
 """ 
@@ -38,10 +38,8 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     ymeans = colmean(Y, weights)
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     # End

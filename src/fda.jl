@@ -13,8 +13,8 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 FDA by eigen factorization of Inverse(W) * B, where W is the "Within"-covariance matrix (pooled over the classes), 
 and B the "Between"-covariance matrix.
@@ -112,10 +112,8 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     # Centering/scaling X
     xmeans = colmean(X, weights)
     fcenter!(X, xmeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     res = matW(X, y, weights)

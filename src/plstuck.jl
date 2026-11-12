@@ -96,9 +96,9 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     xscales = ones(Q, p)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
+        fcolscal = def_fcolscal(par.scal) 
+        xscales .= fcolscal(X, weights)
+        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
         fscale!(Y, yscales)
     end
@@ -121,7 +121,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     Ty = Y * Wy
     TTx = colnorm(Tx, weights).^2
     TTy = colnorm(Ty, weights).^2
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, ymeans, yscales, 
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, ymeans, xscales, yscales, 
         weights, par)
 end
 

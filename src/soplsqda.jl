@@ -14,8 +14,10 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
-* `scal` : Symbol defining the column scaling of blocks in `Xbl` and Ydummy (before the block scaling). 
-    Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 
 Same as PLS-QDA but QDA is run on SOPLSR scores (computed using the class dummy table, Ydummy).
 

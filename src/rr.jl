@@ -9,8 +9,8 @@ Ridge regression (RR) implemented by SVD factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
 centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.values`), the function finds 
@@ -92,10 +92,8 @@ function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
     ymeans = colmean(Y, weights)
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         fscale!(X, xscales)
     end
     # End

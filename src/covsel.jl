@@ -9,8 +9,8 @@ Variable (feature) selection from partial covariance (Covsel).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 Keyword arguments:
 * `nlv` : Nb. variables to select.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This is the Covsel algorithm described in Roger et al. 2011 for variable selection (see also 
 Höskuldsson, A., 1992).
@@ -104,19 +104,15 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
-    # Centering/scaling of Y
+    # Y centering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)  
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # End
     sqrtw = sqrt.(weights.values)
@@ -161,7 +157,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         xss[i] = frob2(X)
         yss[i] = frob2(Y)
     end
-    Covsel(sel, selc, C, xss, yss, xsstot, ysstot, xmeans, xscales, ymeans, yscales, weights, par)
+    Covsel(sel, selc, C, xss, yss, xsstot, ysstot, xmeans, ymeans, xscales, yscales, weights, par)
 end
 
 """ 

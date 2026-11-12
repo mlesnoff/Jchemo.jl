@@ -12,8 +12,8 @@ Keyword arguments:
 * `coef0` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 Kernel types: 
 * :rbf -- radial basis function: exp(-gamma * ||x - y||^2)
@@ -94,10 +94,8 @@ function svmda(X, y::Vector{String}; kwargs...)
     @assert in([:rbf, :pol, :lin, :tan])(kern) "Wrong value for argument 'kern'." 
     taby = tab(y)
     priors = taby.n / n  # output not used, only for information  
-    xscales = ones(Q, p)
+    xscales = colscal(X, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     if kern == :rbf

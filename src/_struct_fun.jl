@@ -140,8 +140,8 @@ struct Covsel{Q <: Float}
     xsstot::Q
     ysstot::Q 
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParCovsel
@@ -182,10 +182,10 @@ end
 # Multiblock
 
 struct Blockscal{Q <: Float}
-    bscales::Vector{Q}
     xmeans::Vector{Vector{Q}}
     xscales::Vector{Vector{Q}}
     par::ParBlock
+    bscales::Vector{Q}
 end
 
 struct Mbconcat
@@ -200,8 +200,8 @@ struct Cca{Q <: Float}
     d::Vector{Q}    
     bscales::Vector{Q}
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParCca
@@ -220,8 +220,8 @@ struct Ccawold{Q <: Float}
     TTy::Vector{Q}  
     bscales::Vector{Q}    
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Vector{Int}
@@ -242,8 +242,8 @@ struct Plscan{Q <: Float}
     delta::Vector{Q}    
     bscales::Vector{Q}    
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
@@ -259,8 +259,8 @@ struct Plstuck{Q <: Float}
     delta::Vector{Q}
     bscales::Vector{Q}    
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
@@ -274,8 +274,8 @@ struct Rasvd{Q <: Float}
     lambda::Vector{Q}    
     bscales::Vector{Q}    
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParRasvd
@@ -340,8 +340,8 @@ struct Plsr{Q <: Float}
     C::Matrix{Q}
     TT::Vector{Q}
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParPlsr
@@ -355,8 +355,8 @@ struct Plswold{Q <: Float}
     C::Matrix{Q}
     TT::Vector{Q}
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}   
@@ -367,8 +367,8 @@ struct Cglsr{Q <: Float}
     B::Matrix{Q}
     g::Vector{Q}
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     F::Union{Nothing, Matrix{Q}}
     par::ParCglsr
@@ -392,8 +392,8 @@ struct Splsr{Q <: Float}
     sel::Vector{Int}
     sellv::Vector{Vector{Int}}
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}   # snipals_shen when Y with q > 1
@@ -437,8 +437,8 @@ struct Kplsr{Q <: Float}
     R::Matrix{Q}
     DKt::Matrix{Q}
     vtot::Matrix{Q}   
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     iter::Vector{Int}

@@ -14,8 +14,10 @@ Keyword arguments:
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 
 This functions implements the MBPLSR Nipals algorithm such as in Westerhuis et al. 1998. The function gives the same 
 global scores and predictions as function `mbplsr`.
@@ -107,19 +109,14 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    # Block scaling
+    # Xbl centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
-    # Centering/scaling of Y
+    # Y centering and scaling
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
     yscales = ones(Q, q)
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        yscales .= colscal(Y, weights)
-        fscale!(Y, yscales)
-    end
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
@@ -267,7 +264,7 @@ function Base.summary(object::Mbplswest, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    # Block scaling
+    # Xbl centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV

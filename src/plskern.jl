@@ -9,7 +9,7 @@ Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
     
 About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, Siccard & Sabatier 
@@ -109,14 +109,10 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     ymeans = colmean(Y, weights)  
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # XtY 
     fweightr!(Y, weights.values)
@@ -167,7 +163,7 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, V, R, W, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
+    Plsr(T, V, R, W, C, TT, xmeans, ymeans, xscales, yscales, weights, par)
 end
 
 """ 

@@ -9,8 +9,8 @@ Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The method is implemented by SVD factorization of the weighted Gram matrix: 
 * D^(1/2) * Phi(X) * Phi(X)' * D^(1/2)
@@ -70,13 +70,11 @@ end
 function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParKpca{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
-    n, p = size(X)
+    n = nro(X)
     nlv = min(par.nlv, n)
-    # Scaling of X
-    xscales = ones(Q, p)
+    # X scaling
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     # End

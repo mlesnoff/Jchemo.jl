@@ -7,8 +7,8 @@ Keyword arguments:
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the distances to the neighbors.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` as follows. 
 
@@ -75,11 +75,9 @@ function outlknn(X; metric = :eucl, k, algo::Function = sum, scal::Symbol = :non
 end
 
 function outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
-    n, p = size(X)
-    xscales = ones(Q, p)
+    n = nro(X)
+    xscales = colscal(X, scal)
     if scal != :none
-        colscal = def_colscal(scal) 
-        xscales .= colscal(X)
         fscale!(X, xscales)
     end
     if k > n - 1 ; k = n - 1 ; end

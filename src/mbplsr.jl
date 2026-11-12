@@ -12,8 +12,10 @@ Multiblock PLSR (MBPLSR).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
-* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling) and `Y`. Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal concatenation of the blocks in `Xbl`. The function 
 returns the same global LVs and predictions as function `mbplswest`, but is much faster.
@@ -143,19 +145,14 @@ function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv
-    # Block scaling
+    # Xbl centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
-    # Centering/scaling of Y
+    # Y centering and scaling
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
     yscales = ones(Q, q)
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        yscales .= colscal(Y, weights)
-        fscale!(Y, yscales)
-    end
     # End
     fitm = plskern(X, Y, weights; nlv, scal = :none)
     Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)
@@ -222,7 +219,7 @@ function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.fitm.T)
     nbl = length(Xbl)
-    # Block scaling
+    # Xbl centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV

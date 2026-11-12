@@ -9,7 +9,7 @@ Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993)
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), 
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 **Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of de Jong (2013).
@@ -44,14 +44,10 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # XtY 
     fweightr!(Y, weights.values)
@@ -92,7 +88,7 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     end
     # B = R * inv(T' * D * T) * T' * D * Y
     # W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
-    Plsr(T, V, R, R, C, TT, xmeans, xscales, ymeans, yscales, weights, par)
+    Plsr(T, V, R, R, C, TT, xmeans, ymeans, xscales, yscales, weights, par)
 end
 
 

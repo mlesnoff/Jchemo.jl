@@ -13,8 +13,9 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
+    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto)
+    and `:mad` (MAD).
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwmlr` except that MLR-DA models, instead of MLR models, are fitted on the 
@@ -68,16 +69,10 @@ lwmlrda(; kwargs...) = JchemoModel(lwmlrda, nothing, kwargs)
 
 function lwmlrda(X, y::Vector{String}; kwargs...) 
     X = ensure_mat(X)
-    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
     taby = tab(y)
-    xscales = ones(Q, p)
-    if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        X = fscale(X, xscales)
-    end
+    xscales = colscal(X, par.scal)
     Lwmlrda(X, y, xscales, taby.n, taby.lev, par)  
 end
 
@@ -89,8 +84,6 @@ Compute y-predictions from the fitted model.
 """ 
 function predict(object::Lwmlrda, X)
     X = ensure_mat(X)
-    m = nro(X)
-    Q = eltype(object.X)
     # Getknn
     metric = object.par.metric
     k = object.par.k

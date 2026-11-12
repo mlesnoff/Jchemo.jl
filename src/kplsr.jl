@@ -11,8 +11,8 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X` and `Y`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 This algorithm becomes slow for n > 1000. Use function `dkplsr` instead.
 
@@ -92,21 +92,17 @@ end
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
-    n, p = size(X)
+    n = nro(X)
     q = nco(Y)
     nlv = par.nlv
     # Centering/scaling X, Y
     # No need to center X (what is centered is the kernel)
     ymeans = colmean(Y, weights)  
     fcenter!(Y, ymeans)
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
-        yscales .= colscal(Y, weights)
         fscale!(X, xscales)
-        fscale!(Y, yscales)
     end
     # End    
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
@@ -163,7 +159,7 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     end
     DU = fweightr(U, weights.values)
     zR = DU * inv(T' * fweightr(Kc, weights.values) * DU)   # = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xscales, ymeans, yscales, weights, iter, kwargs, par) 
+    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, ymeans, xscales, yscales, weights, iter, kwargs, par) 
 end
 
 """ 

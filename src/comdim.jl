@@ -11,8 +11,10 @@ Keyword arguments:
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol defining the column scaling of `Xbl` (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling (before the block scaling) of each block. Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
 
 ComDim "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 
@@ -127,7 +129,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    # Block scaling
+    # Xbl centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
@@ -253,7 +255,7 @@ function Base.summary(object::Comdim, Xbl)
     Q = eltype(Xbl[1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    # Block scaling
+    # Xbl centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV

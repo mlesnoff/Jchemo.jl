@@ -12,8 +12,8 @@ Keyword arguments:
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
 
 The general principle is in two steps: 
 1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 
@@ -31,13 +31,11 @@ occlknn(; kwargs...) = JchemoModel(occlknn, nothing, kwargs)
 
 function occlknn(X; kwargs...)
     X = ensure_mat(X)
-    n, p = size(X)    
+    n = nro(X)    
     Q = eltype(X)
     par = recovkw(ParOccknn{Q}, kwargs).par
-    xscales = ones(Q, p)
+    xscales = colscal(X, weights, par.scal)
     if par.scal != :none
-        colscal = def_colscal(par.scal) 
-        xscales .= colscal(X, weights)
         X = fscale(X, xscales)
     end
     nsamp = min(par.nsamp, n)
