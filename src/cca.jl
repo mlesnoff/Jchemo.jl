@@ -9,10 +9,12 @@ Canonical correlation Analysis (CCA, RCCA).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 
 
@@ -105,30 +107,26 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    # Centering/scaling X, Y
+    # Cetering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
-    yscales = ones(Q, q)
+    xscales = colscal(X, weights, par.scal)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
-        fcolscal = def_fcolscal(par.scal) 
-        xscales .= fcolscal(X, weights)
-        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
+    end
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
-    # End
-    if par.bscal == :none
-        bscales = ones(Q, 2)
-    elseif par.bscal == :frob
-        normx = frob(X, weights)
-        normy = frob(Y, weights)
-        X ./= normx
-        Y ./= normy
-        bscales = [normx ; normy]
-    end
+    # Block scaling
+    Xbl = [X, Y]
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
+    X .= Xbl[1]
+    Y .= Xbl[2]
+    bscales = fitm_bl.bscales
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
@@ -161,7 +159,7 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     d = d[1:nlv]
     Tx = fweightr(X * Wx, invsqrtw) 
     Ty = fweightr(Y * Wy, invsqrtw)
-    Cca(Tx, Ty, Wx, Wy, d, bscales, xmeans, ymeans, xscales, yscales, weights, par)
+    Cca(Tx, Ty, Wx, Wy, d, xmeans, ymeans, xscales, yscales, bscales, weights, par)
 end
 
 """ 

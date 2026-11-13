@@ -198,11 +198,11 @@ struct Cca{Q <: Float}
     Wx::Matrix{Q}
     Wy::Matrix{Q}
     d::Vector{Q}    
-    bscales::Vector{Q}
     xmeans::Vector{Q}
     ymeans::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
+    bscales::Vector{Q}    
     weights::ProbabilityWeights{Q}
     par::ParCca
 end
@@ -218,11 +218,11 @@ struct Ccawold{Q <: Float}
     Wy::Matrix{Q}
     TTx::Vector{Q}
     TTy::Vector{Q}  
-    bscales::Vector{Q}    
     xmeans::Vector{Q}
     ymeans::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
+    bscales::Vector{Q}    
     weights::ProbabilityWeights{Q}
     niter::Vector{Int}
     par::ParCcawold
@@ -240,11 +240,11 @@ struct Plscan{Q <: Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}    
-    bscales::Vector{Q}    
     xmeans::Vector{Q}
     ymeans::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
+    bscales::Vector{Q}   
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
 end
@@ -257,11 +257,11 @@ struct Plstuck{Q <: Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}
-    bscales::Vector{Q}    
     xmeans::Vector{Q}
     ymeans::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
+    bscales::Vector{Q}   
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
 end
@@ -272,11 +272,11 @@ struct Rasvd{Q <: Float}
     Bx::Matrix{Q}
     Wy::Matrix{Q}
     lambda::Vector{Q}    
-    bscales::Vector{Q}    
     xmeans::Vector{Q}
     ymeans::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
+    bscales::Vector{Q}   
     weights::ProbabilityWeights{Q}
     par::ParRasvd
 end

@@ -32,7 +32,7 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     @assert nco(X) > 1 "The method only works for X with nb columns > 1."
     p = nco(X)
     sqrtw = sqrt.(weights.values)
-    # Centering/scaling X, Y
+    # Cetering and scaling
     # No need to scale Y
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)

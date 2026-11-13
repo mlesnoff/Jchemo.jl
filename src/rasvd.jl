@@ -9,11 +9,13 @@ Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
- 
+* `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
+
 See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y.hat be the fitted values of the regression 
 of `Y` on `X`. The scores `Ty` are the PCA scores of Y.hat. The scores `Tx` are the fitted values of the 
 regression of `Ty` on `X`.
@@ -97,30 +99,26 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    # Centering/scaling X, Y
+    # Cetering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
-    yscales = ones(Q, q)
+    xscales = colscal(X, weights, par.scal)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
-        fcolscal = def_fcolscal(par.scal) 
-        xscales .= fcolscal(X, weights)
-        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
+    end
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
-    # End
-    if par.bscal == :none
-        bscales = ones(Q, 2)
-    elseif par.bscal == :frob
-        normx = frob(X, weights)
-        normy = frob(Y, weights)
-        X ./= normx
-        Y ./= normy
-        bscales = [normx ; normy]
-    end
+    # Block scaling
+    Xbl = [X, Y]
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
+    X .= Xbl[1]
+    Y .= Xbl[2]
+    bscales = fitm_bl.bscales
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
@@ -152,7 +150,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     # End
     fweightr!(Tx, invsqrtw)
     fweightr!(Ty, invsqrtw)   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, bscales, xmeans, ymeans, xscales, yscales, weights, par)
+    Rasvd(Tx, Ty, Bx, Wy, lambda, xmeans, ymeans, xscales, yscales, bscales, weights, par)
 end
 
 """ 

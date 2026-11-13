@@ -45,7 +45,7 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    # Centering/scaling X, Y
+    # Cetering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)

@@ -9,12 +9,15 @@ Canonical correlation analysis (CCA, RCCA) - Wold Nipals algorithm.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are:`:none`, `:frob`. See functions `blockscal`.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: `:none`, 
+* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
+
 
 This function implements the Nipals ccawold algorithm presented by Tenenhaus 1998 p.204 (related to Wold et al. 1984). 
 
@@ -106,30 +109,26 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    # Centering/scaling X, Y
+    # Cetering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
-    yscales = ones(Q, q)
+    xscales = colscal(X, weights, par.scal)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
-        fcolscal = def_fcolscal(par.scal) 
-        xscales .= fcolscal(X, weights)
-        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
+    end
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
-    # End
-    if par.bscal == :none
-        bscales = ones(Q, 2)
-    elseif par.bscal == :frob
-        normx = frob(X, weights)
-        normy = frob(Y, weights)
-        X ./= normx
-        Y ./= normy
-        bscales = [normx ; normy]
-    end
+    # Block scaling
+    Xbl = [X, Y]
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
+    X .= Xbl[1]
+    Y .= Xbl[2]
+    bscales = fitm_bl.bscales
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
@@ -221,7 +220,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     fweightr!(Ty, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     Ry = Wy * inv(Vy' * Wy)
-    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, bscales, xmeans, ymeans, xscales, yscales, 
+    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, xmeans, ymeans, xscales, yscales, bscales, 
         weights, niter, par)
 end
 

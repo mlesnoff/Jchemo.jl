@@ -168,11 +168,11 @@ Base.@kwdef mutable struct ParBlock
     bscal::Symbol = :none   
 end 
 
-Base.@kwdef mutable struct ParCpca{Q <: Float}
+Base.@kwdef mutable struct ParCpca{Q <: Float}   # cpca, comdim
     nlv::Int = 1     
     tol::Q = 1e-8   
     maxit::Int = 200    
-    scal::Union{Symbol, Vector{Symbol}} = :none 
+    scal::Union{Symbol, Vector{Symbol}} = :none
     bscal::Symbol = :none   
 end 
 
@@ -182,6 +182,7 @@ Base.@kwdef mutable struct ParCca{Q <: Float}
     tol::Q = 1e-8   
     maxit::Int = 200    
     scal::Symbol = :none  
+    scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
 
@@ -191,12 +192,14 @@ Base.@kwdef mutable struct ParCcawold{Q <: Float}
     tol::Q = 1e-8   
     maxit::Int = 200    
     scal::Symbol = :none  
+    scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParPls2bl    # plscan, plstuck
     nlv::Int = 1     
     scal::Symbol = :none  
+    scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
 
@@ -204,6 +207,7 @@ Base.@kwdef mutable struct ParRasvd{Q <: Float}
     nlv::Int = 1     
     tau::Q = 1e-8
     scal::Symbol = :none  
+    scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
 

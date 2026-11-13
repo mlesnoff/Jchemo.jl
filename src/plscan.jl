@@ -9,9 +9,11 @@ Canonical partial least squares regression (Canonical PLS).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`. See functions `blockscal`.
-* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: 
-    `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), referred to as PLS-W2A 
 (i.e. Wold PLS mode A) in Wegelin 2000. The two blocks `X` and `Y` play a symmetric role.  After each 
@@ -94,30 +96,26 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    # Centering/scaling X, Y
+    # Cetering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
-    yscales = ones(Q, q)
+    xscales = colscal(X, weights, par.scal)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
-        fcolscal = def_fcolscal(par.scal) 
-        xscales .= fcolscal(X, weights)
-        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
+    end
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
-    # End
-    if par.bscal == :none
-        bscales = ones(Q, 2)
-    elseif par.bscal == :frob
-        normx = frob(X, weights)
-        normy = frob(Y, weights)
-        X ./= normx
-        Y ./= normy
-        bscales = [normx ; normy]
-    end
+    # Block scaling
+    Xbl = [X, Y]
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
+    X .= Xbl[1]
+    Y .= Xbl[2]
+    bscales = fitm_bl.bscales
     # Pre-allocation
     XtY = similar(X, p, q)
     Tx = similar(X, n, nlv)
@@ -173,8 +171,8 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
      end
      Rx = Wx * inv(Vx' * Wx)
      Ry = Wy * inv(Vy' * Wy)
-     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, bscales, xmeans, xscales, ymeans, 
-         yscales, weights, par)
+     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, xmeans, ymeans, xscales, 
+         yscales, bscales, weights, par)
 end
 
 """ 

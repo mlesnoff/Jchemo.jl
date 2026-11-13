@@ -9,10 +9,11 @@ Tucker's inter-battery method of factor analysis
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. Possible values are:
-    `:none`, `:frob`. See functions `blockscal`.
-* `scal` : Symbol defining the column scaling of `X` and `Y` (before the block scaling). Possible values are: 
-    `:none` (default), `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
+    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3). The two blocks 
 `X` and `X` play a symmetric role.  This method is referred to as PLS-SVD in Wegelin 2000. The method 
@@ -88,30 +89,27 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    # Centering/scaling X, Y
+    # Cetering and scaling
     xmeans = colmean(X, weights) 
     ymeans = colmean(Y, weights)   
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
-    xscales = ones(Q, p)
-    yscales = ones(Q, q)
+    xscales = colscal(X, weights, par.scal)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
-        fcolscal = def_fcolscal(par.scal) 
-        xscales .= fcolscal(X, weights)
-        yscales .= fcolscal(Y, weights)
         fscale!(X, xscales)
+    end
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
+    # Block scaling
+    Xbl = [X, Y]
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
+    transf!(fitm_bl, Xbl)
+    X .= Xbl[1]
+    Y .= Xbl[2]
+    bscales = fitm_bl.bscales
     # End
-    if par.bscal == :none
-        bscales = ones(Q, 2)
-    elseif par.bscal == :frob
-        normx = frob(X, weights)
-        normy = frob(Y, weights)
-        X ./= normx
-        Y ./= normy
-        bscales = [normx ; normy]
-    end
     XtY = X' * fweightr(Y, weights.values)
     U, delta, V = svd(XtY)
     delta = delta[1:nlv]
@@ -121,7 +119,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     Ty = Y * Wy
     TTx = colnorm(Tx, weights).^2
     TTy = colnorm(Ty, weights).^2
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, bscales, xmeans, ymeans, xscales, yscales, 
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, xmeans, ymeans, xscales, yscales, bscales, 
         weights, par)
 end
 
