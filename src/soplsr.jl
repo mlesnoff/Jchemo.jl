@@ -6,16 +6,15 @@
     soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
 Multiblock sequentially orthogonalized PLSR (SO-PLSR).
-* `Xbl` : List of blocks (vector of matrices) of X-data Typically, output of function `mblock` from data (n, p).  
+* `Xbl` : List of blocks (vector of matrices) of X-data For instance, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
-    is applied to each block.
+    the column scaling of each block. Possible values are: `:none`, `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 # References
 Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
@@ -103,8 +102,8 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
         end
     end 
     par.nlv = nlv
-    # 'bscal = :none' since block-scaling has no effect on SOPLS  
-    fitm_bl = blockscal(Xbl, weights; bscal = :none, centr = false, scal = par.scal)
+    # Xbl centering and scaling (block scaling has no effect)
+    fitm_bl = blockscal(Xbl, weights; centr = false, scal = par.scal, bscal = :none)
     # End
     transf!(fitm_bl, Xbl)
     # Scaling of Y

@@ -95,7 +95,7 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     n = nro(X)
     q = nco(Y)
     nlv = par.nlv
-    # Cetering and scaling
+    # Centering and scaling
     # No need to center X (what is centered is the kernel)
     ymeans = colmean(Y, weights)  
     fcenter!(Y, ymeans)

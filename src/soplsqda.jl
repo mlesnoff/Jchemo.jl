@@ -4,7 +4,7 @@
     soplsqda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
 QDA on SOPLS latent variables (SOPLS-QDA).
-* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
@@ -15,9 +15,8 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
-    is applied to each block.
+    the column scaling of each block. Possible values are: `:none`, `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 Same as PLS-QDA but QDA is run on SOPLSR scores (computed using the class dummy table, Ydummy).
 

@@ -6,18 +6,18 @@
     mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
 Multiblock PLSR (MBPLSR) - Nipals algorithm.
-* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling of each block (before the block scaling). Possible values are: `:none`, 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 This functions implements the MBPLSR Nipals algorithm such as in Westerhuis et al. 1998. The function gives the same 
 global scores and predictions as function `mbplsr`.

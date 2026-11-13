@@ -4,12 +4,11 @@
     mbplsqda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
 Multiblock PLS-QDA.
-* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
@@ -18,6 +17,7 @@ Keyword arguments:
     the column scaling of each block (before the block scaling). Possible values are: `:none`, 
     `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
+* `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 The approach is as follows:
 

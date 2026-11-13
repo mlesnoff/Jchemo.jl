@@ -4,7 +4,7 @@
     soplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
         kwargs...) where Q <: Float
 Discrimination by multiblock sequentially orthorgonalized PLSR (SOPLSR-DA).
-* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock` from data (n, p).  
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
@@ -14,9 +14,8 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
-    is applied to each block.
+    the column scaling of each block. Possible values are: `:none`, `:std` (uncorrected STD), 
+    `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 Same as PLSR-DA but the Ydummy (class dummy table Ydummy) predictions are computed from SOPLSR.
 

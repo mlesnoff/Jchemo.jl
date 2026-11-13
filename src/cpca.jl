@@ -4,7 +4,7 @@
     cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
 Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
-* `Xbl` : List of blocks (vector of matrices) of X-data. Typically, output of function `mblock`.  
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
@@ -239,14 +239,13 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
 * `nlv` : Nb. LVs to compute.
 """ 
-
 transf(object::Cpca, Xbl) = transf_all(object, Xbl, object.par.nlv).T
 transf(object::Cpca, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).T
 
 transfbl(object::Cpca, Xbl) = transf_all(object, Xbl, object.par.nlv).Tbl
 transfbl(object::Cpca, Xbl, nlv::Int) = transf_all(object, Xbl, nlv).Tbl
 
-function transf_all(object::Cpca, Xbl, nlv::Int)
+function transf_all(object::Cpca, Xbl, nlv::Int)  # 'all' = compute both T and Tbl
     Xbl = ensure_mat_mb(Xbl)
     Q = eltype(Xbl[1])
     a = object.par.nlv
