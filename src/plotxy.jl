@@ -102,9 +102,9 @@ function plotxy(x, y;
     lw = .8
     if ellipse
         X = hcat(x, y)
-        xmeans = colmean(X)
+        xcenters = colmean(X)
         radius = sqrt(quantile(Distributions.Chi(2), prob))
-        res = Jchemo.ellipse(cov(X); mu = xmeans, radius)
+        res = Jchemo.ellipse(cov(X); mu = xcenters, radius)
         if isnothing(color)
             lines!(ax, res.X; color = :grey40, linewidth = lw)
         else
@@ -160,9 +160,9 @@ function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbo
         end
         if ellipse
             X = hcat(zx, zy)
-            xmeans = colmean(X)
+            xcenters = colmean(X)
             radius = sqrt(quantile(Chi(2), prob))
-            res = Jchemo.ellipse(cov(X); mu = xmeans, radius)
+            res = Jchemo.ellipse(cov(X); mu = xcenters, radius)
             if isnothing(color)
                 lines!(ax, res.X; color = :grey40, linewidth = lw)
             else

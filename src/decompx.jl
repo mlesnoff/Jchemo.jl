@@ -72,9 +72,9 @@ res.valref
 """
 function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where Q <: Float
     n = nro(X)
-    xmeans = colmean(X)
-    Xc = fcenter(X, xmeans)
-    Xm = ones(Q, n) * xmeans'
+    xcenters = colmean(X)
+    Xc = fcenter(X, xcenters)
+    Xm = ones(Q, n) * xcenters'
     # Contrasts
     contr = EffectsCoding()   # sum-to-zero
     term_princ = Symbol.(terms(f.rhs))     # [2:end]
@@ -123,7 +123,7 @@ function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) 
     df = (dffit = dffit, dfr, dftot = n)
     mat = (B = B, D, C, L, M)
     fit = (; zip(Symbol.(namfit), fit)...)
-    Decompx(fit, R, mat, ss, df, f, assign, datf, xmeans)
+    Decompx(fit, R, mat, ss, df, f, assign, datf, xcenters)
 end
 
 """

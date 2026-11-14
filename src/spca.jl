@@ -127,10 +127,10 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
     # Centering/scaling X
-    xmeans = colmean(X, weights)
-    fcenter!(X, xmeans)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xcenters = colmean(X, weights)
+    fcenter!(X, xcenters)
+    xscales = colscal(X, weights, par.scalx)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     # End
@@ -162,7 +162,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q 
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = sort(unique(reduce(vcat, sellv)))
-    Spca(T, V, sv, beta, sel, sellv, xmeans, xscales, weights, niter, par) 
+    Spca(T, V, sv, beta, sel, sellv, xcenters, xscales, weights, niter, par) 
 end
 
 """ 
@@ -180,7 +180,7 @@ function transf(object::Spca, X, nlv::Int)
     m = nro(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
-    zX = fcscale(X, object.xmeans, object.xscales)
+    zX = fcscale(X, object.xcenters, object.xscales)
     T = similar(X, m, nlv)
     defl = object.par.defl
     for a = 1:nlv
@@ -207,7 +207,7 @@ function Base.summary(object::Spca, X)
     nlv = nco(object.T)
     weights = object.weights
     sqrtw = sqrt.(weights.values)
-    X = fcscale(X, object.xmeans, object.xscales)
+    X = fcscale(X, object.xcenters, object.xscales)
     sstot = frob2(X, weights)
     TT = fweightr(object.T.^2, weights.values)
     tt = colsum(TT)

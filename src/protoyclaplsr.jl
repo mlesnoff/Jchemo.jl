@@ -13,7 +13,7 @@ end
 
 function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
         kavg::Int = 1, h::Q = 1., criw::Q = 4., squared::Bool = false, 
-        tolw::Q = 1e-4, scal::Symbol = :none) where Q <: Float
+        tolw::Q = 1e-4, scalx::Symbol = :none) where Q <: Float
     par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scal)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 

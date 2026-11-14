@@ -34,12 +34,12 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     sqrtw = sqrt.(weights.values)
     # Centering and scaling
     # No need to scale Y
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)
+    xscales = colscal(X, weights, par.scalx)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     # End
@@ -47,7 +47,7 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     fweightr!(Y, sqrtw)
     B = cholesky!(Hermitian(X' * X + par.lb^2 * Diagonal(ones(Q, p)))) \ (X' * Y)
     fweightr!(B, 1 ./ xscales)
-    int = ymeans' .- xmeans' * B
+    int = ycenters' .- xcenters' * B
     Rrchol(B, int, weights, par)
 end
 

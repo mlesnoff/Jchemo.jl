@@ -97,12 +97,12 @@ end
 function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParSpca{Q}, kwargs).par
     q = nco(Y)
-    ymeans = colmean(Y, weights)
+    ycenters = colmean(Y, weights)
     yscales = colscal(Y, weights, par.scaly) 
     fitm = spca!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Spcr(fitm, Matrix(theta'), ymeans, yscales, par) 
+    Spcr(fitm, Matrix(theta'), ycenters, yscales, par) 
 end
 
 # Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C 
@@ -118,7 +118,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Spcr, X)
     T = transf(object, X)
     theta = object.C'
-    pred = T * theta .+ object.ymeans'
+    pred = T * theta .+ object.ycenters'
     (pred = pred, nlv = object.par.nlv)
 end
 
@@ -136,7 +136,7 @@ function predict(object::Spcr, X, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         theta = vcol(object.C, 1:nlv[i])'
-        pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ymeans'
+        pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ycenters'
     end 
     (pred = pred, nlv)
 end

@@ -108,13 +108,13 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
     # Centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)    
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)   
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)    
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     if par.scaly != :none
@@ -159,7 +159,7 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     d = d[1:nlv]
     Tx = fweightr(X * Wx, invsqrtw) 
     Ty = fweightr(Y * Wy, invsqrtw)
-    Cca(Tx, Ty, Wx, Wy, d, xmeans, ymeans, xscales, yscales, bscales, weights, par)
+    Cca(Tx, Ty, Wx, Wy, d, xcenters, ycenters, xscales, yscales, bscales, weights, par)
 end
 
 """ 
@@ -172,8 +172,8 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transfbl(object::Cca, X, Y)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     Tx = X * object.Wx
     Ty = Y * object.Wy
     (Tx = Tx, Ty)
@@ -181,8 +181,8 @@ end
 
 function transfbl(object::Cca, X, Y, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Wx, 1:nlv)
     Ty = Y * vcol(object.Wy, 1:nlv)
     (Tx = Tx, Ty)
@@ -197,8 +197,8 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Cca, X, Y)
     nlv = nco(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     # To do: explvarx, explvary 
     #D = Diagonal(object.weights.values)   
     # X

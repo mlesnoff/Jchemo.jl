@@ -119,9 +119,9 @@ function lwplsr(X, Y; kwargs...)
     if par.nlvdis == 0
         fitm = nothing
     else
-        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scalx)
     end
-    xscales = colscal(X, par.scal)
+    xscales = colscal(X, par.scalx)
     Lwplsr(fitm, X, Y, xscales, par)
 end
 
@@ -153,7 +153,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     squared = object.par.squared
     tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal != :none
+        if object.par.scalx != :none
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
             res = getknn(zX1, zX2; metric, k)
@@ -171,7 +171,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
         listw[i] = w
     end
     # End
-    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scal, 
+    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scalx, 
         store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 
         listw, nlv)

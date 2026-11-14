@@ -103,7 +103,7 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     end 
     par.nlv = nlv
     # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = false, scal = par.scal, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centr = false, scal = par.scalx, bscal = :none)
     # End
     transf!(fitm_bl, Xbl)
     # Scaling of Y
@@ -160,12 +160,12 @@ function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
     vXbl = transf(object.fitm_bl, Xbl)   
     T = transf(object.fitm[1], vXbl[1])
-    pred =  object.fitm[1].ymeans' .+ T * object.fitm[1].C'
+    pred =  object.fitm[1].ycenters' .+ T * object.fitm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
             X = vXbl[i] - T * object.b[i]
             zT = transf(object.fitm[i], X)
-            pred .+= object.fitm[i].ymeans' .+ zT * object.fitm[i].C'
+            pred .+= object.fitm[i].ycenters' .+ zT * object.fitm[i].C'
             T = hcat(T, transf(object.fitm[i], X))
         end
     end

@@ -2,6 +2,22 @@
 
 # Preprocessing
 
+struct Center{Q <: Float} 
+    centers::Vector{Q}
+    par::ParCenter
+end
+
+struct Scale{Q <: Float} 
+    scales::Vector{Q}
+    par::ParScale
+end
+
+struct Cscale{Q <: Float} 
+    centers::Vector{Q}
+    scales::Vector{Q}
+    par::ParCscale
+end
+
 struct Detrendlo
     par::ParDetrendlo
 end
@@ -47,19 +63,6 @@ end
 struct Snorm
 end
 
-struct Center{Q <: Float} 
-    xmeans::Vector{Q}
-end
-
-struct Scale{Q <: Float} 
-    xscales::Vector{Q}
-end
-
-struct Cscale{Q <: Float} 
-    xmeans::Vector{Q}
-    xscales::Vector{Q}
-end
-
 struct Rmgap
     par::ParRmgap
 end
@@ -85,7 +88,7 @@ struct Pca{Q <: Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
-    xmeans::Vector{Q}
+    xcenters::Vector{Q}
     xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::Union{ParPca, ParPcapp, ParPcaout}
@@ -95,7 +98,7 @@ struct Pcanipals{Q <: Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
-    xmeans::Vector{Q}
+    xcenters::Vector{Q}
     xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}    # pcanipals, pcanipalsmiss
@@ -109,7 +112,7 @@ struct Spca{Q <: Float}
     beta::Matrix{Q}
     sel::Vector{Int}
     sellv::Vector{Vector{Int}}
-    xmeans::Vector{Q}
+    xcenters::Vector{Q}
     xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}
@@ -139,8 +142,8 @@ struct Covsel{Q <: Float}
     yss::Vector{Q}
     xsstot::Q
     ysstot::Q 
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
@@ -150,7 +153,7 @@ end
 struct Rp{Q <: Float}
     T::Matrix{Q}
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}
-    xmeans::Vector{Q}
+    xcenters::Vector{Q}
     xscales::Vector{Q}
     par::ParRp
 end
@@ -173,7 +176,7 @@ struct Fda{Q <: Float}
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
-    xmeans::Vector{Q}
+    xcenters::Vector{Q}
     xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParFda
@@ -182,7 +185,7 @@ end
 # Multiblock
 
 struct Blockscal{Q <: Float}
-    xmeans::Vector{Vector{Q}}
+    xcenters::Vector{Vector{Q}}
     xscales::Vector{Vector{Q}}
     bscales::Vector{Q}
     par::ParBlock
@@ -198,8 +201,8 @@ struct Cca{Q <: Float}
     Wx::Matrix{Q}
     Wy::Matrix{Q}
     d::Vector{Q}    
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     bscales::Vector{Q}    
@@ -218,8 +221,8 @@ struct Ccawold{Q <: Float}
     Wy::Matrix{Q}
     TTx::Vector{Q}
     TTy::Vector{Q}  
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     bscales::Vector{Q}    
@@ -240,8 +243,8 @@ struct Plscan{Q <: Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}    
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     bscales::Vector{Q}   
@@ -257,8 +260,8 @@ struct Plstuck{Q <: Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     bscales::Vector{Q}   
@@ -272,8 +275,8 @@ struct Rasvd{Q <: Float}
     Bx::Matrix{Q}
     Wy::Matrix{Q}
     lambda::Vector{Q}    
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     bscales::Vector{Q}   
@@ -329,7 +332,7 @@ struct Decompx{Q <: Float}
     f::StatsModels.FormulaTerm
     assign::Vector{Int}
     datf::DataFrame
-    xmeans::Vector{Q} 
+    xcenters::Vector{Q} 
 end
 
 struct Plsr{Q <: Float}
@@ -339,8 +342,8 @@ struct Plsr{Q <: Float}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
@@ -354,8 +357,8 @@ struct Plswold{Q <: Float}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
@@ -366,8 +369,8 @@ end
 struct Cglsr{Q <: Float}
     B::Matrix{Q}
     g::Vector{Q}
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     F::Union{Nothing, Matrix{Q}}
@@ -377,7 +380,7 @@ end
 struct Pcr{Q <: Float}
     fitm::Pca
     C::Matrix{Q}
-    ymeans::Vector{Q}
+    ycenters::Vector{Q}
     yscales::Vector{Q}
     par::ParPca
 end
@@ -391,8 +394,8 @@ struct Splsr{Q <: Float}
     TT::Vector{Q}
     sel::Vector{Int}
     sellv::Vector{Vector{Int}}
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
@@ -403,7 +406,7 @@ end
 struct Spcr{Q <: Float}
     fitm::Spca
     C::Matrix{Q}
-    ymeans::Vector{Q}
+    ycenters::Vector{Q}
     yscales::Vector{Q}
     par::ParSpca
 end
@@ -437,7 +440,8 @@ struct Kplsr{Q <: Float}
     R::Matrix{Q}
     DKt::Matrix{Q}
     vtot::Matrix{Q}   
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
@@ -450,6 +454,8 @@ struct Dkplsr{Q <: Float}
     fitm::Plsr
     X::Matrix{Q}
     K::Matrix{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
     yscales::Vector{Q}
     kwargs::Base.Pairs
@@ -461,7 +467,7 @@ end
 struct Mbplsr{Q <: Float}
     fitm_bl::Blockscal
     fitm::Plsr
-    ymeans::Vector{Q}
+    ycenters::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParMbplsr
@@ -478,7 +484,7 @@ struct Mbplswest{Q <: Float}
     Vbl::Vector{Matrix{Q}}
     TT::Vector{Q}
     fitm_bl::Blockscal
-    ymeans::Vector{Q}
+    ycenters::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     lb::Union{Nothing, Matrix{Q}}
@@ -494,7 +500,7 @@ struct Rosaplsr{Q <: Float}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
-    ymeans::Vector{Q}
+    ycenters::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     bl::Vector{Int}
@@ -517,9 +523,10 @@ struct Rr{Q <: Float}
     V::Adjoint{Q}
     TtY::Matrix{Q}
     sv::Vector{Q}
-    xmeans::Vector{Q}
-    ymeans::Vector{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
+    yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParRr
 end
@@ -539,8 +546,10 @@ struct Krr{Q <: Float}
     sv::Vector{Q}
     DKt::Matrix{Q}
     vtot::Matrix{Q}
+    xcenters::Vector{Q}
+    ycenters::Vector{Q}
     xscales::Vector{Q}
-    ymeans::Vector{Q}
+    yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     kwargs::Base.Pairs
     par::ParKrr

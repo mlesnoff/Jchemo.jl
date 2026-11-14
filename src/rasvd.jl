@@ -100,13 +100,13 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
     # Centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)    
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)   
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)    
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     if par.scaly != :none
@@ -150,7 +150,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     # End
     fweightr!(Tx, invsqrtw)
     fweightr!(Ty, invsqrtw)   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, xmeans, ymeans, xscales, yscales, bscales, weights, par)
+    Rasvd(Tx, Ty, Bx, Wy, lambda, xcenters, ycenters, xscales, yscales, bscales, weights, par)
 end
 
 """ 
@@ -163,8 +163,8 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transfbl(object::Rasvd, X, Y)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     Yfit = X * object.Bx
     Tx = Yfit * object.Wy
     Ty = Y * object.Wy
@@ -173,8 +173,8 @@ end
 
 function transfbl(object::Rasvd, X, Y, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     Yfit = X * object.Bx
     Wy = vcol(object.Wy, 1:nlv)
     Tx = Yfit * Wy
@@ -193,8 +193,8 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Rasvd, X, Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     # Block X
     T = object.Tx
     DT = fweightr(T, object.weights.values)

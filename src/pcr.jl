@@ -79,16 +79,16 @@ end
 function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParPca, kwargs).par
     q = nco(Y)
-    ymeans = colmean(Y, weights)
+    ycenters = colmean(Y, weights)
     yscales = colscal(Y, weights, par.scaly)  # built only for consistency with coef::Plsr
     fitm = pcasvd!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
     # Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
     # if T is D-orthogonal. This is the case for the actual version (pcasvd)
     # theta: coefs regression of Y on T (= C')
-    # not needed (same theta): fcenter!(Y, ymeans)
+    # not needed (same theta): fcenter!(Y, ycenters)
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Pcr(fitm, Matrix(theta'), ymeans, yscales, par) 
+    Pcr(fitm, Matrix(theta'), ycenters, yscales, par) 
 end
 
 """ 
@@ -120,8 +120,8 @@ function coef(object::Pcr)
     Dy = Diagonal(object.yscales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweightr(object.fitm.V, 1 ./ object.fitm.xscales) * theta * Dy
-    # In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
-    int = object.ymeans' .- object.fitm.xmeans' * B
+    # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
+    int = object.ycenters' .- object.fitm.xcenters' * B
     # End
     (B = B, int, nlv = object.par.nlv)
 end
@@ -133,8 +133,8 @@ function coef(object::Pcr, nlv::Int)
     Dy = Diagonal(object.yscales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
-    # In 'int': No correction is needed, since ymeans, xmeans and B are in the original scale 
-    int = object.ymeans' .- object.fitm.xmeans' * B
+    # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
+    int = object.ycenters' .- object.fitm.xcenters' * B
     # End
     (B = B, int, nlv)
 end

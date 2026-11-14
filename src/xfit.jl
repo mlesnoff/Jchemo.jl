@@ -39,7 +39,7 @@ fitm = model.fitm ;
 @head xfit(fitm, X)
 @head xfit(fitm, X, 1)
 @head xfit(fitm, X, 0)
-fitm.xmeans
+fitm.xcenters
 xfit(fitm, Xnew)
 xfit(fitm, Xnew, 1)
 
@@ -95,14 +95,14 @@ function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
     nlv = min(nlv, nco(object.T))
     if nlv == 0
         @inbounds for i in axes(X, 1)
-            X[i, :] .= object.xmeans
+            X[i, :] .= object.xcenters
         end
     else
         T = transf(object, X, nlv)
         mul!(X, T, vcol(object.V, 1:nlv)')
         # Coming back to the original scale
         fscale!(X, 1 ./ object.xscales)    
-        fcenter!(X, -object.xmeans)
+        fcenter!(X, -object.xcenters)
     end
     X
 end

@@ -102,16 +102,16 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     nlv = min(par.nlv, p, q)
     par.nlv = nlv
     # Centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)    
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)   
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)    
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
-    if par.scal != :none
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
     # Row metric
@@ -190,7 +190,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
      end
      Rx = Wx * inv(Vx' * Wx)
      fweightr!(Tx, invsqrtw)
-     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xmeans, ymeans, xscales, yscales, weights, niter, par)
+     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xcenters, ycenters, xscales, yscales, weights, niter, par)
 end
 
 

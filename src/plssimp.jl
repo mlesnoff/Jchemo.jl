@@ -42,16 +42,16 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)    
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)   
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)    
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
-    if par.scal != :none
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
     # XtY 
@@ -93,7 +93,7 @@ function plssimp!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     end
     # B = R * inv(T' * D * T) * T' * D * Y
     # W does not exist in SIMPLS ==> below it is filled by R (for 'vip')
-    Plsr(T, V, R, R, C, TT, xmeans, ymeans, xscales, yscales, weights, par)
+    Plsr(T, V, R, R, C, TT, xcenters, ycenters, xscales, yscales, weights, par)
 end
 
 

@@ -110,12 +110,12 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
     # Y centering and scaling
-    ymeans = colmean(Y, weights)
-    fcenter!(Y, ymeans)
+    ycenters = colmean(Y, weights)
+    fcenter!(Y, ycenters)
     yscales = colscal(Y, weights, par.scaly)
     # Row metric
     sqrtw = sqrt.(weights.values)
@@ -198,7 +198,7 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     fweightr!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Vbl, TTx, fitm_bl, ymeans, yscales, weights, 
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Vbl, TTx, fitm_bl, ycenters, yscales, weights, 
         lb, niter, par)
 end
 
@@ -246,7 +246,7 @@ function predict(object::Mbplswest, Xbl, nlv::Union{Int, AbstractVector{Int}})
         znlv = nlv[i]
         W = Diagonal(object.yscales)
         beta = vcol(object.C, 1:znlv)'
-        int = object.ymeans'
+        int = object.ycenters'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
     if le_nlv == 1 ; pred = pred[1] ; end

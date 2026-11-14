@@ -107,16 +107,16 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
     # Y centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)  
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)  
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
-    if par.scal != :none
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
     # End
@@ -162,7 +162,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         xss[i] = frob2(X)
         yss[i] = frob2(Y)
     end
-    Covsel(sel, selc, C, xss, yss, xsstot, ysstot, xmeans, ymeans, xscales, yscales, weights, par)
+    Covsel(sel, selc, C, xss, yss, xsstot, ysstot, xcenters, ycenters, xscales, yscales, weights, par)
 end
 
 """ 

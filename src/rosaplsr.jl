@@ -91,11 +91,11 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scalx, bscal = :none)
     transf!(fitm_bl, Xbl)
     # Y centering and scaling
-    ymeans = colmean(Y, weights)
-    fcenter!(Y, ymeans)
+    ycenters = colmean(Y, weights)
+    fcenter!(Y, ycenters)
     yscales = colscal(Y, weights, par.scaly)
     # Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)
@@ -190,7 +190,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(V' * W)
-    Rosaplsr(fitm_bl, T, V, R, W, C, TT, ymeans, yscales, weights, bl, par)
+    Rosaplsr(fitm_bl, T, V, R, W, C, TT, ycenters, yscales, weights, bl, par)
 end
 
 """ 
@@ -224,12 +224,12 @@ coef(object::Rosaplsr) = coef(object, object.par.nlv)
 
 function coef(object::Rosaplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    xmeans = reduce(vcat, object.fitm_bl.xmeans)
+    xcenters = reduce(vcat, object.fitm_bl.xcenters)
     xscales = reduce(vcat, object.fitm_bl.xscales)
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
     Dy = Diagonal(object.yscales)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy
-    int = object.ymeans' .- xmeans' * B
+    int = object.ycenters' .- xcenters' * B
     (B = B, int, nlv)
 end
 

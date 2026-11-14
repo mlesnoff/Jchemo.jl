@@ -94,19 +94,20 @@ end
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
-    n = nro(X)
+    n, p = size(X)
     q = nco(Y)
     nlv = par.nlv
-    # Centering and scaling
+    # Centering Y and scaling X, Y
     # No need to center X (what is centered is the kernel)
-    ymeans = colmean(Y, weights)  
-    fcenter!(Y, ymeans)
-    xscales = colscal(X, weights, par.scal)
+    xcenters = zeros(Q, p)
+    ycenters = colmean(Y, weights)  
+    fcenter!(Y, ycenters)
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
-    if par.scal != :none
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
     # End    
@@ -164,7 +165,7 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     end
     DU = fweightr(U, weights.values)
     zR = DU * inv(T' * fweightr(Kc, weights.values) * DU)   # = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, ymeans, xscales, yscales, weights, iter, kwargs, par) 
+    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xcenters, ycenters, xscales, yscales, weights, iter, kwargs, par) 
 end
 
 """ 
@@ -200,8 +201,8 @@ coef(object::Kplsr) = coef(object::Kplsr, object.par.nlv)
 function coef(object::Kplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     beta = vcol(object.C, 1:nlv)'
-    q = length(object.ymeans)
-    int = reshape(object.ymeans, 1, q)
+    q = length(object.ycenters)
+    int = reshape(object.ycenters, 1, q)
     (beta = beta, int, nlv)
 end
 

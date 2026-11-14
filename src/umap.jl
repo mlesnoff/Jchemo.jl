@@ -114,8 +114,8 @@ function umap(X; kwargs...)  # Q is forced to be Float32
         s = collect(1:n)
     end
     # X scaling
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
+    xscales = colscal(X, par.scalx)
+    if par.scalx != :none
         X = fscale(X, xscales)
     end
     # Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix

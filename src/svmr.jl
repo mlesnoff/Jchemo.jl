@@ -98,8 +98,8 @@ function svmr(X, y; kwargs...)
     par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
     @assert in([:rbf, :pol, :lin, :tan])(kern) "Wrong value for argument 'kern'." 
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
+    xscales = colscal(X, par.scalx)
+    if par.scalx != :none
         X = fscale(X, xscales)
     end
     if kern == :rbf

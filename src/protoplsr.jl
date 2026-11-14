@@ -117,7 +117,7 @@ Base.@kwdef mutable struct ParProtoplsr{Q <: Float}
     criw::Q = 4                       
     squared::Bool = false                   
     tolw::Q = 1e-4                    
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
     seed::Union{Nothing, Int} = nothing     
 end
 
@@ -164,7 +164,7 @@ function protoplsr(X, Y; kwargs...)
     Threads.@threads for i in eachindex(s_proto)
         vX = vrow(X, resnn.ind[i])
         vY = vrow(Y, resnn.ind[i])
-        pars = mpar(scal = [par.scal])
+        pars = mpar(scal = [par.scalx], scaly = [par.scaly])
         model = plskern()
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:par.nlv).res
         # To do: adapt for multivariate Y

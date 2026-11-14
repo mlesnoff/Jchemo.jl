@@ -131,7 +131,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
     sqrtw = sqrt.(weights.values)

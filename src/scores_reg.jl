@@ -365,8 +365,8 @@ r2(pred, ytest)
 """
 function r2(pred, Y)
     m = nro(Y)
-    ymeans = colmean(Y)
-    M = reduce(hcat, fill(ymeans, m, 1))'
+    ycenters = colmean(Y)
+    M = reduce(hcat, fill(ycenters, m, 1))'
     1 .- msep(pred, Y) ./ msep(M, Y)
 end
 

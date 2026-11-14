@@ -55,7 +55,7 @@ function aicplsr(X::AbstMatVec{Q}, y::AbstMatVec{Q}; alpha::Q = 2., kwargs...) w
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    pars = mpar(scal = [par.scal])  
+    pars = mpar(scal = [par.scalx])  
     zssr = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv).y1
     df = dfplsr_cg(X, y; kwargs...).df
     dfssr = n .- df

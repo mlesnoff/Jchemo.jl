@@ -11,8 +11,8 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-xmeans = colmean(X)
-fcenter(X, xmeans)
+xcenters = colmean(X)
+fcenter(X, xcenters)
 ```
 """ 
 function fcenter(X, v) 
@@ -58,7 +58,7 @@ end
     fcscale(X, u, v)
     fcscale!(X::AbstMatVec{Q}, u::Vector{Q}, v::Vector{Q}) where Q <: Float
 Center and scale each column of a matrix.
-* `X` : Data  (n, p).
+* `X` : Data (n, p).
 * `u` : Centering vector (p).
 * `v` : Scaling vector (p).
 
@@ -68,9 +68,9 @@ using Jchemo
 
 n, p = 5, 6
 X = rand(n, p)
-xmeans = colmean(X)
+xcenters = colmean(X)
 xscales = colstd(X)
-fcscale(X, xmeans, xscales)
+fcscale(X, xcenters, xscales)
 ```
 """ 
 function fcscale(X, u, v) 

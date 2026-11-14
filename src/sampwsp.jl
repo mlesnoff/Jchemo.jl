@@ -51,14 +51,14 @@ function sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where Q <
     x = similar(X, 1, p)
     if recod
         vX = recodwsp(X) 
-        xmeans = fill(.5, p)
+        xcenters = fill(.5, p)
     else
         vX = copy(X)
-        xmeans = colmean(vX)
-        #xmeans = fill(.5, p)
+        xcenters = colmean(vX)
+        #xcenters = fill(.5, p)
     end
     # First reference point is set as the closest from the domain center
-    s = getknn(vX, xmeans'; k = 1).ind[1][1]
+    s = getknn(vX, xcenters'; k = 1).ind[1][1]
     x .= vrow(vX, s:s)
     ind = [indX[s]]
     # Start

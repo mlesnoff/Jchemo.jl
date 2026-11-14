@@ -800,7 +800,9 @@ end
     @in x y
 Determine whether items of a vector are in a given collection
 * `x` : A vector.
-* `y` : A vector (given collection).
+* `y` : A vector (the given collection).
+
+"Is (each item of) x in y?"
 
 Wrapper for function `in` to avoid broadcasting syntax.
 
@@ -815,10 +817,13 @@ y = ["a", "d", "e", "b", "a", "c", "a"]
 
 @in x y 
 @in(x, y) 
+
+@in ["a"] y
+@in "a" y
 ```
 """
 macro in(x, y)
-    esc( :( in($x).($y) ))
+    esc( :( in($y).($x) ))
 end
 
 """ 

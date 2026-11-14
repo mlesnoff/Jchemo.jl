@@ -24,10 +24,10 @@ end
 
 function repc!(X::Matrix{Q}, group::Vector{String}) where Q <: Float
     lev = mlev(group)
-    xmeans = similar(X, nco(X))
+    xcenters = similar(X, nco(X))
     @inbounds for i in eachindex(lev)
         s = group .== lev[i]
-        xmeans .= colmean(vrow(X, s))
-        X[s, :] .-= xmeans'
+        xcenters .= colmean(vrow(X, s))
+        X[s, :] .-= xcenters'
     end
 end

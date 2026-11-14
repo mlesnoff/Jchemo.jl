@@ -1,6 +1,6 @@
 """
-    outeucl(X; scal::Symbol = :none)
-    outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
+    outeucl(X; scalx::Symbol = :none)
+    outeucl!(X::AbstractMatrix{Q}; scalx::Symbol = :none) where Q <: Float
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -32,18 +32,18 @@ res.d    # outlierness
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outeucl(X; scal::Symbol = :none)
+function outeucl(X; scalx::Symbol = :none)
     outeucl!(copy(ensure_mat(X)); scal)
 end
 
-function outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where Q <: Float
-    xmeans = Jchemo.colmedspa(X)
+function outeucl!(X::AbstractMatrix{Q}; scalx::Symbol = :none) where Q <: Float
+    xcenters = Jchemo.colmedspa(X)
     xscales = colscal(X, scal)
     if scal != :none
         fscale!(X, xscales)
     end
-    d = vec(sqrt.(eucl2(X, xmeans')))
-    (d = d, xmeans, xscales)
+    d = vec(sqrt.(eucl2(X, xcenters')))
+    (d = d, xcenters, xscales)
 end
 
 

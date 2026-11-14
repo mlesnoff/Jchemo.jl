@@ -77,19 +77,19 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering/scaling X
-    xmeans = colmeanskip(X, weights)
-    X .-= xmeans' 
+    xcenters = colmeanskip(X, weights)
+    X .-= xcenters' 
     xscales = ones(Q, p)
-    if par.scal != :none
+    if par.scalx != :none
         xscales .= colstdskip(X, weights)
         X ./= xscales'
     end
     # End
     sqrtw = sqrt.(weights.values)
     @. X = sqrtw * X
-    T = similar(xmeans, n, nlv)
-    V = similar(xmeans, p, nlv)
-    sv = similar(xmeans, nlv)
+    T = similar(xcenters, n, nlv)
+    V = similar(xcenters, p, nlv)
+    sv = similar(xcenters, nlv)
     niter = list(Int, nlv)
     if par.gs
         UUt = zeros(Q, n, n)
@@ -112,6 +112,6 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
         end
     end
     @. T = (1 / sqrtw) * T
-    Pcanipals(T, V, sv, xmeans, xscales, weights, niter, par) 
+    Pcanipals(T, V, sv, xcenters, xscales, weights, niter, par) 
 end
 

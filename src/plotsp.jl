@@ -33,8 +33,8 @@ tck = collect(wl[1]:200:wl[end]) ;
 plotsp(X, wl; xticks = tck, xlabel = "Wavelength (nm)", ylabel = "Absorbance").f
 
 f, ax = plotsp(X, wl; color = (:red, .2))
-xmeans = colmean(X)
-lines!(ax, wl, xmeans; color = :black, linewidth = 2)
+xcenters = colmean(X)
+lines!(ax, wl, xcenters; color = :black, linewidth = 2)
 vlines!(ax, 1200)
 f
 

@@ -14,8 +14,9 @@ function defaults(algo::Function)
         savgol Jchemo.ParSavgol ;
         snv Jchemo.ParSnv ;
         rmgap Jchemo.ParRmgap ;
+        center Jchemo.ParCenter ;
         scale Jchemo.ParScale ;
-        cscale Jchemo.ParScale ;
+        cscale Jchemo.ParCscale ;
 
         nipals Jchemo.ParNipals ;
         nipalsmiss Jchemo.ParNipals ;

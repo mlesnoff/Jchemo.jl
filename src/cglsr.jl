@@ -12,8 +12,6 @@ Keyword arguments:
 * `filt` : Boolean. If `true`, CG filter factors are computed (output `F`). Default = `false`.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the part of the code computing the 
 re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) is a transcription (with few 
@@ -82,17 +80,14 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     par.nlv = nlv 
     # Centering and scaling
     # No need to fscale y; only for consistency with Plsr
-    xmeans = colmean(X) 
-    ymeans = colmean(y)   
-    fcenter!(X, xmeans)
-    fcenter!(y, ymeans)    
-    xscales = colscal(X, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    xcenters = colmean(X) 
+    ycenters = colmean(y)   
+    fcenter!(X, xcenters)
+    fcenter!(y, ycenters)    
+    xscales = colscal(X, par.scalx)
+    yscales = ones(Q, q)
+    if par.scalx != :none
         fscale!(X, xscales)
-    end
-    if par.scal != :none
-        fscale!(Y, yscales)
     end
     # Pre-allocation and initialization
     B = similar(X, p, nlv)
@@ -158,7 +153,7 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
         end 
         # End
     end
-    Cglsr(B, gnew, xmeans, ymeans, xscales, yscales, F, par)
+    Cglsr(B, gnew, xcenters, ycenters, xscales, yscales, F, par)
 end
 
 """
@@ -176,7 +171,7 @@ For a model fitted from X (n, p) and Y (n, q), the returned objects are :
 function coef(object::Cglsr)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.xscales) *  W
-    int = object.ymeans' .- object.xmeans' * B
+    int = object.ycenters' .- object.xcenters' * B
     (B = B, int, nlv = object.par.nlv)
 end
 
@@ -184,7 +179,7 @@ function coef(object::Cglsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     W = Diagonal(object.yscales)    
     B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W
-    int = object.ymeans' .- object.xmeans' * B
+    int = object.ycenters' .- object.xcenters' * B
     (B = B, int, nlv)
 end
 

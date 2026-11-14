@@ -118,12 +118,15 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     par = recovkw(ParKrr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     p = nco(X)
+    q = nco(Y)
     # - No need to center X (what is centered is the kernel)
     # - No need to scale Y
-    ymeans = colmean(Y, weights)
-    #fcenter!(Y, ymeans)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xcenters = zeros(Q, p)
+    ycenters = colmean(Y, weights)
+    fcenter!(Y, ycenters)
+    xscales = colscal(X, weights, par.scalx)
+    yscales = ones(Q, q)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     # End
@@ -141,7 +144,7 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * fweightr(Y, sqrtw)
-    Krr(X, K, U, UtDY, sv, DKt, vtot, xscales, ymeans, weights, kwargs, par) 
+    Krr(X, K, U, UtDY, sv, DKt, vtot, xcenters, ycenters, xscales, yscales, weights, kwargs, par) 
 end
 
 """
@@ -158,8 +161,8 @@ function coef(object::Krr, lb::T) where T <: Float
     eig = object.sv.^2
     v = 1 ./ (eig .+ Q(lb)^2)
     A = object.U * (Diagonal(v) * object.UtDY)
-    q = length(object.ymeans)
-    int = reshape(object.ymeans, 1, q)
+    q = length(object.ycenters)
+    int = reshape(object.ycenters, 1, q)
     tr = sum(eig .* v)
     (A = A, int = int, df = 1 + tr, lb)
 end

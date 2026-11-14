@@ -34,8 +34,8 @@ function occlknn(X; kwargs...)
     n = nro(X)    
     Q = eltype(X)
     par = recovkw(ParOccknn{Q}, kwargs).par
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xscales = colscal(X, weights, par.scalx)
+    if par.scalx != :none
         X = fscale(X, xscales)
     end
     nsamp = min(par.nsamp, n)

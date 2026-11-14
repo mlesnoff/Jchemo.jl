@@ -177,7 +177,7 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
             segm = segmkf(group, par.K; rep = par.rep)
         end
         nlv = 0:par.nlv
-        scal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
+        scal = isa(par.scalx, Vector{Symbol}) ? par.scalx : [par.scalx]
         pars = mpar(scal = scal)
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = par.score, nlv, pars).res
@@ -221,7 +221,7 @@ function predict(object::Mwplsr, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
-    q = length(object.fitm_emb[1].ymeans) 
+    q = length(object.fitm_emb[1].ycenters) 
     nw = length(object.fitm_emb)
     predw = similar(X, m, q, nw)
     pred = zeros(Q, m, q)

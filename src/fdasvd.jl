@@ -39,10 +39,10 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     # Centering/scaling X
-    xmeans = colmean(X, weights)
-    fcenter!(X, xmeans)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xcenters = colmean(X, weights)
+    fcenter!(X, xcenters)
+    xscales = colscal(X, weights, par.scalx)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     res = matW(X, y, weights)
@@ -78,7 +78,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     V = Ut * Pz[:, 1:nlv]
     T = X * V
     Tcenters = ct * V
-    Fda(T, V, Tcenters, eig, sstot, res.W, ni, priors, lev, xmeans, xscales, weights, par)
+    Fda(T, V, Tcenters, eig, sstot, res.W, ni, priors, lev, xcenters, xscales, weights, par)
 end
 
 

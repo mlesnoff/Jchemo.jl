@@ -214,7 +214,7 @@ function occmwpls(X, Y; kwargs...)
         vX = vcol(X, window[j])
         # Fit embedding model
         segm = segmkf(n, par.K; par.rep)
-        pars = mpar(scal = [par.scal])
+        pars = mpar(scal = [par.scalx], scaly = [par.scaly])
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = rmsep, nlv = 0:par.nlv, pars).res
         if q == 1
@@ -226,7 +226,7 @@ function occmwpls(X, Y; kwargs...)
         end
         u = findall(vscor .== minimum(vscor))[1] 
         nlv_emb[j] = res.nlv[u]
-        fitm_emb[j] = plskern(vX, Y; nlv = nlv_emb[j]) #, scal = par.scal)
+        fitm_emb[j] = plskern(vX, Y; nlv = nlv_emb[j]) #, scal = par.scalx)
         # End
         fitm_occ[j] = occsdod(fitm_emb[j], vX; nlv = nlv_emb[j], typcut = par.typcut, 
             cri = par.cri, alpha = par.alpha, gamma = par.gamma)

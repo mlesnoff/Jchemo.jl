@@ -97,13 +97,13 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
     # Centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)   
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)    
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)   
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)    
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     if par.scaly != :none
@@ -171,7 +171,7 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
      end
      Rx = Wx * inv(Vx' * Wx)
      Ry = Wy * inv(Vy' * Wy)
-     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, xmeans, ymeans, xscales, 
+     Plscan(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, delta, xcenters, ycenters, xscales, 
          yscales, bscales, weights, par)
 end
 
@@ -185,8 +185,8 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transfbl(object::Plscan, X, Y)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     Tx = X * object.Rx
     Ty = Y * object.Ry
     (Tx = Tx, Ty)
@@ -194,8 +194,8 @@ end
 
 function transfbl(object::Plscan, X, Y, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     Tx = X * vcol(object.Rx, 1:nlv)
     Ty = Y * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
@@ -210,8 +210,8 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Plscan, X, Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.xmeans, object.xscales) / object.bscales[1]
-    Y = fcscale(Y, object.ymeans, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.xcenters, object.xscales) / object.bscales[1]
+    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
     ttx = object.TTx 
     tty = object.TTy 
     # Block X

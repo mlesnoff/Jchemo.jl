@@ -65,10 +65,10 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     par.nlv = nlv
     nsim = par.nsim
     # Centering/scaling X
-    xmeans = Jchemo.colmedspa(X, delta = Q(0.001))
-    fcenter!(X, xmeans)
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
+    xcenters = Jchemo.colmedspa(X, delta = Q(0.001))
+    fcenter!(X, xcenters)
+    xscales = colscal(X, par.scalx)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     # End
@@ -100,6 +100,6 @@ function pcapp!(X::Matrix{Q}; kwargs...) where Q <: Float
     V .= vcol(V, s)
     sv .= sv[s]
     weights = pweight(ones(Q, n))
-    Pca(T, V, sv, xmeans, xscales, weights, par)
+    Pca(T, V, sv, xcenters, xscales, weights, par)
 end
 

@@ -137,16 +137,16 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fthresh = thresh_hard
     end
     # Y centering and scaling
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)  
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)
-    xscales = colscal(X, weights, par.scal)
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)  
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)
+    xscales = colscal(X, weights, par.scalx)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
+    if par.scalx != :none
         fscale!(X, xscales)
     end
-    if par.scal != :none
+    if par.scaly != :none
         fscale!(Y, yscales)
     end
     # XtY 
@@ -218,7 +218,7 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         # Add compared to ::Plsr
         sel, sellv, 
         # End
-        xmeans, ymeans, xscales, yscales, weights, 
+        xcenters, ycenters, xscales, yscales, weights, 
         niter,  # related to sparseness: q = 1 ==> 1 (no iteration), q > 1 ==> output of snipals_shen
         par)
 end

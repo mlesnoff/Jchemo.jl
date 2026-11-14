@@ -85,15 +85,16 @@ end
 
 function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = recovkw(ParRr{Q}, kwargs).par
-    p = nco(X)
+    q = nco(Y)
     # Centering and scaling
     # No need to scale Y
-    xmeans = colmean(X, weights) 
-    ymeans = colmean(Y, weights)
-    fcenter!(X, xmeans)
-    fcenter!(Y, ymeans)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xcenters = colmean(X, weights) 
+    ycenters = colmean(Y, weights)
+    fcenter!(X, xcenters)
+    fcenter!(Y, ycenters)
+    xscales = colscal(X, weights, par.scalx)
+    yscales = ones(Q, q)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     # End
@@ -103,7 +104,7 @@ function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
     res = LinearAlgebra.svd!(X)
     sv = res.S
     TtY = Diagonal(sv) * res.U' * Y
-    Rr(res.V, TtY, sv, xmeans, ymeans, xscales, weights, par)
+    Rr(res.V, TtY, sv, xcenters, ycenters, xscales, yscales, weights, par)
 end
 
 """
@@ -121,7 +122,7 @@ function coef(object::Rr, lb::T) where T <: Float
     z = 1 ./ (eig .+ Q(lb)^2)
     beta = Diagonal(z) * object.TtY
     B = fweightr(object.V, 1 ./ object.xscales) * beta
-    int = object.ymeans' .- object.xmeans' * B
+    int = object.ycenters' .- object.xcenters' * B
     tr = sum(eig .* z)
     (B = B, int, df = 1 + tr, lb)
 end

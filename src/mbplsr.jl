@@ -146,16 +146,16 @@ function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv
     # Xbl centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
     # Y centering and scaling
-    ymeans = colmean(Y, weights)
-    fcenter!(Y, ymeans)
+    ycenters = colmean(Y, weights)
+    fcenter!(Y, ycenters)
     yscales = colscal(Y, weights, par.scaly)
     # End
     fitm = plskern(X, Y, weights; nlv, scal = :none)
-    Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)
+    Mbplsr(fitm_bl, fitm, ycenters, yscales, weights, par)
 end
 
 """ 
@@ -202,7 +202,7 @@ function predict(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
         znlv = nlv[i]
         W = Diagonal(object.yscales)
         beta = vcol(object.fitm.C, 1:znlv)'
-        int = object.ymeans'
+        int = object.ycenters'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
     if le_nlv == 1 ; pred = pred[1] ; end

@@ -72,7 +72,7 @@ function lwmlrda(X, y::Vector{String}; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
     taby = tab(y)
-    xscales = colscal(X, par.scal)
+    xscales = colscal(X, par.scalx)
     Lwmlrda(X, y, xscales, taby.n, taby.lev, par)  
 end
 
@@ -91,7 +91,7 @@ function predict(object::Lwmlrda, X)
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    if object.par.scal != :none
+    if object.par.scalx != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)

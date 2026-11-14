@@ -69,10 +69,10 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering/scaling X
-    xmeans = Jchemo.colmedspa(X, delta = Q(0.001))
-    fcenter!(X, xmeans)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
+    xcenters = Jchemo.colmedspa(X, delta = Q(0.001))
+    fcenter!(X, xcenters)
+    xscales = colscal(X, weights, par.scalx)
+    if par.scalx != :none
         fscale!(X, xscales)
     end
     # Sphere
@@ -87,6 +87,6 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     T .= T[:, s]
     V .= V[:, s]
     sv .= sv[s]
-    Pca(T, V, sv, xmeans, xscales, weights, par) 
+    Pca(T, V, sv, xcenters, xscales, weights, par) 
 end
 

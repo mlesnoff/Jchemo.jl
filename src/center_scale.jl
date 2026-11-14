@@ -1,9 +1,12 @@
 """
     center()
-    center(X)
-    center(X:: Matrix{Q}, weights::ProbabilityWeights) where Q <: Float
+    center(X; kwargs...)
+    center(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...)
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
+Keyword arguments:
+* `centr` : Symbol defining the X centering. Possible values are: `:none` (no centering), 
+    and `:std` (uncorrected STD; default). 
 
 # Examples
 ```julia
@@ -34,11 +37,21 @@ plotsp(Xptest).f
 """
 center(; kwargs...) = JchemoModel(center, nothing, kwargs)
 
-center(X) = Center(colmean(ensure_mat(X)))
-
-function center(X::Matrix{Q}, weights::ProbabilityWeights{Q}) where Q <: Float
-    xmeans = colmean(X, weights)
-    Center(xmeans)
+function center(X; kwargs...)
+    X = ensure_mat(X)
+    weights = pweight(ones(eltype(X), nro(X)))
+    center(X, weights; kwargs...)
+end 
+    
+function center(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = Jchemo.recovkw(ParCenter, kwargs).par
+    @assert @in(par.centr, [:none, :mean]) "Wrong value for argument 'centr'."
+    if par.centr == :none
+        v = zeros(Q, nco(X))
+    elseif par.centr == :mean 
+         v = colmean(X, weights)
+    end
+    Center(v, par)
 end
 
 """ 
@@ -55,13 +68,13 @@ function transf(object::Center, X)
 end
 
 function transf!(object::Center, X::Matrix{Q}) where Q <: Float
-    fcenter!(X, object.xmeans)
+    fcenter!(X, object.centers)
 end
 
 """
     scale()
     scale(X; kwargs...)
-    scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    scale(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...)
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -101,12 +114,21 @@ function scale(X; kwargs...)
     X = ensure_mat(X)
     weights = pweight(ones(eltype(X), nro(X)))
     scale(X, weights; kwargs...)
-end
-
-function scale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    par = Jchemo.recovkw(ParScale, kwargs).par 
-    xscales = colscal(X, weights, par.scal)
-    Scale(xscales)
+end 
+    
+function scale(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    par = Jchemo.recovkw(ParScale, kwargs).par
+    @assert @in(par.scal, [:none, :std, :prt, :mad]) "Wrong value for argument 'scal'."
+    if par.scal == :none
+        v = ones(Q, nco(X))
+    elseif par.scal == :std
+        v = colstd(X, weights)
+    elseif par.scal == :prt
+        v = colprt(X, weights)
+    elseif par.scal == :mad
+        v = colmad(X, weights)
+    end
+    Scale(v, par)
 end
 
 """ 
@@ -123,7 +145,7 @@ function transf(object::Scale, X)
 end
 
 function transf!(object::Scale, X::Matrix{Q}) where Q <: Float
-    fscale!(X, object.xscales)
+    fscale!(X, object.scales)
 end
 
 """
@@ -133,6 +155,8 @@ end
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
+* `centr` : Symbol defining the X centering. Possible values are: `:none` (no centering), 
+    and `:std` (uncorrected STD; default). 
 * `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD).
 
@@ -174,10 +198,11 @@ function cscale(X; kwargs...)
 end
 
 function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    par = Jchemo.recovkw(ParScale, kwargs).par 
-    xmeans = colmean(X, weights)
-    xscales = colscal(X, weights, par.scal)
-    Cscale(xmeans, xscales)
+    par = Jchemo.recovkw(ParCscale, kwargs).par 
+    println(par)
+    centers = center(X, weights; centr = par.centr).centers
+    scales = scale(X, weights; scal = par.scal).scales
+    Cscale(centers, scales, par)
 end
 
 """ 
@@ -194,6 +219,6 @@ function transf(object::Cscale, X)
 end
 
 function transf!(object::Cscale, X::Matrix{Q}) where Q <: Float
-    fcscale!(X, object.xmeans, object.xscales)
+    fcscale!(X, object.centers, object.scales)
 end
 

@@ -61,7 +61,7 @@ function manova(Y::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame;
     DtD = D' * D   
     println(22)   
     L = res.mat.L
-    Yc = fcenter(Y, res.xmeans)
+    Yc = fcenter(Y, res.xcenters)
     RtR = Yc' * Yc - B' * DtD * B 
     if lb > 0
         RtR .+= lb * I(nco(Y))

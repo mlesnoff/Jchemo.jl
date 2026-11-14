@@ -80,12 +80,12 @@ function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     p = nco(X)
     nlvstah = 500
     V = Q.(rand(0:1, p, nlvstah))
-    d = outstah(X, V; scal = par.scal).d
+    d = outstah(X, V; scal = par.scalx).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
-    d .= outeucl(X; scal = par.scal).d
+    d .= outeucl(X; scal = par.scalx).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
     w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10
     fitm = pcasvd(X, pweight(w); kwargs...)
-    Pca(fitm.T, fitm.V, fitm.sv, fitm.xmeans, fitm.xscales, fitm.weights, par)
+    Pca(fitm.T, fitm.V, fitm.sv, fitm.xcenters, fitm.xscales, fitm.weights, par)
 end

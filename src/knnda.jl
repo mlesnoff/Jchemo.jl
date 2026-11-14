@@ -77,8 +77,8 @@ function knnda(X, y::Vector{String}; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     taby = tab(y)    
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
+    xscales = colscal(X, par.scalx)
+    if par.scalx != :none
         X = fscale(X, xscales)
     end
     Knnda(X, y, xscales, taby.n, taby.lev, par)
@@ -100,7 +100,7 @@ function predict(object::Knnda, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal != :none
+    if object.par.scalx != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)
