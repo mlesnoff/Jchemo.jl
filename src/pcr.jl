@@ -10,7 +10,7 @@ Principal component regression (PCR) with a SVD factorization.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 # Examples
 ```julia
@@ -80,7 +80,7 @@ function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     par = recovkw(ParPca, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)
-    yscales = ones(Q, q)  # built only for consistency with coef::Plsr
+    yscales = colscal(Y, weights, par.scaly)  # built only for consistency with coef::Plsr
     fitm = pcasvd!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
     # Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 

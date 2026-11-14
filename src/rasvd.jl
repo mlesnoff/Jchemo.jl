@@ -11,9 +11,9 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 See e.g., Bougeard et al. 2011a,b and Legendre & Legendre 2012. Let Y.hat be the fitted values of the regression 

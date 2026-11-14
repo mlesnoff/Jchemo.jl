@@ -5,10 +5,14 @@
 - Breaking changes 
     - Functions implementing kernel regressions and discrimination:
         symbols in argument 'kern' has changed (see the help pages).
+    - Major internal changes. New things are:
+        - Argument 'scal' only considers X variables. The scaling of Y variables
+            (for the cases where it is justified) uses the new argument 'scaly'.
+        - For multiblock methods, 'scal' allows different scaling between blocks.  
+    - Functions implementing kernel regressions and discrimination:
+        symbols in argument 'kern' has changed (see the help pages).
 
 - Modifications
-    
-    - Function **blockscal**: Now allow different column centering and scaling betwwen blocks.
     - Functions **mwplsr**, **mwplsqda**: Internal changes, more compact outputs.
     - Code cleaning.
 

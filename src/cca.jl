@@ -11,9 +11,9 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 

@@ -14,7 +14,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling of each block. Possible values are: `:none`, `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
+    `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (latent variables LVs) are not normed to 1.
@@ -96,7 +96,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     # Y centering and scaling
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     # Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)
     V  = similar(W)

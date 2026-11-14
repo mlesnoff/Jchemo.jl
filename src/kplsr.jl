@@ -12,7 +12,9 @@ Keyword arguments:
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 This algorithm becomes slow for n > 1000. Use function `dkplsr` instead.
 
@@ -100,9 +102,12 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     ymeans = colmean(Y, weights)  
     fcenter!(Y, ymeans)
     xscales = colscal(X, weights, par.scal)
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
         fscale!(X, xscales)
+    end
+    if par.scal != :none
+        fscale!(Y, yscales)
     end
     # End    
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))

@@ -22,7 +22,7 @@ Keyword arguments:
     distance-based decreasing weight function.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
 * `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
+    `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
     the computation of the distances and local weights), and (b) the X scaling is also done within each 
     neighborhood (local level) for the weighted PLSR.
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.

@@ -518,8 +518,8 @@ struct Rr{Q <: Float}
     TtY::Matrix{Q}
     sv::Vector{Q}
     xmeans::Vector{Q}
-    xscales::Vector{Q}
     ymeans::Vector{Q}
+    xscales::Vector{Q}
     weights::ProbabilityWeights{Q}
     par::ParRr
 end

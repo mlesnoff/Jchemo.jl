@@ -13,7 +13,7 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 This function has the same principle as function `knnr` except that a discrimination replaces the regression. A weighted vote 
 is done over the neighborhood, and the prediction corresponds to the most frequent class.

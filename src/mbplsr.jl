@@ -13,7 +13,7 @@ Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling of each block (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
@@ -152,7 +152,7 @@ function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     # Y centering and scaling
     ymeans = colmean(Y, weights)
     fcenter!(Y, ymeans)
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     # End
     fitm = plskern(X, Y, weights; nlv, scal = :none)
     Mbplsr(fitm_bl, fitm, ymeans, yscales, weights, par)

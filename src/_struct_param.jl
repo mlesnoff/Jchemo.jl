@@ -157,7 +157,8 @@ end
 
 Base.@kwdef mutable struct ParCovsel
     nlv::Int = 1    
-    scal::Symbol = :none
+    scal::Symbol = :none  
+    scaly::Symbol = :none
 end 
 
 # Multiblock
@@ -219,21 +220,24 @@ end
 
 Base.@kwdef mutable struct ParPlsr    # all except plswold
     nlv::Int = 1                    
-    scal::Symbol = :none 
+    scal::Symbol = :none  
+    scaly::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPlswold{Q <: Float}    
     nlv::Int = 1     
     tol::Q = 1e-8
     maxit::Int = 200  
-    scal::Symbol = :none 
+    scal::Symbol = :none  
+    scaly::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParCglsr
     nlv::Int = 1 
     gs::Bool = true       
     filt::Bool = true              
-    scal::Symbol = :none 
+    scal::Symbol = :none  
+    scaly::Symbol = :none 
 end  
 
 Base.@kwdef mutable struct ParPcr
@@ -246,13 +250,15 @@ Base.@kwdef mutable struct ParRrr{Q <: Float}
     tau::Q = 1e-8       
     tol::Q = 1e-8  
     maxit::Int = 200     
-    scal::Symbol = :none                   
+    scal::Symbol = :none  
+    scaly::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParPlsrout{Q <: Float}
     nlv::Int = 1 
     prm::Q = .3         
-    scal::Symbol = :none 
+    scal::Symbol = :none  
+    scaly::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParSplsr{Q <: Float}
@@ -261,7 +267,8 @@ Base.@kwdef mutable struct ParSplsr{Q <: Float}
     nvar::Union{Int, Vector{Int}} = 1
     tol::Q = 1e-8 # used when Y (n, q) (snipals)
     maxit::Int = 200              # used when Y (n, q) (snipals)
-    scal::Symbol = :none                   
+    scal::Symbol = :none  
+    scaly::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParSpcr  # same ParSpca
@@ -280,12 +287,14 @@ end
 Base.@kwdef mutable struct ParPlsravg
     algo::Symbol = :unif                   
     nlv::AbstractVector{Int} = 1:1                    
-    scal::Symbol = :none 
+    scal::Symbol = :none  
+    scaly::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPlsravgunif
     nlv::AbstractVector{Int} = 1:1                    
-    scal::Symbol = :none 
+    scal::Symbol = :none  
+    scaly::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParKplsr{Q <: Float} 
@@ -296,7 +305,8 @@ Base.@kwdef mutable struct ParKplsr{Q <: Float}
     degree::Int = 1 
     tol::Q = 1e-8   
     maxit::Int = 200            
-    scal::Symbol = :none                   
+    scal::Symbol = :none  
+    scaly::Symbol = :none                   
 end 
 
 # Multiblock

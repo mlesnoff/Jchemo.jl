@@ -13,7 +13,7 @@ Keyword arguments:
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 Kernel types: 
 * :rbf -- radial basis function: exp(-gamma * ||x - y||^2)

@@ -11,7 +11,9 @@ Keyword arguments:
     vectors is done.
 * `filt` : Boolean. If `true`, CG filter factors are computed (output `F`). Default = `false`.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the part of the code computing the 
 re-orthogonalization (Hansen 1998) and filter factors (Vogel 1987, Hansen 1998) is a transcription (with few 
@@ -85,9 +87,12 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     fcenter!(X, xmeans)
     fcenter!(y, ymeans)    
     xscales = colscal(X, par.scal)
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
         fscale!(X, xscales)
+    end
+    if par.scal != :none
+        fscale!(Y, yscales)
     end
     # Pre-allocation and initialization
     B = similar(X, p, nlv)

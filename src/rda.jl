@@ -14,7 +14,7 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `simpl` : Boolean. See function `dmnorm`. 
 * `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 Let us note W the (corrected) pooled within-class covariance matrix and Wi the (corrected) within-class 
 covariance matrix of class i. The regularization is done by the two following successive steps (for each class i):

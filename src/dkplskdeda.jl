@@ -16,7 +16,7 @@ Keyword arguments:
 * Keyword arguments of function `dmkern` (bandwidth 
     definition) can also be specified here.
 * `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 Same as function `plskdeda` (PLS-KDEDA) except that a direct kernel PLSR (function `dkplsr`), instead of a PLSR 
 (function `plskern`), is run on the Y-dummy table. 

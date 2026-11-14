@@ -12,7 +12,9 @@ Keyword arguments:
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
     
@@ -50,9 +52,12 @@ function plswold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)    
     xscales = colscal(X, weights, par.scal)
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
         fscale!(X, xscales)
+    end
+    if par.scal != :none
+        fscale!(Y, yscales)
     end
     # Row metric
     sqrtw = sqrt.(weights.values)

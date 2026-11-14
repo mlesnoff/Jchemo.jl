@@ -15,7 +15,7 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 Same as function `plsqda` (PLS-QDA) except that a direct kernel PLSR (function `dkplsr`), instead of a PLSR 
 (function `plskern`), is run on the Y-dummy table. 

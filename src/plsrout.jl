@@ -11,7 +11,9 @@ Keyword arguments:
 * `nlv` : Nb. of latent variables (LVs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD). 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD). 
 
 Robust PLSR combining outlyingness measures and weighted PLSR (WPLSR). This is the same principle as function 
 `pcaout` (see the help page) but the final step is a weighted PLSR instead of a weighted PCA.  

@@ -10,8 +10,10 @@ Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
-    
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+
 About the row-weighting in PLS algorithms (`weights`): see in particular Schaal et al. 2002, Siccard & Sabatier 
 2006, Kim et al. 2011, and Lesnoff et al. 2020. 
 
@@ -110,9 +112,12 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     fcenter!(X, xmeans)
     fcenter!(Y, ymeans)
     xscales = colscal(X, weights, par.scal)
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     if par.scal != :none
         fscale!(X, xscales)
+    end
+    if par.scal != :none
+        fscale!(Y, yscales)
     end
     # XtY 
     fweightr!(Y, weights.values)

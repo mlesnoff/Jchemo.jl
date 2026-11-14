@@ -14,7 +14,7 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 Same as function `plslda` (PLS-LDA) except that a kernel PLSR (function `kplsr`), instead of a PLSR (function `plskern`), 
 is run on the Y-dummy table. 

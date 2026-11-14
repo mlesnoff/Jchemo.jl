@@ -11,7 +11,7 @@ Keyword arguments:
 * `n_neighbors` : Nb. approximate neighbors used to construct the initial high-dimensional graph.
 * `min_dist` : Minimum distance between points in low-dimensional space.
 * `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
     
 The function fits a UMAP dimension reduction using package `UMAP.jl'.
 

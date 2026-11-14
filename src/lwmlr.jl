@@ -14,7 +14,7 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
 * `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
-    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (pareto)
+    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto)
     and `:mad` (MAD).
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.

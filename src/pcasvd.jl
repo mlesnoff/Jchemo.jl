@@ -9,7 +9,7 @@ PCA by SVD factorization.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
 The function minimizes ||X - T * V'||^2  in metric D, by computing a SVD factorization of sqrt(D) * X:

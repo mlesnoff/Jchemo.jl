@@ -16,7 +16,9 @@ Keyword arguments:
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). 
 See function `spca` for details.
@@ -96,7 +98,7 @@ function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwarg
     par = recovkw(ParSpca{Q}, kwargs).par
     q = nco(Y)
     ymeans = colmean(Y, weights)
-    yscales = ones(Q, q) 
+    yscales = colscal(Y, weights, par.scaly) 
     fitm = spca!(X, weights; kwargs...)
     par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'

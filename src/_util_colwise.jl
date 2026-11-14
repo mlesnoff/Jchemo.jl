@@ -424,7 +424,7 @@ end
     def_fcolscal(scal::Symbol = :std)
 Define the function of column scaling.
 * `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 ```
 """
 function def_fcolscal(scal::Symbol = :std)
@@ -441,7 +441,7 @@ end
     colscal(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}, scal::Symbol)  where Q <: Float
 Compute the scaling vector for a matrix.
 * `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 ```
 """
 function colscal(X::AbstractMatrix{Q}, scal::Symbol)  where Q <: Float

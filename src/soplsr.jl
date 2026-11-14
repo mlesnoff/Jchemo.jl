@@ -14,7 +14,7 @@ Keyword arguments:
     or a vector of integers (nb. LVs for each block).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling of each block. Possible values are: `:none`, `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
+    `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 # References
 Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
@@ -107,7 +107,7 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     # End
     transf!(fitm_bl, Xbl)
     # Scaling of Y
-    yscales = ones(Q, q)
+    yscales = colscal(Y, weights, par.scaly)
     # End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)

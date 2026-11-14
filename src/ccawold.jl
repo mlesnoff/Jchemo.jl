@@ -13,9 +13,9 @@ Keyword arguments:
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 

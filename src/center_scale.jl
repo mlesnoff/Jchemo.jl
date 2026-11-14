@@ -66,7 +66,7 @@ Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `scal` : Symbol defining the X scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 # Examples
 ```julia 
@@ -134,7 +134,7 @@ Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 # Examples
 ```julia

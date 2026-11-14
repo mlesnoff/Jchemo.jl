@@ -14,7 +14,7 @@ Keyword arguments:
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (pareto) and `:mad` (MAD).
+    `:prt` (Pareto) and `:mad` (MAD).
 
 Same as function `rrda` (RR-DA) except that a kernel RR (function `krr`), instead of a RR (function `rr`), 
 is run on the Y-dummy table. 

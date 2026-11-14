@@ -9,7 +9,7 @@ Spherical PCA.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
 
 Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). Matrix `X` is centered by the spatial 
 median computed by function`Jchemo.colmedspa`.
