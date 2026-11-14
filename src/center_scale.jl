@@ -200,8 +200,8 @@ end
 function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
     par = Jchemo.recovkw(ParCscale, kwargs).par 
     println(par)
-    centers = center(X, weights; centr = par.centr).centers
-    scales = scale(X, weights; scal = par.scal).scales
+    centers = center(X, weights; kwargs...).centers
+    scales = scale(X, weights; kwargs...).scales
     Cscale(centers, scales, par)
 end
 
