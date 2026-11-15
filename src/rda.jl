@@ -1,7 +1,7 @@
 """
     rda(; kwargs...)
     rda(X, y; kwargs...)
-    rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Regularized discriminant analysis (RDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -93,7 +93,7 @@ function rda(X, y; kwargs...)
     rda(X, y, weights; kwargs...)
 end
 
-function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
+function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}  
     par = recovkw(ParRda{Q}, kwargs).par
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"

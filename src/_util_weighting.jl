@@ -1,8 +1,8 @@
 ###### Building weights
 
 """ 
-    pweight(x::Vector{Q}) where Q <: Real
-    pweight(T::DataType, x::Vector{Q}) where {Q <: Real}
+    pweight(x::Vector{Q}) where Q<:Real
+    pweight(T::DataType, x::Vector{Q}) where {Q<:Real}
 Wrapper of function `StatsBase.pweights` returning an object of type `StatsBase.ProbabilityWeights`.
 
 The wrapper forces the probability weights to sum to 1:
@@ -20,19 +20,19 @@ sum(weights.values)
 weights.sum
 ```
 """
-pweight(x::Vector{Q}) where Q <: Real = StatsBase.pweights(x / sum(x))
+pweight(x::Vector{Q}) where Q<:Real = StatsBase.pweights(x / sum(x))
 #function pweight(x)
 #    tot = sum(x) 
 #    ProbabilityWeights(x / tot, one(eltype(x)))
 #end
 
-pweight(T::DataType, x::Vector{Q}) where Q <: Real = pweight(T.(x))
+pweight(T::DataType, x::Vector{Q}) where Q<:Real = pweight(T.(x))
 
 """ 
     pweightcla(y::Vector{String}; 
-        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
+        prior::Union{Symbol, Vector{Q}} = :prop) where {Q<:Float}
     pweightcla(T::DataType, y::Vector{String}; 
-        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
+        prior::Union{Symbol, Vector{Q}} = :prop) where {Q<:Float}
 Compute observation weights for a categorical variable, given specified sub-total weights for the classes.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `Q` : A data type (e.g., `Float32`).
@@ -59,10 +59,10 @@ res = aggsumv(weights.values, y)
 ```
 """
 pweightcla(y::Vector{String}; 
-    prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float = pweightcla(Float64, y; prior) 
+    prior::Union{Symbol, Vector{Q}} = :prop) where {Q<:Float} = pweightcla(Float64, y; prior) 
 
 function pweightcla(T::DataType, y::Vector{String}; 
-        prior::Union{Symbol, Vector{Q}} = :prop) where Q <: Float
+        prior::Union{Symbol, Vector{Q}} = :prop) where {Q<:Float}
     n = length(y)
     res = tab(y)
     lev = res.lev
@@ -86,8 +86,8 @@ end
 ##### Weighting rows or columns
 
 """
-    fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
-    fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float
+    fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where {Q<:Float}
+    fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where {Q<:Float}
 Weight each row of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (n).
@@ -105,13 +105,13 @@ fweightr!(X, v)
 X
 ```
 """ 
-fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float = v .* X
+fweightr(X::AbstMatVec{Q}, v::Vector{Q}) where {Q<:Float} = v .* X
 
-fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where Q <: Float = X .= v .* X
+fweightr!(X::AbstMatVec{Q}, v::Vector{Q}) where {Q<:Float} = X .= v .* X
 
 """
-    fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float
-    fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float
+    fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where {Q<:Float}
+    fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where {Q<:Float}
 Weight each column of a matrix.
 * `X` : Matrix (n, p) or vector (n).
 * `v` : A weighting vector (p).
@@ -129,8 +129,8 @@ fweightc!(X, v)
 X
 ```
 """ 
-fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float = v' .* X
+fweightc(X::AbstractMatrix{Q}, v::Vector{Q}) where {Q<:Float} = v' .* X
 
-fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where Q <: Float = X .= v' .* X
+fweightc!(X::AbstractMatrix{Q}, v::Vector{Q}) where {Q<:Float} = X .= v' .* X
 
 

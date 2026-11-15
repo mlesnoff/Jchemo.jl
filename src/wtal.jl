@@ -1,5 +1,5 @@
 """ 
-    wtal(d::Vector{Q}; a::Q = 1.) where Q <: Float
+    wtal(d::Vector{Q}; a::Q = 1.) where {Q<:Float}
 Compute binary weights from distances using the 'talworth' distribution.
 * `d` : A vector (n) of distances.
 Keyword arguments:
@@ -15,7 +15,7 @@ d = rand(10)
 wtal(d; a = .8)
 ```
 """ 
-function wtal(d::Vector{Q}; a::Q = 1.) where Q <: Float
+function wtal(d::Vector{Q}; a::Q = 1.) where {Q<:Float}
     n = length(d)
     d = abs.(d)
     w = zeros(Q, n)

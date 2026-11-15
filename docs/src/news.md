@@ -3,10 +3,10 @@
 ## *Version 0.12.0 dev*
 
 - Breaking changes 
-    - Major internal changes for column centering scaling. Among new things, there are:
-        - Argument 'scal' has be re,amed to 'scal' and only considers X variables. The scaling 
-            of Y variables (for the cases where it is justified) uses the new argument 'scaly'.
-        - For multiblock methods, 'scal' allows different scaling between blocks.  
+    - Major internal changes for column centering and scaling. 
+        Among new things, there are:
+        - For multiblock methods, allows different scaling between blocks.  
+        - Etc. In current development.
     - Functions implementing kernel regressions and discrimination: symbol values in argument
         'kern' has changed (see the help pages).
     - Functions **mwplsr**, **mwplsqda**: Internal changes, more compact outputs.

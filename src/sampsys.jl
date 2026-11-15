@@ -1,5 +1,5 @@
 """
-    sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where Q <: Float
+    sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where {Q<:Float}
 Build training vs. test sets by systematic sampling over a quantitative variable.  
 * `y` : Quantitative variable (n) to sample.
 * `k` : Nb. test observations to sample. Must be >= 2.
@@ -23,7 +23,7 @@ res = sampsys(y, 3)
 sort(y[res.test])
 ```
 """ 
-function sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where Q <: Float
+function sampsys(y::Union{Vector{Q}, Vector{Union{Missing, Q}}}, k::Int) where {Q<:Float}
     n = length(y)
     nint = k - 1                # nb. intervals
     alpha = (n - 1) / nint  # step

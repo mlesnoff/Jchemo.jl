@@ -1,8 +1,8 @@
 """
     cpca(; kwargs...)
     cpca(Xbl; kwargs...)
-    cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Consensus principal components analysis (CPCA, a.k.a MBPCA) by Nipals.
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock`.  
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -148,7 +148,7 @@ function cpca(Xbl; kwargs...)
     cpca(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     nbl = length(Xbl)  
     vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -157,7 +157,7 @@ function cpca(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...)
     cpca!(vXbl, weights; kwargs...)
 end
 
-function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParCpca{Q}, kwargs).par 
     n = nro(Xbl[1])
     nbl = length(Xbl)

@@ -1,7 +1,7 @@
 """
     splsqda(; kwargs...)
     splsqda(X, y; kwargs...)
-    splsqda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    splsqda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Sparse PLS-QDA (with continuum).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -36,7 +36,7 @@ function splsqda(X, y; kwargs...)
     splsqda(X, y, weights; kwargs...)
 end
 
-function splsqda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function splsqda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParSplsqda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)

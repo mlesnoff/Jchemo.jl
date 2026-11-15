@@ -2,11 +2,11 @@
     plotlv(T::AbstractMatrix{Q}; 
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
-        title::String = "", kwargs...) where Q <: Float
+        title::String = "", kwargs...) where {Q<:Float}
     plotlv(T::AbstractMatrix{Q}, group; 
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
-        title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
+        title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where {Q<:Float}
 Matrix of 2-D plots of successive latent variables (PCA, PLS, etc.).
 * `T` : A matrix of (PCA, PLS, ec.) latent variables (LVs) to plot (n, A).
 * `group` : Categorical variable defining groups (n). 
@@ -75,7 +75,7 @@ plotlv(1000 * T[:, 1:6], group; shape = (2, 3), color, zeros = true, xlabel = "P
 function plotlv(T::AbstractMatrix{Q}; 
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
-        title::String = "", kwargs...) where Q <: Float
+        title::String = "", kwargs...) where {Q<:Float}
     n, p = shape
     pmax = nco(T)
     f = Figure(; size)
@@ -109,7 +109,7 @@ end
 function plotlv(T::AbstractMatrix{Q}, group; 
         size::Tuple{Int, Int} = (700, 350), shape::Tuple{Int, Int}, 
         start::Int = 1, color = nothing, zeros::Bool = false, xlabel::String = "", ylabel::String = "", 
-        title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
+        title::String = "", leg::Bool = true, leg_title::String = "Group", kwargs...) where {Q<:Float}
     lev = sort(unique(group))
     nlev = length(lev)
     lab = string.(lev)

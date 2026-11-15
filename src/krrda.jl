@@ -1,7 +1,7 @@
 """
     krrda(; kwargs...)
     krrda(X, y; kwargs...)
-    krrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    krrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Discrimination by kernel ridge regression (KRR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -79,7 +79,7 @@ function krrda(X, y; kwargs...)
     krrda(X, y, weights; kwargs...)
 end
 
-function krrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float  
+function krrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}  
     par = recovkw(ParKrrda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n

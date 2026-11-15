@@ -2,17 +2,17 @@
 
 # Preprocessing
 
-struct Center{Q <: Float} 
+struct Center{Q<:Float} 
     centers::Vector{Q}
     par::ParCenter
 end
 
-struct Scale{Q <: Float} 
+struct Scale{Q<:Float} 
     scales::Vector{Q}
     par::ParScale
 end
 
-struct Cscale{Q <: Float} 
+struct Cscale{Q<:Float} 
     centers::Vector{Q}
     scales::Vector{Q}
     par::ParCscale
@@ -38,7 +38,7 @@ struct Detrendarpls
     par::ParDetrendarpls
 end
 
-struct Emsc{Q <: Float} 
+struct Emsc{Q<:Float} 
     xref::Vector{Q}
     Xr::Matrix{Q}
     par::ParEmsc
@@ -84,7 +84,7 @@ end
 
 ############---- Dimension reduction
 
-struct Pca{Q <: Float}
+struct Pca{Q<:Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
@@ -94,7 +94,7 @@ struct Pca{Q <: Float}
     par::Union{ParPca, ParPcapp, ParPcaout}
 end
 
-struct Pcanipals{Q <: Float}
+struct Pcanipals{Q<:Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
@@ -105,7 +105,7 @@ struct Pcanipals{Q <: Float}
     par::ParPcanipals
 end
 
-struct Spca{Q <: Float}
+struct Spca{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}
     sv::Vector{Q}
@@ -119,7 +119,7 @@ struct Spca{Q <: Float}
     par::ParSpca
 end
 
-struct Kpca{Q <: Float}
+struct Kpca{Q<:Float}
     X::Matrix{Q}
     Kt::Adjoint{Q}
     T::Matrix{Q}
@@ -134,7 +134,7 @@ struct Kpca{Q <: Float}
     par::ParKpca
 end
 
-struct Covsel{Q <: Float}
+struct Covsel{Q<:Float}
     sel::Vector{Int}
     selc::Vector{Q}
     C::Matrix{Q}
@@ -150,7 +150,7 @@ struct Covsel{Q <: Float}
     par::ParCovsel
 end
 
-struct Rp{Q <: Float}
+struct Rp{Q<:Float}
     T::Matrix{Q}
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}
     xcenters::Vector{Q}
@@ -158,7 +158,7 @@ struct Rp{Q <: Float}
     par::ParRp
 end
 
-struct Umap{Q <: Float} 
+struct Umap{Q<:Float} 
     fitm::UMAP.UMAPResult    
     T::Matrix{Q}
     xscales::Vector{Q}
@@ -166,7 +166,7 @@ struct Umap{Q <: Float}
     par::ParUmap
 end 
     
-struct Fda{Q <: Float}
+struct Fda{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}
     Tcenters::Matrix{Q}
@@ -184,7 +184,7 @@ end
 
 # Multiblock
 
-struct Blockscal{Q <: Float}
+struct Blockscal{Q<:Float}
     xcenters::Vector{Vector{Q}}
     xscales::Vector{Vector{Q}}
     bscales::Vector{Q}
@@ -195,7 +195,7 @@ struct Mbconcat
     res::Nothing
 end
 
-struct Cca{Q <: Float}
+struct Cca{Q<:Float}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Wx::Matrix{Q}
@@ -210,7 +210,7 @@ struct Cca{Q <: Float}
     par::ParCca
 end
 
-struct Ccawold{Q <: Float}
+struct Ccawold{Q<:Float}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Vx::Matrix{Q}
@@ -231,7 +231,7 @@ struct Ccawold{Q <: Float}
     par::ParCcawold
 end
 
-struct Plscan{Q <: Float}
+struct Plscan{Q<:Float}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Vx::Matrix{Q}
@@ -252,7 +252,7 @@ struct Plscan{Q <: Float}
     par::ParPls2bl
 end
 
-struct Plstuck{Q <: Float}
+struct Plstuck{Q<:Float}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Wx::Matrix{Q}
@@ -269,7 +269,7 @@ struct Plstuck{Q <: Float}
     par::ParPls2bl
 end
 
-struct Rasvd{Q <: Float}
+struct Rasvd{Q<:Float}
     Tx::Matrix{Q}
     Ty::Matrix{Q}
     Bx::Matrix{Q}
@@ -284,7 +284,7 @@ struct Rasvd{Q <: Float}
     par::ParRasvd
 end
 
-struct Cpca{Q <: Float}
+struct Cpca{Q<:Float}
     T::Matrix{Q}
     U::Matrix{Q}
     W::Matrix{Q}
@@ -299,7 +299,7 @@ struct Cpca{Q <: Float}
     par::ParCpca
 end
 
-struct Comdim{Q <: Float}
+struct Comdim{Q<:Float}
     T::Matrix{Q}
     U::Matrix{Q}
     W::Matrix{Q}
@@ -316,14 +316,14 @@ end
 
 ############---- Regression
 
-struct Mlr{Q <: Float}
+struct Mlr{Q<:Float}
     B::Matrix{Q}   
     int::Matrix{Q}
     weights::ProbabilityWeights{Q}
     par::ParMlr
 end
 
-struct Decompx{Q <: Float}
+struct Decompx{Q<:Float}
     fit::NamedTuple
     R::Matrix{Q}
     mat::NamedTuple
@@ -335,7 +335,7 @@ struct Decompx{Q <: Float}
     xcenters::Vector{Q} 
 end
 
-struct Plsr{Q <: Float}
+struct Plsr{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -350,7 +350,7 @@ struct Plsr{Q <: Float}
     par::ParPlsr
 end
 
-struct Plswold{Q <: Float}
+struct Plswold{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -366,7 +366,7 @@ struct Plswold{Q <: Float}
     par::Union{ParPlswold, ParRrr}
 end
 
-struct Cglsr{Q <: Float}
+struct Cglsr{Q<:Float}
     B::Matrix{Q}
     g::Vector{Q}
     xcenters::Vector{Q}
@@ -377,7 +377,7 @@ struct Cglsr{Q <: Float}
     par::ParCglsr
 end
 
-struct Pcr{Q <: Float}
+struct Pcr{Q<:Float}
     fitm::Pca
     C::Matrix{Q}
     ycenters::Vector{Q}
@@ -385,7 +385,7 @@ struct Pcr{Q <: Float}
     par::ParPca
 end
 
-struct Splsr{Q <: Float}
+struct Splsr{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -403,7 +403,7 @@ struct Splsr{Q <: Float}
     par::ParSplsr
 end
 
-struct Spcr{Q <: Float}
+struct Spcr{Q<:Float}
     fitm::Spca
     C::Matrix{Q}
     ycenters::Vector{Q}
@@ -411,7 +411,7 @@ struct Spcr{Q <: Float}
     par::ParSpca
 end
 
-struct Mwplsr{Q <: Float}
+struct Mwplsr{Q<:Float}
     fitm_emb::Vector{Plsr}
     d_emb::Vector{Q}
     w_emb::Vector{Q}
@@ -431,7 +431,7 @@ struct Plsravg
     par::ParPlsravg
 end
 
-struct Kplsr{Q <: Float}
+struct Kplsr{Q<:Float}
     X::Matrix{Q}
     Kt::Adjoint{Q}
     T::Matrix{Q}
@@ -450,7 +450,7 @@ struct Kplsr{Q <: Float}
     par::ParKplsr
 end
 
-struct Dkplsr{Q <: Float}
+struct Dkplsr{Q<:Float}
     fitm::Plsr
     X::Matrix{Q}
     K::Matrix{Q}
@@ -464,7 +464,7 @@ end
 
 # Multiblock
 
-struct Mbplsr{Q <: Float}
+struct Mbplsr{Q<:Float}
     fitm_bl::Blockscal
     fitm::Plsr
     ycenters::Vector{Q}
@@ -473,7 +473,7 @@ struct Mbplsr{Q <: Float}
     par::ParMbplsr
 end
 
-struct Mbplswest{Q <: Float}     
+struct Mbplswest{Q<:Float}     
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -492,7 +492,7 @@ struct Mbplswest{Q <: Float}
     par::ParMbplsr
 end
 
-struct Rosaplsr{Q <: Float}
+struct Rosaplsr{Q<:Float}
     fitm_bl::Blockscal
     T::Matrix{Q}
     V::Matrix{Q}
@@ -507,7 +507,7 @@ struct Rosaplsr{Q <: Float}
     par::ParRosaplsr
 end
 
-struct Soplsr{Q <: Float}
+struct Soplsr{Q<:Float}
     fitm_bl::Blockscal    
     fitm::Vector{Plsr}
     T::Matrix{Q}
@@ -519,7 +519,7 @@ end
 
 # End
 
-struct Rr{Q <: Float}
+struct Rr{Q<:Float}
     V::Adjoint{Q}
     TtY::Matrix{Q}
     sv::Vector{Q}
@@ -531,14 +531,14 @@ struct Rr{Q <: Float}
     par::ParRr
 end
 
-struct Rrchol{Q <: Float}
+struct Rrchol{Q<:Float}
     B::Matrix{Q}   
     int::Matrix{Q}
     weights::ProbabilityWeights{Q}
     par::ParRr
 end
 
-struct Krr{Q <: Float}
+struct Krr{Q<:Float}
     X::Matrix{Q}
     K::Matrix{Q}
     U::Matrix{Q}
@@ -557,27 +557,27 @@ end
 
 # Local
 
-struct Loessr{Q <: Float}
+struct Loessr{Q<:Float}
     fitm::Loess.LoessModel
     xscales::Vector{Q}
     par::ParLoessr
 end
 
-struct Knnr{Q <: Float}
+struct Knnr{Q<:Float}
     X::Matrix{Q}
     Y::Matrix{Q}
     xscales::Vector{Q}
     par::ParKnn
 end
 
-struct Lwmlr{Q <: Float}
+struct Lwmlr{Q<:Float}
     X::Matrix{Q}
     Y::Matrix{Q}
     xscales::Vector{Q}
     par::ParLwmlr
 end
 
-struct Lwplsr{Q <: Float}
+struct Lwplsr{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     Y::Matrix{Q}
@@ -585,7 +585,7 @@ struct Lwplsr{Q <: Float}
     par::ParLwplsr
 end
 
-struct Lwplsravg{Q <: Float}
+struct Lwplsravg{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     Y::Matrix{Q}
@@ -595,13 +595,13 @@ end
 
 # Svm, Trees
 
-struct Svmr{Q <: Float64}
+struct Svmr{Q<:Float64}
     fitm::LIBSVM.SVM
     xscales::Vector{Q}
     par::ParSvm
 end
 
-struct Treer{Q <: Float}
+struct Treer{Q<:Float}
     fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector{Q}
     featur::Vector{Int}
@@ -610,7 +610,7 @@ end
 
 ############---- Discrimination
 
-struct Mlrda{Q <: Float}
+struct Mlrda{Q<:Float}
     fitm_emb::Mlr 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -618,7 +618,7 @@ struct Mlrda{Q <: Float}
     par::ParMlrda
 end
 
-struct Rrda{Q <: Float}
+struct Rrda{Q<:Float}
     fitm_emb::Union{Rr, Krr}  
     ni::Vector{Int}
     priors::Vector{Q}
@@ -626,7 +626,7 @@ struct Rrda{Q <: Float}
     par::Union{ParRrda, ParKrrda}
 end
 
-struct Dmnorm{Q <: Float}
+struct Dmnorm{Q<:Float}
     mu::Vector{Q}
     Uinv::LinearAlgebra.AbstractTriangular{Q} 
     detS::Q
@@ -634,7 +634,7 @@ struct Dmnorm{Q <: Float}
     par::ParDmnorm
 end
 
-struct Dmnormlog{Q <: Float}
+struct Dmnormlog{Q<:Float}
     mu::Vector{Q}
     Uinv::LinearAlgebra.AbstractTriangular{Q} 
     logdetS::Q
@@ -642,7 +642,7 @@ struct Dmnormlog{Q <: Float}
     par::ParDmnorm
 end
 
-struct Dmkern{Q <: Float}
+struct Dmkern{Q<:Float}
     X::Matrix{Q}
     H::Matrix{Q}
     Hinv::Matrix{Q}
@@ -650,7 +650,7 @@ struct Dmkern{Q <: Float}
     par::ParDmkern
 end
 
-struct Lda{Q <: Float}
+struct Lda{Q<:Float}
     fitm::Vector{Dmnorm}
     W::Matrix{Q}  
     ct::Matrix{Q}
@@ -661,7 +661,7 @@ struct Lda{Q <: Float}
     par::ParLda
 end
 
-struct Qda{Q <: Float}
+struct Qda{Q<:Float}
     fitm::Vector{Dmnorm}
     Wi::Vector{Matrix{Q}}  
     ct::Matrix{Q}
@@ -672,7 +672,7 @@ struct Qda{Q <: Float}
     par::ParQda
 end
 
-struct Kdeda{Q <: Float}
+struct Kdeda{Q<:Float}
     fitm::Vector{Dmkern}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -680,7 +680,7 @@ struct Kdeda{Q <: Float}
     par::ParKdeda
 end
 
-struct Rda{Q <: Float}
+struct Rda{Q<:Float}
     fitm::Vector{Dmnorm}
     Wi::Vector{Matrix{Q}}  
     ct::Matrix{Q}
@@ -692,7 +692,7 @@ struct Rda{Q <: Float}
     par::ParRda
 end
 
-struct Plsrda{Q <: Float}
+struct Plsrda{Q<:Float}
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr} 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -700,7 +700,7 @@ struct Plsrda{Q <: Float}
     par::Union{ParPlsda, ParSplsda, ParKplsda}
 end
 
-struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda  
+struct Plsprobda{Q<:Float}    # plslda, plsqda, plskdeda  
     fitm_emb::Union{Plsr, Splsr, Kplsr, Dkplsr}
     fitm_da::Union{Vector{Lda}, Vector{Qda}, Vector{Kdeda}}  
     ni::Vector{Int}
@@ -710,7 +710,7 @@ struct Plsprobda{Q <: Float}    # plslda, plsqda, plskdeda
         ParKplsda, ParKplsqda, ParKplskdeda}
 end
 
-struct Mwplsqda{Q <: Float}
+struct Mwplsqda{Q<:Float}
     fitm_emb::Vector{Plsprobda}
     d_emb::Vector{Q}
     w_emb::Vector{Q}
@@ -720,7 +720,7 @@ struct Mwplsqda{Q <: Float}
     centrw::Vector{Int}
 end
 
-struct Mbplsrda{Q <: Float}
+struct Mbplsrda{Q<:Float}
     fitm_emb::Mbplsr 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -728,7 +728,7 @@ struct Mbplsrda{Q <: Float}
     par::ParMbplsda
 end
 
-struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda  
+struct Mbplsprobda{Q<:Float}    # mbplslda, mbplsqda, mbplskdeda  
     fitm_emb::Mbplsr
     fitm_da::Union{Vector{Lda}, Vector{Qda}, Vector{Kdeda}}   
     ni::Vector{Int}
@@ -737,7 +737,7 @@ struct Mbplsprobda{Q <: Float}    # mbplslda, mbplsqda, mbplskdeda
     par::Union{ParMbplsda, ParMbplsqda, ParMbplskdeda}
 end
 
-struct Soplsrda{Q <: Float}
+struct Soplsrda{Q<:Float}
     fitm_emb::Soplsr 
     ni::Vector{Int}
     priors::Vector{Q}
@@ -745,7 +745,7 @@ struct Soplsrda{Q <: Float}
     par::ParSoplsda
 end
 
-struct Soplsprobda{Q <: Float}    # soplslda, soplsqda, soplskdeda  
+struct Soplsprobda{Q<:Float}    # soplslda, soplsqda, soplskdeda  
     fitm_emb::Soplsr
     fitm_da::Union{Lda, Qda, Kdeda}   
     ni::Vector{Int}
@@ -756,7 +756,7 @@ end
 
 # Local (from below, fitm not yet specified)
 
-struct Knnda{Q <: Float}
+struct Knnda{Q<:Float}
     X::Matrix{Q}
     y::Vector{String}
     xscales::Vector{Q}
@@ -765,7 +765,7 @@ struct Knnda{Q <: Float}
     par::ParKnn
 end
 
-struct Lwmlrda{Q <: Float}
+struct Lwmlrda{Q<:Float}
     X::Matrix{Q}
     y::Vector{String}
     xscales::Vector{Q}
@@ -774,7 +774,7 @@ struct Lwmlrda{Q <: Float}
     par::ParLwmlr
 end
 
-struct Lwplsrda{Q <: Float}
+struct Lwplsrda{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
@@ -785,7 +785,7 @@ struct Lwplsrda{Q <: Float}
     par::ParLwplsda
 end
 
-struct Lwplslda{Q <: Float}   
+struct Lwplslda{Q<:Float}   
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
@@ -796,7 +796,7 @@ struct Lwplslda{Q <: Float}
     par::ParLwplsda
 end
 
-struct Lwplsqda{Q <: Float}
+struct Lwplsqda{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
@@ -809,7 +809,7 @@ end
 
 # Svm, Trees
 
-struct Svmda{Q <: Float64}
+struct Svmda{Q<:Float64}
     fitm::LIBSVM.SVM
     xscales::Vector{Q}
     ni::Vector{Int}
@@ -818,7 +818,7 @@ struct Svmda{Q <: Float64}
     par::ParSvm
 end
 
-struct Treeda{Q <: Float}
+struct Treeda{Q<:Float}
     fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
     xscales::Vector{Q}
     featur::Vector{Int}
@@ -830,7 +830,7 @@ end
 
 # Occ
 
-struct Occstah{Q <: Float}
+struct Occstah{Q<:Float}
     d::DataFrame
     e_cdf::ECDF
     cutoff_d::Q
@@ -839,7 +839,7 @@ struct Occstah{Q <: Float}
     par::ParOccstah
 end
 
-struct Occsd{Q <: Float}
+struct Occsd{Q<:Float}
     d::DataFrame 
     e_cdf::ECDF
     cutoff_d::Q   
@@ -848,7 +848,7 @@ struct Occsd{Q <: Float}
     par::ParOcc
 end
 
-struct Occod{Q <: Float}
+struct Occod{Q<:Float}
     d::DataFrame
     e_cdf::ECDF
     cutoff_d::Q   
@@ -856,7 +856,7 @@ struct Occod{Q <: Float}
     par::ParOcc
 end
 
-struct Occsdod{Q <: Float}
+struct Occsdod{Q<:Float}
     d::DataFrame
     e_cdf::ECDF
     cutoff_d::Q
@@ -868,7 +868,7 @@ struct Occsdod{Q <: Float}
     par::ParOccsdod
 end
 
-struct Occdds{Q <: Float}
+struct Occdds{Q<:Float}
     d::DataFrame
     e_cdf::ECDF
     cutoff_d::Q
@@ -880,7 +880,7 @@ struct Occdds{Q <: Float}
     par::ParOccdds
 end
 
-struct Occknn{Q <: Float}
+struct Occknn{Q<:Float}
     d::DataFrame
     e_cdf::ECDF
     cutoff_d::Q
@@ -889,7 +889,7 @@ struct Occknn{Q <: Float}
     par::ParOccknn
 end
 
-struct Occlknn{Q <: Float}
+struct Occlknn{Q<:Float}
     d::DataFrame
     e_cdf::ECDF
     cutoff_d::Q
@@ -898,7 +898,7 @@ struct Occlknn{Q <: Float}
     par::ParOccknn
 end
 
-struct Occmwpca{Q <: Float}
+struct Occmwpca{Q<:Float}
     d::Matrix{Q}
     cutoff_d::Vector{Q}
     pwout::Vector{Q}
@@ -910,7 +910,7 @@ struct Occmwpca{Q <: Float}
     centrw::Vector{Int}
 end
 
-struct Occmwpls{Q <: Float}
+struct Occmwpls{Q<:Float}
     d::Matrix{Q}
     cutoff_d::Vector{Q}
     pwout::Vector{Q}

@@ -53,7 +53,7 @@ f
 ```
 """ 
 function plotsp(X, wl::AbstractVector{Q} = collect(1:nco(X)); size::Tuple{Int, Int} = (500, 300), 
-        nsamp::Int = nro(X), color = nothing, label = nothing, kwargs...) where Q <: Real
+        nsamp::Int = nro(X), color = nothing, label = nothing, kwargs...) where Q<:Real
     X = ensure_mat(X)
     n, p = Base.size(X)   # specification required (i not, Makie.size is used)
     s = StatsBase.sample(1:n, nsamp; replace = false)

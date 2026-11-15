@@ -1,5 +1,5 @@
 """
-    sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where Q <: Float
+    sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where {Q<:Float}
 Build training vs. test sets by WSP sampling.  
 * `X` : X-data (n, p).
 * `dmin` : Distance "dmin" (Santiago et al. 2012).
@@ -43,7 +43,7 @@ s = sampwsp(X, dmin)
 plotxy(X[s.test, 1], X[s.test, 2]).f
 ```
 """ 
-function sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where Q <: Float
+function sampwsp(X, dmin::Q; recod::Bool = false, maxit::Int = nro(X)) where {Q<:Float}
     X = ensure_mat(X)
     n, p = size(X)
     indX = collect(1:n)

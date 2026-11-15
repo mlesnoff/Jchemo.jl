@@ -2,7 +2,7 @@
     soplskdeda(; kwargs...)
     soplskdeda(Xbl, y; kwargs...)
     soplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
 KDEDA on SOPLS latent variables (SOPLS-KDEDA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -45,7 +45,7 @@ function soplskdeda(Xbl, y; kwargs...)
 end
 
 function soplskdeda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     par = recovkw(ParSoplskdeda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n

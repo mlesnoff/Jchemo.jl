@@ -3,13 +3,13 @@
         size::Tuple{Int, Int} = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
-        xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q <: Real
+        xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q<:Real
     plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbol}}; 
         size::Tuple{Int, Int} = (600, 350), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
         xlabel::String = "", ylabel::String = "", title::String = "", 
-        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Real
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q<:Real
 2-D scatter plot of x-y data
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -79,7 +79,7 @@ function plotxy(x, y;
         size::Tuple{Int, Int} = (500, 300), color = nothing, ellipse::Bool = false, 
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
-        xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q <: Real
+        xlabel::String = "", ylabel::String = "", title::String = "", kwargs...) where Q<:Real
     x = vec(x)
     y = vec(y)
     f = Figure(; size)
@@ -131,7 +131,7 @@ function plotxy(x, y, group::Union{Vector{<: Real}, Vector{String}, Vector{Symbo
         prob = .95, circle::Bool = false, bisect::Bool = false, zeros::Bool = false,
         xticks::Union{Nothing, AbstMatVec{Q}} = nothing, yticks::Union{Nothing, AbstMatVec{Q}} = nothing, 
         xlabel::String = "", ylabel::String = "", title::String = "", 
-        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Real
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q<:Real
     x = vec(x)
     y = vec(y)
     lev = sort(unique(group))

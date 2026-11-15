@@ -34,7 +34,7 @@ end
 
 """
     expand_tab2d(X::Matrix{Q}; levr::T = nothing, levc::T = nothing, 
-        namv::T = nothing) where {Q <: Signed, T <: Union{Nothing, Vector{String}}}
+        namv::T = nothing) where {Q<:Signed, T<:Union{Nothing, Vector{String}}}
 Expand a 2-D contingency table to a dataframe of two categorical variables.
 * `X` : 2-D contincency table (m, p).
 Keyword arguments:
@@ -61,7 +61,7 @@ tab(string.(res.fact1, "-", res.fact2))
 ```
 """
 function expand_tab2d(X::Matrix{Q}; levr::T = nothing, levc::T = nothing, 
-        namv::T = nothing) where {Q <: Signed, T <: Union{Nothing, Vector{String}}}
+        namv::T = nothing) where {Q<:Signed, T<:Union{Nothing, Vector{String}}}
     m, p = size(X)
     if isnothing(levr) ; levr = string.(collect(1:m)) ; end
     if isnothing(levc) ; levc = string.(collect(1:p)) ; end
@@ -128,7 +128,7 @@ end
 #### Recode a single variable
 
 """
-    recod_catbydict(x::Vector{Q}, dict::Dict{Q, Q}) where Q <: String
+    recod_catbydict(x::Vector{Q}, dict::Dict{Q, Q}) where Q<:String
 Recode a categorical variable by levels defined in a dictionnary.
 * `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `dict` : Dictionary giving the correpondances between the old and new (String) levels.
@@ -147,12 +147,12 @@ x = ["c" ; "c" ; "a" ; "a" ; "a" ; "e"]
 recod_catbydict(x, dict)
 ```
 """
-function recod_catbydict(x::Vector{Q}, dict::Dict{Q, Q}) where Q <: String
+function recod_catbydict(x::Vector{Q}, dict::Dict{Q, Q}) where Q<:String
     Q.(replace(x, dict...))
 end
 
 """
-    recod_catbyind(x::Vector{Q}, lev::Vector{Q}) where Q <: String = Int.(indexin(x, mlev(lev)))
+    recod_catbyind(x::Vector{Q}, lev::Vector{Q}) where Q<:String = Int.(indexin(x, mlev(lev)))
 Recode a categorical variable by indexes of sorted levels.
 * `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `lev` : Vector containing the new categorical levels. Must be a `Vector{String}`. 
@@ -173,10 +173,10 @@ x = ["EHH" ; "TTS" ; "FRG" ; "EHH"]
 recod_catbyind(x, lev)
 ```
 """
-recod_catbyind(x::Vector{Q}, lev::Vector{Q}) where Q <: String = Int.(indexin(x, mlev(lev)))
+recod_catbyind(x::Vector{Q}, lev::Vector{Q}) where Q<:String = Int.(indexin(x, mlev(lev)))
 
 """
-    recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q <: String
+    recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q<:String
 Recode a categorical variable by successive integer indexes.
 * `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `start` : Integer labelling the first categorical level in `x`.
@@ -198,7 +198,7 @@ recod_catbyind2(x; start = 0)
 recod_catbyind2(string.([25, 1, 25]))
 ```
 """
-function recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q <: String
+function recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q<:String
     res = dummy(x)
     nlev = length(res.lev)
     u = res.Y .* collect(start:(start + nlev - 1))'
@@ -207,7 +207,7 @@ function recod_catbyind2(x::Vector{Q}; start::Int = 1) where Q <: String
 end
 
 """
-    recod_catbylev(x::Vector{Q}, lev::Vector{Q}) where Q <: String
+    recod_catbylev(x::Vector{Q}, lev::Vector{Q}) where Q<:String
 Recode a categorical variable by levels.
 * `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `lev` : Vector containing the categorical levels. Must be a `Vector{String}`.
@@ -232,7 +232,7 @@ mlev(lev)
 [x recod_catbylev(x, lev)]
 ```
 """
-function recod_catbylev(x::Vector{Q}, lev::Vector{Q}) where Q <: String
+function recod_catbylev(x::Vector{Q}, lev::Vector{Q}) where Q<:String
     n = length(x)
     xlev = mlev(x)
     lev = mlev(lev)
@@ -246,7 +246,7 @@ function recod_catbylev(x::Vector{Q}, lev::Vector{Q}) where Q <: String
 end
 
 """
-    recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q <: Signed
+    recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q<:Signed
 Recode an index variable by levels.
 * `x` : Index variable (n) to recode. Must be a `Vector{<: Signed}`.
 * `lev` : Vector containing categorical levels. Must be a `Vector{String}`.
@@ -272,7 +272,7 @@ mlev(lev)
 recod_indbylev(x, lev)
 ```
 """
-function recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q <: Signed
+function recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q<:Signed
     n = length(x)
     lev = mlev(lev)
     v = similar(lev, n)
@@ -283,7 +283,7 @@ function recod_indbylev(x::Vector{Q}, lev::Vector{String}) where Q <: Signed
 end
 
 """
-    recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: Float
+    recod_contbylev(x::Vector{Q}, q::Vector{Q}) where {Q<:Float}
 Recode a quantitative variable by successive levels.
 * `x` : A quantitative variable (n) to recode.
 * `q` : A vector (K) of the values separating the class levels from `x`.  
@@ -312,7 +312,7 @@ zx = recod_contbylev(x, q)
 tab(zx)
 ```
 """
-function recod_contbylev(x::Vector{Q}, q::Vector{Q}) where Q <: Float
+function recod_contbylev(x::Vector{Q}, q::Vector{Q}) where {Q<:Float}
     v = zeros(Int, length(x))
     q = sort(q)
     @inbounds for i in eachindex(x)

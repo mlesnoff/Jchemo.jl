@@ -1,5 +1,5 @@
 """ 
-    durbinw(x::AbstractVector{Q}) where Q <: Float
+    durbinw(x::AbstractVector{Q}) where {Q<:Float}
 Durbin-Watson statistic. 
 * `x` : A vector (n).
 
@@ -32,7 +32,7 @@ x = randn(n)
 durbinw(x)
 ```
 """
-function durbinw(x::AbstractVector{Q}) where Q <: Float 
+function durbinw(x::AbstractVector{Q}) where {Q<:Float} 
     v = [x[i] - x[i - 1] for i in 2:length(x)]
     norm2v(v) / norm2v(x)  # = dot(v, v) / dot(x, x)
 end

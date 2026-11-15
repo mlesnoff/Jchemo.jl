@@ -82,7 +82,7 @@ function tabdupl(x::AbstractVector)
 end
 
 """
-    tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
+    tabcont(x::Vector{Q}, q::Vector{Q}) where {Q<:Float}
 Tabulate a continuous variable.
 * `x` : A continuous variable (n).
 * `q` : Numerical values (K) separating the class levels from `x`.  
@@ -106,7 +106,7 @@ res = tabcont(x, q)
 sum(res.n)
 ```
 """
-function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
+function tabcont(x::Vector{Q}, q::Vector{Q}) where {Q<:Float}
     bin = mbin(q)
     nbin = length(bin)
     lev = string.(collect(1:nbin))
@@ -124,7 +124,7 @@ function tabcont(x::Vector{Q}, q::Vector{Q}) where Q <: Float
 end
 
 """
-    mbin(q::Vector{Q}) where Q <: Float
+    mbin(q::Vector{Q}) where {Q<:Float}
 Build histogram-bin intervals.
 * `q` : Numerical values (K) defining the limits of the intervals. 
 
@@ -143,7 +143,7 @@ q = [.01; .5; .500001; .9; 1.1]
 mbin(q)
 ```
 """
-function mbin(q::Vector{Q}) where Q <: Float
+function mbin(q::Vector{Q}) where {Q<:Float}
     zq = vcat(-Inf, q, Inf)
     bin = list(Vector{Q}, length(q) + 1)
     for i in eachindex(bin)

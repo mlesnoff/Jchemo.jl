@@ -1,7 +1,7 @@
 """
-    rd(X, Y; typ::Symbol = :cor)
-    rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
-        weights::ProbabilityWeights{Q}; typ::Symbol = :cor) where Q <: Float
+    rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}; typ::Symbol = :cor) where {Q<:Float}
+    rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}; 
+        typ::Symbol = :cor) where {Q<:Float}
 Compute redundancy coefficients (Rd).
 * `X` : Matrix (n, p).
 * `Y` : Matrix (n, q).
@@ -28,15 +28,14 @@ Y = rand(5, 3)
 rd(X, Y)
 ```
 """ 
-function rd(X, Y; typ::Symbol = :cor)
-    X = ensure_mat(X)
+function rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}; typ::Symbol = :cor) where {Q<:Float}
     weights = pweight(ones(eltype(X), nro(X)))
-    rd(X, ensure_mat(Y), weights; typ)
+    rd(X, Y, weights; typ)
 end
 
-function rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
-        weights::ProbabilityWeights{Q}; typ::Symbol = :cor) where Q <: Float
-    @assert in([:cor, :cov])(typ) "Wrong value for argument 'typ'." 
+function rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}; 
+        typ::Symbol = :cor) where {Q<:Float}
+    @assert @in(typ, [:cor, :cov]) "Wrong value for argument 'typ'." 
     if typ == :cor
         A = corm(X, Y, weights).^2
     elseif typ == :cov
@@ -46,19 +45,20 @@ function rd(X::AbstMatVec{Q}, Y::AbstMatVec{Q},
 end
 
 """
-    rv(X, Y; centr::Bool = true)
-    rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
-        weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: Float
-    rv(Xbl::Vector; centr::Bool = true)
+    rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
+    rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where {Q<:Float}
+    rv(Xbl)
+    rv(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
 Compute RV coefficients.
-* `X` : Matrix (n, p).
-* `Y` : Matrix (n, q).
+* `X` : Matrix (n, p) or vector (n).
+* `Y` : Matrix (n, q) or vector (n).
 * `Xbl` : A list (vector) of matrices.
-* `centr` : Boolean indicating if the matrices will be internally centered or not.
 
-RV is bounded within [0, 1]. 
+`X` and `Y` (or each block in `Xbl`) are internally centered before RV computation.
 
-A dissimilarty measure between `X` and `Y` can be computed by d = sqrt(2 * (1 - RV)).
+* RV is bounded within [0, 1]. 
+
+* A dissimilarty measure between two matrices X and Y can be computed by d = sqrt(2 * (1 - RV(X, Y))).
 
 # References
 Escoufier, Y., 1973. Le Traitement des Variables Vectorielles. Biometrics 29, 751â€“760. 
@@ -86,31 +86,34 @@ Journal of the Royal Statistical Society: Series C (Applied Statistics) 25, 257â
 # Examples 
 ```julia 
 using Jchemo
-X = rand(5, 10)
-Y = rand(5, 3)
-rv(X, Y)
 
-X = rand(5, 15) 
-listbl = [3:4, 1, [6; 8:10]]
-Xbl = mblock(X, listbl)
+X = [1. 2 3 4 5 7 100; 4 1 6 7 12 13 28; 12 5 6 13 3 1 5; 27 18 7 6 2 0 12; 
+    12 11 28 7 1 25 2; 2 3 7 1 0 7 26; 14 12 101 4 3 7 10; 8 7 6 5 4 3 2] 
+Y = [10. 11; 120 131; 8 12; 1 2; 100 10; 1 27; 8 18; 1.3 130] 
+listbl = [1:3, 4, 5:7]
+Xbl = mblock(X, listbl) 
+
+rv(X, Y)         # 0.072634
+rv(X, Y[:, 1])   # 0.039809
+
 rv(Xbl)
 ```
 """ 
-function rv(X, Y; centr::Bool = true)
-    X = ensure_mat(X)
+function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
     weights = pweight(ones(eltype(X), nro(X)))
-    rv(X, ensure_mat(Y), weights; centr)
+    rv(X, Y, weights)
 end
 
-function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, 
-        weights::ProbabilityWeights{Q}; centr::Bool = true) where Q <: Float
+function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) where {Q<:Float}
     X = copy(ensure_mat(X))
     Y = copy(ensure_mat(Y))
     n, p = size(X)
-    if centr
-        fcenter!(X, colmean(X, weights))
-        fcenter!(Y, colmean(Y, weights))
-    end
+    # Centering
+    fitmx = center(X, weights; typ = :mean)
+    transf!(fitmx, X)
+    fitmy = center(Y, weights; typ = :mean)
+    transf!(fitmy, Y)
+    # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
@@ -134,15 +137,19 @@ function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q},
     rv
 end
 
-function rv(Xbl; centr::Bool = true)
-    Q = eltype(ensure_mat(Xbl[1]))
+function rv(Xbl)
+    Xbl = ensure_mat_mb(Xbl)
+    weights = pweight(ones(eltype(Xbl[1]), nro(Xbl[1])))
+    rv(Xbl, weights)
+end
+
+function rv(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
     nbl = length(Xbl)
     mat = Array{Q}(undef, nbl, nbl)
-    for i = 1:nbl, j = 1:nbl
-        mat[i, j] = rv(Xbl[i], Xbl[j]; centr) 
+    for i in eachindex(Xbl), j in eachindex(Xbl)
+        mat[i, j] = rv(Xbl[i], Xbl[j], weights) 
     end
     mat
 end
-
 
 

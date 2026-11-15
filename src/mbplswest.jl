@@ -2,9 +2,9 @@
     mbplswest(; kwargs...)
     mbplswest(Xbl, Y; kwargs...)
     mbplswest(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
 Multiblock PLSR (MBPLSR) - Nipals algorithm.
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -91,7 +91,7 @@ function mbplswest(Xbl, Y; kwargs...)
 end
 
 function mbplswest(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     nbl = length(Xbl)  
     vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -101,7 +101,7 @@ function mbplswest(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
 end
 
 function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     par = recovkw(ParMbplsr{Q}, kwargs).par
     @assert in([:none, :frob])(par.bscal) "Wrong value for argument 'bscal'."
     n, q = size(Y)

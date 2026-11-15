@@ -32,9 +32,9 @@ function fdasvd(X, y; kwargs...)
 end
 
 fdasvd(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-    kwargs...) where Q <: Float = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
+    kwargs...) where {Q<:Float} = fdasvd!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)

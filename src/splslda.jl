@@ -1,7 +1,7 @@
 """
     splslda(; kwargs...)
     splslda(X, y; kwargs...)
-    splslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    splslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Sparse PLS-LDA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -91,7 +91,7 @@ function splslda(X, y; kwargs...)
     splslda(X, y, weights; kwargs...)
 end
 
-function splslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function splslda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParSplsda{Q}, kwargs).par
     @assert par.nlv >= 1 "Argument 'nlv' must be in >= 1"   
     res = dummy(Q, y)

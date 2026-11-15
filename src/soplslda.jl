@@ -2,7 +2,7 @@
     soplslda(; kwargs...)
     soplslda(Xbl, y; kwargs...)
     soplslda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
 LDA on SOPLS latent variables (SOPLS-LDA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -87,7 +87,7 @@ function soplslda(Xbl, y; kwargs...)
 end
 
 function soplslda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     par = recovkw(ParSoplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n

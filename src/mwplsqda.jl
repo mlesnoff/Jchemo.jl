@@ -2,7 +2,7 @@
     mwplsqda(; kwargs...)
     mwplsqda(X, y, group::Union{Nothing, Vector{String}} = nothing; kwargs...)
     mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q},
-        group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
+        group::Union{Nothing, Vector{String}}; kwargs...) where {Q<:Float}
 Moving window PLS-QDA (MWPLS-QDA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -100,7 +100,7 @@ function mwplsqda(X, y, group::Union{Nothing, Vector{String}} = nothing; kwargs.
 end
 
 function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::ProbabilityWeights{Q},
-        group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
+        group::Union{Nothing, Vector{String}}; kwargs...) where {Q<:Float}
     n, p = size(X)       
     par = recovkw(ParMwplsqda{Q}, kwargs).par
     @assert isodd(par.npoint) && par.npoint >= 1 "Argument 'npoint' must be an odd integer >= 1."

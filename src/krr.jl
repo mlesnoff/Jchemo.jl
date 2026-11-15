@@ -1,8 +1,8 @@
 """
     krr(; kwargs...)
     krr(X, Y; kwargs...)
-    krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Kernel ridge regression (KRR) implemented by SVD factorization.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -110,11 +110,11 @@ function krr(X, Y; kwargs...)
     krr(X, Y, weights; kwargs...)
 end
 
-function krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function krr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     krr!(copy(X), copy(Y), weights; kwargs...)
 end
 
-function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParKrr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     p = nco(X)
@@ -149,14 +149,14 @@ end
 
 """
     coef(object::Krr)
-    coef(object::Krr, lb::T) where T <: Float
+    coef(object::Krr, lb::T) where {T<:Float}
 Compute the coefficients of a fitted model.
 * `object` : The fitted model.
 * `lb` : Ridge regularization parameter 'lambda'.
 """ 
 coef(object::Krr) = coef(object::Krr, object.par.lb)
 
-function coef(object::Krr, lb::T) where T <: Float
+function coef(object::Krr, lb::T) where {T<:Float}
     Q = eltype(object.sv)
     eig = object.sv.^2
     v = 1 ./ (eig .+ Q(lb)^2)
@@ -169,7 +169,7 @@ end
 
 """
     predict(object::Krr, X)
-    predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
+    predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where {T<:Float}
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -187,7 +187,7 @@ function predict(object::Krr, X)
     (pred = pred, lb = object.par.lb)
 end
 
-function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where T <: Float
+function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where {T<:Float}
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
     K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)

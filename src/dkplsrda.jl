@@ -1,7 +1,7 @@
 """
     dkplsrda(; kwargs...)
     dkplsrda(X, y; kwargs...)
-    dkplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    dkplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Discrimination by direct kernel partial least squares regression (KPLSR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -85,7 +85,7 @@ function dkplsrda(X, y; kwargs...)
     dkplsrda(X, y, weights; kwargs...)
 end
 
-function dkplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function dkplsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParKplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n

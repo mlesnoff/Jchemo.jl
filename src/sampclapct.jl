@@ -1,6 +1,6 @@
 """
     sampclapct(x::Vector{String}, pct::Union{Q, Vector{Q}}, y = nothing; 
-        seed::Union{Nothing, Int} = nothing) where Q <: Real
+        seed::Union{Nothing, Int} = nothing) where Q<:Real
 Build training vs. test sets using a stratified (proportion) sampling.  
 * `x` : Class membership (n) of the observations. Must be a `Vector{String}`.
 * `pct` : Proportion of test observations to sample in each class. If `pct` is a single value, the proportion
@@ -47,7 +47,7 @@ tab(x[res.test])
 ```
 """ 
 function sampclapct(x::Vector{String}, pct::Union{Q, Vector{Q}}, y = nothing; 
-        seed::Union{Nothing, Int} = nothing) where Q <: Real
+        seed::Union{Nothing, Int} = nothing) where Q<:Real
     tabx = tab(x)
     lev = tabx.lev
     ni = tabx.n

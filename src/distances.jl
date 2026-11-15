@@ -1,8 +1,8 @@
 """
-    eucl2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
+    eucl2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
 Squared Euclidean distances between the rows of `X` and `Y`.
-* `X` : A matrix (n, p) or vector (n).
-* `Y` : A matrix (m, p) or vector (m).
+* `X` : Matrix (n, p) or vector (n).
+* `Y` : Matrix (m, p) or vector (m).
 
 The function returns a matrix (n, m) with:
 * i, j = distance between row i of `X` and row j of `Y`.
@@ -26,17 +26,17 @@ eucl2(vcol(X, 1), [4.])
 
 ```
 """
-function eucl2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
+function eucl2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
     Y = ensure_mat(Y)
     Distances.pairwise(SqEuclidean(), X', Y'; dims = 2)   # pairwise also exported by StatsBase
 end
 
 """
-    mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
-    mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, Sinv::AbstractMatrix{Q}) where Q <: Float
+    mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
+    mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, Sinv::AbstractMatrix{Q}) where {Q<:Float}
 Mahalanobis Squared distances between the rows of `X` and `Y`.
-* `X` : A matrix (n, p) or vector (n).
-* `Y` : A matrix (m, p) or vector (m).
+* `X` : Matrix (n, p) or vector (n).
+* `Y` : Matrix (m, p) or vector (m).
 * `Sinv` : Inverse of a covariance matrix S. If `Sinv` is not given, S is computed as the uncorrected 
     covariance matrix of `X`.
 
@@ -67,25 +67,25 @@ mah2(X[:, 1], [4.])
 mah2(vcol(X, 1), [4.])
 ```
 """
-function mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
+function mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
     Y = ensure_mat(Y)
     S = covm(X)
     LinearAlgebra.inv!(cholesky!(Hermitian(S)))
     Distances.pairwise(SqMahalanobis(S; skipchecks = true), X', Y'; dims = 2)
 end
 
-function mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, Sinv::AbstractMatrix{Q}) where Q <: Float
+function mah2(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, Sinv::AbstractMatrix{Q}) where {Q<:Float}
     Y = ensure_mat(Y)
     Sinv = Hermitian(ensure_mat(Sinv))
     Distances.pairwise(SqMahalanobis(Sinv; skipchecks = true), X', Y'; dims = 2)
 end
 
 """
-    mah2chol(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float
+    mah2chol(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}
     mah2chol(X, Y, Uinv)
 Mahalanobis Squared distances (with a Cholesky factorization) between the rows of `X` and `Y`.
-* `X` : A matrix (n, p) or vector (n).
-* `Y` : A matrix (m, p) or vector (m).
+* `X` : Matrix (n, p) or vector (n).
+* `Y` : Matrix (m, p) or vector (m).
 * `Uinv` : Inverse of the upper matrix of a Cholesky factorization of a covariance matrix S. 
    If `Uinv` is not given, S is computed as the uncorrected covariance matrix of `X`.
 
@@ -117,7 +117,7 @@ mah2chol(X[:, 1], [4.])
 mah2chol(vcol(X, 1), [4.])
 ```
 """
-function mah2chol(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where Q <: Float  
+function mah2chol(X::AbstMatVec{Q}, Y::AbstMatVec{Q}) where {Q<:Float}  
     S = covm(X)
     p = nco(S)
     if p == 1
@@ -145,25 +145,25 @@ end
 # y = rand(n)
 # Jchemo.SamDist()(x, y)
 # ```julia
-struct CosDist <: Distances.Metric end                      
-(::CosDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Distances.CosineDist()(x, y) / 2
+struct CosDist<:Distances.Metric end                      
+(::CosDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float} = Distances.CosineDist()(x, y) / 2
 
-struct SamDist <: Distances.Metric end
-(::SamDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = acos(1 - Distances.CosineDist()(x, y)) / pi
+struct SamDist<:Distances.Metric end
+(::SamDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float} = acos(1 - Distances.CosineDist()(x, y)) / pi
 
-struct CorDist <: Distances.Metric end                      
-(::CorDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Distances.CorrDist()(x, y) / 2
+struct CorDist<:Distances.Metric end                      
+(::CorDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float} = Distances.CorrDist()(x, y) / 2
 
-struct CorDist_b <: Distances.Metric end                            
-(::CorDist_b)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = (1 - corv(x, y)) / 2
+struct CorDist_b<:Distances.Metric end                            
+(::CorDist_b)(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float} = (1 - corv(x, y)) / 2
 
 # Square-root correlation distance
 # max is used since possible negative zeros (floating point issues)
-struct sqrCorDist <: Distances.Metric end                                
-(::sqrCorDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
+struct sqrCorDist<:Distances.Metric end                                
+(::sqrCorDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float} = sqrt(max(0, Distances.CorrDist()(x, y)) / 2)  
 
 # Tentative (will be modified)
-function wass1d(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
+function wass1d(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float}
     sum_x = sum(x)
     sum_y = sum(y)
     x_norm = x ./ sum_x
@@ -180,8 +180,8 @@ function wass1d(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float
     end
     d
 end
-struct WasDist <: Distances.Metric end                            
-(::WasDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where Q <: Float = Jchemo.wass1d(x, y)
+struct WasDist<:Distances.Metric end                            
+(::WasDist)(x::AbstractVector{Q}, y::AbstractVector{Q}) where {Q<:Float} = Jchemo.wass1d(x, y)
 # End
 
 

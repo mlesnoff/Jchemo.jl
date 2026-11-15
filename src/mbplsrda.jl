@@ -2,7 +2,7 @@
     mbplsrda(; kwargs...)
     mbplsrda(Xbl, y; kwargs...)
     mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
 Discrimination by multiblock partial least squares regression (MBPLSR-DA).
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -114,7 +114,7 @@ function mbplsrda(Xbl, y; kwargs...)
 end
 
 function mbplsrda(Xbl::Vector{Matrix{Q}}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     par = recovkw(ParMbplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n

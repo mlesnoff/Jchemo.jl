@@ -1,7 +1,7 @@
 """
     kpca(; kwargs...)
     kpca(X; kwargs...)
-    kpca(X::Matrix{Q}, weights::ProbabilityWeights; kwargs...) where Q <: Float
+    kpca(X::Matrix{Q}, weights::ProbabilityWeights; kwargs...) where {Q<:Float}
 Kernel PCA  (Scholkopf et al. 1997, Scholkopf & Smola 2002, Tipping 2001).
 * `X` : X-data (n, p).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -67,7 +67,7 @@ function kpca(X; kwargs...)
     kpca(X, weights; kwargs...)
 end
 
-function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParKpca{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     n = nro(X)

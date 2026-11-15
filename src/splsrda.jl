@@ -1,7 +1,7 @@
 """
     splsrda(; kwargs...)
     splsrda(X, y; kwargs...)
-    splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Sparse PLSR-DA.
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -91,7 +91,7 @@ function splsrda(X, y; kwargs...)
     splsrda(X, y, weights; kwargs...)
 end
 
-function splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function splsrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParSplsda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n

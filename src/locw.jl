@@ -1,10 +1,10 @@
 """
     locw(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: Float
+        verbose::Bool = true, kwargs...) where {Q<:Float}
     locw(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: Float
+        verbose::Bool = true, kwargs...) where {Q<:Float}
 Compute predictions for a given kNN model.
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
@@ -24,7 +24,7 @@ of x_i in Xtrain. The sizes of the neighborhood for i = 1,...,m can be different
 """
 function locw(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: Float
+        verbose::Bool = true, kwargs...) where {Q<:Float}
     m = nro(X)
     q = nco(Ytrain)
     pred = similar(Xtrain, m, q)
@@ -52,7 +52,7 @@ end
 
 function locw(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, store::Bool = false, 
-        verbose::Bool = true, kwargs...) where Q <: Float
+        verbose::Bool = true, kwargs...) where {Q<:Float}
     m = nro(X)
     pred = similar(ytrain, m, 1)
     fitm = list(m)

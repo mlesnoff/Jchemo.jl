@@ -1,6 +1,6 @@
 # Define type 'JchemoModel' 
 
-Base.@kwdef mutable struct JchemoModel{T <: Function, K <: Base.Pairs}
+Base.@kwdef mutable struct JchemoModel{T<:Function, K<:Base.Pairs}
     algo::T   
     fitm
     kwargs::K
@@ -52,11 +52,11 @@ transfbl(model::JchemoModel, X, Y, nlv::Union{Int, AbstractVector{Int}}) = trans
 
 coef(model::JchemoModel) = coef(model.fitm)
 
-function coef(model::JchemoModel, nlv::Union{Q, AbstractVector{Q}}) where Q <: Integer
+function coef(model::JchemoModel, nlv::Union{Q, AbstractVector{Q}}) where {Q<:Integer}
     coef(model.fitm, nlv)
 end
 
-function coef(model::JchemoModel, lb::Union{Q, AbstractVector{Q}}) where Q <: Float
+function coef(model::JchemoModel, lb::Union{Q, AbstractVector{Q}}) where {Q<:Float}
     coef(model.fitm, lb)
 end
 
@@ -64,11 +64,11 @@ end
 
 predict(model::JchemoModel, X) = predict(model.fitm, X)
 
-function predict(model::JchemoModel, X, nlv::Union{Q, AbstractVector{Q}}) where Q <: Integer
+function predict(model::JchemoModel, X, nlv::Union{Q, AbstractVector{Q}}) where {Q<:Integer}
     predict(model.fitm, X, nlv)
 end
 
-function predict(model::JchemoModel, X, lb::Union{Q, AbstractVector{Q}}) where Q <: Float
+function predict(model::JchemoModel, X, lb::Union{Q, AbstractVector{Q}}) where {Q<:Float}
     predict(model.fitm, X, lb)
 end
 

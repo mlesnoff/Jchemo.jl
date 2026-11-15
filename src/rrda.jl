@@ -1,7 +1,7 @@
 """
     rrda(; kwargs...)
     rrda(X, y; kwargs...)
-    rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Discrimination by ridge regression (RR-DA).
 * `X` : X-data (n, p).
 * `y` : Univariate class membership (n). Must be a `Vector{String}`.
@@ -93,7 +93,7 @@ function rrda(X, y; kwargs...)
     rrda(X, y, weights; kwargs...)
 end
 
-function rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float    
+function rrda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}    
     par = recovkw(ParRrda{Q}, kwargs).par
     res = dummy(Q, y)
     ni = tab(y).n 
@@ -104,7 +104,7 @@ end
 
 """
     predict(object::Rrda, X)
-    predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: Float
+    predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where {T<:Float}
 Compute Y-predictions from a fitted model.
 * `object` : The fitted model.
 * `X` : X-data for which predictions are computed.
@@ -119,7 +119,7 @@ function predict(object::Rrda, X)
     (pred = pred, posterior = res.pred, lb = res.lb)
 end
 
-function predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where T <: Float
+function predict(object::Rrda, X, lb::Union{T, AbstractVector{T}})  where {T<:Float}
     X = ensure_mat(X)
     m = nro(X)
     Qy = eltype(object.lev)

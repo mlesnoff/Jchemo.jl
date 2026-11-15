@@ -1,8 +1,8 @@
 """
-    aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where Q <: Float
-    aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = meanv) where Q <: Union{Vector{String}, Vector{Symbol}}
+    aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where {Q<:Float}
+    aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = meanv) where Q<:Union{Vector{String}, Vector{Symbol}}
 Compute column-wise statistics by group in a dataset.
-* `X` : A matrix (n, p) or vector (n) to summarize.
+* `X` : Matrix (n, p) or vector (n) to summarize.
 * `datf` : A dataframe to summarize (n, p).
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `algo` : Function to compute (default = `meanv`).
@@ -41,7 +41,7 @@ aggstat(datf; sel = [:v1, :v2] , group = [:y1, :y2], algo = varv)  # return a da
 aggstat(datf; sel = [:v1, :v2] , group = [:y2], algo = varv)
 ```
 """ 
-function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where Q <: Float
+function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) where {Q<:Float}
     X = ensure_mat(X)
     n, p = size(X)
     lev = mlev(y)
@@ -57,16 +57,16 @@ function aggstat(X::AbstMatVec{Q}, y::Vector{String}; algo::Function = meanv) wh
     (X = zX, lev)
 end
 
-function aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = meanv) where Q <: Union{Vector{String}, Vector{Symbol}}
+function aggstat(datf::DataFrame; sel::Q, group::Q, algo::Function = meanv) where Q<:Union{Vector{String}, Vector{Symbol}}
     gdf = groupby(datf, group) 
     res = combine(gdf, sel .=> algo, renamecols = false)
     sort!(res, group)
 end
 
 """
-    aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
+    aggmean(X::AbstMatVec{Q}, y::Vector{String}) where {Q<:Float}
 Compute column-wise means by group in a dataset.
-* `X` : A matrix (n, p) or vector (n) to summarize.
+* `X` : Matrix (n, p) or vector (n) to summarize.
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 
 This is a faster particular case of `aggstat`: computes means from a single group variable. 
@@ -84,7 +84,7 @@ res.X
 res.lev 
 ```
 """ 
-function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
+function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where {Q<:Float}
     X = ensure_mat(X)
     p = nco(X)
     lev = mlev(y)
@@ -98,7 +98,7 @@ function aggmean(X::AbstMatVec{Q}, y::Vector{String}) where Q <: Float
 end
 
 """ 
-    aggsumv(x::AbstractVector{Q}, y::AbstractVector{String}) where Q <: Real
+    aggsumv(x::AbstractVector{Q}, y::AbstractVector{String}) where Q<:Real
 Compute the sum by group over a categorical variable.
 * `x` : A vector representing the quantitative variable to sum (n) 
 * `y` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
@@ -114,7 +114,7 @@ y = vcat(rand(["a" ; "c"], 900), fill("b", 100))
 aggsumv(x, y)
 ```
 """
-function aggsumv(x::AbstractVector{Q}, y::AbstractVector{String}) where Q <: Real  # 'Real' for 'Int'
+function aggsumv(x::AbstractVector{Q}, y::AbstractVector{String}) where Q<:Real  # 'Real' for 'Int'
     lev = mlev(y)
     v = similar(x, length(lev)) 
     @inbounds for i in eachindex(lev) 
@@ -181,9 +181,9 @@ ensure_mat(X::Matrix) = X
 ensure_mat(X::AbstractMatrix) = Matrix(X)
 ensure_mat(X::Vector) = reshape(X, :, 1)
 
-ensure_mat(X::Matrix{Union{Missing, Q}}) where Q <: Float = Q.(X)
-ensure_mat(X::AbstractMatrix{Union{Missing, Q}}) where Q <: Float = Matrix(Q.(X))
-ensure_mat(X::Vector{Union{Missing, Q}}) where Q <: Float = reshape(Q.(X), :, 1)
+ensure_mat(X::Matrix{Union{Missing, Q}}) where {Q<:Float} = Q.(X)
+ensure_mat(X::AbstractMatrix{Union{Missing, Q}}) where {Q<:Float} = Matrix(Q.(X))
+ensure_mat(X::Vector{Union{Missing, Q}}) where {Q<:Float} = reshape(Q.(X), :, 1)
 
 ensure_mat(X::Number) = reshape([X], 1, 1)
 
@@ -223,7 +223,7 @@ findmax_cla(x)
 """
 findmax_cla(x::Vector{String}) = findmax_cla(x, ones(length(x))) 
 
-function findmax_cla(x::Vector{String}, v::Vector{Q}) where Q <: Real
+function findmax_cla(x::Vector{String}, v::Vector{Q}) where Q<:Real
     res = aggsumv(v, x)
     res.lev[argmax(res.val)]   # if equal, argmax takes the first   
 end
@@ -410,7 +410,7 @@ Return the nb. rows of `X`.
 nro(X) = size(X, 1)
 
 """ 
-    out(x::AbstractVector{Q}, y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where Q <: Float
+    out(x::AbstractVector{Q}, y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where {Q<:Float}
 Return if elements of a vector are strictly outside of a given range.
 * `x` : A quantititative variable whose each element is evaluated to be out of or in the range 
     (min, max) defined from `y`.
@@ -428,7 +428,7 @@ out(x, [-1., 1])
 ```
 """
 out(x::AbstractVector{Q}, 
-    y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where Q <: Float = (x .< minimum(y)) .| (x .> maximum(y))
+    y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where {Q<:Float} = (x .< minimum(y)) .| (x .> maximum(y))
 
 """
     pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:Float
@@ -467,7 +467,7 @@ pval(d::Distribution, q::Union{Q, Vector{Q}}) where Q <:Float = Distributions.cc
 
 pval(e_cdf::ECDF, q::Union{Q, Vector{Q}}) where Q <:Float = 1 .- e_cdf(q)
 
-pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where Q <: Float = pval(StatsBase.ecdf(x), q)
+pval(x::AbstractVector{Q}, q::Union{Q, Vector{Q}}) where {Q<:Float} = pval(StatsBase.ecdf(x), q)
 
 """
     recovkw(ParStruct, kwargs)
@@ -545,8 +545,8 @@ end
 
 
 """
-    softmax(x::AbstractVector{Q}) where Q <: Float
-    softmax(X::AbstractMatrix{Q})  where Q <: Float
+    softmax(x::AbstractVector{Q}) where {Q<:Float}
+    softmax(X::AbstractMatrix{Q})  where {Q<:Float}
 Softmax transformation.
 * `x` : A quantitative variable to transform.
 * `X` : A quantitative matrix whose rows are transformed.
@@ -567,12 +567,12 @@ res = softmax(X)
 rowsum(res)
 ```
 """
-function softmax(x::AbstractVector{Q}) where Q <: Float
+function softmax(x::AbstractVector{Q}) where {Q<:Float}
     expx = exp.(x) 
     expx / sum(expx)
 end
 
-function softmax(X::AbstractMatrix{Q})  where Q <: Float
+function softmax(X::AbstractMatrix{Q})  where {Q<:Float}
     V = similar(X)
     @inbounds for i in axes(X, 1)
         V[i, :] .= softmax(vrow(X, i))
@@ -641,7 +641,7 @@ function summ(X, y::Vector{String}; digits::Int = 3)
 end
 
 """
-    thresh_hard(x::Q, delta::Q) where Q <: Float
+    thresh_hard(x::Q, delta::Q) where {Q<:Float}
 Hard thresholding function.
 * `x` : Value (scalar) to transform.
 * `delta` : Limit for the thresholding.
@@ -663,7 +663,7 @@ y = thresh_hard.(x, delta)
 lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 ```
 """
-function thresh_hard(x::Q, delta::Q) where Q <: Float
+function thresh_hard(x::Q, delta::Q) where {Q<:Float}
     @assert delta >= 0 "delta must be >= 0."
     if abs(x) <= delta
         x = zero(eltype(x)) 
@@ -672,7 +672,7 @@ function thresh_hard(x::Q, delta::Q) where Q <: Float
 end
 
 """
-    thresh_soft(x::Q, delta::Q) where Q <: Float
+    thresh_soft(x::Q, delta::Q) where {Q<:Float}
 Soft thresholding function.
 * `x` : Value (scalar) to transform.
 * `delta` : Limit for the thresholding.
@@ -694,7 +694,7 @@ y = thresh_soft.(x, delta)
 lines(x, y; axis = (xlabel = "x", ylabel = "f(x)"))
 ```
 """
-function thresh_soft(x::Q, delta::Q) where Q <: Float
+function thresh_soft(x::Q, delta::Q) where {Q<:Float}
     @assert delta >= 0 "delta must be >= 0."
     # same as: abs(x) > delta ? sign(x) * (abs(x) - delta) : zero(eltype(x))
     sign(x) * max(zero(eltype(x)), abs(x) - delta)  # type consistent
@@ -702,7 +702,7 @@ end
 
 """
     vcatdf(dat::Vector{DataFrame}; 
-        cols::Union{Q, Vector{String}, Vector{Q}} = :intersect) where Q <: Symbol
+        cols::Union{Q, Vector{String}, Vector{Q}} = :intersect) where Q<:Symbol
 Vertical concatenation of a list of dataframes.
 * `dat` : List (vector) of dataframes.
 * `cols` : Determines the columns of the returned dataframe. See ?DataFrames.vcat.
@@ -730,7 +730,7 @@ vcatdf(dat; cols = :intersect)
 ```
 """ 
 function vcatdf(dat::Vector{DataFrame}; 
-        cols::Union{Q, Vector{String}, Vector{Q}} = :intersect) where Q <: Symbol
+        cols::Union{Q, Vector{String}, Vector{Q}} = :intersect) where Q<:Symbol
     n = length(dat) 
     X = copy(dat[1])
     group = fill(1, nro(X))

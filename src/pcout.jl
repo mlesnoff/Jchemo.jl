@@ -1,8 +1,8 @@
 """
     pcout(X; explvar::Q = .99, critm1::Q = 1 / 3, critc1::Q = 2.5, critm2::Q = 1 / 4, 
-        critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where Q <: Float
+        critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where {Q<:Float}
     pcout!(X::AbstractMatrix{Q}; explvar::Q = .99, critm1::Q = 1 / 3, critc1::Q = 2.5, critm2::Q = 1 / 4, 
-        critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where Q <: Float
+        critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where {Q<:Float}
 PCOut algorithm for outlier identification in high dimensions.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -87,12 +87,12 @@ f
 ```
 """ 
 function pcout(X; explvar::Q = .99, critm1::Q = 1 / 3, critc1::Q = 2.5, critm2::Q = 1 / 4, 
-    critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where Q <: Float
+    critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where {Q<:Float}
     pcout!(copy(ensure_mat(X)); explvar, critm1, critc1, critm2, critc2, cs, outbound) 
 end
 
 function pcout!(X::AbstractMatrix{Q}; explvar::Q = .99, critm1::Q = 1 / 3, critc1::Q = 2.5, critm2::Q = 1 / 4, 
-    critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where Q <: Float
+    critc2::Q = 0.99, cs::Q = .25, outbound::Q = 0.25) where {Q<:Float}
     n = nro(X)
     d = similar(X, n)
     w1 = similar(d)

@@ -6,9 +6,9 @@ end
 
 """
     baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
-        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where {Q<:Float}
     baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
-        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where {Q<:Float} 
 Bagging a regression model.
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, p).
@@ -81,7 +81,7 @@ f
 ```
 """ 
 function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
-        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where {Q<:Float}
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)
@@ -97,7 +97,7 @@ function baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, psampr
 end
 
 function baggr(X, Y, weights::ProbabilityWeights; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
-        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where Q <: Float 
+        psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where {Q<:Float} 
     X = ensure_mat(X)
     Y = ensure_mat(Y)
     n, p = size(X)

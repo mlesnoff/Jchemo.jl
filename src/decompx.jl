@@ -1,7 +1,7 @@
 """
-    decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where Q <: Float
+    decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where {Q<:Float}
 Decomposition of a matrix by orthogonal projection on experimental factors.
-* `X` : A matrix (n, p) or vector (n) to decompose.
+* `X` : Matrix (n, p) or vector (n) to decompose.
 * `f` : A formula that defines the factor(s) on which is(are) done the decomposition.
     See the syntax in the examples below.
 * `datf` (n, q) : Dataframe containing the factor(s) specified in `f`. 
@@ -70,7 +70,7 @@ res.valref
 @head res.val
 ```
 """
-function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where Q <: Float
+function decompx(X::AbstMatVec{Q}, f::StatsModels.FormulaTerm, datf::DataFrame) where {Q<:Float}
     n = nro(X)
     xcenters = colmean(X)
     Xc = fcenter(X, xcenters)

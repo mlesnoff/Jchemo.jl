@@ -2,11 +2,11 @@
     plotxyz(x, y, z; 
         size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1,
         xlabel::String = "", ylabel::String = "", zlabel::String = "", 
-        title::String = "", kwargs...) where Q <: Float
+        title::String = "", kwargs...) where {Q<:Float}
     plotxyz(x, y, z, group; 
         size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, 
         xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
-        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where {Q<:Float}
 3-D scatter plot of x-y-z data.
 * `x` : A x-vector (n).
 * `y` : A y-vector (n). 
@@ -70,7 +70,7 @@ f
 function plotxyz(x, y, z; 
         size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, azimuth::Q = 1.275pi,
         xlabel::String = "", ylabel::String = "", zlabel::String = "", 
-        title::String = "", kwargs...) where Q <: Float
+        title::String = "", kwargs...) where {Q<:Float}
     x = vec(x)
     y = vec(y)
     z = vec(z)
@@ -85,7 +85,7 @@ end
 function plotxyz(x, y, z, group; 
         size::Tuple{Int, Int} = (500, 300), color = nothing, perspectiveness::Q = .1, azimuth::Q = 1.275pi, 
         xlabel::String = "", ylabel::String = "", zlabel::String = "", title::String = "", 
-        leg::Bool = true, leg_title::String = "Group", kwargs...) where Q <: Float
+        leg::Bool = true, leg_title::String = "Group", kwargs...) where {Q<:Float}
     x = vec(x)
     y = vec(y)
     z = vec(z)

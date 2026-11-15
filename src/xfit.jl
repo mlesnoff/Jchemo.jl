@@ -1,6 +1,6 @@
 """
     xfit(object, X, nlv::Int = nco(object.T))
-    xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
+    xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
 Fit a matrix from a bilinear model (e.g., PCA).
 * `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
@@ -91,7 +91,7 @@ function xfit(object, X, nlv::Int = nco(object.T))
     xfit!(object, copy(ensure_mat(X)), nlv)
 end
 
-function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
+function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
     nlv = min(nlv, nco(object.T))
     if nlv == 0
         @inbounds for i in axes(X, 1)

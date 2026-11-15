@@ -2,9 +2,9 @@
     mbplsr(; kwargs...)
     mbplsr(Xbl, Y; kwargs...)
     mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
 Multiblock PLSR (MBPLSR).
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `Y` : Y-data (n, q).
@@ -129,7 +129,7 @@ function mbplsr(Xbl, Y; kwargs...)
 end
 
 function mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     nbl = length(Xbl)  
     vXbl = list(Matrix{Q}, nbl)
     @inbounds for k in eachindex(Xbl)
@@ -139,7 +139,7 @@ function mbplsr(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeight
 end
 
 function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
-        kwargs...) where Q <: Float
+        kwargs...) where {Q<:Float}
     par = recovkw(ParMbplsr{Q}, kwargs).par
     n, q = size(Y)
     pbl = nco.(Xbl) ; ptot = sum(pbl)

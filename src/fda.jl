@@ -1,8 +1,8 @@
 """
     fda(; kwargs...)
     fda(X, y; kwargs...)
-    fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
-    fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+    fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Factorial discriminant analysis (FDA).
 * `X` : X-data (n, p).
 * `y` : y-data (n) (class membership).
@@ -103,9 +103,9 @@ function fda(X, y; kwargs...)
 end
 
 fda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; 
-    kwargs...) where Q <: Float = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
+    kwargs...) where {Q<:Float} = fda!(copy(ensure_mat(X)), y, weights; kwargs...)
 
-function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)

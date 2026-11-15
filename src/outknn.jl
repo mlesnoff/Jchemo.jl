@@ -1,6 +1,6 @@
 """
     outknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
-    outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
+    outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where {Q<:Float}
 Compute a kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -68,7 +68,7 @@ function outknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::S
     outknn!(copy(ensure_mat(X)); k, metric, algo, scal)
 end
 
-function outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where Q <: Float
+function outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where {Q<:Float}
     n = nro(X)
     xscales = colscal(X, scal)
     if scal != :none

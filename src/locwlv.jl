@@ -1,10 +1,10 @@
 """
     locwlv(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
-        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+        store::Bool = false, verbose::Bool = true, kwargs...) where {Q<:Float}
     locwlv(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
-        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+        store::Bool = false, verbose::Bool = true, kwargs...) where {Q<:Float}
 * `Xtrain` : Training X-data (n, p).
 * `Ytrain` : Training Y-data (n, q).
 * `ytrain` : Training Y-data (n) (class membership). Must be a `Vector{String}`.
@@ -23,7 +23,7 @@ Same as [`locw`](@ref) but specific and much faster for LV-based models (e.g., P
 """
 function locwlv(Xtrain::Matrix{Q}, Ytrain::Matrix{Q}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
-        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+        store::Bool = false, verbose::Bool = true, kwargs...) where {Q<:Float}
     p = nco(Xtrain)
     q = nco(Ytrain)
     m = nro(X)
@@ -65,7 +65,7 @@ end
 
 function locwlv(Xtrain::Matrix{Q}, ytrain::Vector{String}, X::Matrix{Q}; listnn::Vector{Vector{Int}}, 
         listw::Union{Nothing, Vector{Vector{Q}}} = nothing, algo::Function, nlv::Union{Int, AbstractVector{Int}}, 
-        store::Bool = false, verbose::Bool = true, kwargs...) where Q <: Float
+        store::Bool = false, verbose::Bool = true, kwargs...) where {Q<:Float}
     p = nco(Xtrain)
     m = nro(X)
     if isa(nlv, Int)

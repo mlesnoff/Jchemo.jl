@@ -33,7 +33,7 @@ end
 """
     blockscal(; kwargs...)
     blockscal(Xbl; kwargs...)
-    blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float 
+    blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float} 
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` 
@@ -97,7 +97,7 @@ function blockscal(Xbl; kwargs...)
     blockscal(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
 end
 
-function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where Q <: Float
+function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParBlock, kwargs).par
     @assert in([:none, :frob, :mfa, :ncol, :std])(par.bscal) "Wrong value for argument 'bscal'."
     nbl = length(Xbl)
@@ -142,7 +142,7 @@ end
 
 """ 
     transf(object::Blockscal, Xbl)
-    transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where Q <: Float
+    transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float}
 Compute the preprocessed data from a model.
 * `object` : The fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
@@ -154,7 +154,7 @@ function transf(object::Blockscal, Xbl)
     vXbl
 end
 
-function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where Q <: Float 
+function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float} 
     @inbounds for k in eachindex(Xbl)
         fcscale!(Xbl[k], object.xcenters[k], object.xscales[k])
         Xbl[k] ./= object.bscales[k]
@@ -163,7 +163,7 @@ end
 
 """
     fblockscal(Xbl, bscales)
-    fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where Q <: Float
+    fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where {Q<:Float}
 Scale multiblock X-data.
 * `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
 * `bscales` : A vector (of length equal to the nb. of blocks) of the scalars diving the blocks.
@@ -197,7 +197,7 @@ function fblockscal(Xbl, bscales)
     fblockscal!(vXbl, bscales)
 end
 
-function fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where Q <: Float
+function fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where {Q<:Float}
     #Threads not faster
     @inbounds for k in eachindex(Xbl)
         Xbl[k] ./= bscales[k]

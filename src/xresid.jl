@@ -1,6 +1,6 @@
 """
     xresid(object, X, nlv::Int = nco(object.T))
-    xresid!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where Q <: Float
+    xresid!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
 Residual matrix from a bilinear model (e.g., PCA).
 * `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
@@ -19,7 +19,7 @@ function xresid(object, X, nlv::Int = nco(object.T))
     xresid!(object, copy(ensure_mat(X)), nlv)
 end
 
-function xresid!(object, X::Matrix{Q}, nlv::Int) where Q <: Float
+function xresid!(object, X::Matrix{Q}, nlv::Int) where {Q<:Float}
     nlv = min(nlv, nco(object.T))
     X .-= xfit(object, X, nlv)
     X

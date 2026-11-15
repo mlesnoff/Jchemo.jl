@@ -1,8 +1,8 @@
 """
     sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, psamprow::Q = .7, 
-        psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+        psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where {Q<:Float} 
     sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50, replace::Bool = true, 
-        psamprow::Q = .7, psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+        psamprow::Q = .7, psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where {Q<:Float} 
 Sampling for bagging.
 * `n`, `p` : Nb. total of observations and variables, respectively, considered in the bagging.
 * `colweight` : Weights (p) of the variables. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -27,7 +27,7 @@ res.scol
 ```
 """ 
 function sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, psamprow::Q = .7, 
-        psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+        psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where {Q<:Float} 
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(psamprow * n))
@@ -56,7 +56,7 @@ function sampbag(n::Int, p::Int; rep::Int = 50, replace::Bool = true, psamprow::
 end
 
 function sampbag(n::Int, p::Int, colweight::ProbabilityWeights{Q}; rep::Int = 50, replace::Bool = true, 
-        psamprow::Q = .7, psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where Q <: Float 
+        psamprow::Q = .7, psampcol::Q = .7, seed::Union{Nothing, Int} = nothing) where {Q<:Float} 
     range_n = collect(1:n)
     range_p = collect(1:p) 
     mrow = Int(round(psamprow * n))

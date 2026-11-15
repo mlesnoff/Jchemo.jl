@@ -87,7 +87,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f  
 ```
 """ 
-Base.@kwdef mutable struct ParProtoclustplsr{Q <: Float} 
+Base.@kwdef mutable struct ParProtoclustplsr{Q<:Float} 
     nlvdis::Int = 0    # To do                         
     metric::Symbol = :eucl  
     nproto::Int = 1

@@ -2,7 +2,7 @@
     mwplsr(; kwargs...)
     mwplsr(X, Y, group::Union{Nothing, Vector{String}} = nothing; kwargs...)
     mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q},
-        group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
+        group::Union{Nothing, Vector{String}}; kwargs...) where {Q<:Float}
 Moving window PLSR (MWPLSR).
 * `X` : X-data (n, p).
 * `Y` : Y-data (n, q).
@@ -153,7 +153,7 @@ function mwplsr(X, Y, group::Union{Nothing, Vector{String}} = nothing; kwargs...
 end
 
 function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWeights{Q},
-    group::Union{Nothing, Vector{String}}; kwargs...) where Q <: Float
+    group::Union{Nothing, Vector{String}}; kwargs...) where {Q<:Float}
     n, p = size(X)
     q = nco(Y)                    
     par = recovkw(ParMwplsr, kwargs).par

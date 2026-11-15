@@ -1,5 +1,5 @@
 """
-    outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
+    outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where {Q<:Float}
 Compute outlierness from PCA/PLS score (SD) and orthogonal (OD) distances.
 * `fitm` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
@@ -18,7 +18,7 @@ the consensus.
 
 See functions `outsd` and `outod` for details on SD and OD, and function `outod` for examples.
 """ 
-function outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where Q <: Float
+function outsdod(fitm, X; nlv::Int = nco(fitm.T), gamma::Q = .5, fscal::Function = madv) where {Q<:Float}
     X = ensure_mat(X)
     gamma = Q(gamma)
     fitm_sd = outsd(fitm; nlv)

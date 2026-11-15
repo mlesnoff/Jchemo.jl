@@ -1,6 +1,6 @@
 """
-    repc(X::AbstractMatrix{Q}, group::Vector{String}) where Q <: Float
-    repc!(X::Matrix{Q}, group::Vector{String}) where Q <: Float
+    repc(X::AbstractMatrix{Q}, group::Vector{String}) where {Q<:Float}
+    repc!(X::Matrix{Q}, group::Vector{String}) where {Q<:Float}
 Center the columns of a matrix by group.
 * `X` : Data (n, p).
 * `group` : A variable (n) representing the group membership. Must be a `Vector{String}`.
@@ -16,13 +16,13 @@ i = 1 ; colmean(Xc[group .== mlev(group)[i], :])
 colmean(Xc)
 ```
 """ 
-function repc(X::AbstractMatrix{Q}, group::Vector{String}) where Q <: Float
+function repc(X::AbstractMatrix{Q}, group::Vector{String}) where {Q<:Float}
     zX = ensure_mat(copy(X))
     repc!(zX, group)
     zX
 end
 
-function repc!(X::Matrix{Q}, group::Vector{String}) where Q <: Float
+function repc!(X::Matrix{Q}, group::Vector{String}) where {Q<:Float}
     lev = mlev(group)
     xcenters = similar(X, nco(X))
     @inbounds for i in eachindex(lev)

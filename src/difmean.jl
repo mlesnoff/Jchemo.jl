@@ -1,5 +1,5 @@
 """
-    difmean(X1::AbstractMatrix{Q}, X2::AbstractMatrix{Q}; normx::Bool = false) where Q <: Float
+    difmean(X1::AbstractMatrix{Q}, X2::AbstractMatrix{Q}; normx::Bool = false) where {Q<:Float}
 Compute a 1-row detrimental matrix by difference of the column-means of two X-datasets.
 * `X1` : Spectra (n1, p).
 * `X2` : Spectra (n2, p).
@@ -48,7 +48,7 @@ axislegend(ax2, position = :cb, framevisible = false)
 f
 ```
 """
-function difmean(X1::AbstractMatrix{Q}, X2::AbstractMatrix{Q}; normx::Bool = false) where Q <: Float
+function difmean(X1::AbstractMatrix{Q}, X2::AbstractMatrix{Q}; normx::Bool = false) where {Q<:Float}
     xmeans1 = colmean(X1)
     xmeans2 = colmean(X2)
     if normx

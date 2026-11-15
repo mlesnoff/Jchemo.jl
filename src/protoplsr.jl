@@ -103,7 +103,7 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
 
-Base.@kwdef mutable struct ParProtoplsr{Q <: Float}
+Base.@kwdef mutable struct ParProtoplsr{Q<:Float}
     nlvdis::Int = 0                         
     metric::Symbol = :eucl  
     nproto::Int = 1
@@ -121,7 +121,7 @@ Base.@kwdef mutable struct ParProtoplsr{Q <: Float}
     seed::Union{Nothing, Int} = nothing     
 end
 
-struct Protoplsr{Q <: Float}
+struct Protoplsr{Q<:Float}
     fitm::Vector{Plsr}    
     fitm_emb::Union{Nothing, Plsr}
     Xproto::Matrix{Q}
