@@ -10,9 +10,9 @@ Partial Least Squares Regression (PLSR) with the SIMPLS algorithm (de Jong 1993)
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 **Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of de Jong (2013).
 

@@ -13,7 +13,7 @@ Keyword arguments:
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The general principle is in two steps: 
 1) The distribution of the outlierness of the reference class is estimated by Monte Carlo: `nsamp` 

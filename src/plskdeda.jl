@@ -13,7 +13,7 @@ Keyword arguments:
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * Eventual keyword arguments of function `dmkern` (bandwidth definition).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Same as function `plsqda` except that the class densities are estimated from `dmkern` instead of `dmnorm`.
 

@@ -10,7 +10,7 @@ Ridge regression (RR) implemented by SVD factorization.
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function computes a model with intercept. After `X` and y (a given column of `Y`) have been
 centered (an `X` eventually scaled) and weighted by sqrtw = sqrt.(`weights.values`), the function finds 

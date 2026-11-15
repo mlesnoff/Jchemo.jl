@@ -5,8 +5,8 @@
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `centr` : Symbol defining the X centering. Possible values are: `:none` (no centering), 
-    and `:std` (uncorrected STD; default). 
+* `centr` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
+    and `:mean` (default). 
 
 # Examples
 ```julia
@@ -78,8 +78,8 @@ end
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the X scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD).
+* `scal` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
+    `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
 ```julia 
@@ -155,10 +155,10 @@ end
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `centr` : Symbol defining the X centering. Possible values are: `:none` (no centering), 
-    and `:std` (uncorrected STD; default). 
-* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD).
+* `centr` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
+    and `:mean` (default). 
+* `scal` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
+    `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
 ```julia

@@ -5,7 +5,7 @@ Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` by the Euclidean distance between the observation and a 
 robust estimate of the center of the data (in the present function, the spatial median). Such outlierness was for instance 

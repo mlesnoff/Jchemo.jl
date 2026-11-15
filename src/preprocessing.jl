@@ -669,8 +669,10 @@ end
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `centr` : Boolean indicating if the centering in done.
-* `scal` : Boolean indicating if the scaling in done.
+* `centr` : Symbol defining the row centering. Possible values are: `:none` (no centering), 
+    and `:mean` (default). 
+* `scal` : Symbol defining the row scaling. Possible values are: `:none` (no scaling), 
+    `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
 ```julia
@@ -689,7 +691,8 @@ wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
 model = snv() 
-#model = snv(scal = :none) 
+#model = snv(; centr = :none) 
+#model = snv(; scal = :none) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -705,6 +708,8 @@ snv(; kwargs...) = JchemoModel(snv, nothing, kwargs)
 
 function snv(X; kwargs...)
     par = recovkw(ParSnv, kwargs).par
+    @assert @in(par.centr, [:none, :mean]) "Wrong value for argument 'centr'."
+    @assert @in(par.scal, [:none, :std, :prt, :mad]) "Wrong value for argument 'scal'."
     Snv(par)
 end
 
@@ -722,11 +727,24 @@ function transf(object::Snv, X)
 end
 
 function transf!(object::Snv, X::Matrix{Q}) where Q <: Float
-    n, p = size(X)
-    mu = object.par.centr ? rowmean(X) : zeros(Q, n)
-    sigma = object.par.scal ? rowstd(X) : ones(Q, n)
+    n = nro(X)
+    par = object.par
+    if par.centr == :none
+        mu = zeros(Q, n)
+    elseif par.centr == :mean 
+        mu = rowmean(X)
+    end
+    if par.scal == :none
+        sigma = ones(Q, n)
+    elseif par.scal == :std
+        sigma = rowstd(X)
+    elseif par.scal == :prt
+        sigma = colprt(X')
+    elseif par.scal == :mad
+        sigma = colmad(X')
+    end
     # Not faster: @Threads.threads
-    @inbounds for j = 1:p
+    @inbounds for j in axes(X, 2)
         X[:, j] .= (vcol(X, j) .- mu) ./ sigma
     end
 end

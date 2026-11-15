@@ -10,9 +10,9 @@ Tucker's inter-battery method of factor analysis
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3). The two blocks 

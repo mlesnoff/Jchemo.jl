@@ -10,7 +10,7 @@ Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 See function `rr` for details and examples.
 """ 

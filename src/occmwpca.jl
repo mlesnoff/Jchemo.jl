@@ -13,7 +13,7 @@ Keyword arguments:
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function implements an Occ by moving (i.e., sliding) window Pca (Mwpca) (e.g., Lennox et al 2001, Jeng 2010), 
 as follows.

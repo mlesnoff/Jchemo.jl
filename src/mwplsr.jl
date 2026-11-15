@@ -17,9 +17,9 @@ Keyword arguments:
 * `score` : Function computing the error rate (to minimize) in the CV (by default, `score = rmsep`).
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each PLS model.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function implements a moving (i.e., sliding) window PLS regression (Mwpls).
     

@@ -13,7 +13,7 @@ Keyword arguments:
     `:prop` (proportional), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 FDA by a weighted SVD factorization of the matrix of the class centers (after spherical transformaton). The function 
 gives the same results as function `fda`.

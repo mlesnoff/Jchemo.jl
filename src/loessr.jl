@@ -9,7 +9,7 @@ Keyword arguments:
     within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
     
 The function fits a LOESS model using package `Loess.jl'. 
 

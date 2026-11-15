@@ -10,9 +10,9 @@ Variable (feature) selection from partial covariance (Covsel).
 Keyword arguments:
 * `nlv` : Nb. variables to select.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 This is the Covsel algorithm described in Roger et al. 2011 for variable selection (see also 
 Höskuldsson, A., 1992).

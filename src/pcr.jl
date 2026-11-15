@@ -10,7 +10,7 @@ Principal component regression (PCR) with a SVD factorization.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
 ```julia

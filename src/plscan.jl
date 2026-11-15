@@ -10,9 +10,9 @@ Canonical partial least squares regression (Canonical PLS).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 Canonical PLS with the Nipals algorithm (Wold 1984, Tenenhaus 1998 chap.11), referred to as PLS-W2A 

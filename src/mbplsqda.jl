@@ -15,7 +15,7 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling of each block (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 

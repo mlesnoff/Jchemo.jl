@@ -13,7 +13,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block. Possible values are: `:none`, `:std` (uncorrected STD), 
+    the column scaling of each block. Possible values are: `:none` (no scaling), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 # References

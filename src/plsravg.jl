@@ -10,9 +10,9 @@ Averaging PLSR models with different numbers of  latent variables (PLSR-AVG).
 Keyword arguments:
 * `nlv` : A range of nb. of latent variables (LVs) to compute.
 * `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto) and `:mad` (MAD).
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Ensemblist method where the predictions are computed by averaging the predictions of a set of models built 
 with different numbers of LVs.

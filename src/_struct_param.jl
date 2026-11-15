@@ -67,8 +67,8 @@ Base.@kwdef mutable struct ParSavgol
 end 
 
 Base.@kwdef mutable struct ParSnv
-    centr::Bool = true
-    scal::Bool = true  
+    centr::Symbol = :mean
+    scal::Symbol = :std  
 end 
 
 Base.@kwdef mutable struct ParRmgap
