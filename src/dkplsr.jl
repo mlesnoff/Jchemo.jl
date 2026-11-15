@@ -111,9 +111,9 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     # Scaling
     xcenters = zeros(Q, p)
     ycenters = zeros(Q, q)
-    xscales = colscal(X, weights, par.scalx)
+    xscales = colscal(X, weights, par.scal)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scalx != :none
+    if par.scal != :none
         fscale!(X, xscales)
     end
     if par.scaly != :none

@@ -80,9 +80,9 @@ function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     p = nco(X)
     nlvstah = 500
     V = Q.(rand(0:1, p, nlvstah))
-    d = outstah(X, V; scal = par.scalx).d
+    d = outstah(X, V; scal = par.scal).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
-    d .= outeucl(X; scal = par.scalx).d
+    d .= outeucl(X; scal = par.scal).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
     w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10

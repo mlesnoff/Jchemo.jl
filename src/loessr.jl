@@ -59,8 +59,8 @@ function loessr(X, y; kwargs...)
     p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParLoessr{Q}, kwargs).par
-    xscales = colscal(X, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, par.scal)
+    if par.scal != :none
         X = fscale(X, xscales)
     end
     fitm = Loess.loess(X, y; span = par.span, degree = par.degree) 

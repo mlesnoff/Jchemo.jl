@@ -38,8 +38,8 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     ycenters = colmean(Y, weights)
     fcenter!(X, xcenters)
     fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, weights, par.scal)
+    if par.scal != :none
         fscale!(X, xscales)
     end
     # End

@@ -124,7 +124,7 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         end
         nlv = 1:par.nlv
         prior = isa(par.alpha, Vector{Symbol}) ? par.prior : [par.prior]        
-        scal = isa(par.scalx, Vector{Symbol}) ? par.scalx : [par.scalx]
+        scal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
         pars = mpar(alpha = par.alpha, prior = prior, scal = scal)
         model = plsqda()
         res = gridcv(model, vX, y; segm, score = par.score, nlv, pars).res

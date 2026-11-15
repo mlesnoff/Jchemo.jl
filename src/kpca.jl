@@ -73,8 +73,8 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where Q <
     n = nro(X)
     nlv = min(par.nlv, n)
     # X scaling
-    xscales = colscal(X, weights, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, weights, par.scal)
+    if par.scal != :none
         X = fscale(X, xscales)
     end
     # End

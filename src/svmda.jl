@@ -94,8 +94,8 @@ function svmda(X, y::Vector{String}; kwargs...)
     @assert in([:rbf, :pol, :lin, :tan])(kern) "Wrong value for argument 'kern'." 
     taby = tab(y)
     priors = taby.n / n  # output not used, only for information  
-    xscales = colscal(X, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, par.scal)
+    if par.scal != :none
         X = fscale(X, xscales)
     end
     if kern == :rbf

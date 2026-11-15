@@ -102,8 +102,8 @@ function rfda(X, y::Vector{String}; kwargs...)
     par = recovkw(ParRf{Q}, kwargs).par
     taby = tab(y)
     priors = taby.n / n  # output not used, only for information  
-    xscales = colscal(X, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, par.scal)
+    if par.scal != :none
         X = fscale(X, xscales)
     end
     n_subfeatures = round(Int, par.n_subfeatures)

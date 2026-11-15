@@ -124,9 +124,9 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     xcenters = zeros(Q, p)
     ycenters = colmean(Y, weights)
     fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scalx)
+    xscales = colscal(X, weights, par.scal)
     yscales = ones(Q, q)
-    if par.scalx != :none
+    if par.scal != :none
         fscale!(X, xscales)
     end
     # End

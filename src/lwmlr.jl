@@ -98,7 +98,7 @@ function lwmlr(X, Y; kwargs...)
     Y = ensure_mat(Y)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
-    xscales = colscal(X, par.scalx)
+    xscales = colscal(X, par.scal)
     Lwmlr(X, Y, xscales, par)
 end
 
@@ -117,7 +117,7 @@ function predict(object::Lwmlr, X)
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    if object.par.scalx != :none
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)

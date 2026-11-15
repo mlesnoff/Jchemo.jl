@@ -90,8 +90,8 @@ function rfr(X, y; kwargs...)
     p = nco(X)    
     Q = eltype(X)
     par = recovkw(ParRf{Q}, kwargs).par
-    xscales = colscal(X, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, par.scal)
+    if par.scal != :none
         X = fscale(X, xscales)
     end
     n_subfeatures = round(Int, par.n_subfeatures)

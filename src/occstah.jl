@@ -164,7 +164,7 @@ function occstah(X; kwargs...)
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     V = rand(MersenneTwister(par.seed), Q.(0:1), p, par.nlv)
-    res = outstah(X, V; scal = par.scalx)
+    res = outstah(X, V; scal = par.scal)
     d = res.d
     if par.typcut == :mad
         cutoff_d = median(d) + par.cri * madv(d)

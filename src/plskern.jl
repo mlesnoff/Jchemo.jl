@@ -112,16 +112,16 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     ycenters = colmean(Y, weights)  
     fcenter!(X, xcenters)
     fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scalx)
+    xscales = colscal(X, weights, par.scal)
     yscales = colscal(Y, weights, par.scaly)
-    if par.scalx != :none
+    if par.scal != :none
         fscale!(X, xscales)
     end
     if par.scaly != :none
         fscale!(Y, yscales)
     end
 
-    #xstand = cscale(X, weights; scal = par.scalx)
+    #xstand = cscale(X, weights; scal = par.scal)
     #transf!(xstand, X)
     #ystand = cscale(Y, weights; scal = par.scaly)
     #transf!(ystand, Y)

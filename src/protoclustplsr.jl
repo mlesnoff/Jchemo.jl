@@ -98,7 +98,7 @@ Base.@kwdef mutable struct ParProtoclustplsr{Q <: Float}
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                    
-    scalx::Symbol = :none    
+    scal::Symbol = :none    
     seed::Union{Nothing, Int} = nothing
 end
 
@@ -148,7 +148,7 @@ function protoclustplsr(X, Y; kwargs...)
         ) 
     ycla = string.(fitm_clust.assignments)
     fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, 
-        h = par.h, criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scalx) 
+        h = par.h, criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
     Protoclustplsr(fitm, fitm_emb, fitm_clust, ycla, par)   
 end
 

@@ -146,7 +146,7 @@ function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv
     # Xbl centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scalx, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
     # Y centering and scaling

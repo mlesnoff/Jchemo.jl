@@ -103,7 +103,7 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     end 
     par.nlv = nlv
     # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = false, scal = par.scalx, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centr = false, scal = par.scal, bscal = :none)
     # End
     transf!(fitm_bl, Xbl)
     # Scaling of Y

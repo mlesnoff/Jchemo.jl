@@ -88,9 +88,9 @@ function lwplsravg(X, Y; kwargs...)
     if par.nlvdis == 0
         fitm = nothing
     else
-        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scalx)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
     end
-    xscales = colscal(X, par.scalx)
+    xscales = colscal(X, par.scal)
     Lwplsravg(fitm, X, Y, xscales, par)
 end
 
@@ -111,7 +111,7 @@ function predict(object::Lwplsravg, X)
     squared = object.par.squared
     tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scalx != :none
+        if object.par.scal != :none
             zX1 = fscale(object.X, object.xscales)
             zX2 = fscale(X, object.xscales)
             res = getknn(zX1, zX2; metric, k)
@@ -129,7 +129,7 @@ function predict(object::Lwplsravg, X)
     end
     # End
     pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, 
-        nlv, scal = object.par.scalx, verbose = object.par.verbose).pred
+        nlv, scal = object.par.scal, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 

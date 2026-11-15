@@ -80,8 +80,8 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     # Centering/scaling X
     xcenters = colmean(X, weights)
     fcenter!(X, xcenters)
-    xscales = colscal(X, weights, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, weights, par.scal)
+    if par.scal != :none
         fscale!(X, xscales)
     end
     # by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]

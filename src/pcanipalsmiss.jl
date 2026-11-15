@@ -80,7 +80,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     xcenters = colmeanskip(X, weights)
     X .-= xcenters' 
     xscales = ones(Q, p)
-    if par.scalx != :none
+    if par.scal != :none
         xscales .= colstdskip(X, weights)
         X ./= xscales'
     end

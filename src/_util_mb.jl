@@ -104,8 +104,8 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
     if isa(par.centr, Bool)
         par.centr = [par.centr for k in eachindex(Xbl)]
     end
-    if isa(par.scalx, Symbol)
-        par.scalx = [par.scalx for k in eachindex(Xbl)]
+    if isa(par.scal, Symbol)
+        par.scal = [par.scal for k in eachindex(Xbl)]
     end
     xcenters = list(Vector{Q}, nbl)
     xscales = list(Vector{Q}, nbl)
@@ -121,8 +121,8 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
             fcenter!(zX, xcenters[k])
         end
         # Column scaling
-        xscales[k] = colscal(Xbl[k], weights, par.scalx[k])
-        if par.scalx[k] != :none
+        xscales[k] = colscal(Xbl[k], weights, par.scal[k])
+        if par.scal[k] != :none
             fscale!(zX, xscales[k])
         end
         # Xbl centering and scaling, and block scaling

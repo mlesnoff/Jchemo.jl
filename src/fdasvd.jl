@@ -41,8 +41,8 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     # Centering/scaling X
     xcenters = colmean(X, weights)
     fcenter!(X, xcenters)
-    xscales = colscal(X, weights, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, weights, par.scal)
+    if par.scal != :none
         fscale!(X, xscales)
     end
     res = matW(X, y, weights)

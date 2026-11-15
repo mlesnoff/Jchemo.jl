@@ -91,7 +91,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scalx, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = :none)
     transf!(fitm_bl, Xbl)
     # Y centering and scaling
     ycenters = colmean(Y, weights)

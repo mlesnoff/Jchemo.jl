@@ -93,8 +93,8 @@ function knnr(X, Y; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
-    xscales = colscal(X, par.scalx)
-    if par.scalx != :none
+    xscales = colscal(X, par.scal)
+    if par.scal != :none
         X = fscale(X, xscales)
     end
     Knnr(X, Y, xscales, par) 
@@ -117,7 +117,7 @@ function predict(object::Knnr, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if object.par.scalx != :none
+    if object.par.scal != :none
         zX1 = fscale(object.X, object.xscales)
         zX2 = fscale(X, object.xscales)
         res = getknn(zX1, zX2; metric, k)

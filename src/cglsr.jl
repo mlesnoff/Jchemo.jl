@@ -84,9 +84,9 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where Q <: Float
     ycenters = colmean(y)   
     fcenter!(X, xcenters)
     fcenter!(y, ycenters)    
-    xscales = colscal(X, par.scalx)
+    xscales = colscal(X, par.scal)
     yscales = ones(Q, q)
-    if par.scalx != :none
+    if par.scal != :none
         fscale!(X, xscales)
     end
     # Pre-allocation and initialization

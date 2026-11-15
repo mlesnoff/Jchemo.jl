@@ -724,7 +724,7 @@ end
 function transf!(object::Snv, X::Matrix{Q}) where Q <: Float
     n, p = size(X)
     mu = object.par.centr ? rowmean(X) : zeros(Q, n)
-    sigma = object.par.scalx ? rowstd(X) : ones(Q, n)
+    sigma = object.par.scal ? rowstd(X) : ones(Q, n)
     # Not faster: @Threads.threads
     @inbounds for j = 1:p
         X[:, j] .= (vcol(X, j) .- mu) ./ sigma
