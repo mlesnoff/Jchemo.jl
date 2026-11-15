@@ -728,19 +728,20 @@ end
 
 function transf!(object::Snv, X::Matrix{Q}) where Q <: Float
     n = nro(X)
-    par = object.par
-    if par.centr == :none
+    centr = object.par.centr
+    scal = object.par.scal
+    if centr == :none
         mu = zeros(Q, n)
-    elseif par.centr == :mean 
+    elseif centr == :mean 
         mu = rowmean(X)
     end
-    if par.scal == :none
+    if scal == :none
         sigma = ones(Q, n)
-    elseif par.scal == :std
+    elseif scal == :std
         sigma = rowstd(X)
-    elseif par.scal == :prt
+    elseif scal == :prt
         sigma = colprt(X')
-    elseif par.scal == :mad
+    elseif scal == :mad
         sigma = colmad(X')
     end
     # Not faster: @Threads.threads
