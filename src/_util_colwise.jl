@@ -463,11 +463,16 @@ function colscal(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}, scal::Sym
 end
 
 ##### Functions skipping missing data
+# When weighting: for each column, the weights are recomputed 
+# after removing the missing items
 
-colsumskip(X) = [Base.sum(skipmissing(x)) for x in eachcol(ensure_mat(X))]
+# Sum
+function colsumskip(X)
+    X = ensure_mat(X)
+    [Base.sum(skipmissing(x)) for x in eachcol(X)]
+end 
 
-function colsumskip(X::AbstractArray{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Q}) where {Q<:Float}
+function colsumskip(X::AbstMatVec{Union{Missing, Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
     X = ensure_mat(X)
     v = zeros(Q, nco(X))
     @inbounds for j in axes(X, 2)
@@ -478,24 +483,31 @@ function colsumskip(X::AbstractArray{Union{Missing, Q}},
     v
 end
 
-##
-colmeanskip(X) = [Statistics.mean(skipmissing(x)) for x in eachcol(ensure_mat(X))]
+# Mean
+function colmeanskip(X)
+    X = ensure_mat(X)
+    [Statistics.mean(skipmissing(x)) for x in eachcol(X)]
+end 
 
-colmeanskip(X::AbstractArray{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Q}) where {Q<:Float} = colsumskip(X, weights)
+colmeanskip(X::AbstMatVec{Union{Missing, Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float} = colsumskip(X, weights)
 
-##
-colstdskip(X) = [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
+# Std
+function colstdskip(X)
+    X = ensure_mat(X)
+    [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(X)]
+end 
 
-colstdskip(X::AbstractArray{Union{Missing, Q}}, 
+colstdskip(X::AbstMatVec{Union{Missing, Q}}, 
         weights::ProbabilityWeights{Q}) where {Q<:Float} = sqrt.(colvarskip(X, weights))
 
-##
-colvarskip(X) = [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(ensure_mat(X))]
+# Var
+function colvarskip(X)
+    X = ensure_mat(X)
+    [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(X)]
+end 
 
-function colvarskip(X::AbstractArray{Union{Missing, Q}}, 
-        weights::ProbabilityWeights{Q}) where {Q<:Float}
-    p = nco(X)
+function colvarskip(X::AbstMatVec{Union{Missing, Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
+    X = ensure_mat(X)
     v = colmeanskip(X, weights)
     @inbounds for j in axes(X, 2)
         s = ismissing.(vcol(X, j))

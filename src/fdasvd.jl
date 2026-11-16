@@ -38,7 +38,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     par = recovkw(ParFda{Q}, kwargs).par
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
-    # Centering/scaling X
+    # Centering and scaling
     xcenters = colmean(X, weights)
     fcenter!(X, xcenters)
     xscales = colscal(X, weights, par.scal)

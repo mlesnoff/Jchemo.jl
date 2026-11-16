@@ -91,18 +91,18 @@ function xfit(object, X, nlv::Int = nco(object.T))
     xfit!(object, copy(ensure_mat(X)), nlv)
 end
 
-function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
+function xfit!(object, X::Matrix{Union{Missing, Q}}, nlv::Int = nco(object.T)) where {Q<:Float}
     nlv = min(nlv, nco(object.T))
     if nlv == 0
         @inbounds for i in axes(X, 1)
-            X[i, :] .= object.xcenters
+            X[i, :] .= object.cs.centers
         end
     else
         T = transf(object, X, nlv)
         mul!(X, T, vcol(object.V, 1:nlv)')
-        # Coming back to the original scale
-        fscale!(X, 1 ./ object.xscales)    
-        fcenter!(X, -object.xcenters)
+        # Coming back to the original location and scale
+        fscale!(X, 1 ./ object.cs.scales)    
+        fcenter!(X, -object.cs.centers)
     end
     X
 end

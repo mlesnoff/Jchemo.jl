@@ -9,8 +9,8 @@ Value of d always lies between 0 and 4.
 * For large n, d ~ 2(1 − ρ), where ρ is the sample autocorrelation of `x` at lag 1. 
     Value d = 2 therefore indicates no autocorrelation.  
 * Values d substantially less than 2 (and, particularly, close to 0 or < 1) indicate that successive 
-    elements of `x` are positively correlated. 
-* If d > 2, successive elements of `x` are negatively correlated.
+    items of `x` are positively correlated. 
+* If d > 2, successive items of `x` are negatively correlated.
 
 In chemometrics and for PLS models, d has for instance been applied to loading vectors, loading 
 weights and b-coefficients to help to select the model dimensionnality (Rutledge & Barros, 2002).  

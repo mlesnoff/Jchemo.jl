@@ -165,7 +165,10 @@ function dupl(X; digits::Int = 3)
 end
 
 """
-    ensure_df(X)
+    ensure_df(X::DataFrame)
+    ensure_df(X::Matrix)
+    ensure_df(X::AbstractMatrix)
+    ensure_df(X::Vector)
 Reshape `X` to a dataframe if necessary.
 """
 ensure_df(X::DataFrame) = X
@@ -174,22 +177,26 @@ ensure_df(X::AbstractMatrix) = DataFrame(X, :auto)
 ensure_df(X::Vector) = DataFrame([X], :auto)
 
 """
-    ensure_mat(X)
+    ensure_mat(X::Matrix)
+    ensure_mat(X::AbstractMatrix)
+    ensure_mat(X::Vector)
+    ensure_mat(X::Number)
+    ensure_mat(X::DataFrame)
+    ensure_mat(X::SubArray)
 Reshape `X` to a matrix if necessary.
 """
 ensure_mat(X::Matrix) = X
-ensure_mat(X::AbstractMatrix) = Matrix(X)
-ensure_mat(X::Vector) = reshape(X, :, 1)
 
-ensure_mat(X::Matrix{Union{Missing, Q}}) where {Q<:Float} = Q.(X)
-ensure_mat(X::AbstractMatrix{Union{Missing, Q}}) where {Q<:Float} = Matrix(Q.(X))
-ensure_mat(X::Vector{Union{Missing, Q}}) where {Q<:Float} = reshape(Q.(X), :, 1)
+ensure_mat(X::AbstractMatrix) = Matrix(X)
+
+ensure_mat(X::Vector) = reshape(X, :, 1)
 
 ensure_mat(X::Number) = reshape([X], 1, 1)
 
 ensure_mat(X::DataFrame) = Matrix(X)
 
-function ensure_mat(X::SubArray)  # for views
+# For views
+function ensure_mat(X::SubArray)  
     if isa(X, AbstractVector)
         return Matrix(reshape(X, length(X), 1))
     else
@@ -262,7 +269,7 @@ Return the indexes found in a vector of values existing in another vector.
 
 The function returns a vector of indexes, as follows:
     
-* For each element of `x`, the returned index is the one where the value of this element is found in `y`. 
+* For each item of `x`, the returned index is the one where the value of this item is found in `y`. 
     If several values of `y` correspond to the given value, the function returns the first index.
     
 * The returned index vector is in the same order as `x` and of same length as `x`.
@@ -411,8 +418,8 @@ nro(X) = size(X, 1)
 
 """ 
     out(x::AbstractVector{Q}, y::Union{Vector{Q}, Vector{Union{Missing, Q}}}) where {Q<:Float}
-Return if elements of a vector are strictly outside of a given range.
-* `x` : A quantititative variable whose each element is evaluated to be out of or in the range 
+Return if items of a vector are strictly outside of a given range.
+* `x` : A quantititative variable whose each item is evaluated to be out of or in the range 
     (min, max) defined from `y`.
 * `y` : A quantititative variable on which is computed the range (min, max).
 
@@ -747,7 +754,7 @@ end
     vrow(X::AbstractMatrix, i)
     vrow(X::DataFrame, i)
     vrow(x::Vector, i)
-View of the i-th row(s) of a matrix `X`, or of the i-th element(s) of vector `x`.
+View of the i-th row(s) of a matrix `X`, or of the i-th item(s) of vector `x`.
 """ 
 vrow(X, i) = view(X, i, :) 
 vrow(X::DataFrame, i) = view(Matrix(X), i, :)
@@ -757,7 +764,7 @@ vrow(x::Vector, i) = view(x, i)
     vcol(X::AbstractMatrix, j)
     vcol(X::DataFrame, j)
     vcol(x::Vector, j)
-View of the j-th column(s) of a matrix `X`, or of the j-th element(s) of vector `x`.
+View of the j-th column(s) of a matrix `X`, or of the j-th item(s) of vector `x`.
 """ 
 vcol(X, j) = view(X, :, j)
 vcol(x::Vector, i) = view(x, i)
@@ -854,7 +861,7 @@ end
 
 """ 
     @plist x
-Display each element of a named list.
+Display each item of a named list.
 * `x` : A list.
 """
 macro plist(x)

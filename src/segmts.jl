@@ -15,7 +15,7 @@ If `group` is used (must be a vector of length `n`), the function samples groups
 observations. Such a group-sampling is required when the data are structured by groups and when the response to 
 predict is correlated within groups. This prevents underestimation of the generalization error.
 
-The function returns a list (vector) of `rep` elements. Each element of the list is a vector of the indexes 
+The function returns a list (vector) of `rep` items. Each item of the list is a vector of the indexes 
 (positions within 1:`n`) of the sampled observations.  
 
 # Examples

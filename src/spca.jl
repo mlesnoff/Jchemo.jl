@@ -26,8 +26,8 @@ by alternating least squares regressions (Nipals) that includes a thresholding o
 (sparsity step). Function `spca` provides the thresholding methods '1' and '2' reported in Shen & Huang 2008 
 Lemma 2 (`:soft` and `:hard`):
 * In Shen & Huang 2008 (see p.2020) the tuning parameter is a cardinality constraint defined by the 
-    number of zero elements in the loadings vector, referred to as degree of sparsity. Conversely, the present 
-    function `spca` uses the number of non-zero elements `nvar` (equal to p - degree of sparsity).
+    number of zero items in the loadings vector, referred to as degree of sparsity. Conversely, the present 
+    function `spca` uses the number of non-zero items `nvar` (equal to p - degree of sparsity).
 * See the code of function `snipals_shen` for the details on how is computed (given a `nvar` value) the cutoff_d 
     'lambda' used inside the soft thresholding function (Shen & Huang 2008). Discrepancies with other softwares 
     may occur when the loadings vector contains tied values (in such cases, results can depend on the method 
@@ -126,7 +126,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q
     # End 
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
-    # Centering/scaling X
+    # Centering and scaling
     xcenters = colmean(X, weights)
     fcenter!(X, xcenters)
     xscales = colscal(X, weights, par.scal)

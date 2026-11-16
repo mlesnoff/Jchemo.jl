@@ -88,8 +88,7 @@ struct Pca{Q<:Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
-    xcenters::Vector{Q}
-    xscales::Vector{Q}
+    cs::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::Union{ParPca, ParPcapp, ParPcaout}
 end
@@ -98,8 +97,7 @@ struct Pcanipals{Q<:Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
-    xcenters::Vector{Q}
-    xscales::Vector{Q}
+    cs::Union{Cscale{Q}, NamedTuple}      # pcanipals, pcanipalsmiss
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}    # pcanipals, pcanipalsmiss
     par::ParPcanipals
@@ -112,12 +110,15 @@ struct Spca{Q<:Float}
     beta::Matrix{Q}
     sel::Vector{Int}
     sellv::Vector{Vector{Int}}
-    xcenters::Vector{Q}
-    xscales::Vector{Q}
+    cs::Cscale{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}
     par::ParSpca
 end
+
+
+####
+
 
 struct Kpca{Q<:Float}
     X::Matrix{Q}

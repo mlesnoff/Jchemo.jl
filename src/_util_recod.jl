@@ -157,8 +157,8 @@ Recode a categorical variable by indexes of sorted levels.
 * `x` : A categorical variable (class membership) (n). Must be a `Vector{String}`.
 * `lev` : Vector containing the new categorical levels. Must be a `Vector{String}`. 
 
-Replace element `x[i]` (i = 1, ..., n) by the index of the level in `lev` corresponding to `x[i]`, 
-see examples. Internally, the function makes unique and sorts the elements of vector `lev`.
+Replace item `x[i]` (i = 1, ..., n) by the index of the level in `lev` corresponding to `x[i]`, 
+see examples. Internally, the function makes unique and sorts the items of vector `lev`.
 
 *Warning*: All levels in `x` must be contained in `lev`.
 
@@ -184,7 +184,7 @@ Recode a categorical variable by successive integer indexes.
 The levels contained in `x` are made unique and sorted, and stored in a vector v. If length(v) = k,
 an index vector, vind, is built such as:
 * vind = [`start`; `start` + 1; ...; `start` + k - 1] 
-The function replaces element `x[i]` by the index in vind corresponding to `x[i]`, see examples.
+The function replaces item `x[i]` by the index in vind corresponding to `x[i]`, see examples.
 
 # Examples
 ```julia
@@ -251,7 +251,7 @@ Recode an index variable by levels.
 * `x` : Index variable (n) to recode. Must be a `Vector{<: Signed}`.
 * `lev` : Vector containing categorical levels. Must be a `Vector{String}`.
 
-Assuming levsorted = 'sort(unique(lev))', each element `x[i]` (i = 1, ..., n) is replaced by `levsorted[x[i]]`, 
+Assuming levsorted = 'sort(unique(lev))', each item `x[i]` (i = 1, ..., n) is replaced by `levsorted[x[i]]`, 
 see examples.
 
 *Warning*: Vector `x` must contain integers withinh [1, nlev], where nlev is the number of levels in `lev`. 

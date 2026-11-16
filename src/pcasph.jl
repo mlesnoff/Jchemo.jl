@@ -68,13 +68,9 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    # Centering/scaling X
-    xcenters = Jchemo.colmedspa(X, delta = Q(0.001))
-    fcenter!(X, xcenters)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
+    # Centering and scaling
+    cs = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(cs, X)
     # Sphere
     Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)
     fweightr!(Xtt, sqrt.(weights.values))
@@ -87,6 +83,6 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     T .= T[:, s]
     V .= V[:, s]
     sv .= sv[s]
-    Pca(T, V, sv, xcenters, xscales, weights, par) 
+    Pca(T, V, sv, cs, weights, par) 
 end
 

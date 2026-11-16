@@ -46,7 +46,7 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:
     par = recovkw(ParRp{Q}, kwargs).par 
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     p = nco(X)
-    # Centering/scaling X
+    # Centering and scaling
     xcenters = colmean(X, weights)
     fcenter!(X, xcenters)
     xscales = colscal(X, weights, par.scal)

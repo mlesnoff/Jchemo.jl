@@ -77,13 +77,10 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    # Centering/scaling X
-    xcenters = colmean(X, weights)
-    fcenter!(X, xcenters)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
+    # Centering and scaling
+    cs = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(cs, X)
+    # End
     # by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
@@ -93,7 +90,7 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     sv[sv .< 0] .= 0
     T = vcol(res.U, 1:nlv) * Diagonal(sv[1:nlv])
     fweightr!(T, 1 ./ sqrtw)
-    Pca(T, V, sv, xcenters, xscales, weights, par) 
+    Pca(T, V, sv, cs, weights, par)
 end
 
 """ 
@@ -104,11 +101,11 @@ Compute principal components (PCs = scores T) from a fitted model and X-data.
 * `X` : X-data for which PCs are computed.
 * `nlv` : Nb. PCs to compute.
 """ 
-transf(object::Union{Pca, Pcanipals, Fda}, X) = fcscale(X, object.xcenters, object.xscales) * object.V
+transf(object::Union{Pca, Pcanipals, Fda}, X) = fcscale(X, object.cs.centers, object.cs.scales) * object.V
 
 function transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    fcscale(X, object.xcenters, object.xscales) * vcol(object.V, 1:nlv)
+    fcscale(X, object.cs.centers, object.cs.scales) * vcol(object.V, 1:nlv)
 end
 
 """
@@ -121,7 +118,7 @@ function Base.summary(object::Union{Pca, Pcanipals}, X)
     X = ensure_mat(X)
     nlv = nco(object.T)
     weights = object.weights
-    X = fcscale(X, object.xcenters, object.xscales)
+    X = fcscale(X, object.cs.centers, object.cs.scales)
     sstot = frob2(X, weights)  # = (||X||_D)^2 = tr(X' * D * X)
     TT = fweightr(object.T.^2, weights.values)  # matrix required for 'contr_ind'
     tt = colsum(TT) 

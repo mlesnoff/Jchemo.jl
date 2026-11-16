@@ -21,6 +21,8 @@ https://cran.r-project.org/
 
 # Examples
 ```julia
+using Jchemo
+
 X = [1 2. missing 4 ; 4 missing 6 7 ; 
     missing 5 6 13 ; missing 18 7 6 ; 
     12 missing 28 7] 
@@ -34,8 +36,7 @@ gs = false
 model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scal)
 fit!(model, X)
 @names model 
-@names model.fitm
-fitm = model.fitm ;
+@names fitm = model.fitm
 fitm.niter
 fitm.sv
 fitm.V
@@ -76,20 +77,21 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    # Centering/scaling X
-    xcenters = colmeanskip(X, weights)
-    X .-= xcenters' 
-    xscales = ones(Q, p)
+    # Centering and scaling
+    centers = colmeanskip(X, weights)
+    X .-= centers' 
+    scales = ones(Q, p)
     if par.scal != :none
-        xscales .= colstdskip(X, weights)
-        X ./= xscales'
+        scales .= colstdskip(X, weights)
+        X ./= scales'
     end
+    cs = (centers = centers, scales)
     # End
     sqrtw = sqrt.(weights.values)
     @. X = sqrtw * X
-    T = similar(xcenters, n, nlv)
-    V = similar(xcenters, p, nlv)
-    sv = similar(xcenters, nlv)
+    T = similar(centers, n, nlv)
+    V = similar(centers, p, nlv)
+    sv = similar(centers, nlv)
     niter = list(Int, nlv)
     if par.gs
         UUt = zeros(Q, n, n)
@@ -112,6 +114,6 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
         end
     end
     @. T = (1 / sqrtw) * T
-    Pcanipals(T, V, sv, xcenters, xscales, weights, niter, par) 
+    Pcanipals(T, V, sv, cs, weights, niter, par) 
 end
 

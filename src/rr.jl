@@ -25,7 +25,7 @@ in ridge regression. arXiv:1205.0686.
 Hastie, T., Tibshirani, R., 2004. Efficient quadratic regularization for expression arrays. 
 Biostatistics 5, 329-340. https://doi.org/10.1093/biostatistics/kxh010
 
-Hastie, T., Tibshirani, R., Friedman, J., 2009. The elements of statistical learning: data mining, 
+Hastie, T., Tibshirani, R., Friedman, J., 2009. The items of statistical learning: data mining, 
 inference, and prediction, 2nd ed. Springer, New York.
 
 Hoerl, A.E., Kennard, R.W., 1970. Ridge Regression: Biased Estimation for Nonorthogonal Problems. 

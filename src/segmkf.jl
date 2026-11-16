@@ -16,7 +16,7 @@ If `group` is used, the function samples entire groups (= batches) of observatio
 Such a block-sampling is required when data is structured by blocks and when the response to predict is correlated 
 within blocks. This prevents underestimation of the generalization error.
 
-The function returns a list (vector) of `rep` elements. Each element of the list contains `K` segments (= `K` vectors). 
+The function returns a list (vector) of `rep` items. Each item of the list contains `K` segments (= `K` vectors). 
 Each segment contains the indexes (position within 1:`n`) of the sampled observations.    
 
 # Examples

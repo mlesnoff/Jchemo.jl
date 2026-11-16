@@ -302,7 +302,7 @@
 - **dmnormlog** Logarithm of the normal probability density estimation
 - **dmkern** Gaussian kernel density estimation (KDE)
 - **pval** Compute p-value(s) for a distribution, a vector or an ECDF
-- **out** Return if elements of a vector are strictly outside of a given range
+- **out** Return if items of a vector are strictly outside of a given range
 
 ## VARIABLE IMPORTANCE
 
@@ -432,7 +432,7 @@ See also bagging methods.
 - **@pmod** Shortcut for function **parentmodule**
 - **@names** Return the names of the sub-objects contained in a object
 - **@pars** Display the keyword arguments (with their default values) of a function
-- **@plist** Display each element of a list
+- **@plist** Display each item of a list
 - **@type** Display the type and size of a dataset
 
 *Summarize a datase*

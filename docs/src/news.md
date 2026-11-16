@@ -725,7 +725,7 @@ Some specific modified points are:
     - **nscda**: Discrimination by nearest shrunken centroids.
     - **pcanipals**: PCA by NIPALS algorithm.
     - **pcanipalsmiss**: PCA by NIPALS algorithm allowing missing data.
-    - **plist** Print each element of a list.
+    - **plist** Print each item of a list.
     - **rowmeanskip**, **rowstdskip**, **rowsumskip**, **rowvarskip**: Row-wise operations allowing missing data.
     - **soft**: Soft thresholding.
     - **softmax**: Softmax function.
@@ -786,7 +786,7 @@ Some specific modified points are:
 
 - New
     - **dmkern**: Gaussian kernel density estimation (KDE)..
-    - **out**: Return if elements of a vector are strictly outside of a given range.
+    - **out**: Return if items of a vector are strictly outside of a given range.
     - **pval**: Compute p-value(s) for a distribution, an ECDF or a vector.
 
 - Modifications
@@ -1069,7 +1069,7 @@ the Makie's backend (e.g., CairoMakie).
 - New 
     - **colmad**: Median absolute deviation (MAD) of each column of a matrix.
     - **occsdod**: One-class classification (OCC) using a consensus between PCA/PLS score (SD) and orthogonal (OD) distances.
-    - **replacedict**: Replace the elements of a vector by levels defined in a dictionary.
+    - **replacedict**: Replace the items of a vector by levels defined in a dictionary.
     - **stah**: Stahel-Donoho outlierness measure.
 
 - Modifications
@@ -1116,7 +1116,7 @@ the Makie's backend (e.g., CairoMakie).
 ## *Version 0.0.17* 
 
 - New 
-    - **replacebylev2** : Replace the elements of an index-vector by levels.
+    - **replacebylev2** : Replace the items of an index-vector by levels.
 
 - Modifications 
     - **aggstat** : Sorting order for dataframes.
