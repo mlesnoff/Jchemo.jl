@@ -30,7 +30,7 @@ X = [1 2. missing 4 ; 4 missing 6 7 ;
 nlv = 3 
 tol = 1e-15
 scal = :none
-#scal = std
+#scal = :std
 gs = false
 #gs = true
 model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scal)
@@ -38,18 +38,19 @@ fit!(model, X)
 @names model 
 @names fitm = model.fitm
 fitm.niter
+fitm.cs
 fitm.sv
 fitm.V
 fitm.T
-# Orthogonality 
-# only if gs = true
+
+# Orthogonality: only if gs = true
 fitm.T' * fitm.T
 fitm.V' * fitm.V
 
 # Impute missing data in X
 model = pcanipalsmiss(; nlv = 2, gs = true) ;
 fit!(model, X)
-Xfit = xfit(model.fitm, X)
+Xfit = xfit(model.fitm)
 s = ismissing.(X)
 X_imp = copy(X)
 X_imp[s] .= Xfit[s]
