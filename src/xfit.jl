@@ -1,8 +1,9 @@
 """
+    xfit(object, nlv::Int = nco(object.T))
     xfit(object, X, nlv::Int = nco(object.T))
     xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
-Fit a matrix from a bilinear model (e.g., PCA).
-* `object` : The reduction dimension model that was fitted on the data (e.g., object `fitm` returned by functions 
+Fit a matrix from a bilinear reduction model (e.g., PCA).
+* `object` : The model of dimension reduction that was fitted on the data (e.g., object `fitm` returned by functions 
     `pcasvd` or `plskern`).
 * `X` : X-data to be approximated from the model. Must be in the same scale as the X-data used to fit
     model `object`, i.e. before centering and eventual scaling.
@@ -87,11 +88,28 @@ xfit(fitm, Xnew)
 xresid(fitm, Xnew)
 ```
 """ 
+function xfit(object, nlv::Int = nco(object.T))
+    nlv = min(nlv, nco(object.T))
+    if nlv == 0
+        n = nro(object.T)
+        p = nro(object.V)
+        @inbounds for i in axes(X, 1)
+            X = reshape(reduce(vcat, fill(object.cs.centers, n)), n, p)
+        end
+    else
+        X = vcol(object.T, 1:nlv) * vcol(object.V, 1:nlv)'
+        # Coming back to the original location and scale
+        fscale!(X, 1 ./ object.cs.scales)    
+        fcenter!(X, -object.cs.centers)
+    end
+    X
+end
+
 function xfit(object, X, nlv::Int = nco(object.T))  
     xfit!(object, copy(ensure_mat(X)), nlv)
 end
 
-function xfit!(object, X::Matrix{Union{Missing, Q}}, nlv::Int = nco(object.T)) where {Q<:Float}
+function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
     nlv = min(nlv, nco(object.T))
     if nlv == 0
         @inbounds for i in axes(X, 1)
@@ -106,3 +124,4 @@ function xfit!(object, X::Matrix{Union{Missing, Q}}, nlv::Int = nco(object.T)) w
     end
     X
 end
+

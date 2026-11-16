@@ -472,7 +472,7 @@ function colsumskip(X)
     [Base.sum(skipmissing(x)) for x in eachcol(X)]
 end 
 
-function colsumskip(X::AbstMatVec{Union{Missing, Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
+function colsumskip(X::Union{AbstMatVec{Q}, AbstMatVec{Union{Missing, Q}}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
     X = ensure_mat(X)
     v = zeros(Q, nco(X))
     @inbounds for j in axes(X, 2)
@@ -489,7 +489,7 @@ function colmeanskip(X)
     [Statistics.mean(skipmissing(x)) for x in eachcol(X)]
 end 
 
-colmeanskip(X::AbstMatVec{Union{Missing, Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float} = colsumskip(X, weights)
+colmeanskip(X::Union{AbstMatVec{Q}, AbstMatVec{Union{Missing, Q}}}, weights::ProbabilityWeights{Q}) where {Q<:Float} = colsumskip(X, weights)
 
 # Std
 function colstdskip(X)
@@ -497,7 +497,7 @@ function colstdskip(X)
     [Statistics.std(skipmissing(x); corrected = false) for x in eachcol(X)]
 end 
 
-colstdskip(X::AbstMatVec{Union{Missing, Q}}, 
+colstdskip(X::Union{AbstMatVec{Q}, AbstMatVec{Union{Missing, Q}}}, 
         weights::ProbabilityWeights{Q}) where {Q<:Float} = sqrt.(colvarskip(X, weights))
 
 # Var
@@ -506,7 +506,7 @@ function colvarskip(X)
     [Statistics.var(skipmissing(x); corrected = false) for x in eachcol(X)]
 end 
 
-function colvarskip(X::AbstMatVec{Union{Missing, Q}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
+function colvarskip(X::Union{AbstMatVec{Q}, AbstMatVec{Union{Missing, Q}}}, weights::ProbabilityWeights{Q}) where {Q<:Float}
     X = ensure_mat(X)
     v = colmeanskip(X, weights)
     @inbounds for j in axes(X, 2)
