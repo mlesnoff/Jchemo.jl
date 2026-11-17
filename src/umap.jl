@@ -94,7 +94,8 @@ f
 """ 
 umap(; kwargs...) = JchemoModel(umap, nothing, kwargs)
 
-function umap(X; kwargs...)  # Q is forced to be Float32
+function umap(X; kwargs...) 
+    # Q is forced to be Float32
     # UMAP.jl 0.3.0 seems force the object embedding to be Float32.
     # Therefore, the computations below are also forced to be Float32.
     Q = Float32
@@ -112,15 +113,14 @@ function umap(X; kwargs...)  # Q is forced to be Float32
     else
         s = collect(1:n)
     end
-    # X scaling
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    # X scaling 
+    cs = cscale(X; centr = :none, scal = par.scal)
+    transf!(cs, X)
+    # End
     # Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
     fitm = UMAP.fit(Matrix(X'), nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
     T = Matrix(fitm.embedding')
-    Umap(fitm, T, xscales, s, par)
+    Umap(fitm, T, s, cs, par)
 end
 
 """ 

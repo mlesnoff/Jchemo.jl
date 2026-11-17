@@ -63,7 +63,7 @@ end
 
 """ 
     transf(object::Center, X)
-    transf!(object::Center, X::Matrix{Q}) where {Q<:Float}
+    transf!(object::Center, X::AbstractMatrix{Q}) where {Q<:Float}
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -74,7 +74,7 @@ function transf(object::Center, X)
     X
 end
 
-function transf!(object::Center, X::Matrix{Q}) where {Q<:Float}
+function transf!(object::Center, X::AbstractMatrix{Q}) where {Q<:Float}
     if !(object.par.typ == :none)
         fcenter!(X, object.centers)
     end
@@ -149,7 +149,7 @@ end
 
 """ 
     transf(object::Scale, X)
-    transf!(object::Scale, X::Matrix{Q}) where {Q<:Float}
+    transf!(object::Scale, X::AbstractMatrix{Q}) where {Q<:Float}
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -160,7 +160,7 @@ function transf(object::Scale, X)
     X
 end
 
-function transf!(object::Scale, X::Matrix{Q}) where {Q<:Float}
+function transf!(object::Scale, X::AbstractMatrix{Q}) where {Q<:Float}
     if !(object.par.typ == :none)
         fscale!(X, object.scales)
     end
@@ -169,7 +169,7 @@ end
 """
     cscale()
     cscale(X, weights; kwargs...)
-    cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    cscale(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
@@ -224,7 +224,7 @@ function cscale(X; kwargs...)
     cscale(X, weights; kwargs...)
 end
 
-function cscale(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+function cscale(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = Jchemo.recovkw(ParCscale, kwargs).par 
     centers = center(X, weights; typ = par.centr).centers
     scales = scale(X, weights; typ = par.scal).scales
@@ -233,7 +233,7 @@ end
 
 """ 
     transf(object::Cscale, X)
-    transf!(object::Cscale, X::Matrix{Q}) where {Q<:Float}
+    transf!(object::Cscale, X::AbstractMatrix{Q}) where {Q<:Float}
 Compute the preprocessed data from a model.
 * `object` : Model.
 * `X` : X-data to transform.
@@ -244,7 +244,7 @@ function transf(object::Cscale, X)
     X
 end
 
-function transf!(object::Cscale, X::Matrix{Q}) where {Q<:Float}
+function transf!(object::Cscale, X::AbstractMatrix{Q}) where {Q<:Float}
     if !(object.par.centr == :none)
         fcenter!(X, object.centers)
     end

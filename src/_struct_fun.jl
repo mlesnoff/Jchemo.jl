@@ -143,10 +143,8 @@ struct Covsel{Q<:Float}
     yss::Vector{Q}
     xsstot::Q
     ysstot::Q 
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::ParCovsel
 end
@@ -154,16 +152,15 @@ end
 struct Rp{Q<:Float}
     T::Matrix{Q}
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}
-    xcenters::Vector{Q}
-    xscales::Vector{Q}
+    cs::Cscale{Q}
     par::ParRp
 end
 
 struct Umap{Q<:Float} 
     fitm::UMAP.UMAPResult    
     T::Matrix{Q}
-    xscales::Vector{Q}
     s::Vector{Int}
+    cs::Cscale{Q}
     par::ParUmap
 end 
     
@@ -177,8 +174,7 @@ struct Fda{Q<:Float}
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
-    xcenters::Vector{Q}
-    xscales::Vector{Q}
+    cs::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::ParFda
 end
@@ -202,10 +198,8 @@ struct Cca{Q<:Float}
     Wx::Matrix{Q}
     Wy::Matrix{Q}
     d::Vector{Q}    
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     bscales::Vector{Q}    
     weights::ProbabilityWeights{Q}
     par::ParCca
@@ -222,10 +216,8 @@ struct Ccawold{Q<:Float}
     Wy::Matrix{Q}
     TTx::Vector{Q}
     TTy::Vector{Q}  
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     bscales::Vector{Q}    
     weights::ProbabilityWeights{Q}
     niter::Vector{Int}
@@ -244,10 +236,8 @@ struct Plscan{Q<:Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}    
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     bscales::Vector{Q}   
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
@@ -261,10 +251,8 @@ struct Plstuck{Q<:Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     bscales::Vector{Q}   
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
@@ -276,10 +264,8 @@ struct Rasvd{Q<:Float}
     Bx::Matrix{Q}
     Wy::Matrix{Q}
     lambda::Vector{Q}    
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     bscales::Vector{Q}   
     weights::ProbabilityWeights{Q}
     par::ParRasvd
@@ -343,10 +329,8 @@ struct Plsr{Q<:Float}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::ParPlsr
 end
@@ -358,10 +342,8 @@ struct Plswold{Q<:Float}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}   
     par::Union{ParPlswold, ParRrr}
@@ -370,10 +352,8 @@ end
 struct Cglsr{Q<:Float}
     B::Matrix{Q}
     g::Vector{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     F::Union{Nothing, Matrix{Q}}
     par::ParCglsr
 end
@@ -395,10 +375,8 @@ struct Splsr{Q<:Float}
     TT::Vector{Q}
     sel::Vector{Int}
     sellv::Vector{Vector{Int}}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}   # snipals_shen when Y with q > 1
     par::ParSplsr
@@ -441,10 +419,8 @@ struct Kplsr{Q<:Float}
     R::Matrix{Q}
     DKt::Matrix{Q}
     vtot::Matrix{Q}   
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     iter::Vector{Int}
     kwargs::Base.Pairs
@@ -455,10 +431,8 @@ struct Dkplsr{Q<:Float}
     fitm::Plsr
     X::Matrix{Q}
     K::Matrix{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     kwargs::Base.Pairs
     par::ParKplsr
 end
@@ -524,10 +498,8 @@ struct Rr{Q<:Float}
     V::Adjoint{Q}
     TtY::Matrix{Q}
     sv::Vector{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::ParRr
 end
@@ -547,10 +519,8 @@ struct Krr{Q<:Float}
     sv::Vector{Q}
     DKt::Matrix{Q}
     vtot::Matrix{Q}
-    xcenters::Vector{Q}
-    ycenters::Vector{Q}
-    xscales::Vector{Q}
-    yscales::Vector{Q}
+    csx::Cscale{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     kwargs::Base.Pairs
     par::ParKrr
@@ -560,21 +530,21 @@ end
 
 struct Loessr{Q<:Float}
     fitm::Loess.LoessModel
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     par::ParLoessr
 end
 
 struct Knnr{Q<:Float}
     X::Matrix{Q}
     Y::Matrix{Q}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     par::ParKnn
 end
 
 struct Lwmlr{Q<:Float}
     X::Matrix{Q}
     Y::Matrix{Q}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     par::ParLwmlr
 end
 
@@ -582,7 +552,7 @@ struct Lwplsr{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     Y::Matrix{Q}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     par::ParLwplsr
 end
 
@@ -590,7 +560,7 @@ struct Lwplsravg{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     Y::Matrix{Q}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     par::ParLwplsravg
 end
 
@@ -598,14 +568,14 @@ end
 
 struct Svmr{Q<:Float64}
     fitm::LIBSVM.SVM
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     par::ParSvm
 end
 
 struct Treer{Q<:Float}
     fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
-    xscales::Vector{Q}
     featur::Vector{Int}
+    csx::Cscale{Q}
     par::Union{ParTree, ParRf}
 end
 

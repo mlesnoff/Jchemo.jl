@@ -105,6 +105,9 @@ transf(object::Union{Pca, Pcanipals, Fda}, X) = fcscale(X, object.cs.centers, ob
 
 function transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
+    # Eventually to consider in the future (for all 'transf' funcions in Jchemo):
+    # To win time, could add a check on 'object.par.scal' if scaling.
+    # If not, use fcenter instead of fcscale
     fcscale(X, object.cs.centers, object.cs.scales) * vcol(object.V, 1:nlv)
 end
 

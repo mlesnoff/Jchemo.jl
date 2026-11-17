@@ -56,7 +56,7 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:
         V = rpmatli(p, par.nlv, Q; s = par.s)
     end 
     T = X * V
-    Rp(T, V, xcenters, xscales, par)
+    Rp(T, V, cs, par)
 end
 
 """ 
