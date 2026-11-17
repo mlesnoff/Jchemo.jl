@@ -46,7 +46,7 @@ scal = :std
 model = kplsrda(; nlv, kern, gamma, scal) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm_emb) 

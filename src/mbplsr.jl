@@ -53,8 +53,7 @@ bscal = :frob
 model = mbplsr(; nlv, bscal)
 fit!(model, Xbltrain, ytrain)
 @names model 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 typeof(fitm.fitm)
 @names fitm.fitm
 

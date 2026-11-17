@@ -55,7 +55,7 @@ max_depth = 10
 model = treeda(; n_subfeatures, max_depth) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
@@ -111,10 +111,10 @@ function predict(object::Treeda, X)
     m = nro(X)
     # Tree
     if (@names object.fitm)[1] == :node
-        pred = apply_tree(object.fitm, fscale(X, object.xscales))
+        pred = apply_tree(object.fitm, fscale(X, object.cs.scales))
     # Forest 
     else
-        pred = apply_forest(object.fitm, fscale(X, object.xscales); use_multithreading = object.par.mth)
+        pred = apply_forest(object.fitm, fscale(X, object.cs.scales); use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)
     (pred = pred,)

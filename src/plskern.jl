@@ -59,7 +59,7 @@ model = plskern(; nlv) ;
 #model = plssimp(; nlv) ;
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 @names fitm
 
 @head transf(model, Xtrain)
@@ -193,13 +193,13 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Union{Plsr, Plswold, Splsr}, X)
     # Could be fcscale! but would change X. If too heavy ==> Makes summary!
-    fcscale(X, object.xcenters, object.xscales) * object.R
+    fcscale(X, object.cs.centers, object.cs.scales) * object.R
 end
 
 function transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     # Could be fcscale! but would change X. If too heavy ==> Makes summary!
-    fcscale(X, object.xcenters, object.xscales) * vcol(object.R, 1:nlv)
+    fcscale(X, object.cs.centers, object.cs.scales) * vcol(object.R, 1:nlv)
 end
 
 """
@@ -218,9 +218,9 @@ function coef(object::Union{Plsr, Plswold, Splsr})
     theta = object.C'  # regression coefs of Y on T
     Dy = Diagonal(object.yscales)
     # To not use for Spcr (R not computed; while for Pcr, R = V)
-    B = fweightr(object.R, 1 ./ object.xscales) * theta * Dy
+    B = fweightr(object.R, 1 ./ object.cs.scales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.ycenters' .- object.xcenters' * B
+    int = object.ycenters' .- object.cs.centers' * B
     (B = B, int, nlv = object.par.nlv)
 end
 
@@ -228,8 +228,8 @@ function coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     theta = vcol(object.C, 1:nlv)'  
     Dy = Diagonal(object.yscales)
-    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.xscales) * theta * Dy
-    int = object.ycenters' .- object.xcenters' * B
+    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.cs.scales) * theta * Dy
+    int = object.ycenters' .- object.cs.centers' * B
     (B = B, int, nlv)
 end
 
@@ -300,7 +300,7 @@ Summarize the fitted model.
 function Base.summary(object::Union{Plsr, Plswold, Splsr}, X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
-    X = fcscale(X, object.xcenters, object.xscales)
+    X = fcscale(X, object.cs.centers, object.cs.scales)
     # Could be fcscale! but changes X. If too heavy ==> Makes summary!
     sstot = frob2(X, object.weights)       # = sum(object.weights.values' * X.^2)
     tt = object.TT

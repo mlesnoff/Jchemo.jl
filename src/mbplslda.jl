@@ -77,7 +77,7 @@ model = mbplslda(; nlv, bscal, scal)
 #model = mbplskdeda(; nlv, bscal, prior = :unif, scal)
 fit!(model, Xbltrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 

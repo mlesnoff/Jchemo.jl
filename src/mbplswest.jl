@@ -61,8 +61,7 @@ bscal = :frob
 model = mbplswest(; nlv, bscal)
 fit!(model, Xbltrain, ytrain)
 @names model 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 
 @head transf(model, Xbltrain)
 @head fitm.T

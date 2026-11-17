@@ -62,7 +62,7 @@ tau = 1e-4
 model = rrr(; nlv, tau) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 @names fitm
 
 @head transf(model, Xtrain)

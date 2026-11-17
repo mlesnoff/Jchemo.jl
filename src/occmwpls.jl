@@ -104,8 +104,7 @@ gamma = .5
 #gamma = 0. # i.e., only OD is considered
 model = occmwpls(; npoint, nlv, typcut, alpha, gamma) 
 fit!(model, Xtrain_ref, ytrain_ref)
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 
 @head fitm.window            # range of each window
 @head centrw = fitm.centrw   # central point of each window

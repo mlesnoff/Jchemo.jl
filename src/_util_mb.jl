@@ -156,7 +156,7 @@ end
 
 function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float} 
     @inbounds for k in eachindex(Xbl)
-        fcscale!(Xbl[k], object.xcenters[k], object.xscales[k])
+        fcscale!(Xbl[k], object.cs.centers[k], object.cs.scales[k])
         Xbl[k] ./= object.bscales[k]
     end
 end

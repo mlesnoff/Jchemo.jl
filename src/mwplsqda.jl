@@ -55,8 +55,7 @@ h = 1.
 alpha = [.01, .8] 
 model = mwplsqda(; npoint = 31, rep = 1, h, alpha)
 fit!(model, Xtrain, ytrain) 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head fitm.window            # range of each window 
 @head centrw = fitm.centrw   # central point of each window
 

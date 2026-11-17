@@ -49,7 +49,7 @@ meth = :soft ; nvar = 10
 model = splsrda(; nlv, meth, nvar) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm_emb) 

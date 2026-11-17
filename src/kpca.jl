@@ -46,8 +46,7 @@ nlv = 3
 kern = :rbf ; gamma = 1e-4
 model = kpca(; nlv, kern, gamma) 
 fit!(model, Xtrain)
-fitm = model.fitm ;
-@names fitm
+@names fitm = model.fitm 
 
 @head fitm.T
 @head transf(model, Xtrain)
@@ -72,11 +71,9 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     n = nro(X)
     nlv = min(par.nlv, n)
-    # X scaling
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    # X scaling (the centering is done on the Gram matrix)
+    cs = cscale(X, weights; centr = :none, scal = par.scal)
+    transf!(cs, X)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
     K = fkern(X, X; kwargs...)  
@@ -93,7 +90,7 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<
     sv = sqrt.(eig)
     V = fweightr(fscale(U, sv[1:nlv]), sqrtw)   # In the future: fscale!
     T = Kc * V       # T = Kc * V = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, V, sv, eig, DKt, vtot, xscales, weights, kwargs, par)
+    Kpca(X, Kt, T, V, sv, eig, DKt, vtot, cs, weights, kwargs, par)
 end
 
 """ 
@@ -109,7 +106,7 @@ transf(object::Kpca, X) = transf(object, X, object.par.nlv)
 function transf(object::Kpca, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     w = object.weights.values
     DKt = fweightr(K', w)
     vtot = sum(DKt; dims = 1)  # keep matrix format

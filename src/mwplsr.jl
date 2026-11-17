@@ -107,8 +107,7 @@ h = 1.
 #h = .2   # sharper
 model = mwplsr(; h)
 fit!(model, Xtrain, ytrain) 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head fitm.window            # range of each window 
 @head centrw = fitm.centrw   # central point of each window
 

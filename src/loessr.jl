@@ -77,7 +77,7 @@ function predict(object::Loessr, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
-    pred = Loess.predict(object.fitm, fscale(X, object.xscales))
+    pred = Loess.predict(object.fitm, fscale(X, object.cs.scales))
     (pred = reshape(Q.(pred), m, 1),)
 end
 

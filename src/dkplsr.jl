@@ -50,7 +50,7 @@ kern = :rbf ; gamma = 1e-1 ; scal = :none
 model = dkplsr(; nlv, kern, gamma, scal) ;
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm)
@@ -136,13 +136,13 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Dkplsr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
+    K = fkern(fscale(X, object.cs.scales), object.X; values(object.kwargs)...)
     transf(object.fitm, K)
 end
 
 function transf(object::Dkplsr, X, nlv::Int)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; values(object.kwargs)...)
+    K = fkern(fscale(X, object.cs.scales), object.X; values(object.kwargs)...)
     transf(object.fitm, K, nlv)
 end
 
@@ -167,7 +167,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Dkplsr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     pred = predict(object.fitm, K).pred * Diagonal(object.yscales)
     (pred = pred, nlv = object.par.nlv) 
 end
@@ -180,7 +180,7 @@ function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     pred = predict(object.fitm, K, nlv).pred
     D = Diagonal(object.yscales)
     @inbounds for i in eachindex(nlv)

@@ -48,7 +48,7 @@ model = kplslda(; nlv, gamma)
 #model = kplskdeda(; nlv, gamma, a = .5) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 

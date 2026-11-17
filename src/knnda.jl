@@ -43,7 +43,7 @@ metric = :eucl ; h = 2. ; k = 10
 model = knnda(; metric, h, k) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 
@@ -101,8 +101,8 @@ function predict(object::Knnda, X)
     criw = object.par.criw
     squared = object.par.squared
     if object.par.scal != :none
-        zX1 = fscale(object.X, object.xscales)
-        zX2 = fscale(X, object.xscales)
+        zX1 = fscale(object.X, object.cs.scales)
+        zX2 = fscale(X, object.cs.scales)
         res = getknn(zX1, zX2; metric, k)
     else
         res = getknn(object.X, X; metric, k)

@@ -73,7 +73,7 @@ bscal = :none
 model = mbplsrda(; nlv, bscal, scal)
 fit!(model, Xbltrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 

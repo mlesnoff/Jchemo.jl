@@ -33,7 +33,7 @@ nlv = 15
 model = pcr(; nlv) ;
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 @names fitm
 typeof(fitm.fitm)
 @names fitm.fitm

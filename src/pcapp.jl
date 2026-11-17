@@ -65,7 +65,7 @@ function pcapp!(X::Matrix{Q}; kwargs...) where {Q<:Float}
     par.nlv = nlv
     nsim = par.nsim
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
+    cs = cscale(X; centr = :mean, scal = par.scal)
     transf!(cs, X)
     # End
     T = similar(X, n, nlv)

@@ -60,8 +60,7 @@ wl = parse.(Float64, wlst)
 nlv = 10
 model = covsel(; nlv)
 fit!(model, X, y)
-fitm = model.fitm ;
-@names fitm
+@names fitm = model.fitm 
 
 fitm.sel      # index of the selected variable for each LV
 wl[fitm.sel]

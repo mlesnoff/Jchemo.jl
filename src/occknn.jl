@@ -78,8 +78,7 @@ model = occknn(; nsamp, k, cri)
 #model = occlknn(; nsamp, k = 10, cri)
 fit!(model, Xtrain_ref)
 @names model 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head dtrain_ref = fitm.d   #  results for the 'nsamp' sampled training observations
 cutoff_d = fitm.cutoff_d
 
@@ -183,7 +182,7 @@ function predict(object::Occknn, X)
     X = ensure_mat(X)
     m = nro(X)
     # kNN distance
-    res = getknn(object.X, fscale(X, object.xscales); k = object.par.k + 1, metric = object.par.metric) 
+    res = getknn(object.X, fscale(X, object.cs.scales); k = object.par.k + 1, metric = object.par.metric) 
     d = similar(X, m)
     @inbounds for i in eachindex(d)
         d[i] = object.par.algo(res.d[i][2:end])

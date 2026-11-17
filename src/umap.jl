@@ -75,8 +75,7 @@ metric = Jchemo.Euclidean()
 n_neighbors = 20 ; min_dist = .4 
 model = umap(; psamprow, nlv, metric, n_neighbors, min_dist)  
 fit!(model, Xtrain)
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head T = fitm.T
 @head T_all = transf(model, Xtrain)   # full training scores after refitting 
 @head Ttest = transf(model, Xtest)
@@ -133,6 +132,6 @@ Compute latent variables (LVs; = scores) from a fitted model.
 function transf(object::Umap, X)
     Q = Float32  # see above
     X = Q.(ensure_mat(X))
-    Matrix(UMAP.transform(object.fitm, Matrix(fscale(X, object.xscales)')).embedding')
+    Matrix(UMAP.transform(object.fitm, Matrix(fscale(X, object.cs.scales)')).embedding')
 end
 

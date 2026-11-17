@@ -136,7 +136,7 @@ function predict(object::Rda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.xscales)).pred)
+        dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.cs.scales)).pred)
     end
     A = object.priors' .* dens 
     posterior = fscale(A', rowsum(A))'    # Could be replaced by similar as in fscale! 

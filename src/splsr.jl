@@ -82,7 +82,7 @@ nvar = 20
 model = splsr(; nlv, meth, nvar) ;
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 @names fitm
 @head fitm.T
 @head fitm.W

@@ -33,7 +33,7 @@ ytest = y[s.test]
 model = mlr()
 fit!(model, Xtrain, ytrain) 
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 @names fitm
 
 coef(model) 

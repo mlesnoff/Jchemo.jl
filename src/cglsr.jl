@@ -170,16 +170,16 @@ For a model fitted from X (n, p) and Y (n, q), the returned objects are :
 """ 
 function coef(object::Cglsr)
     W = Diagonal(object.yscales)    
-    B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.xscales) *  W
-    int = object.ycenters' .- object.xcenters' * B
+    B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.cs.scales) *  W
+    int = object.ycenters' .- object.cs.centers' * B
     (B = B, int, nlv = object.par.nlv)
 end
 
 function coef(object::Cglsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     W = Diagonal(object.yscales)    
-    B = fweightr(vcol(object.B, nlv), 1 ./ object.xscales) *  W
-    int = object.ycenters' .- object.xcenters' * B
+    B = fweightr(vcol(object.B, nlv), 1 ./ object.cs.scales) *  W
+    int = object.ycenters' .- object.cs.centers' * B
     (B = B, int, nlv)
 end
 

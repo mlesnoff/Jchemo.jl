@@ -138,8 +138,7 @@ gamma = .5
 #gamma = 0. # i.e., only OD is considered
 model = occmwpca(; npoint, nlv, pctvar, typcut, alpha, gamma) 
 fit!(model, Xtrain_ref)
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 
 @head fitm.d                 # standardized outlierness ('dstand_cut' in 'outsdod') of the training observations for each window 
 @head centrw = fitm.centrw   # central point of each window

@@ -73,8 +73,7 @@ bscal = :frob
 model = cpca(; nlv, bscal, scal, tol = 1e-15)
 fit!(model, Xbl)
 @names model 
-fitm = model.fitm ;
-@names fitm
+@names fitm = model.fitm 
 
 # Global scores 
 @head transf(model, Xbl)

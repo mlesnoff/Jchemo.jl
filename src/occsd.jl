@@ -125,8 +125,7 @@ model = occsd(cri = 2.5)
 #model = occsd(nlv = 5, cri = 2.5)
 fit!(model, fitm_emb) 
 @names model 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head dtrain_ref = fitm.d
 cutoff_d = fitm.cutoff_d
 

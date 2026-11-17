@@ -129,7 +129,7 @@ struct Kpca{Q<:Float}
     eig::Vector{Q}    
     DKt::Matrix{Q}
     vtot::Matrix{Q}
-    xscales::Vector{Q} 
+    cs::Cscale{Q}
     weights::ProbabilityWeights{Q}
     kwargs::Base.Pairs
     par::ParKpca

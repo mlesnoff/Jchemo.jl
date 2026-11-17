@@ -75,7 +75,9 @@ function transf(object::Center, X)
 end
 
 function transf!(object::Center, X::Matrix{Q}) where {Q<:Float}
-    fcenter!(X, object.centers)
+    if !(object.par.typ == :none)
+        fcenter!(X, object.centers)
+    end
 end
 
 """
@@ -159,7 +161,9 @@ function transf(object::Scale, X)
 end
 
 function transf!(object::Scale, X::Matrix{Q}) where {Q<:Float}
-    fscale!(X, object.scales)
+    if !(object.par.typ == :none)
+        fscale!(X, object.scales)
+    end
 end
 
 """
@@ -241,6 +245,11 @@ function transf(object::Cscale, X)
 end
 
 function transf!(object::Cscale, X::Matrix{Q}) where {Q<:Float}
-    fcscale!(X, object.centers, object.scales)
+    if !(object.par.centr == :none)
+        fcenter!(X, object.centers)
+    end
+    if !(object.par.scal == :none)
+        fscale!(X, object.scales)
+    end
 end
 

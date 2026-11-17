@@ -177,7 +177,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Krr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values
@@ -189,7 +189,7 @@ end
 
 function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where {T<:Float}
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values

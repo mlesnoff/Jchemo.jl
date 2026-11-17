@@ -51,7 +51,7 @@ nvar = 10
 model = spcr(; nlv, meth, nvar, defl = :t) ;
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 @names fitm
 typeof(fitm.fitm)
 @names fitm.fitm

@@ -65,7 +65,7 @@ cost = 1000 ; epsilon = .5
 model = svmda(; kern, gamma, cost, epsilon) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm) 
@@ -130,7 +130,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmda, X)
     X = ensure_mat(X)
     m = nro(X)
-    pred = svmpredict(object.fitm, fscale(X, object.xscales)')[1]
+    pred = svmpredict(object.fitm, fscale(X, object.cs.scales)')[1]
     pred = reshape(pred, m, 1)
     (pred = pred,)
 end

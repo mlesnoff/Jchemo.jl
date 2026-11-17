@@ -63,7 +63,7 @@ model = plsrda(; nlv)
 #model = plsrda(; nlv, prior = :unif) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm_emb) 

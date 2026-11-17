@@ -91,8 +91,7 @@ model = occstah(; nlv = 5000, cri = 2., scal = :std)
 #model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
 fit!(model, Xtrain_ref)
 @names model 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head dtrain_ref = fitm.d
 cutoff_d = fitm.cutoff_d
 

@@ -181,7 +181,7 @@ transf(object::Kplsr, X) = transf(object, X, object.par.nlv)
 function transf(object::Kplsr, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.xscales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values) 
     vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', object.weights.values))  

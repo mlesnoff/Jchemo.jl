@@ -155,8 +155,7 @@ model = occdds()
 #model = occdds(nlv = 5)
 fit!(model, fitm_emb, Xtrain_ref)
 @names model 
-fitm = model.fitm ;
-@names fitm 
+@names fitm = model.fitm  
 @head dtrain_ref = fitm.d
 cutoff_d = fitm.cutoff_d
 

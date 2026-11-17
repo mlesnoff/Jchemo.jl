@@ -61,7 +61,7 @@ model = plslda(; nlv)
 #model = plsqda(; nlv, alpha = .1) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 

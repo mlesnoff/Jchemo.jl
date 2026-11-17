@@ -60,7 +60,7 @@ lb = 1e-5
 model = rrda(; lb) 
 fit!(model, Xtrain, ytrain)
 @names model
-fitm = model.fitm ;
+@names fitm = model.fitm 
 typeof(fitm)
 @names fitm
 typeof(fitm.fitm_emb) 
