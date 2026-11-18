@@ -137,9 +137,9 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fthresh = thresh_hard
     end
     # Y centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centr = :mean, scal = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y, weights; centr = :mean, scal = par.scal)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
     transf!(csy, Y)
     # XtY 
     fweightr!(Y, weights.values)

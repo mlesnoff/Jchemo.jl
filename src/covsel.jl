@@ -106,9 +106,9 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centr = :mean, scal = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y, weights; centr = :mean, scal = par.scal)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
     transf!(csy, Y)
     # End
     sqrtw = sqrt.(weights.values)
