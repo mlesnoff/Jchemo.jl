@@ -140,16 +140,16 @@ model = occmwpca(; npoint, nlv, pctvar, typcut, alpha, gamma)
 fit!(model, Xtrain_ref)
 @names fitm = model.fitm  
 
-@head fitm.d                 # standardized outlierness ('dstand_cut' in 'outsdod') of the training observations for each window 
-@head centrw = fitm.centrw   # central point of each window
+@head centrw = fitm.centrw      # central point of each window
 
-@head fitm.nlv_emb           # nb. of LVs selected for each window
+@head fitm.nlv_emb              # nb. of LVs selected for each window
 tab(fitm.nlv_emb)
 
-@head fitm.d                 # outlierness of the training observations for each window 
-                             # (1 row = 1 observation, 1 column = 1 window)
+@head fitm.d                    # standardized outlierness ('dstand_cut' in 'outsdod')
+                                # of the training observations for each window
+                                # (1 row = 1 observation, 1 column = 1 window) 
+@head cutoff_d = fitm.cutoff_d  # cutoff (computed from d) of each window
 
-@head cutoff_d = fitm.cutoff_d    # cutoff (computed from d) of each window
 @head pwout = fitm.pwout          # proportion of windows with outlierness d > cutoff_d, for each training observations 
 cutoff_pwout = fitm.cutoff_pwout  # final cutoff computed from pwout 
 

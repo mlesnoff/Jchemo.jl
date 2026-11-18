@@ -112,7 +112,8 @@ fit!(model, Xtrain_ref, ytrain_ref)
 @head fitm.nlv_emb           # nb. of LVs selected for each window
 tab(fitm.nlv_emb)
 
-@head fitm.d                 # standardized outlierness ('dstand_cut' in 'outsdod') of the training observations for each window 
+@head fitm.d                 # standardized outlierness ('dstand_cut' in 'outsdod') 
+                             # of the training observations for each window 
                              # (1 row = 1 observation, 1 column = 1 window)
 
 @head cutoff_d = fitm.cutoff_d    # cutoff (computed from d) of each window
