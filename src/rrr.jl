@@ -12,7 +12,7 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance for the Nipals algorithm.
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -190,7 +190,7 @@ function rrr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
      end
      Rx = Wx * inv(Vx' * Wx)
      fweightr!(Tx, invsqrtw)
-     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, xcenters, ycenters, xscales, yscales, weights, niter, par)
+     Plswold(Tx, Vx, Rx, Wx, Wytild, TTx, csx, csy, weights, niter, par)
 end
 
 

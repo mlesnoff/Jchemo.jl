@@ -11,7 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -165,7 +165,7 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     end
     DU = fweightr(U, weights.values)
     zR = DU * inv(T' * fweightr(Kc, weights.values) * DU)   # = DU * inv(T' * D * Kc * DU)
-    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, xcenters, ycenters, xscales, yscales, weights, iter, kwargs, par) 
+    Kplsr(X, Kt, T, C, U, zR, DKt, vtot, csx, csy, weights, iter, kwargs, par) 
 end
 
 """ 

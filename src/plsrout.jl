@@ -10,7 +10,7 @@ Robust PLSR using outlierness.
 Keyword arguments:
 * `nlv` : Nb. of latent variables (LVs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). 

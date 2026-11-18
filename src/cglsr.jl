@@ -153,7 +153,7 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where {Q<:Float}
         end 
         # End
     end
-    Cglsr(B, gnew, xcenters, ycenters, xscales, yscales, F, par)
+    Cglsr(B, gnew, csx, csy, F, par)
 end
 
 """

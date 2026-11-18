@@ -119,7 +119,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     Ty = Y * Wy
     TTx = colnorm(Tx, weights).^2
     TTy = colnorm(Ty, weights).^2
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, xcenters, ycenters, xscales, yscales, bscales, 
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, csx, csy, bscales, 
         weights, par)
 end
 

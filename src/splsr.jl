@@ -14,7 +14,7 @@ Keyword arguments:
     of variables for each LV), or a vector of integers (of length `nlv`).   
 * `tol` : Only when q > 1; tolerance used in function `snipals_shen`. 
 * `maxit` : Only when q > 1; maximum nb. of iterations used in function `snipals_shen`.    
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).    
@@ -137,18 +137,10 @@ function splsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
         fthresh = thresh_hard
     end
     # Y centering and scaling
-    xcenters = colmean(X, weights) 
-    ycenters = colmean(Y, weights)  
-    fcenter!(X, xcenters)
-    fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scal)
+    transf!(csy, Y)
     # XtY 
     fweightr!(Y, weights.values)
     XtY = X' * Y

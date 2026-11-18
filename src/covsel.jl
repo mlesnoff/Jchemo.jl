@@ -9,7 +9,7 @@ Variable (feature) selection from partial covariance (Covsel).
 * `weights` : Weights (n) of the observations. Internally normalized to sum to 1.
 Keyword arguments:
 * `nlv` : Nb. variables to select.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -105,19 +105,11 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv  
-    # Y centering and scaling
-    xcenters = colmean(X, weights) 
-    ycenters = colmean(Y, weights)  
-    fcenter!(X, xcenters)
-    fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    # Centering and scaling
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scal)
+    transf!(csy, Y)
     # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
@@ -161,7 +153,7 @@ function covsel!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
         xss[i] = frob2(X)
         yss[i] = frob2(Y)
     end
-    Covsel(sel, selc, C, xss, yss, xsstot, ysstot, xcenters, ycenters, xscales, yscales, weights, par)
+    Covsel(sel, selc, C, xss, yss, xsstot, ysstot, csx, csy, weights, par)
 end
 
 """ 

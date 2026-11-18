@@ -11,7 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to consider. 
 * `kern` : Kernel function used to compute the Gram matrices, for instance `krbf` (default), 
     and `kpol`. See the respective functions.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -123,7 +123,7 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
     K = fkern(X, X; kwargs...)     
     fitm = plskern!(K, Y, weights; kwargs...)
-    Dkplsr(fitm, X, K, xcenters, ycenters, xscales, yscales, kwargs, par) 
+    Dkplsr(fitm, X, K, csx, csy, kwargs, par) 
 end
 
 """ 

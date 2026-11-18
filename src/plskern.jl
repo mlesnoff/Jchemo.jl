@@ -9,7 +9,7 @@ Partial least squares regression (PLSR) with the "improved kernel algorithm #1" 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -108,18 +108,10 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     par.nlv = nlv
     # Centering and scaling
     
-    xcenters = colmean(X, weights) 
-    ycenters = colmean(Y, weights)  
-    fcenter!(X, xcenters)
-    fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scal)
+    transf!(csy, Y)
 
     #xstand = cscale(X, weights; scal = par.scal)
     #transf!(xstand, X)
@@ -180,7 +172,7 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
         C[:, a] .= c
         TT[a] = tt
     end
-    Plsr(T, V, R, W, C, TT, xcenters, ycenters, xscales, yscales, weights, par)
+    Plsr(T, V, R, W, C, TT, csx, csy, weights, par)
 end
 
 """ 

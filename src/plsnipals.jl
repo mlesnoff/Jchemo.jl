@@ -9,7 +9,7 @@ Partial Least Squares Regression (PLSR) with the Nipals algorithm.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -99,6 +99,6 @@ function plsnipals!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         TT[a] = tt
     end
     R = W * inv(V' * W)
-    Plsr(T, V, R, W, C, TT, xcenters, ycenters, xscales, yscales, weights, par)
+    Plsr(T, V, R, W, C, TT, csx, csy, weights, par)
 end
 

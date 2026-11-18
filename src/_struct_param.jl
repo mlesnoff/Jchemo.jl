@@ -166,7 +166,7 @@ end
 
 Base.@kwdef mutable struct ParCovsel
     nlv::Int = 1    
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none
 end 
 
@@ -191,7 +191,7 @@ Base.@kwdef mutable struct ParCca{Q<:Float}
     tau::Q = 1e-8
     tol::Q = 1e-8   
     maxit::Int = 200    
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
@@ -201,14 +201,14 @@ Base.@kwdef mutable struct ParCcawold{Q<:Float}
     tau::Q = 1e-8
     tol::Q = 1e-8   
     maxit::Int = 200    
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
 
 Base.@kwdef mutable struct ParPls2bl    # plscan, plstuck
     nlv::Int = 1     
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
@@ -216,7 +216,7 @@ end
 Base.@kwdef mutable struct ParRasvd{Q<:Float}
     nlv::Int = 1     
     tau::Q = 1e-8
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
     bscal::Symbol = :none   
 end 
@@ -229,7 +229,7 @@ end
 
 Base.@kwdef mutable struct ParPlsr    # all except plswold
     nlv::Int = 1                    
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 
 
@@ -237,7 +237,7 @@ Base.@kwdef mutable struct ParPlswold{Q<:Float}
     nlv::Int = 1     
     tol::Q = 1e-8
     maxit::Int = 200  
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 
 
@@ -245,7 +245,7 @@ Base.@kwdef mutable struct ParCglsr
     nlv::Int = 1 
     gs::Bool = true       
     filt::Bool = true              
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
 end  
 
@@ -259,14 +259,14 @@ Base.@kwdef mutable struct ParRrr{Q<:Float}
     tau::Q = 1e-8       
     tol::Q = 1e-8  
     maxit::Int = 200     
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParPlsrout{Q<:Float}
     nlv::Int = 1 
     prm::Q = .3         
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 
 
@@ -276,7 +276,7 @@ Base.@kwdef mutable struct ParSplsr{Q<:Float}
     nvar::Union{Int, Vector{Int}} = 1
     tol::Q = 1e-8 # used when Y (n, q) (snipals)
     maxit::Int = 200              # used when Y (n, q) (snipals)
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none                   
 end 
 
@@ -296,13 +296,13 @@ end
 Base.@kwdef mutable struct ParPlsravg
     algo::Symbol = :unif                   
     nlv::AbstractVector{Int} = 1:1                    
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPlsravgunif
     nlv::AbstractVector{Int} = 1:1                    
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 
 
@@ -314,7 +314,7 @@ Base.@kwdef mutable struct ParKplsr{Q<:Float}
     degree::Int = 1 
     tol::Q = 1e-8   
     maxit::Int = 200            
-    scal::Symbol = :none  
+    scalx::Symbol = :none  
     scaly::Symbol = :none                   
 end 
 

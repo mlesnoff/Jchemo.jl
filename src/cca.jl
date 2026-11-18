@@ -159,7 +159,7 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     d = d[1:nlv]
     Tx = fweightr(X * Wx, invsqrtw) 
     Ty = fweightr(Y * Wy, invsqrtw)
-    Cca(Tx, Ty, Wx, Wy, d, xcenters, ycenters, xscales, yscales, bscales, weights, par)
+    Cca(Tx, Ty, Wx, Wy, d, csx, csy, bscales, weights, par)
 end
 
 """ 

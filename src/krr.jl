@@ -144,7 +144,7 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     sv = sqrt.(res.S)
     # UtDY = U' * D^(1/2) * Y
     UtDY = U' * fweightr(Y, sqrtw)
-    Krr(X, K, U, UtDY, sv, DKt, vtot, xcenters, ycenters, xscales, yscales, weights, kwargs, par) 
+    Krr(X, K, U, UtDY, sv, DKt, vtot, csx, csy, weights, kwargs, par) 
 end
 
 """

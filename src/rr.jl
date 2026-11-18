@@ -104,7 +104,7 @@ function rr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
     res = LinearAlgebra.svd!(X)
     sv = res.S
     TtY = Diagonal(sv) * res.U' * Y
-    Rr(res.V, TtY, sv, xcenters, ycenters, xscales, yscales, weights, par)
+    Rr(res.V, TtY, sv, csx, csy, weights, par)
 end
 
 """

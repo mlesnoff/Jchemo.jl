@@ -150,7 +150,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     # End
     fweightr!(Tx, invsqrtw)
     fweightr!(Ty, invsqrtw)   
-    Rasvd(Tx, Ty, Bx, Wy, lambda, xcenters, ycenters, xscales, yscales, bscales, weights, par)
+    Rasvd(Tx, Ty, Bx, Wy, lambda, csx, csy, bscales, weights, par)
 end
 
 """ 
