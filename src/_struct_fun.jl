@@ -135,19 +135,6 @@ struct Kpca{Q<:Float}
     par::ParKpca
 end
 
-struct Covsel{Q<:Float}
-    sel::Vector{Int}
-    selc::Vector{Q}
-    C::Matrix{Q}
-    xss::Vector{Q}
-    yss::Vector{Q}
-    xsstot::Q
-    ysstot::Q 
-    csx::Cscale{Q}
-    csy::Cscale{Q}
-    weights::ProbabilityWeights{Q}
-    par::ParCovsel
-end
 
 struct Rp{Q<:Float}
     T::Matrix{Q}
@@ -164,6 +151,20 @@ struct Umap{Q<:Float}
     par::ParUmap
 end 
     
+struct Covsel{Q<:Float}
+    sel::Vector{Int}
+    selc::Vector{Q}
+    C::Matrix{Q}
+    xss::Vector{Q}
+    yss::Vector{Q}
+    xsstot::Q
+    ysstot::Q 
+    csx::Cscale{Q}
+    csy::Cscale{Q}
+    weights::ProbabilityWeights{Q}
+    par::ParCovsel
+end
+
 struct Fda{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}

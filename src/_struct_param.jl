@@ -157,17 +157,17 @@ Base.@kwdef mutable struct ParUmap{Q<:Float}
     scal::Symbol = :none 
 end 
 
+Base.@kwdef mutable struct ParCovsel
+    nlv::Int = 1    
+    scalx::Symbol = :none  
+    scaly::Symbol = :none
+end 
+
 Base.@kwdef mutable struct ParFda{Q<:Float}
     nlv::Int = 1     
     lb::Q = 1e-6 
     prior::Union{Symbol, Vector{Q}} = :prop                  
     scal::Symbol = :none 
-end 
-
-Base.@kwdef mutable struct ParCovsel
-    nlv::Int = 1    
-    scalx::Symbol = :none  
-    scaly::Symbol = :none
 end 
 
 # Multiblock

@@ -112,6 +112,7 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     # Centering and scaling
     cs = cscale(X, weights; centr = :mean, scal = par.scal)
     transf!(cs, X)
+    # End
     res = matW(X, y, weights)
     ni = res.ni
     priors = aggsumv(weights.values, y).val  # output not used, only for information    

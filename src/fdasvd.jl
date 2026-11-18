@@ -41,6 +41,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     # Centering and scaling
     cs = cscale(X, weights; centr = :mean, scal = par.scal)
     transf!(cs, X)
+    # End
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
