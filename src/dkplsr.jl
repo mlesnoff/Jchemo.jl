@@ -105,23 +105,15 @@ end
 function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
-    p = nco(X)
-    q = nco(Y)
     # Scaling
-    xcenters = zeros(Q, p)
-    ycenters = zeros(Q, q)
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    csx = cscale(X, weights; centr = :none, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :none, scal = par.scaly)
+    transf!(csy, Y)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
     K = fkern(X, X; kwargs...)     
-    fitm = plskern!(K, Y, weights; kwargs...)
+    fitm = plskern!(K, Y, weights; nlv = par.nlv, scalx = :none, scaly = :none)
     Dkplsr(fitm, X, K, csx, csy, kwargs, par) 
 end
 
@@ -135,13 +127,13 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Dkplsr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; values(object.kwargs)...)
+    K = fkern(fscale(X, object.csx.scales), object.X; values(object.kwargs)...)
     transf(object.fitm, K)
 end
 
 function transf(object::Dkplsr, X, nlv::Int)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; values(object.kwargs)...)
+    K = fkern(fscale(X, object.csx.scales), object.X; values(object.kwargs)...)
     transf(object.fitm, K, nlv)
 end
 
@@ -166,7 +158,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Dkplsr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.csx.scales), object.X; object.kwargs...)
     pred = predict(object.fitm, K).pred * Diagonal(object.csy.scales)
     (pred = pred, nlv = object.par.nlv) 
 end
@@ -179,7 +171,7 @@ function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
         nlv = min(minimum(nlv), a):min(maximum(nlv), a)
     end
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.csx.scales), object.X; object.kwargs...)
     pred = predict(object.fitm, K, nlv).pred
     D = Diagonal(object.csy.scales)
     @inbounds for i in eachindex(nlv)

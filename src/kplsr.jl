@@ -93,22 +93,15 @@ end
 function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = Jchemo.recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
-    n, p = size(X)
+    n = nro(X)
     q = nco(Y)
     nlv = par.nlv
     # Centering Y and scaling X, Y
     # No need to center X (what is centered is the kernel)
-    xcenters = zeros(Q, p)
-    ycenters = colmean(Y, weights)  
-    fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    csx = cscale(X, weights; centr = :none, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    transf!(csy, Y)
     # End    
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
     K = fkern(X, X; kwargs...)
@@ -180,7 +173,7 @@ transf(object::Kplsr, X) = transf(object, X, object.par.nlv)
 function transf(object::Kplsr, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.csx.scales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values) 
     vtot = sum(DKt; dims = 1)  # keep matrix format
     Kc = K .- vtot' .- object.vtot .+ sum(fweightr(object.DKt', object.weights.values))  
