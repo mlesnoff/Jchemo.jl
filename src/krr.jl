@@ -11,7 +11,7 @@ Keyword arguments:
 * `lb` : Ridge regularization parameter "lambda".
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 KRR is also referred to as least squared SVM regression (LS-SVMR). The method is close to the particular case of 
@@ -119,16 +119,12 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     p = nco(X)
     q = nco(Y)
-    # - No need to center X (what is centered is the kernel)
-    # - No need to scale Y
-    xcenters = zeros(Q, p)
-    ycenters = colmean(Y, weights)
-    fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scal)
-    yscales = ones(Q, q)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
+    # No need to center X (what is centered is the kernel)
+    # No need to scale Y
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(Y; centr = :mean, scal = :none)
+    transf!(csy, Y)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
     K = fkern(X, X; kwargs...)
@@ -177,7 +173,7 @@ Compute Y-predictions from a fitted model.
 """ 
 function predict(object::Krr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.csx.scales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values
@@ -189,7 +185,7 @@ end
 
 function predict(object::Krr, X, lb::Union{T, AbstractVector{T}})  where {T<:Float}
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.csx.scales), object.X; object.kwargs...)
     DKt = fweightr(K', object.weights.values)
     vtot = sum(DKt; dims = 1)  # keep matrix format
     w = object.weights.values

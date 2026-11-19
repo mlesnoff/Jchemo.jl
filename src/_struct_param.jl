@@ -350,7 +350,7 @@ end
 
 Base.@kwdef mutable struct ParRr{Q<:Float}   
     lb::Q = 1e-6                    
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParKrr{Q<:Float} 
@@ -359,7 +359,7 @@ Base.@kwdef mutable struct ParKrr{Q<:Float}
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1                       
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParLoessr{Q<:Float}      

@@ -9,7 +9,7 @@ Ridge regression (RR) using the Normal equations and a Cholesky factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `lb` : Ridge regularization parameter 'lambda'.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 See function `rr` for details and examples.
@@ -34,20 +34,16 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     sqrtw = sqrt.(weights.values)
     # Centering and scaling
     # No need to scale Y
-    xcenters = colmean(X, weights) 
-    ycenters = colmean(Y, weights)
-    fcenter!(X, xcenters)
-    fcenter!(Y, ycenters)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
+    csx = cscale(X; centr = :mean, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(Y; centr = :mean, scal = :none)
+    transf!(csy, Y)
     # End
     fweightr!(X, sqrtw)
     fweightr!(Y, sqrtw)
     B = cholesky!(Hermitian(X' * X + par.lb^2 * Diagonal(ones(Q, p)))) \ (X' * Y)
-    fweightr!(B, 1 ./ xscales)
-    int = ycenters' .- xcenters' * B
+    fweightr!(B, 1 ./ csx.scales)
+    int = csy.centers' .- csx.centers' * B
     Rrchol(B, int, weights, par)
 end
 
