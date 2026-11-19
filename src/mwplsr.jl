@@ -175,8 +175,9 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
             segm = segmkf(group, par.K; rep = par.rep)
         end
         nlv = 0:par.nlv
-        scal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
-        pars = mpar(scal = scal)
+        scalx = isa(par.scalx, Vector{Symbol}) ? par.scalx : [par.scalx]
+        scaly = isa(par.scaly, Vector{Symbol}) ? par.scaly : [par.scaly]
+        pars = mpar(scalx = scalx, scaly = scaly)
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = par.score, nlv, pars).res
         if q == 1
@@ -190,7 +191,8 @@ function mwplsr(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probability
         vrescv[j] = res[u, :] 
         scor_emb[j] = vscor[u]
         # Fit the selected model        
-        fitm_emb[j] = plskern(vX, Y, weights; nlv = res.nlv[u], scal = res.scal[u])
+        fitm_emb[j] = plskern(vX, Y, weights; nlv = res.nlv[u], scalx = res.scalx[u],
+            scaly = res.scaly[u])
         j = j + 1
     end
     rescv = reduce(vcat, DataFrame.(vrescv))
@@ -219,7 +221,7 @@ function predict(object::Mwplsr, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
-    q = length(object.fitm_emb[1].ycenters) 
+    q = length(object.fitm_emb[1].csy.centers) 
     nw = length(object.fitm_emb)
     predw = similar(X, m, q, nw)
     pred = zeros(Q, m, q)

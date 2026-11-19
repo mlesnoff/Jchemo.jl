@@ -303,7 +303,8 @@ Base.@kwdef mutable struct ParMwplsr
     h::Float = 1. 
     score::Function = rmsep                    
     nlv::Int = 15
-    scal::Union{Symbol, Vector{Symbol}} = :none
+    scalx::Union{Symbol, Vector{Symbol}} = :none
+    scaly::Union{Symbol, Vector{Symbol}} = :none
 end 
 
 Base.@kwdef mutable struct ParPlsrout{Q<:Float}
