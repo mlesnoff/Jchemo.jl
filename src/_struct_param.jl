@@ -262,9 +262,15 @@ Base.@kwdef mutable struct ParRrr{Q<:Float}
     scaly::Symbol = :none                   
 end 
 
-Base.@kwdef mutable struct ParPlsrout{Q<:Float}
-    nlv::Int = 1 
-    prm::Q = .3         
+Base.@kwdef mutable struct ParPlsravg
+    algo::Symbol = :unif                   
+    nlv::AbstractVector{Int} = 1:1                    
+    scalx::Symbol = :none  
+    scaly::Symbol = :none 
+end 
+
+Base.@kwdef mutable struct ParPlsravgunif
+    nlv::AbstractVector{Int} = 1:1                    
     scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 
@@ -279,7 +285,15 @@ Base.@kwdef mutable struct ParSplsr{Q<:Float}
     scaly::Symbol = :none                   
 end 
 
-Base.@kwdef mutable struct ParSpcr  # same ParSpca
+Base.@kwdef mutable struct ParSpcr{Q}
+    nlv::Int = 1 
+    meth::Symbol = :soft 
+    algo::Symbol = :shen  # masked in the API
+    defl::Symbol = :v
+    nvar::Union{Int, Vector{Int}} = 1  
+    tol::Q = 1e-8 
+    maxit::Int = 200   
+    scalx::Symbol = :none  
 end 
 
 Base.@kwdef mutable struct ParMwplsr
@@ -292,15 +306,9 @@ Base.@kwdef mutable struct ParMwplsr
     scal::Union{Symbol, Vector{Symbol}} = :none
 end 
 
-Base.@kwdef mutable struct ParPlsravg
-    algo::Symbol = :unif                   
-    nlv::AbstractVector{Int} = 1:1                    
-    scalx::Symbol = :none  
-    scaly::Symbol = :none 
-end 
-
-Base.@kwdef mutable struct ParPlsravgunif
-    nlv::AbstractVector{Int} = 1:1                    
+Base.@kwdef mutable struct ParPlsrout{Q<:Float}
+    nlv::Int = 1 
+    prm::Q = .3         
     scalx::Symbol = :none  
     scaly::Symbol = :none 
 end 

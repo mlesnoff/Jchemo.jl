@@ -15,8 +15,7 @@ Keyword arguments:
 * `gamma` : Proportion of scaled SD in the consensus (see function `outsdod`).
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 The function implements an Occ by moving (i.e., sliding) window PLS (Mwpls). 
     

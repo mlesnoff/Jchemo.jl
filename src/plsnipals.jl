@@ -11,8 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 In this function, for PLS2 (multivariate Y), the Nipals iterations are replaced by a direct computation of the 
 PLS weights (w) by SVD decomposition of matrix X'Y (Hoskuldsson 1988 p.213).

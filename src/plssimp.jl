@@ -11,8 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. latent variables (LVs) to compute.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 **Note:** In this function, scores T (LVs) are not normed, conversely to the original algorithm of de Jong (2013).
 

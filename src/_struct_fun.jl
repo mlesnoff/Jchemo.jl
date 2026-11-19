@@ -366,6 +366,16 @@ struct Pcr{Q<:Float}
     par::ParPcr
 end
 
+struct Plsravgunif
+    fitm::Plsr
+    par::ParPlsravgunif
+end
+
+struct Plsravg
+    fitm::Plsravgunif
+    par::ParPlsravg
+end
+
 struct Splsr{Q<:Float}
     T::Matrix{Q}
     V::Matrix{Q}
@@ -385,9 +395,8 @@ end
 struct Spcr{Q<:Float}
     fitm::Spca
     C::Matrix{Q}
-    ycenters::Vector{Q}
-    yscales::Vector{Q}
-    par::ParSpca
+    csy::Cscale{Q}
+    par::ParSpcr
 end
 
 struct Mwplsr{Q<:Float}
@@ -398,16 +407,6 @@ struct Mwplsr{Q<:Float}
     vi::Vector{Q}
     window::Vector{UnitRange{Int}}
     centrw::Vector{Int}
-end
-
-struct Plsravgunif
-    fitm::Plsr
-    par::ParPlsravgunif
-end
-
-struct Plsravg
-    fitm::Plsravgunif
-    par::ParPlsravg
 end
 
 struct Kplsr{Q<:Float}

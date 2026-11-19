@@ -11,8 +11,7 @@ Keyword arguments:
 * `nlv` : Nb. variables to select.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 This is the Covsel algorithm described in Roger et al. 2011 for variable selection (see also 
 Höskuldsson, A., 1992).

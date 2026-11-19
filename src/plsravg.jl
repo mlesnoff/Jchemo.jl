@@ -11,8 +11,7 @@ Keyword arguments:
 * `nlv` : A range of nb. of latent variables (LVs) to compute.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 Ensemblist method where the predictions are computed by averaging the predictions of a set of models built 
 with different numbers of LVs.
@@ -93,8 +92,6 @@ Compute Y-predictions from a fitted model.
 * `X` : X-data for which predictions are computed.
 """ 
 function predict(object::Plsravg, X)
-    #res = predict(object.fitm, X)
-    #(pred = res.pred, predlv = res.predlv, nlv = res.nlv)
     predict(object.fitm, X)
 end
 

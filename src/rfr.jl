@@ -15,8 +15,7 @@ Keyword arguments:
 * `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 The function is a wrapper of package `DecisionTree.jl` to fit a random forest regression model.
 The working function is `DecisionTree.build_forest` (see its help page for details). 

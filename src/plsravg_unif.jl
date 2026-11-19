@@ -15,7 +15,7 @@ function plsravg_unif!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Prob
     n, p = size(X)
     nlv = min(n, p, minimum(par.nlv)):min(n, p, maximum(par.nlv))
     par.nlv = nlv
-    fitm = plskern!(X, Y, weights; nlv = maximum(nlv), scal = par.scal)
+    fitm = plskern!(X, Y, weights; nlv = maximum(nlv), scalx = par.scalx, scaly = par.scaly)
     Plsravgunif(fitm, par) 
 end
 

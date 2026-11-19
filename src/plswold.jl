@@ -13,8 +13,7 @@ Keyword arguments:
 * `maxit` : Maximum number of iterations for the Nipals algorithm.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 Wold Nipals PLSR algorithm: Tenenhaus 1998 p.204.
     

@@ -18,8 +18,7 @@ Keyword arguments:
 * `nlv` : Maximum nb. of latent variables (LVs) to consider in each PLS model.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 The function implements a moving (i.e., sliding) window PLS regression (Mwpls).
     

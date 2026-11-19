@@ -17,8 +17,7 @@ Keyword arguments:
 * `maxit` : Maximum nb. of Nipals iterations.
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scaly` : Same as `scalx` for `Y`.
 
 Regression (MLR) on scores computed from a sparse PCA (sPCA-rSVD algorithm of Shen & Huang 2008 ). 
 See function `spca` for details.
@@ -95,14 +94,17 @@ function spcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
 end
 
 function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
-    par = recovkw(ParSpca{Q}, kwargs).par
-    q = nco(Y)
-    ycenters = colmean(Y, weights)
-    yscales = colscal(Y, weights, par.scaly) 
-    fitm = spca!(X, weights; kwargs...)
+    par = recovkw(ParSpcr{Q}, kwargs).par
+    # Y centering (No need to scale Y)
+    # X is centered and scale in spca
+    csy = cscale(Y, weights; centr = :mean, scal = :none)
+    transf!(csy, Y)
+    # End
+    fitm = spca!(X, weights; nlv = par.nlv, meth = par.meth, algo = par.algo, defl = par.defl, 
+        nvar = par.nvar, tol = par.tol, maxit = par.maxit, scal = par.scalx)
     par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Spcr(fitm, Matrix(theta'), ycenters, yscales, par) 
+    Spcr(fitm, Matrix(theta'), csy, par) 
 end
 
 # Function 'coef' not yet implemented for Spcr, therefore 'predict' uses directly C 
