@@ -73,14 +73,16 @@ function mlr!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWe
         B = X \ Y
         int = reshape(zeros(Q, q), 1, q)
     else
-        xcenters = colmean(X, weights) 
-        ycenters = colmean(Y, weights)   
-        fcenter!(X, xcenters)
-        fcenter!(Y, ycenters)
+        # Centering
+        csx = cscale(X, weights; centr = :mean, scal = :none)
+        transf!(csx, X)
+        csy = cscale(Y, weights; centr = :mean, scal = :none)
+        transf!(csy, Y)
+        # End
         fweightr!(X, sqrtw)
         fweightr!(Y, sqrtw)
         B = X \ Y
-        int = ycenters' .- xcenters' * B
+        int = csy.centers' .- csx.centers' * B
     end
     Mlr(B, int, weights, par)
 end
