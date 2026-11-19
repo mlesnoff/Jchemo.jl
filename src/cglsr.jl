@@ -10,7 +10,7 @@ Keyword arguments:
 * `gs` : Boolean. If `true` (default), a Gram-Schmidt orthogonalization of the normal equation residual 
     vectors is done.
 * `filt` : Boolean. If `true`, CG filter factors are computed (output `F`). Default = `false`.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 CGLS algorithm "7.4.1" Bjorck 1996, p.289. In the present function, the part of the code computing the 
@@ -79,16 +79,11 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where {Q<:Float}
     nlv = min(n, p, par.nlv)
     par.nlv = nlv 
     # Centering and scaling
-    # No need to fscale y; only for consistency with Plsr
-    xcenters = colmean(X) 
-    ycenters = colmean(y)   
-    fcenter!(X, xcenters)
-    fcenter!(y, ycenters)    
-    xscales = colscal(X, par.scal)
-    yscales = ones(Q, q)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
+    # No need to scale y
+    csx = cscale(X; centr = :mean, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(y; centr = :mean, scal = :none)
+    transf!(csy, y)
     # Pre-allocation and initialization
     B = similar(X, p, nlv)
     b = zeros(Q, p) 
@@ -153,7 +148,7 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where {Q<:Float}
         end 
         # End
     end
-    Cglsr(B, gnew, csx, csy, F, par)
+    Cglsr(B, gnew, F, csx, csy, par)
 end
 
 """

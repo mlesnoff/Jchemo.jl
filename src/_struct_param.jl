@@ -246,12 +246,11 @@ Base.@kwdef mutable struct ParCglsr
     gs::Bool = true       
     filt::Bool = true              
     scalx::Symbol = :none  
-    scaly::Symbol = :none 
 end  
 
 Base.@kwdef mutable struct ParPcr
     nlv::Int = 1    
-    scal::Symbol = :none                   
+    scalx::Symbol = :none                   
 end
 
 Base.@kwdef mutable struct ParRrr{Q<:Float}

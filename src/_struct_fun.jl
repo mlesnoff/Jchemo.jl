@@ -353,18 +353,17 @@ end
 struct Cglsr{Q<:Float}
     B::Matrix{Q}
     g::Vector{Q}
+    F::Union{Nothing, Matrix{Q}}
     csx::Cscale{Q}
     csy::Cscale{Q}
-    F::Union{Nothing, Matrix{Q}}
     par::ParCglsr
 end
 
 struct Pcr{Q<:Float}
     fitm::Pca
     C::Matrix{Q}
-    ycenters::Vector{Q}
-    yscales::Vector{Q}
-    par::ParPca
+    csy::Cscale{Q}
+    par::ParPcr
 end
 
 struct Splsr{Q<:Float}

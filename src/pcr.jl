@@ -9,7 +9,7 @@ Principal component regression (PCR) with a SVD factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
@@ -77,18 +77,20 @@ function pcr(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs.
 end
 
 function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
-    par = recovkw(ParPca, kwargs).par
-    q = nco(Y)
-    ycenters = colmean(Y, weights)
-    yscales = colscal(Y, weights, par.scaly)  # built only for consistency with coef::Plsr
-    fitm = pcasvd!(X, weights; kwargs...)
+    par = recovkw(ParPcr, kwargs).par
+    # Y centering (No need to scale Y)
+    # X is centered and scale in pcasvd
+    csy = cscale(Y, weights; centr = :mean, scal = :none)
+    transf!(csy, Y)
+    # End
+    fitm = pcasvd!(X, weights; nlv = par.nlv, scal = par.scalx)
     par.nlv = fitm.par.nlv
     # Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
     # if T is D-orthogonal. This is the case for the actual version (pcasvd)
     # theta: coefs regression of Y on T (= C')
     # not needed (same theta): fcenter!(Y, ycenters)
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
-    Pcr(fitm, Matrix(theta'), ycenters, yscales, par) 
+    Pcr(fitm, Matrix(theta'), csy, par) 
 end
 
 """ 
@@ -119,9 +121,9 @@ function coef(object::Pcr)
     theta = object.C'
     Dy = Diagonal(object.csy.scales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
-    B = fweightr(object.fitm.V, 1 ./ object.fitm.xscales) * theta * Dy
+    B = fweightr(object.fitm.V, 1 ./ object.fitm.cs.scales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.csy.centers' .- object.fitm.xcenters' * B
+    int = object.csy.centers' .- object.fitm.cs.centers' * B
     # End
     (B = B, int, nlv = object.par.nlv)
 end
@@ -132,9 +134,9 @@ function coef(object::Pcr, nlv::Int)
     theta = vcol(object.C, 1:nlv)'
     Dy = Diagonal(object.csy.scales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
-    B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
+    B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.cs.scales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.csy.centers' .- object.fitm.xcenters' * B
+    int = object.csy.centers' .- object.fitm.cs.centers' * B
     # End
     (B = B, int, nlv)
 end
