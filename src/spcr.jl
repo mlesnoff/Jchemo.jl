@@ -118,7 +118,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Spcr, X)
     T = transf(object, X)
     theta = object.C'
-    pred = T * theta .+ object.ycenters'
+    pred = T * theta .+ object.csy.centers'
     (pred = pred, nlv = object.par.nlv)
 end
 
@@ -136,7 +136,7 @@ function predict(object::Spcr, X, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         theta = vcol(object.C, 1:nlv[i])'
-        pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.ycenters'
+        pred[i] = vcol(T, 1:nlv[i]) * theta .+ object.csy.centers'
     end 
     (pred = pred, nlv)
 end

@@ -201,8 +201,8 @@ coef(object::Kplsr) = coef(object::Kplsr, object.par.nlv)
 function coef(object::Kplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     beta = vcol(object.C, 1:nlv)'
-    q = length(object.ycenters)
-    int = reshape(object.ycenters, 1, q)
+    q = length(object.csy.centers)
+    int = reshape(object.csy.centers, 1, q)
     (beta = beta, int, nlv)
 end
 
@@ -218,7 +218,7 @@ If nothing, it is the maximum nb. LVs.
 function predict(object::Kplsr, X)
     T = transf(object, X)
     coefs = coef(object)
-    pred = coefs.int .+ T * coefs.beta * Diagonal(object.yscales)
+    pred = coefs.int .+ T * coefs.beta * Diagonal(object.csy.scales)
     (pred = pred, nlv = object.par.nlv)
 end
 
@@ -236,7 +236,7 @@ function predict(object::Kplsr, X, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         coefs = coef(object, nlv[i])
-        pred[i] = coefs.int .+ vcol(T, 1:nlv[i]) * coefs.beta * Diagonal(object.yscales)
+        pred[i] = coefs.int .+ vcol(T, 1:nlv[i]) * coefs.beta * Diagonal(object.csy.scales)
     end 
     (pred = pred, nlv)
 end

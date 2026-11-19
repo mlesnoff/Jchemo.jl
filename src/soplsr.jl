@@ -169,7 +169,7 @@ function predict(object::Soplsr, Xbl)
             T = hcat(T, transf(object.fitm[i], X))
         end
     end
-    pred .= pred .* object.yscales' 
+    pred .= pred .* object.csy.scales' 
     (pred = pred,)
 end
 

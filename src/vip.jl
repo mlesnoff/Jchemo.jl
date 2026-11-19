@@ -117,7 +117,7 @@ function vip(object::Union{Pcr, Plsr, Spcr, Splsr, Mbplsr}, Y::Union{DataFrame, 
     p = nro(W)
     nlv = isnothing(nlv) ? a : min(nlv, a)
     W2 = vcol(W, 1:nlv).^2
-    rdd = rd(fscale(Y, object.yscales), vcol(T, 1:nlv), weights)
+    rdd = rd(fscale(Y, object.csy.scales), vcol(T, 1:nlv), weights)
     A = rowsum(rdd .* W2)
     B = sum(rdd) / p
     vi = sqrt.(A / B)

@@ -199,9 +199,9 @@ function predict(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
     pred = list(Matrix{Q}, le_nlv)
     @inbounds for i in eachindex(nlv)
         znlv = nlv[i]
-        W = Diagonal(object.yscales)
+        W = Diagonal(object.csy.scales)
         beta = vcol(object.fitm.C, 1:znlv)'
-        int = object.ycenters'
+        int = object.csy.centers'
         pred[i] = int .+ vcol(T, 1:znlv) * beta * W 
     end 
     if le_nlv == 1 ; pred = pred[1] ; end

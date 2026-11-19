@@ -117,11 +117,11 @@ For a model fitted from X (n, p) and Y (n, q), the returned objects are :
 """ 
 function coef(object::Pcr)
     theta = object.C'
-    Dy = Diagonal(object.yscales)
+    Dy = Diagonal(object.csy.scales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweightr(object.fitm.V, 1 ./ object.fitm.xscales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.ycenters' .- object.fitm.xcenters' * B
+    int = object.csy.centers' .- object.fitm.xcenters' * B
     # End
     (B = B, int, nlv = object.par.nlv)
 end
@@ -130,11 +130,11 @@ function coef(object::Pcr, nlv::Int)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
     theta = vcol(object.C, 1:nlv)'
-    Dy = Diagonal(object.yscales)
+    Dy = Diagonal(object.csy.scales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
     B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.xscales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.ycenters' .- object.fitm.xcenters' * B
+    int = object.csy.centers' .- object.fitm.xcenters' * B
     # End
     (B = B, int, nlv)
 end

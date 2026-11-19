@@ -99,7 +99,7 @@ function xfit(object, nlv::Int = nco(object.T))
     else
         X = vcol(object.T, 1:nlv) * vcol(object.V, 1:nlv)'
         # Coming back to the original location and scale
-        fscale!(X, 1 ./ object.cs.scales)    
+        fscale!(X, 1 ./ object.csx.scales)    
         fcenter!(X, -object.cs.centers)
     end
     X
@@ -119,7 +119,7 @@ function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
         T = transf(object, X, nlv)
         mul!(X, T, vcol(object.V, 1:nlv)')
         # Coming back to the original location and scale
-        fscale!(X, 1 ./ object.cs.scales)    
+        fscale!(X, 1 ./ object.csx.scales)    
         fcenter!(X, -object.cs.centers)
     end
     X

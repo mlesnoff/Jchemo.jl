@@ -106,23 +106,11 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     q = nco(Y)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    # Centering and scaling
-    
+    # Centering and scaling    
     csx = cscale(X, weights; centr = :mean, scal = par.scalx)
     transf!(csx, X)
     csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
     transf!(csy, Y)
-
-    #xstand = cscale(X, weights; scal = par.scal)
-    #transf!(xstand, X)
-    #ystand = cscale(Y, weights; scal = par.scaly)
-    #transf!(ystand, Y)
-
-
-
-
-
-
     # XtY 
     fweightr!(Y, weights.values)
     XtY = X' * Y
@@ -185,13 +173,13 @@ Compute latent variables (LVs; = scores) from a fitted model.
 """ 
 function transf(object::Union{Plsr, Plswold, Splsr}, X)
     # Could be fcscale! but would change X. If too heavy ==> Makes summary!
-    fcscale(X, object.cs.centers, object.cs.scales) * object.R
+    fcscale(X, object.csx.centers, object.csx.scales) * object.R
 end
 
 function transf(object::Union{Plsr, Plswold, Splsr}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     # Could be fcscale! but would change X. If too heavy ==> Makes summary!
-    fcscale(X, object.cs.centers, object.cs.scales) * vcol(object.R, 1:nlv)
+    fcscale(X, object.csx.centers, object.csx.scales) * vcol(object.R, 1:nlv)
 end
 
 """
@@ -208,20 +196,20 @@ For a model fitted from X (n, p) and Y (n, q), the returned objects are :
 """ 
 function coef(object::Union{Plsr, Plswold, Splsr})
     theta = object.C'  # regression coefs of Y on T
-    Dy = Diagonal(object.yscales)
+    Dy = Diagonal(object.csy.scales)
     # To not use for Spcr (R not computed; while for Pcr, R = V)
-    B = fweightr(object.R, 1 ./ object.cs.scales) * theta * Dy
+    B = fweightr(object.R, 1 ./ object.csx.scales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.ycenters' .- object.cs.centers' * B
+    int = object.csy.centers' .- object.csx.centers' * B
     (B = B, int, nlv = object.par.nlv)
 end
 
 function coef(object::Union{Plsr, Plswold, Splsr}, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     theta = vcol(object.C, 1:nlv)'  
-    Dy = Diagonal(object.yscales)
-    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.cs.scales) * theta * Dy
-    int = object.ycenters' .- object.cs.centers' * B
+    Dy = Diagonal(object.csy.scales)
+    B = fweightr(vcol(object.R, 1:nlv), 1 ./ object.csx.scales) * theta * Dy
+    int = object.csy.centers' .- object.csx.centers' * B
     (B = B, int, nlv)
 end
 
@@ -292,7 +280,7 @@ Summarize the fitted model.
 function Base.summary(object::Union{Plsr, Plswold, Splsr}, X)
     X = ensure_mat(X)
     n, nlv = size(object.T)
-    X = fcscale(X, object.cs.centers, object.cs.scales)
+    X = fcscale(X, object.csx.centers, object.csx.scales)
     # Could be fcscale! but changes X. If too heavy ==> Makes summary!
     sstot = frob2(X, object.weights)       # = sum(object.weights.values' * X.^2)
     tt = object.TT

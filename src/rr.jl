@@ -121,8 +121,8 @@ function coef(object::Rr, lb::T) where {T<:Float}
     eig = object.sv.^2
     z = 1 ./ (eig .+ Q(lb)^2)
     beta = Diagonal(z) * object.TtY
-    B = fweightr(object.V, 1 ./ object.cs.scales) * beta
-    int = object.ycenters' .- object.cs.centers' * B
+    B = fweightr(object.V, 1 ./ object.csx.scales) * beta
+    int = object.csy.centers' .- object.csx.centers' * B
     tr = sum(eig .* z)
     (B = B, int, df = 1 + tr, lb)
 end

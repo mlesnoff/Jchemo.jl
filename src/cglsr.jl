@@ -169,17 +169,17 @@ For a model fitted from X (n, p) and Y (n, q), the returned objects are :
 * `int` : A matrix (1, q) of the intercept coefficients.
 """ 
 function coef(object::Cglsr)
-    W = Diagonal(object.yscales)    
-    B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.cs.scales) *  W
-    int = object.ycenters' .- object.cs.centers' * B
+    W = Diagonal(object.csy.scales)    
+    B = fweightr(vcol(object.B, object.par.nlv), 1 ./ object.csx.scales) *  W
+    int = object.csy.centers' .- object.csx.centers' * B
     (B = B, int, nlv = object.par.nlv)
 end
 
 function coef(object::Cglsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    W = Diagonal(object.yscales)    
-    B = fweightr(vcol(object.B, nlv), 1 ./ object.cs.scales) *  W
-    int = object.ycenters' .- object.cs.centers' * B
+    W = Diagonal(object.csy.scales)    
+    B = fweightr(vcol(object.B, nlv), 1 ./ object.csx.scales) *  W
+    int = object.csy.centers' .- object.csx.centers' * B
     (B = B, int, nlv)
 end
 

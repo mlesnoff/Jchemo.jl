@@ -44,18 +44,10 @@ function plsrosa!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    xcenters = colmean(X, weights) 
-    ycenters = colmean(Y, weights)   
-    fcenter!(X, xcenters)
-    fcenter!(Y, ycenters)    
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    csx = cscale(X, weights; centr = :mean, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    transf!(csy, Y)
     # Pre-allocation
     XtY = similar(X, p, q)
     T  = similar(X, n, nlv)

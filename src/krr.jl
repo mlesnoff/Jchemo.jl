@@ -161,8 +161,8 @@ function coef(object::Krr, lb::T) where {T<:Float}
     eig = object.sv.^2
     v = 1 ./ (eig .+ Q(lb)^2)
     A = object.U * (Diagonal(v) * object.UtDY)
-    q = length(object.ycenters)
-    int = reshape(object.ycenters, 1, q)
+    q = length(object.csy.centers)
+    int = reshape(object.csy.centers, 1, q)
     tr = sum(eig .* v)
     (A = A, int = int, df = 1 + tr, lb)
 end

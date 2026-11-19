@@ -97,18 +97,10 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
     # Centering and scaling
-    xcenters = colmean(X, weights) 
-    ycenters = colmean(Y, weights)   
-    fcenter!(X, xcenters)
-    fcenter!(Y, ycenters)    
-    xscales = colscal(X, weights, par.scal)
-    yscales = colscal(Y, weights, par.scaly)
-    if par.scal != :none
-        fscale!(X, xscales)
-    end
-    if par.scaly != :none
-        fscale!(Y, yscales)
-    end
+    csx = cscale(X, weights; centr = :mean, scal = par.scalx)
+    transf!(csx, X)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    transf!(csy, Y)
     # Block scaling
     Xbl = [X, Y]
     fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
@@ -185,8 +177,8 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transfbl(object::Plscan, X, Y)
-    X = fcscale(X, object.cs.centers, object.cs.scales) / object.bscales[1]
-    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.csx.centers, object.csx.scales) / object.bscales[1]
+    Y = fcscale(Y, object.csy.centers, object.csy.scales) / object.bscales[2]
     Tx = X * object.Rx
     Ty = Y * object.Ry
     (Tx = Tx, Ty)
@@ -194,8 +186,8 @@ end
 
 function transfbl(object::Plscan, X, Y, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    X = fcscale(X, object.cs.centers, object.cs.scales) / object.bscales[1]
-    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.csx.centers, object.csx.scales) / object.bscales[1]
+    Y = fcscale(Y, object.csy.centers, object.csy.scales) / object.bscales[2]
     Tx = X * vcol(object.Rx, 1:nlv)
     Ty = Y * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
@@ -210,8 +202,8 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Plscan, X, Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.cs.centers, object.cs.scales) / object.bscales[1]
-    Y = fcscale(Y, object.ycenters, object.yscales) / object.bscales[2]
+    X = fcscale(X, object.csx.centers, object.csx.scales) / object.bscales[1]
+    Y = fcscale(Y, object.csy.centers, object.csy.scales) / object.bscales[2]
     ttx = object.TTx 
     tty = object.TTy 
     # Block X

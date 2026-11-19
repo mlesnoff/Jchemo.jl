@@ -168,7 +168,7 @@ Compute Y-predictions from a fitted model.
 function predict(object::Dkplsr, X)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
     K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
-    pred = predict(object.fitm, K).pred * Diagonal(object.yscales)
+    pred = predict(object.fitm, K).pred * Diagonal(object.csy.scales)
     (pred = pred, nlv = object.par.nlv) 
 end
 
@@ -182,7 +182,7 @@ function predict(object::Dkplsr, X, nlv::Union{Int, AbstractVector{Int}})
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
     K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
     pred = predict(object.fitm, K, nlv).pred
-    D = Diagonal(object.yscales)
+    D = Diagonal(object.csy.scales)
     @inbounds for i in eachindex(nlv)
             pred[i] .= pred[i] * D
     end
