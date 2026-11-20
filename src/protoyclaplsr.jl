@@ -1,28 +1,29 @@
 # Not exported
 
-function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
+function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symbol = :eucl, 
+        nlv::Int, K::Int = 5, 
         kavg::Int = 1, h::Q = 1., criw::Q = 4., squared::Bool = false, 
-        tolw::Q = 1e-4, scal::Symbol = :none) where {Q<:Float}
-    par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scal)
+        tolw::Q = 1e-4, scalx::Symbol = :none, scaly::Symbol = :none) where {Q<:Float}
+    par = (nlvdis = nlvdis, metric, nlv, K, kavg, h, criw, squared, tolw, scalx, scaly)
     X = ensure_mat(X)
     Y = ensure_mat(Y) 
+    q = nco(Y)
     taby = tab(ycla)
-    lev = taby.lev         # class levels (prototypes)
-    ni = taby.n            # number of observations in each prototype class
-    nproto = length(lev)   # nb. prototypes
+    lev = taby.lev         # classes (each class = one prototype)
+    ni = taby.n            # number of observations in each class
+    nproto = length(lev)   # nb. prototypes (= nb. classes in ycla)
     # For distances computations
     if par.nlvdis == 0
         fitm_emb = nothing
     else
-        fitm_emb = plskern(X, Y; nlv = par.nlvdis)
+        fitm_emb = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)
     end
-    # To store the prototypes (in this version = class centroids)
-    Xproto = similar(X, nproto, nco(X))
-    Yproto = similar(Y, nproto, nco(Y))
-    # To store the prototype models
+    # Prepare the fit and the storage of the nproto prototype models 
     fitm = list(Plsr, nproto)
     coefs = list(NamedTuple, nproto)
-    # Optimize/fit/store the nproto prototype models 
+    # Will store the prototype centers (in this version, = class centroids)
+    Xproto = similar(X, nproto, nco(X))
+    Yproto = similar(Y, nproto, nco(Y))
     #@inbounds for i in eachindex(lev)
     Threads.@threads for i in eachindex(lev)
         ind = ycla .== lev[i]
@@ -31,15 +32,23 @@ function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symb
         Xproto[i, :] .= colmean(vX)
         Yproto[i, :] .= colmean(vY)
         segm = segmkf(ni[i], K; rep = 1, seed = 1234)
-        pars = mpar(scal = [scal])
+        pars = mpar(scalx = [par.scalx], scaly = [par.scaly])
         model = plskern()
-        # To do: adapt for multivariate Y
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:nlv).res
-        # End
-        u = findall(rescv.y1 .== minimum(rescv.y1))[1]
-        fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
+        # Eventual multivariate Y
+        if q == 1
+            vscor = rescv.y1
+        else
+            s = nco(rescv)
+            A = Matrix(rescv[:, (s - q + 1):end])
+            vscor = sqrt.(rowsum(A.^2))
+        end
+        u = findall(vscor .== minimum(vscor))[1]
+        # Fit and store the optimized model
+        fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scalx = rescv.scalx[u], scaly = rescv.scaly[u])
         coefs[i] = coef(fitm[i])
     end
+    # Outputs
     Protoyclaplsr(fitm, fitm_emb, Xproto, Yproto, coefs, ni, lev, par) 
 end
 
@@ -49,31 +58,41 @@ function predict(object::Protoyclaplsr, X)
     Q = eltype(object.Xproto)
     q = nco(object.Yproto)
     nproto = nro(object.Xproto)
-    # Params to average the prototype predictions
-    kavg = min(object.par.kavg, nproto)  
+    metric = object.par.metric
+    kavg = min(object.par.kavg, nproto)  # nb prototype models to average
     h = object.par.h
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    # Find the kavg closest prototypes for each new observation
+    # Compute the neighborhood of size kavg (inside dataset Xproto) of each new observation
     if isnothing(object.fitm_emb)
-        res = getknn(object.Xproto, X; k = kavg, metric = object.par.metric)
+        if object.par.scalx != :none
+            csx = cscale(object.Xproto; centr = :none, scal = object.par.scalx)
+            X1 = fscale(object.Xproto, csx.scales)
+            X2 = fscale(X, csx.scales)
+            res = getknn(X1, X2; metric)
+        else
+            res = getknn(object.Xproto, X; metric, k = kavg)
+        end
     else
-        Tproto = transf(object.fitm_emb, object.Xproto)
-        T = transf(object.fitm_emb, X)
-        if object.par.metric == :mah
+        # Since nproto is low, a procedure is used to prevent singularity 
+        # when 'metric = :mah'  
+        if metric == :mah
+            Tproto = transf(object.fitm_emb, object.Xproto)
+            Tnew = transf(object.fitm_emb, X)
             S = covm(object.fitm_emb.T)
             Uinv = LinearAlgebra.inv!(cholesky!(Hermitian(S)).U)
             #Uinv = Diagonal(1 ./ sqrt.(diag(S)))
-            res = getknn(Tproto * Uinv, T * Uinv; k = kavg, metric = :eucl)
+            res = getknn(Tproto * Uinv, Tnew * Uinv; k = kavg, metric = :eucl)
         else
-            res = getknn(Tproto, T; k = kavg, metric = object.par.metric)
-        end 
+            T = transf(object.fitm_emb, object.Xproto)
+            res = getknn(T, transf(object.fitm_emb, X); metric, k = kavg)
+        end     
     end
     listnn = res.ind
+    # Compute the predictions
     listw = list(Vector{Q}, m)
     pred = zeros(Q, m, q)
-    # Compute the kavg protype predictions and average them (weighted average)
     #@inbounds for i = 1:m
     Threads.@threads for i = 1:m   
         s = listnn[i]

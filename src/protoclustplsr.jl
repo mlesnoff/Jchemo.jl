@@ -39,16 +39,13 @@ or on global PLS scores computed from (`X`, `Y`). This is managed by argument `n
 *Prediction*
 * Each new observation to predict is assigned to its `kavg` nearest prototypes.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-    prototype models. The weighting is computed from the distances between the new observation and the `kavg` prototype centers 
-    (function `winvs`). TThe weights decrease with the distance (decreasing weighting function). If `kavg = 1`, only one PLSR model 
-    is used (the closest prototype) and there is no averaging.
+    prototype models. The weighting is computed from the distances between the new observation 
+    and the `kavg` prototype centers (function `winvs`). TThe weights decrease with the distance (decreasing 
+    weighting function). If `kavg = 1`, only one PLSR model is used (the closest prototype) and there is no averaging.
 
 The kmeans step is done with package `Clustering.jl` (https://github.com/JuliaStats/Clustering.jl).
 
-Notes: 
-* This pipeline is still under construction, some details could change in the future.
-* The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
-    first Y column (this will be fixed later). 
+Notes: This pipeline is still under construction, some details could change in the future.
 
 # Examples
 ```julia
@@ -73,6 +70,7 @@ nproto = 3
 nlv = 17
 kavg = 1
 model = protoclustplsr(; nlvdis, metric, nproto, nlv, kavg, seed = 1234) ; 
+#model = protoclustplsr(; nlvdis, metric, nproto, nlv, kavg, scalx = :std, seed = 1234) ; 
 fit!(model, Xtrain, ytrain)
 @names model
 @names model.fitm 
@@ -86,7 +84,7 @@ res = predict(model, Xtest) ;
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
-    ylabel = "Observed").f  
+    ylabel = "Observed").f    
 ```
 """ 
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
@@ -100,9 +98,10 @@ function protoclustplsr(X, Y; kwargs...)
     Y = ensure_mat(Y)
     if par.nlvdis == 0
         fitm_emb = nothing
-        zX = copy(X)
+        csx = cscale(X; centr = :none, scal = par.scalx)
+        zX = fscale(X, csx.scales)
     else
-        fitm_emb = plskern(X, Y; nlv = par.nlvdis)
+        fitm_emb = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)
         zX = fitm_emb.T
     end
     if par.metric == :eucl
@@ -126,8 +125,9 @@ function protoclustplsr(X, Y; kwargs...)
         rng = Random.MersenneTwister(par.seed)
         ) 
     ycla = string.(fitm_clust.assignments)
-    fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K, kavg = par.kavg, 
-        h = par.h, criw = par.criw, squared = par.squared, tolw = par.tolw, scal = par.scal) 
+    fitm = Jchemo.protoyclaplsr(X, Y, ycla; metric = par.metric, nlv = par.nlv, K = par.K,
+        kavg = par.kavg, h = par.h, criw = par.criw, squared = par.squared, tolw = par.tolw, 
+        scalx = par.scalx, scaly = par.scaly) 
     Protoclustplsr(fitm, fitm_emb, fitm_clust, ycla, par)   
 end
 

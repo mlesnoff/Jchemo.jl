@@ -49,9 +49,9 @@ or on global PLS scores computed from (`X`, `Y`). This is managed by argument `n
 * Each new observation to predict is assigned to its `kavg` nearest prototypes, based on its distances to the prototype
     centers.
 * The final prediction is computed by a weighted average of the `kavg` predictions of the corresponding 
-    prototype models. The weighting is computed from the distances between the new observation and the `kavg` prototype centers 
-    (function `winvs`). TThe weights decrease with the distance (decreasing weighting function). If `kavg = 1`, only one PLSR model 
-    is used (the closest prototype) and there is no averaging.
+    prototype models. The weighting is computed from the distances between the new observation 
+    and the `kavg` prototype centers (function `winvs`). TThe weights decrease with the distance (decreasing 
+    weighting function). If `kavg = 1`, only one PLSR model is used (the closest prototype) and there is no averaging.
 
 *Notes*: This pipeline is still under construction, some details could change in the future.
 
@@ -119,9 +119,9 @@ function protoplsr(X, Y; kwargs...)
         s_proto = sampks(X, par.nproto; metric = par.metric).test
     end
     # Compute the neighborhood of each prototype
-    csx = cscale(X; centr = :none, scal = par.scalx)
     if par.nlvdis == 0
         fitm_emb = nothing
+        csx = cscale(X; centr = :none, scal = par.scalx)
         zX = fscale(X, csx.scales)
         resnn = getknn(zX, vrow(X, s_proto); k = par.k, metric = par.metric)
     else
@@ -180,21 +180,22 @@ function predict(object::Protoplsr, X)
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    # Compute the neighborhood (inside dataset Xproto) of each new observation
+    # Compute the neighborhood of size kavg (inside dataset Xproto) of each new observation
     if isnothing(object.fitm_emb)
         if object.par.scalx != :none
-            csx = cscale(object.Xproto; centr = :none, scal = par.scalx)
+            csx = cscale(object.Xproto; centr = :none, scal = object.par.scalx)
             X1 = fscale(object.Xproto, csx.scales)
             X2 = fscale(X, csx.scales)
             res = getknn(X1, X2; metric, k = kavg)
         else
-            res = getknn(object.Xproto, X; metric, k)
+            res = getknn(object.Xproto, X; metric, k = kavg)
         end
     else
         T = transf(object.fitm_emb, object.Xproto)
-        res = getknn(T, transf(object.fitm_emb, X); k = kavg, metric) 
+        res = getknn(T, transf(object.fitm_emb, X); metric, k = kavg) 
     end
     listnn = res.ind
+    # Compute the predictions
     listw = list(Vector{Q}, m)
     pred = zeros(Q, m, q)
     #@inbounds for i = 1:m
