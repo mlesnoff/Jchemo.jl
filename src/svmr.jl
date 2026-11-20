@@ -12,7 +12,7 @@ Keyword arguments:
 * `degree` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Kernel types: 
@@ -93,15 +93,10 @@ svmr(; kwargs...) = JchemoModel(svmr, nothing, kwargs)
 function svmr(X, y; kwargs...)
     X = ensure_mat(X)
     y = vec(y)
-    p = nco(X)    
     Q = eltype(X)
     par = recovkw(ParSvm{Q}, kwargs).par
     kern = par.kern 
     @assert in([:rbf, :pol, :lin, :tan])(kern) "Wrong value for argument 'kern'." 
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
     if kern == :rbf
         fkern = LIBSVM.Kernel.RadialBasis
     elseif kern == :pol
@@ -110,6 +105,10 @@ function svmr(X, y; kwargs...)
         fkern = LIBSVM.Kernel.Linear
     elseif kern == :tan
         fkern = LIBSVM.Kernel.Sigmoid
+    end
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    if par.scalx != :none
+        X = transf(csx, X)
     end
     fitm = svmtrain(X', y;
         svmtype = EpsilonSVR, 
@@ -134,7 +133,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmr, X)
     X = ensure_mat(X)
     m = nro(X)
-    pred = svmpredict(object.fitm, fscale(X, object.cs.scales)')[1]
+    pred = svmpredict(object.fitm, fscale(X, object.csx.scales)')[1]
     pred = reshape(pred, m, 1)
     (pred = pred,)
 end

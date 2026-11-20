@@ -12,10 +12,9 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
-* `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
 * `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
-* `scaly` : Same as `scalx` for `Y`.
+* `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
 
 The function is a wrapper of package `DecisionTree.jl` to fit a random forest regression model.
 The working function is `DecisionTree.build_forest` (see its help page for details). 
@@ -89,9 +88,9 @@ function rfr(X, y; kwargs...)
     p = nco(X)    
     Q = eltype(X)
     par = recovkw(ParRf{Q}, kwargs).par
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    if par.scalx != :none
+        X = transf(csx, X)
     end
     n_subfeatures = round(Int, par.n_subfeatures)
     min_purity_increase = 0
@@ -106,6 +105,6 @@ function rfr(X, y; kwargs...)
         rng = par.rng
         ) 
     featur = collect(1:p)
-    Treer(fitm, xscales, featur, par)
+    Treer(fitm, featur, csx, par)
 end
 

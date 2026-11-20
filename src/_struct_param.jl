@@ -473,8 +473,8 @@ Base.@kwdef mutable struct ParTree{Q<:Float}    # treer, treeda
     max_depth::Int = -1   
     min_samples_leaf::Int = 5       
     min_samples_split::Int = 5
-    rng = Random.GLOBAL_RNG
     scalx::Symbol = :none              
+    rng = Random.GLOBAL_RNG
 end 
 
 Base.@kwdef mutable struct ParRf{Q<:Float}    # rfr, rfda
@@ -485,8 +485,8 @@ Base.@kwdef mutable struct ParRf{Q<:Float}    # rfr, rfda
     min_samples_leaf::Int = 5  
     min_samples_split::Int = 5    
     mth::Bool = true  
-    rng = Random.GLOBAL_RNG
     scalx::Symbol = :none         
+    rng = Random.GLOBAL_RNG
 end 
 
 ############---- Discrimination

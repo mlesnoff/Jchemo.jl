@@ -77,10 +77,8 @@ function knnda(X, y::Vector{String}; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     taby = tab(y)    
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    X = transf(csx, X)
     Knnda(X, y, xscales, taby.n, taby.lev, par)
 end
 

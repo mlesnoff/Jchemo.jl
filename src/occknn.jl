@@ -145,10 +145,8 @@ function occknn(X; kwargs...)
     n = nro(X)    
     Q = eltype(X)
     par = recovkw(ParOccknn{Q}, kwargs).par
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    X = transf(csx, X)
     nsamp = min(par.nsamp, n)
     if nsamp == n
         s = 1:n

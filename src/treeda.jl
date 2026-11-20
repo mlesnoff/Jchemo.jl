@@ -82,10 +82,8 @@ function treeda(X, y::Vector{String}; kwargs...)
     par = recovkw(ParTree{Q}, kwargs).par
     taby = tab(y)
     priors = taby.n / n  # output not used, only for information  
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    X = transf(csx, X)
     n_subfeatures = round(Int, par.n_subfeatures)
     min_purity_increase = 0
     fitm = build_tree(y, X,

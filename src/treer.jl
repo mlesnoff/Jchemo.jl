@@ -9,9 +9,9 @@ Keyword arguments:
 * `max_depth` : Maximum depth of the decision tree (default: -1 ==> no maximum).
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
-* `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RNG. 
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RNG. 
 
 The function is a wrapper of package `DecisionTree.jl' to fit a single regression tree (CART).
 
@@ -69,9 +69,9 @@ function treer(X, y; kwargs...)
     p = nco(X)    
     Q = eltype(X)
     par = recovkw(ParTree{Q}, kwargs).par
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    if par.scalx != :none
+        X = transf(csx, X)
     end
     n_subfeatures = round(Int, par.n_subfeatures)
     min_purity_increase = 0
@@ -86,7 +86,7 @@ function treer(X, y; kwargs...)
         #rng = 3
         )
     featur = collect(1:p)
-    Treer(fitm, xscales, featur, par) 
+    Treer(fitm, featur, csx, par) 
 end
 
 """
@@ -99,10 +99,10 @@ function predict(object::Treer, X)
     X = ensure_mat(X)
     # Tree
     if (@names object.fitm)[1] == :node
-        pred = apply_tree(object.fitm, fscale(X, object.cs.scales))
+        pred = apply_tree(object.fitm, fscale(X, object.csx.scales))
     # Forest 
     else
-        pred = apply_forest(object.fitm, fscale(X, object.cs.scales); use_multithreading = object.par.mth)
+        pred = apply_forest(object.fitm, fscale(X, object.csx.scales); use_multithreading = object.par.mth)
     end
     pred = reshape(pred, nro(X), 1)
     (pred = pred,)
