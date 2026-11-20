@@ -21,7 +21,6 @@ Keyword arguments:
     the computation of the distances and local weights), and (b) the X scaling is also done within each 
     neighborhood (local level) before the weighted PLSR.
 * `scaly` : Same as `scalx` for `Y`.
-
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned
     by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.

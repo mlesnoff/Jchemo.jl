@@ -421,6 +421,41 @@ Base.@kwdef mutable struct ParLwplsravg{Q<:Float}
     verbose::Bool = false                   
 end 
 
+Base.@kwdef mutable struct ParProtoplsr{Q<:Float}
+    nlvdis::Int = 0                         
+    metric::Symbol = :eucl  
+    nproto::Int = 1
+    k::Int = 1 
+    centroid::Bool = false
+    typsamp::Symbol = :rand
+    nlv::Int = 1  
+    K::Int = 5    
+    kavg::Int = 1                              
+    h::Q = Inf                        
+    criw::Q = 4                       
+    squared::Bool = false                   
+    tolw::Q = 1e-4                    
+    scalx::Symbol = :none  
+    scaly::Symbol = :none
+    seed::Union{Nothing, Int} = nothing     
+end
+
+Base.@kwdef mutable struct ParProtoclustplsr{Q<:Float} 
+    nlvdis::Int = 0    # To do                         
+    metric::Symbol = :eucl  
+    nproto::Int = 1
+    nlv::Int = 1
+    K::Int = 5   
+    kavg::Int = 1                              
+    h::Q = Inf                        
+    criw::Q = 4.                       
+    squared::Bool = false                   
+    tolw::Q = 1e-4                    
+    scalx::Symbol = :none  
+    scaly::Symbol = :none
+    seed::Union{Nothing, Int} = nothing
+end
+
 # Svm, Trees
 
 Base.@kwdef mutable struct ParSvm{Q<:Float64}    # svmr, svmda   # !!!: LIBSVM requires Float64

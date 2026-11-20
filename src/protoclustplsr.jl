@@ -17,8 +17,10 @@ Keyword arguments:
 * `h` : A scalar defining the shape of the weight function used to average the prototype predictions. The weights are 
     computed by function `winvs`)Lower is h, sharper is the function. See function `winvs` for details (keyword arguments
     `criw` and `squared` of `winvs` can also be specified here).
-* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is scaled by its 
-    uncorrected standard deviation before implementing the PLSR.
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled before 
+    the computation of distances and the local model fitting.
+* `scaly` : Same as `scalx` for `Y`.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator used to initialize the kmeans algorithm. 
 
 Function `protoclustplsr` implements an averaging of prototype PLSR models.
@@ -87,29 +89,6 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
     ylabel = "Observed").f  
 ```
 """ 
-Base.@kwdef mutable struct ParProtoclustplsr{Q<:Float} 
-    nlvdis::Int = 0    # To do                         
-    metric::Symbol = :eucl  
-    nproto::Int = 1
-    nlv::Int = 1
-    K::Int = 5   
-    kavg::Int = 1                              
-    h::Q = Inf                        
-    criw::Q = 4.                       
-    squared::Bool = false                   
-    tolw::Q = 1e-4                    
-    scal::Symbol = :none    
-    seed::Union{Nothing, Int} = nothing
-end
-
-struct Protoclustplsr
-    fitm::Protoyclaplsr
-    fitm_emb::Union{Nothing, Plsr}
-    fitm_clust::Clustering.KmeansResult
-    ycla::Vector{String}
-    par::ParProtoclustplsr
-end
-
 protoclustplsr(; kwargs...) = JchemoModel(protoclustplsr, nothing, kwargs)
 
 function protoclustplsr(X, Y; kwargs...)

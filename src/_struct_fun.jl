@@ -563,6 +563,35 @@ struct Lwplsravg{Q<:Float}
     par::ParLwplsravg
 end
 
+struct Protoplsr{Q<:Float}
+    fitm::Vector{Plsr}    
+    fitm_emb::Union{Nothing, Plsr}
+    Xproto::Matrix{Q}
+    Yproto::Matrix{Q}
+    coefs::Vector{NamedTuple}
+    resnn::NamedTuple
+    par::ParProtoplsr
+end
+
+struct Protoyclaplsr{Q<:Float}
+    fitm::Vector{Plsr}    
+    fitm_emb::Union{Nothing, Plsr}
+    Xproto::Matrix{Q}
+    Yproto::Matrix{Q}
+    coefs::Vector{NamedTuple}
+    ni::Vector{Int}
+    lev::Vector{String}
+    par::NamedTuple
+end
+
+struct Protoclustplsr
+    fitm::Protoyclaplsr
+    fitm_emb::Union{Nothing, Plsr}
+    fitm_clust::Clustering.KmeansResult
+    ycla::Vector{String}
+    par::ParProtoclustplsr
+end
+
 # Svm, Trees
 
 struct Svmr{Q<:Float64}

@@ -21,8 +21,10 @@ Keyword arguments:
 * `h` : A scalar defining the shape of the weight function used to average the prototype predictions. The weights are 
     computed by function `winvs`)Lower is h, sharper is the function. See function `winvs` for details (keyword arguments
     `criw` and `squared` of `winvs` can also be specified here).
-* `scal` : Boolean. If `true`, each column of matrices X and Y of the prototype neighborhood is scaled by its 
-    uncorrected standard deviation before implementing the PLSR.
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled before 
+    the computation of distances and the local model fitting.
+* `scaly` : Same as `scalx` for `Y`.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator used when `typsamp` = `:rand`. 
 
 Function `protoplsr` implements an averaging of prototype PLSR models.
@@ -51,10 +53,7 @@ or on global PLS scores computed from (`X`, `Y`). This is managed by argument `n
     (function `winvs`). TThe weights decrease with the distance (decreasing weighting function). If `kavg = 1`, only one PLSR model 
     is used (the closest prototype) and there is no averaging.
 
-Notes: 
-* This pipeline is still under construction, some details could change in the future.
-* The actual version of the function works for multivariate `Y` but the PLSR optimizations are done only based on the
-    first Y column (this will be fixed later). 
+*Notes*: This pipeline is still under construction, some details could change in the future.
 
 # References
 Ramirez-Lopez, L., Metz, M., Lesnoff, M., Orellano, C., Perez-Fernandez, E., Plans, M., Breure, T., Behrens, 
@@ -63,8 +62,6 @@ Analytica Chimica Acta 345682. https://doi.org/10.1016/j.aca.2026.345682
 
 Schaal, S., Atkeson, C.G., 1998. Constructive Incremental Learning from Only Local Information. 
 Neural Computation 10, 2047–2084. https://doi.org/10.1162/089976698300016963
-
-
 
 # Examples
 ```julia
@@ -84,9 +81,12 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlvdis = 15 ; metric = :mah 
-nproto = 100 ; k = 80 ; nlv = 15
-kavg = 5 ; h = 1.
+nproto = 100
+k = 80
+nlv = 15
+kavg = 5 ; h = 1 
 model = protoplsr(; nlvdis, metric, nproto, k, nlv, kavg, h, seed = 1234) 
+#model = protoplsr(; nlvdis, metric, nproto, k, nlv, kavg, h, scalx = :std, seed = 1234) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm
@@ -98,38 +98,10 @@ res = predict(model, Xtest) ;
 @head res.pred
 @show rmsep(res.pred, ytest)
 plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction",  
-    ylabel = "Observed").f          
+    ylabel = "Observed").f           
 ```
 """ 
 protoplsr(; kwargs...) = JchemoModel(protoplsr, nothing, kwargs)
-
-Base.@kwdef mutable struct ParProtoplsr{Q<:Float}
-    nlvdis::Int = 0                         
-    metric::Symbol = :eucl  
-    nproto::Int = 1
-    k::Int = 1 
-    centroid::Bool = false
-    typsamp::Symbol = :rand
-    nlv::Int = 1  
-    K::Int = 5    
-    kavg::Int = 1                              
-    h::Q = Inf                        
-    criw::Q = 4                       
-    squared::Bool = false                   
-    tolw::Q = 1e-4                    
-    scal::Symbol = :none 
-    seed::Union{Nothing, Int} = nothing     
-end
-
-struct Protoplsr{Q<:Float}
-    fitm::Vector{Plsr}    
-    fitm_emb::Union{Nothing, Plsr}
-    Xproto::Matrix{Q}
-    Yproto::Matrix{Q}
-    coefs::Vector{NamedTuple}
-    resnn::NamedTuple
-    par::ParProtoplsr
-end
 
 function protoplsr(X, Y; kwargs...)
     X = ensure_mat(X)
@@ -140,38 +112,50 @@ function protoplsr(X, Y; kwargs...)
     par = recovkw(ParProtoplsr{Q}, kwargs).par
     nlv = min(par.k, p, par.nlv)
     par.nlv = nlv
-    # Selection of the prototypes
+    # Selection of the nproto prototype centers
     if par.typsamp == :rand      
         s_proto = samprand(n, par.nproto; seed = par.seed).test
     elseif par.typsamp == :ks
         s_proto = sampks(X, par.nproto; metric = par.metric).test
     end
     # Compute the neighborhood of each prototype
+    csx = cscale(X; centr = :none, scal = par.scalx)
     if par.nlvdis == 0
         fitm_emb = nothing
-        resnn = getknn(X, vrow(X, s_proto); k = par.k, metric = par.metric)
+        zX = fscale(X, csx.scales)
+        resnn = getknn(zX, vrow(X, s_proto); k = par.k, metric = par.metric)
     else
-        fitm_emb = plskern(X, Y; nlv = par.nlvdis)
-        resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, metric = par.metric)
+        fitm_emb = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)
+        resnn = getknn(fitm_emb.T, transf(fitm_emb, vrow(X, s_proto)); k = par.k, 
+            metric = par.metric)
     end
-    # Optimize(K-fold-CV)/fit/store the nproto prototype models 
+    # Prepare the optimization, the fit and the storage of the nproto prototype models 
+    segm = segmkf(par.k, par.K; rep = 1, seed = 1234)  # K-fold CV within each prototype neighborood (size k)    
     fitm = list(Plsr, par.nproto)
     coefs = list(NamedTuple, par.nproto)
-    segm = segmkf(par.k, par.K; rep = 1, seed = 1234)
+    # Will store the prototype centers (can be redefined by centroids, see below)
     Xproto = similar(X, par.nproto, p)
     Yproto = similar(Y, par.nproto, q)
     #@inbounds for i in eachindex(s_proto) 
     Threads.@threads for i in eachindex(s_proto)
         vX = vrow(X, resnn.ind[i])
         vY = vrow(Y, resnn.ind[i])
-        pars = mpar(scal = [par.scal], scaly = [par.scaly])
+        pars = mpar(scalx = [par.scalx], scaly = [par.scaly])
         model = plskern()
         rescv = gridcv(model, vX, vY; segm, score = rmsep, pars, nlv = 0:par.nlv).res
-        # To do: adapt for multivariate Y
-        u = findall(rescv.y1 .== minimum(rescv.y1))[1]
-        # End
-        fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scal = rescv.scal[u])
+        # Eventual multivariate Y
+        if q == 1
+            vscor = rescv.y1
+        else
+            s = nco(rescv)
+            A = Matrix(rescv[:, (s - q + 1):end])
+            vscor = sqrt.(rowsum(A.^2))
+        end
+        u = findall(vscor .== minimum(vscor))[1]
+        # Fit and store the optimized model
+        fitm[i] = plskern(vX, vY; nlv = rescv.nlv[u], scalx = rescv.scalx[u], scaly = rescv.scaly[u])
         coefs[i] = coef(fitm[i])
+        # Eventually redefine the prototype centers
         if par.centroid          
             Xproto[i, :] .= colmean(vX)
             Yproto[i, :] .= colmean(vY)    
@@ -191,14 +175,21 @@ function predict(object::Protoplsr, X)
     q = nco(object.Yproto)
     nproto = object.par.nproto
     metric = object.par.metric
-    kavg = min(object.par.kavg, nproto)  # nb prototype models averaged
+    kavg = min(object.par.kavg, nproto)  # nb prototype models to average
     h = object.par.h
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    # Compute the neighborhood (within the set of prototypes) of each new observation
+    # Compute the neighborhood (inside dataset Xproto) of each new observation
     if isnothing(object.fitm_emb)
-        res = getknn(object.Xproto, X; k = kavg, metric)
+        if object.par.scalx != :none
+            csx = cscale(object.Xproto; centr = :none, scal = par.scalx)
+            X1 = fscale(object.Xproto, csx.scales)
+            X2 = fscale(X, csx.scales)
+            res = getknn(X1, X2; metric, k = kavg)
+        else
+            res = getknn(object.Xproto, X; metric, k)
+        end
     else
         T = transf(object.fitm_emb, object.Xproto)
         res = getknn(T, transf(object.fitm_emb, X); k = kavg, metric) 

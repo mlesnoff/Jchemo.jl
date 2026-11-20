@@ -1,16 +1,5 @@
 # Not exported
 
-struct Protoyclaplsr{Q<:Float}
-    fitm::Vector{Plsr}    
-    fitm_emb::Union{Nothing, Plsr}
-    Xproto::Matrix{Q}
-    Yproto::Matrix{Q}
-    coefs::Vector{NamedTuple}
-    ni::Vector{Int}
-    lev::Vector{String}
-    par::NamedTuple
-end
-
 function protoyclaplsr(X, Y, ycla::Vector{String}; nlvdis::Int = 0, metric::Symbol = :eucl, nlv::Int, K::Int = 5, 
         kavg::Int = 1, h::Q = 1., criw::Q = 4., squared::Bool = false, 
         tolw::Q = 1e-4, scal::Symbol = :none) where {Q<:Float}
