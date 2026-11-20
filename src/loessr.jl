@@ -8,7 +8,7 @@ Keyword arguments:
 * `span` : Window for neighborhood selection (level of smoothing) for the local fitting, typically proportion 
     within [0, 1].
 * `degree` : Polynomial degree for the local fitting.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
     
 The function fits a LOESS model using package `Loess.jl'. 
@@ -56,15 +56,12 @@ loessr(; kwargs...) = JchemoModel(loessr, nothing, kwargs)
 function loessr(X, y; kwargs...)
     X = ensure_mat(X)
     y = vec(y)    
-    p = nco(X)
     Q = eltype(X) 
     par = recovkw(ParLoessr{Q}, kwargs).par
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    transf!(csx, X)
     fitm = Loess.loess(X, y; span = par.span, degree = par.degree) 
-    Loessr(fitm, xscales, par) 
+    Loessr(fitm, csx, par) 
 end
 
 """
@@ -77,7 +74,7 @@ function predict(object::Loessr, X)
     X = ensure_mat(X)
     Q = eltype(X)
     m = nro(X)
-    pred = Loess.predict(object.fitm, fscale(X, object.cs.scales))
+    pred = Loess.predict(object.fitm, fscale(X, object.csx.scales))
     (pred = reshape(Q.(pred), m, 1),)
 end
 

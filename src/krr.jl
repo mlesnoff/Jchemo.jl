@@ -117,8 +117,6 @@ end
 function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = recovkw(ParKrr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
-    p = nco(X)
-    q = nco(Y)
     # No need to center X (what is centered is the kernel)
     # No need to scale Y
     csx = cscale(X; centr = :none, scal = par.scalx)

@@ -13,7 +13,7 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
+* `scalx` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
     and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto)
     and `:mad` (MAD).
 * `verbose` : Boolean. If `true`, predicting information are printed.
@@ -91,10 +91,10 @@ function predict(object::Lwmlrda, X)
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    if object.par.scal != :none
-        zX1 = fscale(object.X, object.cs.scales)
-        zX2 = fscale(X, object.cs.scales)
-        res = getknn(zX1, zX2; metric, k)
+    if object.par.scalx != :none
+        X1 = fscale(object.X, object.csx.scales)
+        X2 = fscale(X, object.csx.scales)
+        res = getknn(X1, X2; metric, k)
     else
         res = getknn(object.X, X; metric, k)
     end

@@ -16,11 +16,14 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
-* `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
     the computation of the distances and local weights), and (b) the X scaling is also done within each 
-    neighborhood (local level) for the weighted PLSR.
-* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
+    neighborhood (local level) before the weighted PLSR.
+* `scaly` : Same as `scalx` for `Y`.
+
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned
+    by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 Function `lwplsr` fits kNN-LWPLSR models such as in Lesnoff et al. 2020. The general principle of 
@@ -119,10 +122,10 @@ function lwplsr(X, Y; kwargs...)
     if par.nlvdis == 0
         fitm = nothing
     else
-        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)
     end
-    xscales = colscal(X, par.scal)
-    Lwplsr(fitm, X, Y, xscales, par)
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    Lwplsr(fitm, X, Y, csx, par)
 end
 
 """
@@ -154,9 +157,9 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     tolw = object.par.tolw
     if isnothing(object.fitm)
         if object.par.scal != :none
-            zX1 = fscale(object.X, object.cs.scales)
-            zX2 = fscale(X, object.cs.scales)
-            res = getknn(zX1, zX2; metric, k)
+            X1 = fscale(object.X, object.csx.scales)
+            X2 = fscale(X, object.csx.scales)
+            res = getknn(X1, X2; metric, k)
         else
             res = getknn(object.X, X; metric, k)
         end
@@ -171,8 +174,9 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
         listw[i] = w
     end
     # End
-    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, scal = object.par.scal, 
-        store = object.par.store, verbose = object.par.verbose)
+    reslocw = locwlv(object.X, object.Y, X; listnn = res.ind, listw, algo = plskern, nlv, 
+        scalx = object.par.scalx, scaly = object.par.scaly, store = object.par.store, 
+        verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 
         listw, nlv)
 end

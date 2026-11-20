@@ -13,14 +13,17 @@ Keyword arguments:
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
-    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto)
-    and `:mad` (MAD).
-* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned by function `predict`.
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
+    the computation of the distances and local weights), and (b) the X scaling is also done within each 
+    neighborhood (local level) before the weighted MLR.
+* `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned
+    by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
     
-This is the same principle as function `lwplsr` except that MLR models are fitted on the neighborhoods, instead of 
-PLSR models.  The neighborhoods are computed directly on `X` (there is no preliminary dimension reduction).
+This is the same principle as function `lwplsr` except that MLR models are fitted on the neighborhoods,
+instead of PLSR models.  The neighborhoods are computed directly on `X` (there is no preliminary dimension 
+reduction).
 
 # Examples
 ```julia
@@ -98,8 +101,8 @@ function lwmlr(X, Y; kwargs...)
     Y = ensure_mat(Y)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
-    xscales = colscal(X, par.scal)
-    Lwmlr(X, Y, xscales, par)
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    Lwmlr(X, Y, csx, par)
 end
 
 """
@@ -117,10 +120,10 @@ function predict(object::Lwmlr, X)
     criw = object.par.criw
     squared = object.par.squared
     tolw = object.par.tolw
-    if object.par.scal != :none
-        zX1 = fscale(object.X, object.cs.scales)
-        zX2 = fscale(X, object.cs.scales)
-        res = getknn(zX1, zX2; metric, k)
+    if object.par.scalx != :none
+        X1 = fscale(object.X, object.csx.scales)
+        X2 = fscale(X, object.csx.scales)
+        res = getknn(X1, X2; metric, k)
     else
         res = getknn(object.X, X; metric, k)
     end
@@ -131,8 +134,8 @@ function predict(object::Lwmlr, X)
         listw[i] = w
     end
     # End
-    reslocw = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, store = object.par.store, 
-        verbose = object.par.verbose)
+    reslocw = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, 
+        scalx = object.par.scalx, store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 

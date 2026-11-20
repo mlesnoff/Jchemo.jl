@@ -13,8 +13,9 @@ Keyword arguments:
     sharper is the function. See function `winvs` for details (keyword arguments `criw` and `squared` of 
     `winvs` can also be specified here).
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X` (before the computation of the distances and local weights). 
-    Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
+* `scalx` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
+    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto)
+    and `:mad` (MAD).
 
 The general principle of this function is as follows (many other variants of kNNR pipelines can be built):
 a) For each new observation to predict, the prediction is the weighted mean of `y` over a selected neighborhood
@@ -93,11 +94,8 @@ function knnr(X, Y; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
-    xscales = colscal(X, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
-    Knnr(X, Y, xscales, par) 
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    Knnr(X, Y, csx, par)    
 end
 
 """
@@ -117,10 +115,10 @@ function predict(object::Knnr, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal != :none
-        zX1 = fscale(object.X, object.cs.scales)
-        zX2 = fscale(X, object.cs.scales)
-        res = getknn(zX1, zX2; metric, k)
+    if object.par.scalx != :none
+        X1 = fscale(object.X, object.csx.scales)
+        X2 = fscale(X, object.csx.scales)
+        res = getknn(X1, X2; metric, k)
     else
         res = getknn(object.X, X; metric, k)
     end

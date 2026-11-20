@@ -112,9 +112,9 @@ function predict(object::Lwplsravg, X)
     tolw = object.par.tolw
     if isnothing(object.fitm)
         if object.par.scal != :none
-            zX1 = fscale(object.X, object.cs.scales)
-            zX2 = fscale(X, object.cs.scales)
-            res = getknn(zX1, zX2; metric, k)
+            X1 = fscale(object.X, object.csx.scales)
+            X2 = fscale(X, object.csx.scales)
+            res = getknn(X1, X2; metric, k)
         else
             res = getknn(object.X, X; metric, k)
         end

@@ -122,7 +122,7 @@ function svmr(X, y; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmr(fitm, xscales, par) 
+    Svmr(fitm, csx, par) 
 end
 
 """

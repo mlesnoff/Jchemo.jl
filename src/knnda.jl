@@ -100,10 +100,10 @@ function predict(object::Knnda, X)
     tolw = object.par.tolw
     criw = object.par.criw
     squared = object.par.squared
-    if object.par.scal != :none
-        zX1 = fscale(object.X, object.cs.scales)
-        zX2 = fscale(X, object.cs.scales)
-        res = getknn(zX1, zX2; metric, k)
+    if object.par.scalx != :none
+        X1 = fscale(object.X, object.csx.scales)
+        X2 = fscale(X, object.csx.scales)
+        res = getknn(X1, X2; metric, k)
     else
         res = getknn(object.X, X; metric, k)
     end

@@ -365,7 +365,7 @@ end
 Base.@kwdef mutable struct ParLoessr{Q<:Float}      
     span::Q = 0.75
     degree::Int = 2               
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParKnn{Q<:Float}    # knnr, knnda                
@@ -375,7 +375,7 @@ Base.@kwdef mutable struct ParKnn{Q<:Float}    # knnr, knnda
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                               
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
     verbose::Bool = false                   
 end 
 
@@ -386,7 +386,7 @@ Base.@kwdef mutable struct ParLwmlr{Q<:Float}    # lwmlr, lwmlrda
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                               
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
     store::Bool = false 
     verbose::Bool = false                   
 end 
@@ -399,8 +399,9 @@ Base.@kwdef mutable struct ParLwplsr{Q<:Float}
     criw::Q = 4.                       
     squared::Bool = false                   
     tolw::Q = 1e-4                    
-    nlv::Int =  1     
-    scal::Symbol = :none
+    nlv::Int =  1   
+    scalx::Symbol = :none  
+    scaly::Symbol = :none
     store::Bool = false 
     verbose::Bool = false                   
 end 
@@ -414,7 +415,8 @@ Base.@kwdef mutable struct ParLwplsravg{Q<:Float}
     squared::Bool = false                   
     tolw::Q = 1e-4                    
     nlv::AbstractVector{Int} = 1:1     
-    scal::Symbol = :none
+    scalx::Symbol = :none  
+    scaly::Symbol = :none
     store::Bool = false 
     verbose::Bool = false                   
 end 
@@ -428,7 +430,7 @@ Base.@kwdef mutable struct ParSvm{Q<:Float64}    # svmr, svmda   # !!!: LIBSVM r
     degree::Int = 1    
     cost::Q = 1.  
     epsilon::Q = .1 
-    scal::Symbol = :none         
+    scalx::Symbol = :none         
 end 
 
 Base.@kwdef mutable struct ParTree{Q<:Float}    # treer, treeda
@@ -437,7 +439,7 @@ Base.@kwdef mutable struct ParTree{Q<:Float}    # treer, treeda
     min_samples_leaf::Int = 5       
     min_samples_split::Int = 5
     rng = Random.GLOBAL_RNG
-    scal::Symbol = :none              
+    scalx::Symbol = :none              
 end 
 
 Base.@kwdef mutable struct ParRf{Q<:Float}    # rfr, rfda
@@ -449,7 +451,7 @@ Base.@kwdef mutable struct ParRf{Q<:Float}    # rfr, rfda
     min_samples_split::Int = 5    
     mth::Bool = true  
     rng = Random.GLOBAL_RNG
-    scal::Symbol = :none         
+    scalx::Symbol = :none         
 end 
 
 ############---- Discrimination
