@@ -560,7 +560,6 @@ struct Lwplsravg{Q<:Float}
     X::Matrix{Q}
     Y::Matrix{Q}
     csx::Cscale{Q}
-    csy::Cscale{Q}
     par::ParLwplsravg
 end
 

@@ -156,7 +156,7 @@ function predict(object::Lwplsr, X, nlv::Union{Int, AbstractVector{Int}})
     squared = object.par.squared
     tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal != :none
+        if object.par.scalx != :none
             X1 = fscale(object.X, object.csx.scales)
             X2 = fscale(X, object.csx.scales)
             res = getknn(X1, X2; metric, k)

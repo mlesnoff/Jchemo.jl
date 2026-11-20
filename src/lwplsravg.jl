@@ -17,10 +17,11 @@ Keyword arguments:
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
 * `nlv` : A range of nb. of latent variables (LVs) to compute for the local (i.e. inside each neighborhood) models.
-* `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
     the computation of the distances and local weights), and (b) the X scaling is also done within each 
-    neighborhood (local level) for the weighted PLSR.
+    neighborhood (local level) before the weighted PLSR.
+* `scaly` : Same as `scalx` for `Y`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 Ensemblist method where the predictions are computed by averaging the predictions of a set of models built with 
@@ -88,10 +89,10 @@ function lwplsravg(X, Y; kwargs...)
     if par.nlvdis == 0
         fitm = nothing
     else
-        fitm = plskern(X, Y; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)
     end
-    xscales = colscal(X, par.scal)
-    Lwplsravg(fitm, X, Y, xscales, par)
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    Lwplsravg(fitm, X, Y, csx, par)
 end
 
 """
@@ -111,7 +112,7 @@ function predict(object::Lwplsravg, X)
     squared = object.par.squared
     tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal != :none
+        if object.par.scalx != :none
             X1 = fscale(object.X, object.csx.scales)
             X2 = fscale(X, object.csx.scales)
             res = getknn(X1, X2; metric, k)
@@ -128,8 +129,8 @@ function predict(object::Lwplsravg, X)
         listw[i] = w
     end
     # End
-    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, 
-        nlv, scal = object.par.scal, verbose = object.par.verbose).pred
+    pred = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = plsravg, nlv, 
+        scalx = object.par.scalx, scaly = object.par.scaly, verbose = object.par.verbose).pred
     (pred = pred, listnn = res.ind, listd = res.d, listw)
 end
 
