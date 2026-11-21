@@ -183,8 +183,7 @@ end
 # Multiblock
 
 struct Blockscal{Q<:Float}
-    xcenters::Vector{Vector{Q}}
-    xscales::Vector{Vector{Q}}
+    cs::Vector{Cscale{Q}}
     bscales::Vector{Q}
     par::ParBlock
 end
@@ -605,6 +604,12 @@ struct Treer{Q<:Float}
     featur::Vector{Int}
     csx::Cscale{Q}
     par::Union{ParTree, ParRf}
+end
+
+struct Baggr
+    fitm
+    res_samp::NamedTuple
+    q::Int
 end
 
 ############---- Discrimination

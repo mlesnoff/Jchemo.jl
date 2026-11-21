@@ -173,7 +173,7 @@ end
 # Multiblock
 
 Base.@kwdef mutable struct ParBlock
-    centr::Union{Bool, Vector{Bool}} = false   
+    centr::Union{Symbol, Vector{Symbol}} = :none  
     scal::Union{Symbol, Vector{Symbol}} = :none  
     bscal::Symbol = :none   
 end 

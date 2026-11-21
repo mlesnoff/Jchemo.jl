@@ -31,181 +31,6 @@ function mblock(X, listbl)
 end 
 
 """
-    blockscal(; kwargs...)
-    blockscal(Xbl; kwargs...)
-    blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float} 
-Scale multiblock X-data.
-* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
-* `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` 
-    (see e.g., function `pweight`).
-Keyword arguments:
-* `centr` : Boolean, or a vector of booleans (of length equal to the number of blocks). If `true`, 
-    each column of the considered block in `Xbl` is centered (before the block scaling).
-    If not a vector, the same value is applied to each block.
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
-    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
-    is applied to each block.
-* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:std`. 
-    See thereafter.
-
-If implemented, the successive operations are:
-1) column centering, 
-2) column scaling 
-3) and finally block scaling. 
-
-Types of block scaling:
-* `:none` : No block scaling. 
-* `:frob` : Let D be the diagonal matrix of vector `weights.values`. Each block X is divided
-    by its Frobenius norm  = sqrt(tr(X' * D * X)). After this scaling, tr(X' * D * X) = 1.
-* `:mfa` : Each block X is divided by sv, where sv is the dominant singular value of X 
-    (this is the "MFA" approach; "AFM "in French).
-* `:ncol` : Each block X is divided by the nb. of columns of the block.
-* `:std` : Each block X is divided by sqrt(sum(weighted variances of the block-columns)). 
-    After this scaling, sum(weighted variances of the block-columns) = 1.
-
-# Examples
-```julia
-using Jchemo
-
-n = 5 ; m = 3 ; p = 10 
-X = rand(n, p) 
-Xnew = rand(m, p)
-listbl = [3:4, 1, [6; 8:10]]
-Xbl = mblock(X, listbl) 
-Xblnew = mblock(Xnew, listbl) 
-@head Xbl[3]
-
-centr = true ; scal = :std
-#centr = [false, false, true, false] ; scal = [:none, :none, :std, :none]
-bscal = :frob
-model = blockscal(; centr, scal, bscal)
-fit!(model, Xbl)
-# Data transformation
-vXbl = transf(model, Xbl) ; 
-@head vXbl[3]
-
-zXblnew = transf(model, Xblnew) ; 
-zXblnew[3]
-```
-"""
-blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
-
-function blockscal(Xbl; kwargs...)
-    Xbl = ensure_mat_mb(Xbl)
-    n = nro(Xbl[1])
-    blockscal(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
-end
-
-function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
-    par = recovkw(ParBlock, kwargs).par
-    @assert in([:none, :frob, :mfa, :ncol, :std])(par.bscal) "Wrong value for argument 'bscal'."
-    nbl = length(Xbl)
-    if isa(par.centr, Bool)
-        par.centr = [par.centr for k in eachindex(Xbl)]
-    end
-    if isa(par.scal, Symbol)
-        par.scal = [par.scal for k in eachindex(Xbl)]
-    end
-    xcenters = list(Vector{Q}, nbl)
-    xscales = list(Vector{Q}, nbl)
-    bscales = ones(Q, nbl)
-    for k in eachindex(Xbl)  # operations in each block 
-        # Column centering
-        zX = copy(Xbl[k])
-        pbl = nco(zX)
-        xcenters[k] = zeros(Q, pbl)  # if no centering, 'zeros' is required for 'transf'  
-        xscales[k] = ones(Q, pbl)
-        if par.centr[k]
-            xcenters[k] .= colmean(Xbl[k], weights)
-            fcenter!(zX, xcenters[k])
-        end
-        # Column scaling
-        xscales[k] = colscal(Xbl[k], weights, par.scal[k])
-        if par.scal[k] != :none
-            fscale!(zX, xscales[k])
-        end
-        # Xbl centering and scaling, and block scaling
-        if par.bscal == :frob
-            bscales[k] = frob(zX, weights)
-        elseif par.bscal == :mfa
-            fweightr!(zX, sqrt.(weights.values))
-            bscales[k] = nipals(zX).sv
-        elseif par.bscal == :ncol
-            bscales[k] = nco(zX)
-        elseif par.bscal == :std
-            bscales[k] = sqrt(sum(colvar(zX, weights)))
-        end
-    end
-    Blockscal(xcenters, xscales, bscales, par)
-end
-
-""" 
-    transf(object::Blockscal, Xbl)
-    transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float}
-Compute the preprocessed data from a model.
-* `object` : The fitted model.
-* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
-""" 
-function transf(object::Blockscal, Xbl)
-    Xbl = ensure_mat_mb(Xbl)
-    vXbl = [copy(Xbl[k]) for k in eachindex(Xbl)]
-    transf!(object, vXbl)
-    vXbl
-end
-
-function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float} 
-    @inbounds for k in eachindex(Xbl)
-        fcscale!(Xbl[k], object.cs.centers[k], object.cs.scales[k])
-        Xbl[k] ./= object.bscales[k]
-    end
-end
-
-"""
-    fblockscal(Xbl, bscales)
-    fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where {Q<:Float}
-Scale multiblock X-data.
-* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
-* `bscales` : A vector (of length equal to the nb. of blocks) of the scalars diving the blocks.
-
-This function is not commonly used. See function `blockscal` instead.
-
-# Examples
-```julia
-using Jchemo
-n = 5 ; m = 3 ; p = 10 
-X = rand(n, p) 
-listbl = [3:4, 1, [6; 8:10]]
-Xbl = mblock(X, listbl) 
-
-bscales = 10 * ones(3)
-vXbl = fblockscal(Xbl, bscales) ;
-@head vXbl[3]
-@head Xbl[3]
-
-fblockscal!(Xbl, bscales) ;
-@head Xbl[3]
-```
-"""
-function fblockscal(Xbl, bscales)
-    Xbl = ensure_mat_mb(Xbl)
-    nbl = length(Xbl)  
-    vXbl = list(Matrix{eltype(Xbl[1])}, nbl)
-    @inbounds for k in eachindex(Xbl)
-        vXbl[k] = copy(Xbl[k])
-    end
-    fblockscal!(vXbl, bscales)
-end
-
-function fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where {Q<:Float}
-    #Threads not faster
-    @inbounds for k in eachindex(Xbl)
-        Xbl[k] ./= bscales[k]
-    end
-    Xbl
-end 
-
-"""
     mbconcat()
     mbconcat(Xbl)
 Concatenate horizontaly multiblock X-data.
@@ -263,3 +88,170 @@ fconcat(Xbl)
 """
 fconcat(Xbl) = reduce(hcat, Xbl)
 
+"""
+    blockscal(; kwargs...)
+    blockscal(Xbl; kwargs...)
+    blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float} 
+Scale multiblock X-data.
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
+* `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` 
+    (see e.g., function `pweight`).
+Keyword arguments:
+* `centr` : Boolean, or a vector of booleans (of length equal to the number of blocks). If `true`, 
+    each column of the considered block in `Xbl` is centered (before the block scaling).
+    If not a vector, the same value is applied to each block.
+* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
+* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:std`. 
+    See thereafter.
+
+If implemented, the successive operations are:
+1) column centering, 
+2) column scaling 
+3) and finally block scaling. 
+
+Types of block scaling:
+* `:none` : No block scaling. 
+* `:frob` : Let D be the diagonal matrix of vector `weights.values`. Each block X is divided
+    by its Frobenius norm  = sqrt(tr(X' * D * X)). After this scaling, tr(X' * D * X) = 1.
+* `:mfa` : Each block X is divided by sv, where sv is the dominant singular value of X 
+    (this is the "MFA" approach; "AFM "in French).
+* `:ncol` : Each block X is divided by the nb. of columns of the block.
+* `:std` : Each block X is divided by sqrt(sum(weighted variances of the block-columns)). 
+    After this scaling, sum(weighted variances of the block-columns) = 1.
+
+# Examples
+```julia
+using Jchemo
+
+n = 5 ; m = 3 ; p = 10 
+X = rand(n, p) 
+Xnew = rand(m, p)
+listbl = [3:4, 1, [6; 8:10]]
+Xbl = mblock(X, listbl) 
+Xblnew = mblock(Xnew, listbl) 
+@head Xbl[3]
+
+centr = :mean ; scal = :std ; bscal = :frob
+#centr = [:none, :mean, :mean] ; scal = [:none, :none, :std] ; bscal = :none 
+model = blockscal(; centr, scal, bscal)
+fit!(model, Xbl)
+@names fitm = model.fitm
+length(fitm.cs)
+k = 1
+@show fitm.cs[k].centers
+@show fitm.cs[k].scales
+@show fitm.bscales
+# Data transformation
+vXbl = transf(model, Xbl) ; 
+@head vXbl[k]
+
+zXblnew = transf(model, Xblnew) ; 
+zXblnew[k]
+```
+"""
+blockscal(; kwargs...) = JchemoModel(blockscal, nothing, kwargs)
+
+function blockscal(Xbl; kwargs...)
+    Xbl = ensure_mat_mb(Xbl)
+    n = nro(Xbl[1])
+    blockscal(Xbl, pweight(ones(eltype(Xbl[1]), n)); kwargs...)
+end
+
+function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    par = recovkw(ParBlock, kwargs).par
+    @assert @in(par.bscal, [:none, :frob, :mfa, :ncol, :std]) "Wrong value for argument 'bscal'."
+    nbl = length(Xbl)
+    if isa(par.centr, Symbol)
+        par.centr = [par.centr for k in eachindex(Xbl)]
+    end
+    if isa(par.scal, Symbol)
+        par.scal = [par.scal for k in eachindex(Xbl)]
+    end
+    # Compute centers, scales and bscale for each block
+    cs = list(Cscale{Q}, nbl) 
+    bscales = ones(Q, nbl)
+    for k in eachindex(Xbl) 
+        zX = copy(Xbl[k])
+        cs[k] = cscale(zX, weights; centr = par.centr[k], scal = par.scal[k])
+        transf!(cs[k], zX)  # only required to compute bscal 
+        if par.bscal == :frob
+            bscales[k] = frob(zX, weights)
+        elseif par.bscal == :mfa
+            fweightr!(zX, sqrt.(weights.values))
+            bscales[k] = nipals(zX).sv
+        elseif par.bscal == :ncol
+            bscales[k] = nco(zX)
+        elseif par.bscal == :std
+            bscales[k] = sqrt(sum(colvar(zX, weights)))
+        end        
+    end
+    Blockscal(cs, bscales, par)
+end
+
+""" 
+    transf(object::Blockscal, Xbl)
+    transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float}
+Compute the preprocessed data from a model.
+* `object` : The fitted model.
+* `Xbl` : A list of blocks (vector of matrices) of X-data for which LVs are computed.
+""" 
+function transf(object::Blockscal, Xbl)
+    Xbl = ensure_mat_mb(Xbl)
+    vXbl = [copy(Xbl[k]) for k in eachindex(Xbl)]
+    transf!(object, vXbl)
+    vXbl
+end
+
+function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float} 
+    @inbounds for k in eachindex(Xbl)
+        fcscale!(Xbl[k], object.cs[k].centers, object.cs[k].scales)
+        Xbl[k] ./= object.bscales[k]
+    end
+end
+
+"""
+    fblockscal(Xbl, bscales)
+    fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where {Q<:Float}
+Scale multiblock X-data.
+* `Xbl` : List of blocks (vector of matrices) of X-data. For instance, output of function `mblock` from data (n, p).  
+* `bscales` : A vector (of length equal to the nb. of blocks) of the scalars diving the blocks.
+
+This function is not commonly used. See function `blockscal` instead.
+
+# Examples
+```julia
+using Jchemo
+n = 5 ; m = 3 ; p = 10 
+X = rand(n, p) 
+listbl = [3:4, 1, [6; 8:10]]
+Xbl = mblock(X, listbl) 
+
+bscales = 10 * ones(3)
+vXbl = fblockscal(Xbl, bscales) ;
+@head vXbl[3]
+@head Xbl[3]
+
+fblockscal!(Xbl, bscales) ;
+@head Xbl[3]
+```
+"""
+function fblockscal(Xbl, bscales)
+    Xbl = ensure_mat_mb(Xbl)
+    nbl = length(Xbl)  
+    vXbl = list(Matrix{eltype(Xbl[1])}, nbl)
+    @inbounds for k in eachindex(Xbl)
+        vXbl[k] = copy(Xbl[k])
+    end
+    fblockscal!(vXbl, bscales)
+end
+
+function fblockscal!(Xbl::Vector{Matrix{Q}}, bscales::Vector{Q}) where {Q<:Float}
+    #Threads not faster
+    @inbounds for k in eachindex(Xbl)
+        Xbl[k] ./= bscales[k]
+    end
+    Xbl
+end 

@@ -1,9 +1,3 @@
-struct Baggr
-    fitm
-    res_samp::NamedTuple
-    q::Int
-end
-
 """
     baggr(X, Y; fun::Function, rep::Int = 50, replace::Bool = false, psamprow::Q = .7, 
         psampcol::Q = 1., seed::Union{Nothing, Int} = nothing, kwargs...) where {Q<:Float}

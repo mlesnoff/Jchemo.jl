@@ -670,7 +670,7 @@ Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `centr` : Symbol defining the row centering. Possible values are: `:none` (no centering), 
-    and `:mean` (default). 
+    `:mean` (default), and `:med` (median). 
 * `scal` : Symbol defining the row scaling. Possible values are: `:none` (no scaling), 
     `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
@@ -708,7 +708,7 @@ snv(; kwargs...) = JchemoModel(snv, nothing, kwargs)
 
 function snv(X; kwargs...)
     par = recovkw(ParSnv, kwargs).par
-    @assert @in(par.centr, [:none, :mean]) "Wrong value for argument 'centr'."
+    @assert @in(par.centr, [:none, :mean, :med]) "Wrong value for argument 'centr'."
     @assert @in(par.scal, [:none, :std, :prt, :mad]) "Wrong value for argument 'scal'."
     Snv(par)
 end

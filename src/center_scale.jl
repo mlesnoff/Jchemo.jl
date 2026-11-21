@@ -6,7 +6,7 @@ Column-wise centering of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `typ` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
-    and `:mean` (default). 
+    `:mean` (default), and `:med` (median). 
 
 # Examples
 ```julia
@@ -52,11 +52,13 @@ end
     
 function center(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = Jchemo.recovkw(ParCenter, kwargs).par
-    @assert @in(par.typ, [:none, :mean]) "Wrong value for argument 'centr'."
+    @assert @in(par.typ, [:none, :mean, :med]) "Wrong value for argument 'centr'."
     if par.typ == :none
         v = zeros(Q, nco(X))
     elseif par.typ == :mean 
          v = colmean(X, weights)
+    elseif par.typ == :med 
+        v = colmed(X)   # no weighting for medians
     end
     Center(v, par)
 end
@@ -174,7 +176,7 @@ Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `centr` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
-    and `:mean` (default). 
+    `:mean` (default), and `:med` (median). 
 * `scal` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
     `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
