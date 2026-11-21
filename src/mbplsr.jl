@@ -55,7 +55,8 @@ bscal = :frob
 model = mbplsr(; nlv, bscal)
 fit!(model, Xbltrain, ytrain)
 @names model 
-@names fitm = model.fitm  
+fitm = model.fitm ;
+@names fitm 
 typeof(fitm.fitm)
 @names fitm.fitm
 
@@ -75,9 +76,9 @@ res.rvxbl2t
 res.rdxbl2t
 res.corx2t 
 
-# This MBPLSR can also be implemented with function 'pip'
+## This MBPLSR can also be implemented with function 'pip'
 
-model1 = blockscal(; bscal, centr = :mean) ;
+model1 = blockscal(; centr = :mean, bscal) ;
 model2 = mbconcat()
 model3 = plskern(; nlv) ;
 model = pip(model1, model2, model3)
@@ -95,10 +96,10 @@ transf(model, Xbltest)
 
 predict(model, Xbltest).pred 
 
-# And a sparse MB PLSR as follows
+## And a sparse MB PLSR as follows
 
 meth = :soft ; nvar = 2
-model1 = blockscal(; bscal, centr = :mean) ;
+model1 = blockscal(; centr = :mean, bscal) ;
 model2 = mbconcat()
 model3 = splsr(; nlv, meth, nvar) ;
 model = pip(model1, model2, model3)
@@ -142,12 +143,12 @@ end
 function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; 
         kwargs...) where {Q<:Float}
     par = recovkw(ParMbplsr{Q}, kwargs).par
-    n, q = size(Y)
+    n = nro(Y)
     pbl = nco.(Xbl)
     ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv
-    # Column centering and scaling, and block scaling
+    # Xbl: column centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
@@ -187,7 +188,9 @@ predict(object::Mbplsr, Xbl) = predict(object, Xbl, object.par.nlv)
 
 function predict(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
     vXbl = transf(object.fitm_bl, Xbl)
-    predict(object.fitm, fconcat(vXbl), nlv)
+    pred = predict(object.fitm, fconcat(vXbl), nlv).pred
+    if length(nlv) == 1 ; pred = pred[1] ; end
+    (pred = pred, nlv)
 end
 
 function predict2(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
@@ -222,7 +225,7 @@ function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.fitm.T)
     nbl = length(Xbl)
-    # Column centering and scaling, and block scaling
+    # Xbl: column centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV
