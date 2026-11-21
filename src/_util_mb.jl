@@ -174,10 +174,12 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
     # Compute centers, scales and bscale for each block
     cs = list(Cscale{Q}, nbl) 
     bscales = ones(Q, nbl)
-    for k in eachindex(Xbl) 
+    for k in eachindex(Xbl)
         zX = copy(Xbl[k])
+        # Block centers and scales 
         cs[k] = cscale(zX, weights; centr = par.centr[k], scal = par.scal[k])
         transf!(cs[k], zX)  # only required to compute bscal 
+        # Block scales
         if par.bscal == :frob
             bscales[k] = frob(zX, weights)
         elseif par.bscal == :mfa

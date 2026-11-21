@@ -94,9 +94,8 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = :none)
     transf!(fitm_bl, Xbl)
     # Y centering and scaling
-    ycenters = colmean(Y, weights)
-    fcenter!(Y, ycenters)
-    yscales = colscal(Y, weights, par.scaly)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    transf!(csy, Y)
     # Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)
     V  = similar(W)

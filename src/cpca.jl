@@ -163,7 +163,7 @@ function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    # Xbl centering and scaling, and block scaling
+    # Column centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
@@ -286,7 +286,7 @@ function Base.summary(object::Cpca, Xbl)
     Q = eltype(Xbl[1])
     nbl = length(Xbl)
     nlv = nco(object.T)
-    # Xbl centering and scaling, and block scaling
+    # Column centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV

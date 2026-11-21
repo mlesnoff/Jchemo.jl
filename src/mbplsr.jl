@@ -11,10 +11,12 @@ Multiblock PLSR (MBPLSR).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal concatenation of the blocks in `Xbl`. The function 
@@ -141,20 +143,17 @@ function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
         kwargs...) where {Q<:Float}
     par = recovkw(ParMbplsr{Q}, kwargs).par
     n, q = size(Y)
-    pbl = nco.(Xbl) ; ptot = sum(pbl)
+    pbl = nco.(Xbl)
+    ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv
-    # Xbl centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
+    # Column centering and scaling, and block scaling
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
-    # Y centering and scaling
-    ycenters = colmean(Y, weights)
-    fcenter!(Y, ycenters)
-    yscales = colscal(Y, weights, par.scaly)
     # End
-    fitm = plskern(X, Y, weights; nlv, scal = :none)
-    Mbplsr(fitm_bl, fitm, ycenters, yscales, weights, par)
+    fitm = plskern(X, Y, weights; nlv, scalx = :none, scaly = par.scaly)
+    Mbplsr(fitm, fitm_bl, weights, par)
 end
 
 """ 
@@ -187,6 +186,11 @@ Compute Y-predictions from a fitted model.
 predict(object::Mbplsr, Xbl) = predict(object, Xbl, object.par.nlv)
 
 function predict(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
+    vXbl = transf(object.fitm_bl, Xbl)
+    predict(object.fitm, fconcat(vXbl), nlv)
+end
+
+function predict2(object::Mbplsr, Xbl, nlv::Union{Int, AbstractVector{Int}})
     Q = eltype(Xbl[1][1, 1])
     a = object.par.nlv
     if isa(nlv, Int)
@@ -218,7 +222,7 @@ function Base.summary(object::Mbplsr, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.fitm.T)
     nbl = length(Xbl)
-    # Xbl centering and scaling, and block scaling
+    # Column centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV

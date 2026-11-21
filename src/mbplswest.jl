@@ -108,14 +108,13 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    # Xbl centering and scaling, and block scaling
+    # Column centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
     # Y centering and scaling
-    ycenters = colmean(Y, weights)
-    fcenter!(Y, ycenters)
-    yscales = colscal(Y, weights, par.scaly)
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    transf!(csy, Y)
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
@@ -263,7 +262,7 @@ function Base.summary(object::Mbplswest, Xbl)
     Q = eltype(Xbl[1][1, 1])
     n, nlv = size(object.T)
     nbl = length(Xbl)
-    # Xbl centering and scaling, and block scaling
+    # Column centering and scaling, and block scaling
     vXbl = transf(object.fitm_bl, Xbl)
     X = fconcat(vXbl)
     # Proportion of the total X-inertia explained by each global LV

@@ -109,18 +109,13 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     q = nco(Y)
     nlv = min(par.nlv, n, p, q)
     par.nlv = nlv
-    # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scalx)
-    transf!(csx, X)
-    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
-    transf!(csy, Y)
-    # Block scaling
+    # Column centering and scaling, and block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :none, scal = :none, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = [par.scalx, par.scaly],
+        bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]
-    bscales = fitm_bl.bscales
     # Row metric
     sqrtw = sqrt.(weights.values)
     invsqrtw = 1 ./ sqrtw
@@ -212,8 +207,8 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     fweightr!(Ty, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     Ry = Wy * inv(Vy' * Wy)
-    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, csx, csy, bscales, 
-        weights, niter, par)
+    Ccawold(Tx, Ty, Vx, Vy, Rx, Ry, Wx, Wy, TTx, TTy, fitm_bl, weights, 
+        niter, par)
 end
 
 """ 
@@ -226,19 +221,17 @@ Compute latent variables (LVs; = scores) from a fitted model.
 * `nlv` : Nb. LVs to compute.
 """ 
 function transfbl(object::Ccawold, X, Y)
-    X = fcscale(X, object.csx.centers, object.csx.scales) / object.bscales[1]
-    Y = fcscale(Y, object.csy.centers, object.csy.scales) / object.bscales[2]
-    Tx = X * object.Rx
-    Ty = Y * object.Ry
+    Xbl = transf(object.fitm_bl, [X, Y])
+    Tx = Xbl[1] * object.Rx
+    Ty = Xbl[2] * object.Ry
     (Tx = Tx, Ty)
 end
 
 function transfbl(object::Ccawold, X, Y, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    X = fcscale(X, object.csx.centers, object.csx.scales) / object.bscales[1]
-    Y = fcscale(Y, object.csy.centers, object.csy.scales) / object.bscales[2]
-    Tx = X * vcol(object.Rx, 1:nlv)
-    Ty = Y * vcol(object.Ry, 1:nlv)
+    Xbl = transf(object.fitm_bl, [X, Y])
+    Tx = Xbl[1] * vcol(object.Rx, 1:nlv)
+    Ty = Xbl[2] * vcol(object.Ry, 1:nlv)
     (Tx = Tx, Ty)
 end
 
@@ -251,19 +244,18 @@ Summarize the fitted model.
 """ 
 function Base.summary(object::Ccawold, X, Y)
     n, nlv = size(object.Tx)
-    X = fcscale(X, object.csx.centers, object.csx.scales) / object.bscales[1]
-    Y = fcscale(Y, object.csy.centers, object.csy.scales) / object.bscales[2]
+    Xbl = transf(object.fitm_bl, [X, Y])
     ttx = object.TTx 
     tty = object.TTy 
     # Block X
-    ss = frob2(X, object.weights)
+    ss = frob2(Xbl[1], object.weights)
     tt_adj = (colnorm(object.Vx).^2) .* ttx  
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
     xvar = tt_adj / n    
     explvarx = DataFrame(nlv = collect(1:nlv), var = xvar, pvar = pvar, cumpvar = cumpvar)
     # Block Y
-    ss = frob2(Y, object.weights)
+    ss = frob2(Xbl[2], object.weights)
     tt_adj = (colnorm(object.Vy).^2) .* tty  
     pvar = tt_adj / ss
     cumpvar = cumsum(pvar)
@@ -274,24 +266,24 @@ function Base.summary(object::Ccawold, X, Y)
     cortx2ty = DataFrame(lv = collect(1:nlv), cor = z)
     # RV(X, tx) and RV(Y, ty)
     nam = string.("lv", 1:nlv)
-    z = similar(X, 1, nlv)
+    z = similar(Xbl[1], 1, nlv)
     for a = 1:nlv
-        z[1, a] = rv(X, vcol(object.Tx, a), object.weights) 
+        z[1, a] = rv(Xbl[1], vcol(object.Tx, a), object.weights) 
     end
     rvx2tx = DataFrame(z, nam)
     for a = 1:nlv
-        z[1, a] = rv(Y, object.Ty[:, a], object.weights) 
+        z[1, a] = rv(Xbl[2], object.Ty[:, a], object.weights) 
     end
     rvy2ty = DataFrame(z, nam)
     # Redundancies (Average correlations) Rd(X, tx) and Rd(Y, ty)
-    z[1, :] = rd(X, object.Tx, object.weights) 
+    z[1, :] = rd(Xbl[1], object.Tx, object.weights) 
     rdx2tx = DataFrame(z, nam)
-    z[1, :] = rd(Y, object.Ty, object.weights) 
+    z[1, :] = rd(Xbl[2], object.Ty, object.weights) 
     rdy2ty = DataFrame(z, nam)
     # Correlation between block variables and their block LVs
-    z = corm(X, object.Tx, object.weights)
+    z = corm(Xbl[1], object.Tx, object.weights)
     corx2tx = DataFrame(z, string.("lv", 1:nlv))
-    z = corm(Y, object.Ty, object.weights)
+    z = corm(Xbl[2], object.Ty, object.weights)
     cory2ty = DataFrame(z, string.("lv", 1:nlv))
     # End
     (explvarx = explvarx, explvary, cortx2ty, rvx2tx, rvy2ty, rdx2tx, rdy2ty, corx2tx, cory2ty)

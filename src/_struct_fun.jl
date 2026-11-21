@@ -198,9 +198,7 @@ struct Cca{Q<:Float}
     Wx::Matrix{Q}
     Wy::Matrix{Q}
     d::Vector{Q}    
-    csx::Cscale{Q}
-    csy::Cscale{Q}
-    bscales::Vector{Q}    
+    fitm_bl::Blockscal{Q}    
     weights::ProbabilityWeights{Q}
     par::ParCca
 end
@@ -216,9 +214,7 @@ struct Ccawold{Q<:Float}
     Wy::Matrix{Q}
     TTx::Vector{Q}
     TTy::Vector{Q}  
-    csx::Cscale{Q}
-    csy::Cscale{Q}
-    bscales::Vector{Q}    
+    fitm_bl::Blockscal{Q} 
     weights::ProbabilityWeights{Q}
     niter::Vector{Int}
     par::ParCcawold
@@ -236,9 +232,7 @@ struct Plscan{Q<:Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}    
-    csx::Cscale{Q}
-    csy::Cscale{Q}
-    bscales::Vector{Q}   
+    fitm_bl::Blockscal{Q}   
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
 end
@@ -251,9 +245,7 @@ struct Plstuck{Q<:Float}
     TTx::Vector{Q}
     TTy::Vector{Q}
     delta::Vector{Q}
-    csx::Cscale{Q}
-    csy::Cscale{Q}
-    bscales::Vector{Q}   
+    fitm_bl::Blockscal{Q}  
     weights::ProbabilityWeights{Q}
     par::ParPls2bl
 end
@@ -264,9 +256,7 @@ struct Rasvd{Q<:Float}
     Bx::Matrix{Q}
     Wy::Matrix{Q}
     lambda::Vector{Q}    
-    csx::Cscale{Q}
-    csy::Cscale{Q}
-    bscales::Vector{Q}   
+    fitm_bl::Blockscal{Q}
     weights::ProbabilityWeights{Q}
     par::ParRasvd
 end
@@ -280,7 +270,7 @@ struct Cpca{Q<:Float}
     Vbl::Vector{Matrix{Q}}
     lb::Matrix{Q}
     mu::Vector{Q}
-    fitm_bl::Blockscal
+    fitm_bl::Blockscal{Q}
     weights::ProbabilityWeights{Q}
     niter::Vector{Int}
     par::ParCpca
@@ -295,7 +285,7 @@ struct Comdim{Q<:Float}
     Vbl::Vector{Matrix{Q}}
     lb::Matrix{Q}
     mu::Vector{Q}
-    fitm_bl::Blockscal
+    fitm_bl::Blockscal{Q}
     weights::ProbabilityWeights{Q}
     niter::Vector{Int}
     par::ParCpca
@@ -438,10 +428,8 @@ end
 # Multiblock
 
 struct Mbplsr{Q<:Float}
-    fitm_bl::Blockscal
     fitm::Plsr
-    ycenters::Vector{Q}
-    yscales::Vector{Q}
+    fitm_bl::Blockscal{Q}
     weights::ProbabilityWeights{Q}
     par::ParMbplsr
 end
@@ -456,7 +444,7 @@ struct Mbplswest{Q<:Float}
     Tbl::Vector{Matrix{Q}}
     Vbl::Vector{Matrix{Q}}
     TT::Vector{Q}
-    fitm_bl::Blockscal
+    fitm_bl::Blockscal{Q}
     ycenters::Vector{Q}
     yscales::Vector{Q}
     weights::ProbabilityWeights{Q}
@@ -466,7 +454,7 @@ struct Mbplswest{Q<:Float}
 end
 
 struct Rosaplsr{Q<:Float}
-    fitm_bl::Blockscal
+    fitm_bl::Blockscal{Q}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
@@ -481,7 +469,7 @@ struct Rosaplsr{Q<:Float}
 end
 
 struct Soplsr{Q<:Float}
-    fitm_bl::Blockscal    
+    fitm_bl::Blockscal{Q}    
     fitm::Vector{Plsr}
     T::Matrix{Q}
     fit::Matrix{Q}
