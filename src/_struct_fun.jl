@@ -445,8 +445,7 @@ struct Mbplswest{Q<:Float}
     Vbl::Vector{Matrix{Q}}
     TT::Vector{Q}
     fitm_bl::Blockscal{Q}
-    ycenters::Vector{Q}
-    yscales::Vector{Q}
+    csy::Cscale{Q}
     weights::ProbabilityWeights{Q}
     lb::Union{Nothing, Matrix{Q}}
     niter::Union{Vector{Int}, Nothing}

@@ -13,10 +13,12 @@ Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
 
 This functions implements the MBPLSR Nipals algorithm such as in Westerhuis et al. 1998. The function gives the same 
@@ -108,10 +110,9 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    # Column centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
+    # Xbl: column centering and scaling, and block scaling
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
-    X = fconcat(Xbl)
     # Y centering and scaling
     csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
     transf!(csy, Y)
@@ -196,7 +197,7 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     fweightr!(Tx, invsqrtw)
     Rx = Wx * inv(Vx' * Wx)
     lb = nothing
-    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Vbl, TTx, fitm_bl, ycenters, yscales, weights, 
+    Mbplswest(Tx, Vx, Rx, Wx, Wytild, Tb, Tbl, Vbl, TTx, fitm_bl, csy, weights, 
         lb, niter, par)
 end
 

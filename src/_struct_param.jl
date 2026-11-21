@@ -328,9 +328,9 @@ end
 
 # Multiblock
 
-Base.@kwdef mutable struct ParMbplsr{Q<:Float}
+Base.@kwdef mutable struct ParMbplsr{Q<:Float}    # mbplsr, mbplswest
     nlv::Int = 1 
-    tol::Q = 1e-8  # mbplswest
+    tol::Q = 1e-8                  # mbplswest
     maxit::Int = 200               # mbplswest     
     scalx::Union{Symbol, Vector{Symbol}} = :none
     scaly::Symbol = :none  
