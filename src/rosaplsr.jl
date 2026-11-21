@@ -13,7 +13,7 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block. Possible values are: `:none` (no scaling), `:std` (uncorrected STD), 
+    the column scaling in each block. Possible values are: `:none` (no scaling), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 The function has the following differences with the original algorithm of Liland et al. (2016):
@@ -91,7 +91,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = :none)
     transf!(fitm_bl, Xbl)
     # Y centering and scaling
     ycenters = colmean(Y, weights)

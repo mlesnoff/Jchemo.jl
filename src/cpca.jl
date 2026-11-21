@@ -11,7 +11,7 @@ Keyword arguments:
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
+    the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
@@ -100,7 +100,7 @@ res.corx2t
 
 #### This CPCA can also be implemented with function 'pip'
 
-model1 = blockscal(; bscal, centr = true) ;
+model1 = blockscal(; bscal, centr = :mean) ;
 model2 = mbconcat()
 model3 = pcasvd(; nlv) ;
 model = pip(model1, model2, model3)
@@ -119,7 +119,7 @@ transf(model, Xblnew)
 #### And a sparse CPCA as follows
 
 meth = :soft ; nvar = 2
-model1 = blockscal(; bscal, centr = true) ;
+model1 = blockscal(; bscal, centr = :mean) ;
 model2 = mbconcat()
 model3 = spca(; nlv, meth, nvar) ;
 model = pip(model1, model2, model3)
@@ -164,7 +164,7 @@ function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = par.scal, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
     sqrtw = sqrt.(weights.values)

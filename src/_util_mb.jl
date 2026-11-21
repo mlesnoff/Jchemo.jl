@@ -97,14 +97,15 @@ Scale multiblock X-data.
 * `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` 
     (see e.g., function `pweight`).
 Keyword arguments:
-* `centr` : Boolean, or a vector of booleans (of length equal to the number of blocks). If `true`, 
-    each column of the considered block in `Xbl` is centered (before the block scaling).
-    If not a vector, the same value is applied to each block.
+* `centr` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column centering in each block (before the block scaling). Possible values are: `:none` (default), 
+    `:mean`, and `:med` (median). If not a vector, the same value
+    is applied to each block.
 * `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling of each block (before the block scaling). Possible values are: `:none`, 
+    the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
-* `bscal` : Type of block scaling. Possible values are: `:none`, `:frob`, `:mfa`, `:ncol`, `:std`. 
+* `bscal` : Type of block scaling. Possible values are: `:none` (default), `:frob`, `:mfa`, `:ncol`, `:std`. 
     See thereafter.
 
 If implemented, the successive operations are:

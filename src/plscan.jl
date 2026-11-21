@@ -103,7 +103,7 @@ function plscan!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     transf!(csy, Y)
     # Block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = true, scal = :none, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = :none, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]
