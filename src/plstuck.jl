@@ -9,7 +9,7 @@ Tucker's inter-battery method of factor analysis
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
+* `scalx` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -96,7 +96,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     transf!(csy, Y)
     # Block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = :none, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :none, scal = :none, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]
@@ -111,8 +111,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     Ty = Y * Wy
     TTx = colnorm(Tx, weights).^2
     TTy = colnorm(Ty, weights).^2
-    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, csx, csy, bscales, 
-        weights, par)
+    Plstuck(Tx, Ty, Wx, Wy, TTx, TTy, delta, csx, csy, bscales, weights, par)
 end
 
 """ 

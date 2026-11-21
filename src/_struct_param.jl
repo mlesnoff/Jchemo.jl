@@ -178,14 +178,6 @@ Base.@kwdef mutable struct ParBlock
     bscal::Symbol = :none   
 end 
 
-Base.@kwdef mutable struct ParCpca{Q<:Float}   # cpca, comdim
-    nlv::Int = 1     
-    tol::Q = 1e-8   
-    maxit::Int = 200    
-    scal::Union{Symbol, Vector{Symbol}} = :none
-    bscal::Symbol = :none   
-end 
-
 Base.@kwdef mutable struct ParCca{Q<:Float}
     nlv::Int = 1     
     tau::Q = 1e-8
@@ -218,6 +210,14 @@ Base.@kwdef mutable struct ParRasvd{Q<:Float}
     tau::Q = 1e-8
     scalx::Symbol = :none  
     scaly::Symbol = :none 
+    bscal::Symbol = :none   
+end 
+
+Base.@kwdef mutable struct ParCpca{Q<:Float}   # cpca, comdim
+    nlv::Int = 1     
+    tol::Q = 1e-8   
+    maxit::Int = 200    
+    scal::Union{Symbol, Vector{Symbol}} = :none
     bscal::Symbol = :none   
 end 
 

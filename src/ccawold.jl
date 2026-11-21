@@ -12,7 +12,7 @@ Keyword arguments:
 * `tau` : Regularization parameter (∊ [0, 1]).
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
+* `scalx` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -116,7 +116,7 @@ function ccawold!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     transf!(csy, Y)
     # Block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = :none, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :none, scal = :none, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]

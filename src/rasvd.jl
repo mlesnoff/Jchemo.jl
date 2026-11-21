@@ -10,7 +10,7 @@ Redundancy analysis (RA), a.k.a PCA on instrumental variables (PCAIV)
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
 * `tau` : Regularization parameter (∊ [0, 1]).
-* `scal` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
+* `scalx` : Symbol defining the column scaling of `X` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
@@ -106,7 +106,7 @@ function rasvd!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     transf!(csy, Y)
     # Block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = :none, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :none, scal = :none, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]
