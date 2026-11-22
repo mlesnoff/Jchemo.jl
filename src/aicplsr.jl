@@ -40,6 +40,8 @@ ytest = rmrow(y, s)
 
 nlv = 40
 res = aicplsr(Matrix(X), y; nlv) ;
+#res = aicplsr(Matrix(X), y; nlv, scalx = :std) ;
+@names res
 res.crit
 res.opt
 res.delta
@@ -55,7 +57,7 @@ function aicplsr(X::AbstMatVec{Q}, y::AbstMatVec{Q}; alpha::Q = 2., kwargs...) w
     n, p = size(X)
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
-    pars = mpar(scal = [par.scal])  
+    pars = mpar(scalx = [par.scalx])  
     zssr = gridscore_lv(X, y, X, y; algo = plskern, score = ssr, pars, nlv = 0:nlv).y1
     df = dfplsr_cg(X, y; kwargs...).df
     dfssr = n .- df
