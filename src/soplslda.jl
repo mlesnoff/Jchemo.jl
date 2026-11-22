@@ -28,25 +28,23 @@ X = [1. 2 3 4 5 7 100 ; 4 1 6 7 12 13 28 ; 12 5 6 13 3 1 5 ; 27 18 7 6 2 0 12 ;
     12 11 28 7 1 25 2 ; 2 3 7 1 0 7 26 ; 14 12 101 4 3 7 10 ; 8 7 6 5 4 3 2 ; 
     12 27 30 40 5 28 31]
 n = nro(X) 
-y = string.(rand(1:2, n)) 
+y = ["1"; "2"; "1"; "2"; "1"; "2"; "1"; "2"; "2"] 
 Xnew = X[1:3, [6 ; 5 ; 7 ; 3 ; 2 ; 1 ; 4]]
-sum(X)
-sum(Xnew)
+ynew = ["1"; "1"; "2"]
 
 listbl = [1:3, 4, 5:7]
 Xbl = mblock(X, listbl) 
 Xblnew = mblock(Xnew, listbl) 
-ynew = string.(rand(1:2, 3))
 nbl = length(Xbl)
 # End
 
 nlv = [2, 1, 2]
 #nlv = [2, 0, 2]
-scal = :none
-#scal = :std
-model = soplslda(; nlv, scal) ;
-#model = soplsqda(; nlv, alpha = .2, scal) ;
-#model = soplskdeda(; nlv, a = .5, scal) ;
+scalx = :none
+#scalx = :std
+model = soplslda(; nlv, scalx) ;
+#model = soplsqda(; nlv, alpha = .2, scalx) ;
+#model = soplskdeda(; nlv, a = .5, scalx) ;
 fit!(model, Xbl, y)
 fitm = model.fitm ;
 
