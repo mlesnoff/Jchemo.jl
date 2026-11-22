@@ -453,27 +453,26 @@ struct Mbplswest{Q<:Float}
 end
 
 struct Rosaplsr{Q<:Float}
-    fitm_bl::Blockscal{Q}
     T::Matrix{Q}
     V::Matrix{Q}
     R::Matrix{Q}
     W::Matrix{Q}
     C::Matrix{Q}
     TT::Vector{Q}
-    ycenters::Vector{Q}
-    yscales::Vector{Q}
-    weights::ProbabilityWeights{Q}
     bl::Vector{Int}
+    fitm_bl::Blockscal{Q}
+    csy::Cscale{Q}
+    weights::ProbabilityWeights{Q}
     par::ParRosaplsr
 end
 
-struct Soplsr{Q<:Float}
-    fitm_bl::Blockscal{Q}    
+struct Soplsr{Q<:Float}  
     fitm::Vector{Plsr}
     T::Matrix{Q}
     fit::Matrix{Q}
     b::Vector{Matrix{Q}}
-    yscales::Vector{Q}
+    fitm_bl::Blockscal{Q}  
+    csy::Cscale{Q}
     par::ParSoplsr
 end
 

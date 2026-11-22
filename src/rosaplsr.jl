@@ -12,9 +12,12 @@ Multiblock ROSA PLSR (Liland et al. 2016).
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute.
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling in each block. Possible values are: `:none` (no scaling), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function has the following differences with the original algorithm of Liland et al. (2016):
 * Scores T (latent variables LVs) are not normed to 1.
@@ -48,9 +51,9 @@ ntot = ntrain + ntest
 (ntot = ntot, ntrain , ntest)
 
 nlv = 3
-scal = :none
-#scal = std
-model = rosaplsr(; nlv, scal)
+scalx = :none
+#scalx = :std
+model = rosaplsr(; nlv, scalx)
 fit!(model, Xbltrain, ytrain)
 @names model 
 @names model.fitm
@@ -90,10 +93,10 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     pbl = nco.(Xbl) ; ptot = sum(pbl)
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
-    # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = :none)
+    # Xbl: column centering and scaling
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = :none)
     transf!(fitm_bl, Xbl)
-    # Y centering and scaling
+    # Y: centering and scaling
     csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
     transf!(csy, Y)
     # Pre-allocation
@@ -189,7 +192,7 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
         W[:, a] .= reduce(vcat, z .* wbl)
     end
     R = W * inv(V' * W)
-    Rosaplsr(fitm_bl, T, V, R, W, C, TT, ycenters, yscales, weights, bl, par)
+    Rosaplsr(T, V, R, W, C, TT, bl, fitm_bl, csy, weights, par)
 end
 
 """ 
@@ -223,8 +226,9 @@ coef(object::Rosaplsr) = coef(object, object.par.nlv)
 
 function coef(object::Rosaplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    xcenters = reduce(vcat, object.fitm_bl.xcenters)
-    xscales = reduce(vcat, object.fitm_bl.xscales)
+    nbl = length(object.fitm_bl.cs)
+    xcenters = reduce(vcat, [object.fitm_bl.cs[k].centers for k = 1:nbl])
+    xscales = reduce(vcat, [object.fitm_bl.cs[k].scales for k = 1:nbl])
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
     Dy = Diagonal(object.csy.scales)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy

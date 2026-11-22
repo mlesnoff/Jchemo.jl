@@ -113,7 +113,7 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     # Xbl: column centering and scaling, and block scaling
     fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
-    # Y centering and scaling
+    # Y: centering and scaling
     csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
     transf!(csy, Y)
     # Row metric

@@ -12,9 +12,12 @@ Multiblock sequentially orthogonalized PLSR (SO-PLSR).
 Keyword arguments:
 * `nlv` : Nb. latent variables (LVs; = scores) to compute. Can be a single integer (same nb. LVs for each block) 
     or a vector of integers (nb. LVs for each block).
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
-    the column scaling in each block. Possible values are: `:none` (no scaling), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+    the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
+    is applied to each block.
+* `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 # References
 Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
@@ -102,16 +105,16 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
         end
     end 
     par.nlv = nlv
-    # Xbl centering and scaling (block scaling has no effect)
-    fitm_bl = blockscal(Xbl, weights; centr = false, scal = par.scal, bscal = :none)
-    # End
+    # Xbl: column centering and scaling
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = :none)
     transf!(fitm_bl, Xbl)
-    # Scaling of Y
-    yscales = colscal(Y, weights, par.scaly)
+    # Y: centering and scaling
+    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    transf!(csy, Y)
     # End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)
-    # Below, if 'scal' = true, object 'fit' is in scale 'scaled-Y' 
+    # Below, if 'scal' = :std, object 'fit' is in scale 'scaled-Y' 
     # First block
     fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = :none)  
     T = fitm[1].T
@@ -123,12 +126,12 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
             DT = fweightr(T, weights.values)
             b[i] = inv(T' * DT) * DT' * Xbl[i]
             X = Xbl[i] - T * b[i]
-            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scal = :none)  
+            fitm[i] = plskern(X, Y - fit, weights; nlv = nlv[i], scalx = :none, scaly = :none)  
             T = hcat(T, fitm[i].T)
             fit .+= predict(fitm[i], X).pred 
         end
     end
-    Soplsr(fitm_bl, fitm, T, fit, b, yscales, par)
+    Soplsr(fitm, T, fit, b, fitm_bl, csy, par)
 end
 
 """ 
@@ -160,12 +163,12 @@ function predict(object::Soplsr, Xbl)
     nbl = length(Xbl)
     vXbl = transf(object.fitm_bl, Xbl)   
     T = transf(object.fitm[1], vXbl[1])
-    pred =  object.fitm[1].ycenters' .+ T * object.fitm[1].C'
+    pred =  object.fitm[1].csy.centers' .+ T * object.fitm[1].C'
     if nbl > 1
         @inbounds for i = 2:nbl
             X = vXbl[i] - T * object.b[i]
             zT = transf(object.fitm[i], X)
-            pred .+= object.fitm[i].ycenters' .+ zT * object.fitm[i].C'
+            pred .+= object.fitm[i].csy.centers' .+ zT * object.fitm[i].C'
             T = hcat(T, transf(object.fitm[i], X))
         end
     end
