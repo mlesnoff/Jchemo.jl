@@ -19,7 +19,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform).
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function implements a moving (i.e., sliding) window PLS discrimination by QDA.
@@ -123,8 +123,8 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         end
         nlv = 1:par.nlv
         prior = isa(par.alpha, Vector{Symbol}) ? par.prior : [par.prior]        
-        scal = isa(par.scal, Vector{Symbol}) ? par.scal : [par.scal]
-        pars = mpar(alpha = par.alpha, prior = prior, scal = scal)
+        scalx = isa(par.scalx, Vector{Symbol}) ? par.scalx : [par.scalx]
+        pars = mpar(alpha = par.alpha, prior = prior, scalx = scalx)
         model = plsqda()
         res = gridcv(model, vX, y; segm, score = par.score, nlv, pars).res
         u = first(findall(res.y1 .== minimum(res.y1))) 
@@ -132,7 +132,7 @@ function mwplsqda(X::AbstractMatrix{Q}, y::AbstractVector{String}, weights::Prob
         scor_emb[j] = res.y1[u]
         # Fit the selected model        
         fitm_emb[j] = plsqda(vX, y, weights; nlv = res.nlv[u], alpha = res.alpha[u],
-            prior = res.prior[u], scal = res.scal[u])
+            prior = res.prior[u], scalx = res.scalx[u])
         j = j + 1
     end
     rescv = reduce(vcat, DataFrame.(vrescv))
