@@ -51,9 +51,9 @@ nbl = length(Xbl)
 
 nlv = [2, 1, 2]
 #nlv = [2, 0, 2]
-scal = :none
-#scal = :std
-model = soplsrda(; nlv, scal) ;
+scalx = :none
+#scalx = :std
+model = soplsrda(; nlv, scalx) ;
 fit!(model, Xbl, y)
 fitm = model.fitm ;
 
