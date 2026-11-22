@@ -13,15 +13,44 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block. Possible values are: `:none` (no scaling), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD). If not a vector, the same value is applied to each block.
 
 Same as PLSR-DA but the Ydummy (class dummy table Ydummy) predictions are computed from SOPLSR.
 
+# References
+Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
+PhD. University of Copenhagen.
+
+Biancolillo, A., Måge, I., Næs, T., 2015. Combining SO-PLS and linear discriminant analysis 
+for multi-block classification. Chemometrics and Intelligent Laboratory Systems 141, 58–67. 
+https://doi.org/10.1016/j.chemolab.2014.12.001
+
+Menichelli et al., 2014. SO-PLS as an exploratory tool for path modelling. 
+Food Quality and Preference, 36, 122-134.
+
 # Examples
 ```julia
-nlv = [2, 0, 2]
+using Jchemo 
+
+# Fictive data
+X = [1. 2 3 4 5 7 100 ; 4 1 6 7 12 13 28 ; 12 5 6 13 3 1 5 ; 27 18 7 6 2 0 12 ; 
+    12 11 28 7 1 25 2 ; 2 3 7 1 0 7 26 ; 14 12 101 4 3 7 10 ; 8 7 6 5 4 3 2 ; 
+    12 27 30 40 5 28 31]
+n = nro(X) 
+y = ["1"; "2"; "1"; "2"; "1"; "2"; "1"; "2"; "2"] 
+Xnew = X[1:3, [6 ; 5 ; 7 ; 3 ; 2 ; 1 ; 4]]
+ynew = ["1"; "1"; "2"]
+
+listbl = [1:3, 4, 5:7]
+Xbl = mblock(X, listbl) 
+Xblnew = mblock(Xnew, listbl) 
+nbl = length(Xbl)
+# End
+
+nlv = [2, 1, 2]
+#nlv = [2, 0, 2]
 scal = :none
 #scal = :std
 model = soplsrda(; nlv, scal) ;
@@ -41,17 +70,6 @@ res.posterior
 pred = res.pred
 errp(pred, ynew)
 ```
-
-# References
-Biancolillo, A., 2016. Method development in the area of multi-block analysis focused on food analysis. 
-PhD. University of Copenhagen.
-
-Biancolillo, A., Måge, I., Næs, T., 2015. Combining SO-PLS and linear discriminant analysis 
-for multi-block classification. Chemometrics and Intelligent Laboratory Systems 141, 58–67. 
-https://doi.org/10.1016/j.chemolab.2014.12.001
-
-Menichelli et al., 2014. SO-PLS as an exploratory tool for path modelling. 
-Food Quality and Preference, 36, 122-134.
 """
 soplsrda(; kwargs...) = JchemoModel(soplsrda, nothing, kwargs)
 
