@@ -13,9 +13,10 @@ Keyword arguments:
     `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scalx` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
-    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto)
-    and `:mad` (MAD).
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+    `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
+    the computation of the distances and local weights), and (b) the X scaling is also done within each 
+    neighborhood (local level) before the weighted MLR.
 * `verbose` : Boolean. If `true`, predicting information are printed.
 
 This is the same principle as function `lwmlr` except that MLR-DA models, instead of MLR models, are fitted on the 

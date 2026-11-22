@@ -12,8 +12,9 @@ Keyword arguments:
     See function `winvs` for details (keyword arguments `criw` and `squared` of `winvs` can also be specified here).
 * `k` : The number of nearest neighbors to select for each observation to predict.
 * `tolw` : For stabilization when very close neighbors.
-* `scal` : Symbol defining the column scaling of the global `X`. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD).
+* `scalx` : Symbol defining the column scaling of the global `X` (before the computation of the distances 
+    and the local weights). Possible values are: `:none` (default), `:std` (uncorrected STD), `:prt` (Pareto)
+    and `:mad` (MAD).
 
 This function has the same principle as function `knnr` except that a discrimination replaces the regression. A weighted vote 
 is done over the neighborhood, and the prediction corresponds to the most frequent class.
@@ -79,7 +80,7 @@ function knnda(X, y::Vector{String}; kwargs...)
     taby = tab(y)    
     csx = cscale(X; centr = :none, scal = par.scalx)
     X = transf(csx, X)
-    Knnda(X, y, xscales, taby.n, taby.lev, par)
+    Knnda(X, y, csx, taby.n, taby.lev, par)
 end
 
 """

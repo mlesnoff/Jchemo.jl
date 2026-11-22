@@ -749,7 +749,7 @@ end
 struct Knnda{Q<:Float}
     X::Matrix{Q}
     y::Vector{String}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     ni::Vector{Int}
     lev::Vector{String}
     par::ParKnn

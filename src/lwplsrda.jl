@@ -21,10 +21,10 @@ Keyword arguments:
     used to compute the distances. In the local models, the priors are not used since the weights are given by the 
     distance-based decreasing weight function.
 * `nlv` : Nb. latent variables (LVs) for the local (i.e. inside each neighborhood) models.
-* `scal` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
+* `scalx` : Symbol defining the X column scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
     `:prt` (Pareto) and `:mad` (MAD). If not `:none`, (a) each column of the global `X` is scaled (before 
     the computation of the distances and local weights), and (b) the X scaling is also done within each 
-    neighborhood (local level) for the weighted PLSR.
+    neighborhood (local level) before the weighted PLSR.
 * `store` : Boolean. If `true`, the local models fitted on the neighborhoods are stored and returned
     by function `predict`.
 * `verbose` : Boolean. If `true`, predicting information are printed.
