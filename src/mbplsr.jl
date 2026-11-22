@@ -18,6 +18,7 @@ Keyword arguments:
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
+    The block scales are computed after the column centering, and eventual scaling, in each block.
 
 This function runs a PLSR on {X, `Y`} where X is the horizontal concatenation of the blocks in `Xbl`. The function 
 returns the same global LVs and predictions as function `mbplswest`, but is much faster.

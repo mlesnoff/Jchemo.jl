@@ -15,6 +15,7 @@ Keyword arguments:
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
+    The block scales are computed after the column centering, and eventual scaling, in each block.
 
 ComDim "SVD" algorithm of Hannafi & Qannari 2008 p.84.
 

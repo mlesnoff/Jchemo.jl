@@ -15,6 +15,7 @@ Keyword arguments:
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
+    The block scales are computed after the column centering, and eventual scaling, in each block.
 
 This function implements a CCA algorithm using SVD decompositions and presented in Weenink 2003 section 2. 
 
@@ -109,8 +110,7 @@ function cca!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     par.nlv = nlv
     # Column centering and scaling, and block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = [par.scalx, par.scaly],
-        bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = [par.scalx, par.scaly], bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]

@@ -14,6 +14,7 @@ Keyword arguments:
 * `scaly` : Symbol defining the column scaling of `Y` (before the block scaling). Possible values are: `:none`,
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
+    The block scales are computed after the column centering, and eventual scaling, in each block.
 
 Inter-battery method of factor analysis (Tucker 1958, Tenenhaus 1998 chap.3). The two blocks 
 `X` and `X` play a symmetric role.  This method is referred to as PLS-SVD in Wegelin 2000. The method 
@@ -91,8 +92,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     par.nlv = nlv
     # Column centering and scaling, and block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = [par.scalx, par.scaly],
-        bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = [par.scalx, par.scaly], bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]

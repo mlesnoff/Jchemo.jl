@@ -116,7 +116,7 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     fit = similar(Xbl[1], n, q)
     # Below, if 'scal' = :std, object 'fit' is in scale 'scaled-Y' 
     # First block
-    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scal = :none)  
+    fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scalx = :none, scaly = :none)  
     T = fitm[1].T
     fit .= predict(fitm[1], Xbl[1]).pred
     # Other blocks

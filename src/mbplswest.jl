@@ -20,6 +20,7 @@ Keyword arguments:
 * `scaly` : Symbol defining the column scaling of `Y`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
+    The block scales are computed after the column centering, and eventual scaling, in each block.
 
 This functions implements the MBPLSR Nipals algorithm such as in Westerhuis et al. 1998. The function gives the same 
 global scores and predictions as function `mbplsr`.

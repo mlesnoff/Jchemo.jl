@@ -15,6 +15,7 @@ Keyword arguments:
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
 * `bscal` : Type of block scaling. See function `blockscal` for possible values.
+    The block scales are computed after the column centering, and eventual scaling, in each block.
 
 CPCA Nipals algorithm (Westerhuis et a; 1998), also known as MBPCA, and referred to as CPCA-W in Smilde et al. 2003. 
 Besides an eventual block scaling, CPCA is equivalent to a PCA on the horizontally concatenated matrix X = [X1 X2 ... Xk],
