@@ -13,7 +13,7 @@ Keyword arguments:
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `mth` : Boolean indicating if a multi-threading is done when new data are predicted with function `predict`.
 * `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl` to fit a random forest regression model.
@@ -117,5 +117,5 @@ function rfda(X, y::Vector{String}; kwargs...)
         rng = par.rng
         ) 
     featur = collect(1:p)
-    Treeda(fitm, xscales, featur, taby.n, priors, taby.lev, par)
+    Treeda(fitm, csx, featur, taby.n, priors, taby.lev, par)
 end

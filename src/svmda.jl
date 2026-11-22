@@ -12,7 +12,7 @@ Keyword arguments:
 * `coef0` : `kern` parameter, see below.
 * `cost` : Cost of constraints violation C parameter.
 * `epsilon` : Epsilon parameter in the loss function.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Kernel types: 
@@ -116,7 +116,7 @@ function svmda(X, y::Vector{String}; kwargs...)
         tolerance = 0.001,
         nt = 0,
         verbose = false) 
-    Svmda(fitm, xscales, taby.n, priors, taby.lev, par)
+    Svmda(fitm, csx, taby.n, priors, taby.lev, par)
 end
 
 """
@@ -128,7 +128,7 @@ Compute y-predictions from a fitted model.
 function predict(object::Svmda, X)
     X = ensure_mat(X)
     m = nro(X)
-    pred = svmpredict(object.fitm, fscale(X, object.cs.scales)')[1]
+    pred = svmpredict(object.fitm, fscale(X, object.csx.scales)')[1]
     pred = reshape(pred, m, 1)
     (pred = pred,)
 end

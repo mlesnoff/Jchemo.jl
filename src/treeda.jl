@@ -10,7 +10,7 @@ Keyword arguments:
 * `min_sample_leaf` : Minimum number of samples each leaf needs to have.
 * `min_sample_split` : Minimum number of observations in needed for a split.
 * `rng` : The random number generator or a seed (integer) to use. Default to Random.GLOBAL_RN. 
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The function is a wrapper of package `DecisionTree.jl' to fit a single discrimination tree (CART).
@@ -95,7 +95,7 @@ function treeda(X, y::Vector{String}; kwargs...)
         rng = par.rng
         )
     featur = collect(1:p)
-    Treeda(fitm, xscales, featur, taby.n, priors, taby.lev, par)
+    Treeda(fitm, csx, featur, taby.n, priors, taby.lev, par)
 end
 
 """
@@ -109,10 +109,10 @@ function predict(object::Treeda, X)
     m = nro(X)
     # Tree
     if (@names object.fitm)[1] == :node
-        pred = apply_tree(object.fitm, fscale(X, object.cs.scales))
+        pred = apply_tree(object.fitm, fscale(X, object.csx.scales))
     # Forest 
     else
-        pred = apply_forest(object.fitm, fscale(X, object.cs.scales); use_multithreading = object.par.mth)
+        pred = apply_forest(object.fitm, fscale(X, object.csx.scales); use_multithreading = object.par.mth)
     end
     pred = reshape(pred, m, 1)
     (pred = pred,)
