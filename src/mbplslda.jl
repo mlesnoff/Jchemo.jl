@@ -12,7 +12,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:prop` (proportionnal), 
     `:unif` (uniform), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
@@ -69,16 +69,17 @@ Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
 
 nlv = 15
-scal = :none
-#scal = std
+scalx = :none
+#scalx = :std
+#scalx = [:none, :std]
 bscal = :none
 #bscal = :frob
-model = mbplslda(; nlv, bscal, scal)
-#model = mbplsqda(; nlv, bscal, alpha = .5, scal)
-#model = mbplskdeda(; nlv, bscal, prior = :unif, scal)
+model = mbplslda(; nlv, bscal, scalx)
+#model = mbplsqda(; nlv, bscal, alpha = .5, scalx)
+#model = mbplskdeda(; nlv, bscal, prior = :unif, scalx)
 fit!(model, Xbltrain, ytrain)
 @names model
-@names fitm = model.fitm 
+fitm = model.fitm ;
 typeof(fitm)
 @names fitm
 
