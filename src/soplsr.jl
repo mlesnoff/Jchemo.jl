@@ -105,11 +105,11 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
         end
     end 
     par.nlv = nlv
-    # Xbl: column centering and scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = :none)
+    # Xbl: column scaling
+    fitm_bl = blockscal(Xbl, weights; centr = :none, scal = par.scalx, bscal = :none)
     transf!(fitm_bl, Xbl)
-    # Y: centering and scaling
-    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    # Y: scaling
+    csy = cscale(Y, weights; centr = :none, scal = par.scaly)
     transf!(csy, Y)
     # End
     fitm = list(Jchemo.Plsr, nbl)
@@ -160,6 +160,8 @@ Compute Y-predictions from a fitted model.
 * `Xbl` : A list of blocks (vector of matrices) of X-data for which predictions are computed.
 """ 
 function predict(object::Soplsr, Xbl)
+    # A simpler and more direct way than below is to build a MLR(Y, T) in 'soplsr!', 
+    # to store it in the output, and then to use predict(::Mlr, Tnew) 
     nbl = length(Xbl)
     vXbl = transf(object.fitm_bl, Xbl)   
     T = transf(object.fitm[1], vXbl[1])
