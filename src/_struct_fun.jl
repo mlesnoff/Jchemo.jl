@@ -758,7 +758,7 @@ end
 struct Lwmlrda{Q<:Float}
     X::Matrix{Q}
     y::Vector{String}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     ni::Vector{Int}
     lev::Vector{String}
     par::ParLwmlr
@@ -768,7 +768,7 @@ struct Lwplsrda{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     ni::Vector{Int}
     priors::Union{Nothing, Vector{Q}}
     lev::Vector{String}
@@ -779,7 +779,7 @@ struct Lwplslda{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     ni::Vector{Int}
     priors::Union{Nothing, Vector{Q}}
     lev::Vector{String}
@@ -790,7 +790,7 @@ struct Lwplsqda{Q<:Float}
     fitm::Union{Nothing, Plsr}
     X::Matrix{Q}
     y::Vector{String}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     ni::Vector{Int}
     priors::Union{Nothing, Vector{Q}}
     lev::Vector{String}
@@ -801,7 +801,7 @@ end
 
 struct Svmda{Q<:Float64}
     fitm::LIBSVM.SVM
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
@@ -810,7 +810,7 @@ end
 
 struct Treeda{Q<:Float}
     fitm::Union{DecisionTree.Root, DecisionTree.Ensemble}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     featur::Vector{Int}
     ni::Vector{Int}
     priors::Vector{Q}
@@ -875,7 +875,7 @@ struct Occknn{Q<:Float}
     e_cdf::ECDF
     cutoff_d::Q
     X::Matrix{Q}
-    xscales::Vector{Q}
+    cs::Cscale{Q}
     par::ParOccknn
 end
 
@@ -884,7 +884,7 @@ struct Occlknn{Q<:Float}
     e_cdf::ECDF
     cutoff_d::Q
     X::Matrix{Q}
-    xscales::Vector{Q}
+    cs::Cscale{Q}
     par::ParOccknn
 end
 

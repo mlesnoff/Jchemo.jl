@@ -135,7 +135,7 @@ function predict(object::Lwmlr, X)
     end
     # End
     reslocw = locw(object.X, object.Y, X; listnn = res.ind, listw, algo = mlr, 
-        scalx = object.par.scalx, store = object.par.store, verbose = object.par.verbose)
+        store = object.par.store, verbose = object.par.verbose)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, listw)
 end
 

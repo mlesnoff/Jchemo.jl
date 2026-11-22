@@ -83,10 +83,10 @@ function lwplslda(X, y::Vector{String}; kwargs...)
     else
         weights = pweightcla(Q, vec(y); prior = par.prior)
         priors = aggsumv(weights.values, y).val
-        fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scal = par.scal)
+        fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scalx = par.scalx)
     end
-    xscales = colscal(X, par.scal)
-    Lwplslda(fitm, X, y, xscales, taby.n, priors, taby.lev, par)
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    Lwplslda(fitm, X, y, csx, taby.n, priors, taby.lev, par)
 end
 
 """
@@ -119,7 +119,7 @@ function predict(object::Lwplslda, X, nlv::Union{Int, AbstractVector{Int}})
     squared = object.par.squared
     tolw = object.par.tolw
     if isnothing(object.fitm)
-        if object.par.scal != :none
+        if object.par.scalx != :none
             X1 = fscale(object.X, object.csx.scales)
             X2 = fscale(X, object.csx.scales)
             res = getknn(X1, X2; metric, k)
@@ -137,8 +137,9 @@ function predict(object::Lwplslda, X, nlv::Union{Int, AbstractVector{Int}})
     end
     # End
     # In each neighborhood, the observation weights used in 'algo' are given by listw, not by priors
-    reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plslda, nlv, scal = object.par.scal, 
-        store = object.par.store, verbose = object.par.verbose, prior = object.par.prior)
+    reslocw = locwlv(object.X, object.y, X; listnn = res.ind, listw, algo = plslda, nlv, 
+        scalx = object.par.scalx, store = object.par.store, verbose = object.par.verbose, 
+        prior = object.par.prior)
     (pred = reslocw.pred, fitm = reslocw.fitm, listnn = res.ind, listd = res.d, 
         listw, nlv)
 end

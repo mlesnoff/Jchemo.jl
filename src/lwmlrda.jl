@@ -73,8 +73,8 @@ function lwmlrda(X, y::Vector{String}; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
     taby = tab(y)
-    xscales = colscal(X, par.scal)
-    Lwmlrda(X, y, xscales, taby.n, taby.lev, par)  
+    csx = cscale(X; centr = :none, scal = par.scalx)
+    Lwmlrda(X, y, csx, taby.n, taby.lev, par)  
 end
 
 """
