@@ -13,8 +13,8 @@ Keyword arguments:
 * `alpha` : Scalar (∈ [0, 1]) defining the continuum between QDA (`alpha = 0`) and LDA (`alpha = 1`).
 * `lb` : Ridge regularization parameter "lambda" (>= 0).
 * `simpl` : Boolean. See function `dmnorm`. 
-* `scal` : Symbol defining the column scaling of `X` and Ydummy. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD).
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+    `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Let us note W the (corrected) pooled within-class covariance matrix and Wi the (corrected) within-class 
 covariance matrix of class i. The regularization is done by the two following successive steps (for each class i):
@@ -98,10 +98,8 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     n, p = size(X)
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    csx = cscale(X, weights; centr = :none, scal = par.scalx)
+    transf!(csx, X)
     res = matW(X, y, weights)
     ni = res.ni
     lev = res.lev
@@ -120,7 +118,7 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
         @. res.Wi[i] = res.Wi[i] + A
         fitm[i] = dmnorm(ct[i, :], res.Wi[i]; simpl = par.simpl) 
     end
-    Rda(fitm, res.Wi, ct, ni, priors, lev, xscales, weights, par)
+    Rda(fitm, res.Wi, ct, ni, priors, lev, csx, weights, par)
 end
 
 """
@@ -136,7 +134,7 @@ function predict(object::Rda, X)
     nlev = length(lev) 
     dens = similar(X, m, nlev)
     @inbounds for i in eachindex(lev)
-        dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.cs.scales)).pred)
+        dens[:, i] .= vec(predict(object.fitm[i], fscale(X, object.csx.scales)).pred)
     end
     A = object.priors' .* dens 
     posterior = fscale(A', rowsum(A))'    # Could be replaced by similar as in fscale! 

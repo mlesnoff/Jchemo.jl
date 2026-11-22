@@ -677,7 +677,7 @@ struct Rda{Q<:Float}
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
-    xscales::Vector{Q}
+    csx::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::ParRda
 end
