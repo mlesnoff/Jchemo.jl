@@ -558,12 +558,12 @@ end
 Savitzky-Golay derivation and smoothing of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `npoint` : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3. The half-window size 
-    is nhwindow = (`npoint` - 1) / 2.
+* `npoint` : Size of the filter (nb. points involved in the kernel). Must be odd and >= 3. 
+    The half-window size is nhwindow = (`npoint` - 1) / 2.
 * `deriv` : Derivation order. Must be: 0 <= `deriv` <= `degree`.
 * `degree` : Degree of the smoothing polynom. Must be: 1 <= `degree` <= `npoint` - 1.
 
-The smoothing is computed by convolution (with padding), using function imfilter of package ImageFiltering.jl. 
+The smoothing is computed by convolution (**with padding**), using function imfilter of package ImageFiltering.jl. 
 Each returned point is located on the center of the kernel. The kernel is computed with function `savgk`.
 
 The function returns a matrix (n, p).
@@ -672,7 +672,7 @@ Keyword arguments:
 * `centr` : Symbol defining the row centering. Possible values are: `:none` (no centering), 
     `:mean` (default), and `:med` (median). 
 * `scal` : Symbol defining the row scaling. Possible values are: `:none` (no scaling), 
-    `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
+    `:std` (uncorrected STD) (default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
 ```julia
@@ -691,7 +691,6 @@ wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
 model = snv() 
-#model = snv(; centr = :none) 
 #model = snv(; scal = :none) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
@@ -734,6 +733,8 @@ function transf!(object::Snv, X::Matrix{Q}) where {Q<:Float}
         mu = zeros(Q, n)
     elseif centr == :mean 
         mu = rowmean(X)
+    elseif centr == :med 
+        mu = colmed(X')
     end
     if scal == :none
         sigma = ones(Q, n)
