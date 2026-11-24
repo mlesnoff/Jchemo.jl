@@ -328,8 +328,6 @@ export
     colsumskip, colmeanskip, colstdskip, colvarskip,
     rowsum, rowmean, rowvar, rowstd, rownorm2, rownorm,
     rowsumskip, rowmeanskip, rowstdskip, rowvarskip,
-    def_fcolscal,
-    colscal,
     convertdf,
     covv, covm, 
     cosv, cosm, 

@@ -420,48 +420,6 @@ function colquant(X::AbstMatVec{Q}, prob::Q, weights::ProbabilityWeights{Q}) whe
     v
 end
 
-"""
-    def_fcolscal(scal::Symbol = :std)
-Define the function of column scaling.
-* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD).
-```
-"""
-function def_fcolscal(scal::Symbol = :std)
-    dict = Dict(
-        :std => colstd, 
-        :prt => colprt,
-        :mad => colmad
-        )
-    dict[scal]
-end
-
-"""
-    colscal(X::AbstractMatrix{Q}, scal::Symbol)  where {Q<:Float}
-    colscal(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}, scal::Symbol)  where {Q<:Float}
-Compute the scaling vector for a matrix.
-* `scal` : Symbol defining the scaling. Possible values are: `:none` (default), `:std` (uncorrected STD), 
-    `:prt` (Pareto) and `:mad` (MAD).
-```
-"""
-function colscal(X::AbstractMatrix{Q}, scal::Symbol)  where {Q<:Float}
-    weights = pweight(ones(eltype(X), nro(X)))
-    colscal(X, weights, scal)
-end
-
-function colscal(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}, scal::Symbol)  where {Q<:Float}
-    if scal == :none
-        v = ones(Q, nco(X))
-    elseif scal == :std
-        v = colstd(X, weights)
-    elseif scal == :prt
-        v = colprt(X, weights)
-    elseif scal == :mad
-        v = colmad(X, weights)
-    end
-    v
-end
-
 ##### Functions skipping missing data
 # When weighting: for each column, the weights are recomputed 
 # after removing the missing items
