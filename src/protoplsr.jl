@@ -121,7 +121,7 @@ function protoplsr(X, Y; kwargs...)
     # Compute the neighborhood of each prototype
     if par.nlvdis == 0
         fitm_emb = nothing
-        csx = cscale(X; centr = :none, scal = par.scalx)
+        csx = cscale(X; centrx = :none, scalx = par.scalx)
         zX = fscale(X, csx.scales)
         resnn = getknn(zX, vrow(X, s_proto); k = par.k, metric = par.metric)
     else
@@ -183,7 +183,7 @@ function predict(object::Protoplsr, X)
     # Compute the neighborhood of size kavg (inside dataset Xproto) of each new observation
     if isnothing(object.fitm_emb)
         if object.par.scalx != :none
-            csx = cscale(object.Xproto; centr = :none, scal = object.par.scalx)
+            csx = cscale(object.Xproto; centrx = :none, scalx = object.par.scalx)
             X1 = fscale(object.Xproto, csx.scales)
             X2 = fscale(X, csx.scales)
             res = getknn(X1, X2; metric, k = kavg)

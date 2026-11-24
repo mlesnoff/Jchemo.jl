@@ -1,16 +1,16 @@
 ############---- Preprocessing
 
 Base.@kwdef mutable struct ParCenter
-    centr::Symbol = :mean
+    centrx::Symbol = :mean
 end 
 
 Base.@kwdef mutable struct ParScale
-    scal::Symbol = :std
+    scalx::Symbol = :std
 end 
 
 Base.@kwdef mutable struct ParCscale
-    centr::Symbol = :mean
-    scal::Symbol = :std
+    centrx::Symbol = :mean
+    scalx::Symbol = :std
 end 
 
 Base.@kwdef mutable struct ParDetrendpol
@@ -67,8 +67,8 @@ Base.@kwdef mutable struct ParSavgol
 end 
 
 Base.@kwdef mutable struct ParSnv
-    centr::Symbol = :mean
-    scal::Symbol = :std  
+    centrx::Symbol = :mean
+    scalx::Symbol = :std  
 end 
 
 Base.@kwdef mutable struct ParRmgap
@@ -92,7 +92,7 @@ end
 
 Base.@kwdef mutable struct ParPca
     nlv::Int = 1   
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPcanipals{Q<:Float}
@@ -100,19 +100,19 @@ Base.@kwdef mutable struct ParPcanipals{Q<:Float}
     gs::Bool = true   
     tol::Q = 1e-8   
     maxit::Int = 200     
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPcapp
     nlv::Int = 1
     nsim::Int = 2000  
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParPcaout{Q<:Float}
     nlv::Int = 1
     prm::Q = .3  
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParSpca{Q<:Float}
@@ -123,7 +123,7 @@ Base.@kwdef mutable struct ParSpca{Q<:Float}
     nvar::Union{Int, Vector{Int}} = 1  
     tol::Q = 1e-8 
     maxit::Int = 200   
-    scal::Symbol = :none                   
+    scalx::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParKern{Q<:Float}  
@@ -138,14 +138,14 @@ Base.@kwdef mutable struct ParKpca{Q<:Float}
     gamma::Q = 1.  
     coef0::Q = 0.
     degree::Int = 1        
-    scal::Symbol = :none                   
+    scalx::Symbol = :none                   
 end 
 
 Base.@kwdef mutable struct ParRp{Q<:Float}
     nlv::Int = 1    
     meth::Symbol = :gauss  
     s::Q = 1. 
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParUmap{Q<:Float}
@@ -154,7 +154,7 @@ Base.@kwdef mutable struct ParUmap{Q<:Float}
     metric = Distances.Euclidean()
     n_neighbors::Int = 15 
     min_dist::Q = .1                 
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 Base.@kwdef mutable struct ParCovsel
@@ -167,14 +167,14 @@ Base.@kwdef mutable struct ParFda{Q<:Float}
     nlv::Int = 1     
     lb::Q = 1e-6 
     prior::Union{Symbol, Vector{Q}} = :prop                  
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
 end 
 
 # Multiblock
 
 Base.@kwdef mutable struct ParBlock
-    centr::Union{Symbol, Vector{Symbol}} = :none  
-    scal::Union{Symbol, Vector{Symbol}} = :none  
+    centrx::Union{Symbol, Vector{Symbol}} = :none  
+    scalx::Union{Symbol, Vector{Symbol}} = :none  
     bscal::Symbol = :none   
 end 
 
@@ -217,7 +217,7 @@ Base.@kwdef mutable struct ParCpca{Q<:Float}   # cpca, comdim
     nlv::Int = 1     
     tol::Q = 1e-8   
     maxit::Int = 200    
-    scal::Union{Symbol, Vector{Symbol}} = :none
+    scalx::Union{Symbol, Vector{Symbol}} = :none
     bscal::Symbol = :none   
 end 
 
@@ -736,7 +736,7 @@ Base.@kwdef mutable struct ParOccstah{Q<:Float}
     typcut::Symbol = :mad   
     cri::Q = 3.
     alpha::Q = .025 
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
     seed::Union{Nothing, Int} = nothing                   
 end 
 
@@ -771,7 +771,7 @@ Base.@kwdef mutable struct ParOccknn{Q<:Float}
     typcut::Symbol = :mad   
     cri::Q = 3.
     alpha::Q = .025 
-    scal::Symbol = :none 
+    scalx::Symbol = :none 
     seed::Union{Nothing, Int} = nothing                  
 end 
 
@@ -784,7 +784,7 @@ Base.@kwdef mutable struct ParOccmwpca{Q<:Float}
     cri::Q = 3.
     alpha::Q = .025 
     gamma::Q = .5
-    scal::Symbol = :none
+    scalx::Symbol = :none
 end 
 
 Base.@kwdef mutable struct ParOccmwpls{Q<:Float}

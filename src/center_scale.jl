@@ -5,7 +5,7 @@
 Column-wise centering of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `centr` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
+* `centrx` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
     `:mean` (default), and `:med` (median). 
 
 # Examples
@@ -35,11 +35,11 @@ X .- colmean(X, weights)'
 Xpnew = transf(model, Xnew)
 Xnew .- colmean(X, weights)'
 
-center(X; centr = :none).centers
-hcat(center(X; centr = :mean).centers, colmean(X))
+center(X; centrx = :none).centers
+hcat(center(X; centrx = :mean).centers, colmean(X))
 
-center(X, weights; centr = :none).centers
-hcat(center(X, weights; centr = :mean).centers, colmean(X, weights))
+center(X, weights; centrx = :none).centers
+hcat(center(X, weights; centrx = :mean).centers, colmean(X, weights))
 ```
 """
 center(; kwargs...) = JchemoModel(center, nothing, kwargs)
@@ -52,12 +52,12 @@ end
     
 function center(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = Jchemo.recovkw(ParCenter, kwargs).par
-    @assert @in(par.centr, [:none, :mean, :med]) "Wrong value for argument 'centr'."
-    if par.centr == :none
+    @assert @in(par.centrx, [:none, :mean, :med]) "Wrong value for argument 'centrx'."
+    if par.centrx == :none
         v = zeros(Q, nco(X))
-    elseif par.centr == :mean 
+    elseif par.centrx == :mean 
          v = colmean(X, weights)
-    elseif par.centr == :med 
+    elseif par.centrx == :med 
         v = colmed(X)   # no weighting for medians
     end
     Center(v, par)
@@ -77,7 +77,7 @@ function transf(object::Center, X)
 end
 
 function transf!(object::Center, X::AbstractMatrix{Q}) where {Q<:Float}
-    if !(object.par.centr == :none)
+    if !(object.par.centrx == :none)
         fcenter!(X, object.centers)
     end
 end
@@ -89,7 +89,7 @@ end
 Column-wise scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
+* `scalx` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
     `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
@@ -119,11 +119,11 @@ X * diagm(1 ./ colstd(X, weights))
 Xpnew = transf(model, Xnew)
 Xnew * diagm(1 ./ colstd(X, weights))
 
-scale(X; scal = :none).scales
-hcat(scale(X; scal = :std).scales, colstd(X))
+scale(X; scalx = :none).scales
+hcat(scale(X; scalx = :std).scales, colstd(X))
 
-scale(X, weights; scal = :none).scales
-hcat(scale(X, weights; scal = :std).scales, colstd(X, weights))
+scale(X, weights; scalx = :none).scales
+hcat(scale(X, weights; scalx = :std).scales, colstd(X, weights))
 ```
 """
 scale(; kwargs...) = JchemoModel(scale, nothing, kwargs)
@@ -136,14 +136,14 @@ end
     
 function scale(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = Jchemo.recovkw(ParScale, kwargs).par
-    @assert @in(par.scal, [:none, :std, :prt, :mad]) "Wrong value for argument 'scal'."
-    if par.scal == :none
+    @assert @in(par.scalx, [:none, :std, :prt, :mad]) "Wrong value for argument 'scalx'."
+    if par.scalx == :none
         v = ones(Q, nco(X))
-    elseif par.scal == :std
+    elseif par.scalx == :std
         v = colstd(X, weights)
-    elseif par.scal == :prt
+    elseif par.scalx == :prt
         v = colprt(X, weights)
-    elseif par.scal == :mad
+    elseif par.scalx == :mad
         v = colmad(X, weights)
     end
     Scale(v, par)
@@ -163,7 +163,7 @@ function transf(object::Scale, X)
 end
 
 function transf!(object::Scale, X::AbstractMatrix{Q}) where {Q<:Float}
-    if !(object.par.scal == :none)
+    if !(object.par.scalx == :none)
         fscale!(X, object.scales)
     end
 end
@@ -175,9 +175,9 @@ end
 Column-wise centering and scaling of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `centr` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
+* `centrx` : Symbol defining the column centering. Possible values are: `:none` (no centering), 
     `:mean` (default), and `:med` (median). 
-* `scal` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
+* `scalx` : Symbol defining the column scaling. Possible values are: `:none` (no scaling), 
     `:std` (uncorrected STD; default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
@@ -189,11 +189,11 @@ n = nro(X)
 w = collect(1:n)
 weights = pweight(w)
 
-centr = :mean ; scal = :std
-#centr = :mean ; scal = :none
-#centr = :none ; scal = :std
-#centr = :none ; scal = :none
-model = cscale(; centr, scal) 
+centrx = :mean ; scalx = :std
+#centrx = :mean ; scalx = :none
+#centrx = :none ; scalx = :std
+#centrx = :none ; scalx = :none
+model = cscale(; centrx, scalx) 
 fit!(model, X)
 @names fitm = model.fitm 
 hcat(fitm.centers, colmean(X))
@@ -203,11 +203,11 @@ Xp = transf(fitm, X)
 Xpnew = transf(model, Xnew)
 (Xnew .- colmean(X)') * diagm(1 ./ colstd(X)) 
 
-centr = :mean ; scal = :std
-#centr = :mean ; scal = :none
-#centr = :none ; scal = :std
-#centr = :none ; scal = :none
-model = cscale(; centr, scal) 
+centrx = :mean ; scalx = :std
+#centrx = :mean ; scalx = :none
+#centrx = :none ; scalx = :std
+#centrx = :none ; scalx = :none
+model = cscale(; centrx, scalx) 
 fit!(model, X, weights)
 @names fitm = model.fitm 
 hcat(fitm.centers, colmean(X, weights))
@@ -228,8 +228,8 @@ end
 
 function cscale(X::AbstractMatrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
     par = Jchemo.recovkw(ParCscale, kwargs).par 
-    centers = center(X, weights; centr = par.centr).centers
-    scales = scale(X, weights; scal = par.scal).scales
+    centers = center(X, weights; centrx = par.centrx).centers
+    scales = scale(X, weights; scalx = par.scalx).scales
     Cscale(centers, scales, par)
 end
 
@@ -247,10 +247,10 @@ function transf(object::Cscale, X)
 end
 
 function transf!(object::Cscale, X::AbstractMatrix{Q}) where {Q<:Float}
-    if !(object.par.centr == :none)
+    if !(object.par.centrx == :none)
         fcenter!(X, object.centers)
     end
-    if !(object.par.scal == :none)
+    if !(object.par.scalx == :none)
         fscale!(X, object.scales)
     end
 end

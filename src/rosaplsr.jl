@@ -94,10 +94,10 @@ function rosaplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWei
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl: column centering and scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centrx = :mean, scalx = par.scalx, bscal = :none)
     transf!(fitm_bl, Xbl)
     # Y: centering and scaling
-    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    csy = cscale(Y, weights; centrx = :mean, scalx = par.scaly)
     transf!(csy, Y)
     # Pre-allocation
     W  = similar(Xbl[1], ptot, nlv)

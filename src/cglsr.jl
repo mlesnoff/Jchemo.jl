@@ -54,8 +54,8 @@ ytrain = y[s]
 Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
-nlv = 5 ; scal = :std
-model = cglsr(; nlv, scal)
+nlv = 5 ; scalx = :std
+model = cglsr(; nlv, scalx)
 fit!(model, Xtrain, ytrain)
 @names model.fitm 
 @head model.fitm.B
@@ -80,9 +80,9 @@ function cglsr!(X::Matrix{Q}, y::Matrix{Q}; kwargs...) where {Q<:Float}
     par.nlv = nlv 
     # Centering and scaling
     # No need to scale y
-    csx = cscale(X; centr = :mean, scal = par.scalx)
+    csx = cscale(X; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
-    csy = cscale(y; centr = :mean, scal = :none)
+    csy = cscale(y; centrx = :mean, scalx = :none)
     transf!(csy, y)
     # Pre-allocation and initialization
     B = similar(X, p, nlv)

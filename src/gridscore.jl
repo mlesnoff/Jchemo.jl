@@ -79,13 +79,13 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
     ylabel = "Observed").f    
 
 # Adding pars 
-pars = mpar(scal = [:none; :std])
+pars = mpar(scalx = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, nlv)
-typ = string.(res.scal)
+typ = string.(res.scalx)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
-model = plskern(nlv = res.nlv[u], scal = res.scal[u])
+model = plskern(nlv = res.nlv[u], scalx = res.scalx[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -108,14 +108,14 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
     ylabel = "Observed").f    
     
 # Adding pars 
-pars = mpar(scal = [:none; :std])
+pars = mpar(scalx = [:none; :std])
 res = gridscore(model, Xcal, ycal, Xval, yval; score = rmsep, pars, lb)
 loglb = log.(10, res.lb)
-typ = string.(res.scal)
+typ = string.(res.scalx)
 plotgrid(loglb, res.y1, typ; step = 2, xlabel = "log(lambda)", ylabel = "RMSEP").f
 u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]
-model = rr(lb = res.lb[u], scal = res.scal[u])
+model = rr(lb = res.lb[u], scalx = res.scalx[u])
 fit!(model, Xtrain, ytrain)
 pred = predict(model, Xtest).pred
 @show rmsep(pred, ytest)
@@ -222,7 +222,7 @@ plotxy(vec(pred), ytest; color = (:red, .5), bisect = true, xlabel = "Prediction
 
 ####-- Pipeline Snv :> Savgol :> Plsr   (Only the last model is tuned)
 # model1
-model1 = snv(scal = :none)
+model1 = snv(scalx = :none)
 # model2 
 npoint = 5 ; deriv = 0 ; degree = 2
 model2 = savgol(; npoint, deriv, degree)
@@ -247,8 +247,8 @@ plotxy(res.pred, ytest; color = (:red, .5), bisect = true, xlabel = "Prediction"
 
 ####-- Pipeline Pca :> Svmr   (Only the last model is tuned)
 # model1
-nlv = 15 ; scal = :std
-model1 = pcasvd(; nlv, scal)
+nlv = 15 ; scalx = :std
+model1 = pcasvd(; nlv, scalx)
 # model2
 kern = [:rbf]
 gamma = (10).^(-5:1.:5)
@@ -301,10 +301,10 @@ yval = ytrain[s.test]
 model = plslda()
 nlv = 1:30
 prior = [:unif]
-scal = [:none; :std]
-pars = mpar(prior = prior, scal = scal)
+scalx = [:none; :std]
+pars = mpar(prior = prior, scalx = scalx)
 res = gridscore(model, Xcal, ycal, Xval, yval; score = errp, pars, nlv)
-typ = string.(res.prior, "-", res.scal)
+typ = string.(res.prior, "-", res.scalx)
 plotgrid(res.nlv, res.y1, typ; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
 u = first(findall(res.y1 .== minimum(res.y1))) 
 res[u, :]

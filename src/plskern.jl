@@ -106,9 +106,9 @@ function plskern!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::Probabili
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling    
-    csx = cscale(X, weights; centr = :mean, scal = par.scalx)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    csy = cscale(Y, weights; centrx = :mean, scalx = par.scaly)
     transf!(csy, Y)
     # XtY 
     fweightr!(Y, weights.values)

@@ -97,11 +97,11 @@ Scale multiblock X-data.
 * `weights` : Weights (n) of the observations (rows of the blocks). Must be of type `ProbabilityWeights` 
     (see e.g., function `pweight`).
 Keyword arguments:
-* `centr` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `centrx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column centering in each block (before the block scaling). Possible values are: `:none` (default), 
     `:mean`, and `:med` (median). If not a vector, the same value
     is applied to each block.
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
@@ -135,9 +135,9 @@ Xbl = mblock(X, listbl)
 Xblnew = mblock(Xnew, listbl) 
 @head Xbl[3]
 
-centr = :mean ; scal = :std ; bscal = :frob
-#centr = [:none, :mean, :mean] ; scal = [:none, :none, :std] ; bscal = :none 
-model = blockscal(; centr, scal, bscal)
+centrx = :mean ; scalx = :std ; bscal = :frob
+#centrx = [:none, :mean, :mean] ; scalx = [:none, :none, :std] ; bscal = :none 
+model = blockscal(; centrx, scalx, bscal)
 fit!(model, Xbl)
 @names fitm = model.fitm
 length(fitm.csx)
@@ -165,11 +165,11 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
     par = recovkw(ParBlock, kwargs).par
     @assert @in(par.bscal, [:none, :frob, :mfa, :ncol, :std]) "Wrong value for argument 'bscal'."
     nbl = length(Xbl)
-    if isa(par.centr, Symbol)
-        par.centr = [par.centr for k in eachindex(Xbl)]
+    if isa(par.centrx, Symbol)
+        par.centrx = [par.centrx for k in eachindex(Xbl)]
     end
-    if isa(par.scal, Symbol)
-        par.scal = [par.scal for k in eachindex(Xbl)]
+    if isa(par.scalx, Symbol)
+        par.scalx = [par.scalx for k in eachindex(Xbl)]
     end
     # Compute centers, scales and bscale for each block
     csx = list(Cscale{Q}, nbl) 
@@ -177,7 +177,7 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
     for k in eachindex(Xbl)
         zX = copy(Xbl[k])
         # Block centers and scales 
-        csx[k] = cscale(zX, weights; centr = par.centr[k], scal = par.scal[k])
+        csx[k] = cscale(zX, weights; centrx = par.centrx[k], scalx = par.scalx[k])
         transf!(csx[k], zX)  # only required to compute bscal 
         # Block scales
         if par.bscal == :frob

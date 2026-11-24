@@ -669,9 +669,9 @@ end
 Standard-normal-variate (SNV) transformation of each row of X-data.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `centr` : Symbol defining the row centering. Possible values are: `:none` (no centering), 
+* `centrx` : Symbol defining the row centering. Possible values are: `:none` (no centering), 
     `:mean` (default), and `:med` (median). 
-* `scal` : Symbol defining the row scaling. Possible values are: `:none` (no scaling), 
+* `scalx` : Symbol defining the row scaling. Possible values are: `:none` (no scaling), 
     `:std` (uncorrected STD) (default), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
@@ -691,7 +691,7 @@ wl = parse.(Float64, wlst)
 plotsp(X, wl; nsamp = 20).f
 
 model = snv() 
-#model = snv(; scal = :none) 
+#model = snv(; scalx = :none) 
 fit!(model, Xtrain)
 Xptrain = transf(model, Xtrain)
 Xptest = transf(model, Xtest)
@@ -707,8 +707,8 @@ snv(; kwargs...) = JchemoModel(snv, nothing, kwargs)
 
 function snv(X; kwargs...)
     par = recovkw(ParSnv, kwargs).par
-    @assert @in(par.centr, [:none, :mean, :med]) "Wrong value for argument 'centr'."
-    @assert @in(par.scal, [:none, :std, :prt, :mad]) "Wrong value for argument 'scal'."
+    @assert @in(par.centrx, [:none, :mean, :med]) "Wrong value for argument 'centrx'."
+    @assert @in(par.scalx, [:none, :std, :prt, :mad]) "Wrong value for argument 'scalx'."
     Snv(par)
 end
 
@@ -727,22 +727,22 @@ end
 
 function transf!(object::Snv, X::Matrix{Q}) where {Q<:Float}
     n = nro(X)
-    centr = object.par.centr
-    scal = object.par.scal
-    if centr == :none
+    centrx = object.par.centrx
+    scalx = object.par.scalx
+    if centrx == :none
         mu = zeros(Q, n)
-    elseif centr == :mean 
+    elseif centrx == :mean 
         mu = rowmean(X)
-    elseif centr == :med 
+    elseif centrx == :med 
         mu = colmed(X')
     end
-    if scal == :none
+    if scalx == :none
         sigma = ones(Q, n)
-    elseif scal == :std
+    elseif scalx == :std
         sigma = rowstd(X)
-    elseif scal == :prt
+    elseif scalx == :prt
         sigma = colprt(X')
-    elseif scal == :mad
+    elseif scalx == :mad
         sigma = colmad(X')
     end
     # Not faster: @Threads.threads

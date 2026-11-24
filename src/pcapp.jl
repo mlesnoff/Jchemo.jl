@@ -7,7 +7,7 @@ Robust PCA by projection pursuit.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `nsim` : Nb. of additional (to X-rows) simulated directions for the projection pursuit.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD.
+* `scalx` : Boolean. If `true`, each column of `X` is scaled by its MAD.
 
 For `nsim = 0`, this is the Croux & Ruiz-Gazen (C-R, 2005) PCA algorithm that uses a projection pursuit (PP) method. 
 Data `X` are robustly centered by the spatial median, and the observations are projected to the "PP" directions 
@@ -41,7 +41,7 @@ n = nro(X)
 
 nlv = 3
 model = pcapp(; nlv, nsim = 2000)  
-#model = pcapp(; nlv, nsim = 2000, scal = :mad)
+#model = pcapp(; nlv, nsim = 2000, scalx = :mad)
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -65,7 +65,7 @@ function pcapp!(X::Matrix{Q}; kwargs...) where {Q<:Float}
     par.nlv = nlv
     nsim = par.nsim
     # Centering and scaling
-    csx = cscale(X; centr = :mean, scal = par.scal)
+    csx = cscale(X; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     T = similar(X, n, nlv)

@@ -9,7 +9,7 @@ Robust PCA using outlierness.
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
 * `prm` : Proportion of the data removed (hard rejection of outliers) for each outlierness measure.
-* `scal` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness and by 
+* `scalx` : Boolean. If `true`, each column of `X` is scaled by its MAD when computing the outlierness and by 
     its uncorrected standard deviation when computing weighted PCA. 
 
 Robust PCA combining outlyingness measures and weighted PCA (WPCA). 
@@ -50,7 +50,7 @@ n = nro(X)
 
 nlv = 3
 model = pcaout(; nlv)  
-#model = pcaout(; nlv, scal = :mad) 
+#model = pcaout(; nlv, scalx = :mad) 
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -80,9 +80,9 @@ function pcaout!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     p = nco(X)
     nlvstah = 500
     V = Q.(rand(0:1, p, nlvstah))
-    d = outstah(X, V; scal = par.scal).d
+    d = outstah(X, V; scalx = par.scalx).d
     w = wtal(d; a = quantile(d, 1 - par.prm))
-    d .= outeucl(X; scal = par.scal).d
+    d .= outeucl(X; scalx = par.scalx).d
     w .*= wtal(d; a = quantile(d, 1 - par.prm))
     w .*= weights.values
     w[isequal.(w, 0)] .= 1e-10

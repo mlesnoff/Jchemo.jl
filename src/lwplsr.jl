@@ -123,7 +123,7 @@ function lwplsr(X, Y; kwargs...)
     else
         fitm = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)
     end
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     Lwplsr(fitm, X, Y, csx, par)
 end
 

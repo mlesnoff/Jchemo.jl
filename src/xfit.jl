@@ -32,9 +32,9 @@ weights = pweight(rand(n))
 #### Pca
 
 nlv = 2 
-scal = :none
-#scal = :std
-model = pcasvd(; nlv, scal) ;
+scalx = :none
+#scalx = :std
+model = pcasvd(; nlv, scalx) ;
 fit!(model, X)
 fitm = model.fitm ;
 @head xfit(fitm, X)
@@ -51,7 +51,7 @@ xfit(fitm, Xnew, 1)
 @head Xnew
 @head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
-model = pcasvd(; nlv = min(n, p), scal) 
+model = pcasvd(; nlv = min(n, p), scalx) 
 fit!(model, X)
 fitm = model.fitm ;
 @head xfit(fitm, X)
@@ -60,9 +60,9 @@ fitm = model.fitm ;
 #### Pls
 
 nlv = 3
-scal = :none
-#scal = :std
-model = plskern(; nlv, scal)
+scalx = :none
+#scalx = :std
+model = plskern(; nlv, scalx)
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
 @head xfit(fitm, X)
@@ -79,7 +79,7 @@ xfit(fitm, Xnew)
 @head Xnew
 @head xfit(fitm, Xnew) + xresid(fitm, Xnew)
 
-model = plskern(; nlv = min(n, p), scal) 
+model = plskern(; nlv = min(n, p), scalx) 
 fit!(model, X, Y, weights) 
 fitm = model.fitm ;
 @head xfit(fitm, X) 

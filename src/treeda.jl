@@ -82,7 +82,7 @@ function treeda(X, y::Vector{String}; kwargs...)
     par = recovkw(ParTree{Q}, kwargs).par
     taby = tab(y)
     priors = taby.n / n  # output not used, only for information  
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     X = transf(csx, X)
     n_subfeatures = round(Int, par.n_subfeatures)
     min_purity_increase = 0

@@ -101,7 +101,7 @@ function lwmlr(X, Y; kwargs...)
     Y = ensure_mat(Y)
     Q = eltype(X) 
     par = recovkw(ParLwmlr{Q}, kwargs).par
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     Lwmlr(X, Y, csx, par)
 end
 

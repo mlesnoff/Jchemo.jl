@@ -9,7 +9,7 @@ Keyword arguments:
 * `nlv` : Nb. principal components (PCs) to consider. 
 * `kern` : Type of kernel used to compute the Gram matrices. Possible values are `:rbf` (default), and `:pol`. 
     See functions `krbf` and `kpol`, respectively, for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The method is implemented by SVD factorization of the weighted Gram matrix: 
@@ -72,7 +72,7 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<
     n = nro(X)
     nlv = min(par.nlv, n)
     # X scaling (the centering is done on the Gram matrix)
-    csx = cscale(X, weights; centr = :none, scal = par.scal)
+    csx = cscale(X, weights; centrx = :none, scalx = par.scalx)
     transf!(csx, X)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))

@@ -98,7 +98,7 @@ function protoclustplsr(X, Y; kwargs...)
     Y = ensure_mat(Y)
     if par.nlvdis == 0
         fitm_emb = nothing
-        csx = cscale(X; centr = :none, scal = par.scalx)
+        csx = cscale(X; centrx = :none, scalx = par.scalx)
         zX = fscale(X, csx.scales)
     else
         fitm_emb = plskern(X, Y; nlv = par.nlvdis, scalx = par.scalx, scaly = par.scaly)

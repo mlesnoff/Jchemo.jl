@@ -8,7 +8,7 @@ Spherical PCA.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Spherical PCA (Locantore et al. 1990, Maronna 2005, Daszykowski et al. 2007). Matrix `X` is centered by the spatial 
@@ -38,7 +38,7 @@ n = nro(X)
 
 nlv = 3
 model = pcasph(; nlv)  
-#model = pcasph(; nlv, scal = :mad) 
+#model = pcasph(; nlv, scalx = :mad) 
 #model = pcasvd(; nlv) 
 fit!(model, X)
 @names model
@@ -69,7 +69,7 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # Sphere
     Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)

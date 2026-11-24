@@ -98,7 +98,7 @@ function rda(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; kw
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     @assert par.lb >= 0 "lb must be in >= 0"
     n, p = size(X)
-    csx = cscale(X, weights; centr = :none, scal = par.scalx)
+    csx = cscale(X, weights; centrx = :none, scalx = par.scalx)
     transf!(csx, X)
     res = matW(X, y, weights)
     ni = res.ni

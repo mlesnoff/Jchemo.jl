@@ -106,7 +106,7 @@ function svmr(X, y; kwargs...)
     elseif kern == :tan
         fkern = LIBSVM.Kernel.Sigmoid
     end
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     if par.scalx != :none
         X = transf(csx, X)
     end

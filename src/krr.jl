@@ -119,9 +119,9 @@ function krr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     # No need to center X (what is centered is the kernel)
     # No need to scale Y
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y; centr = :mean, scal = :none)
+    csy = cscale(Y; centrx = :mean, scalx = :none)
     transf!(csy, Y)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))

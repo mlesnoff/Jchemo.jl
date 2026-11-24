@@ -10,7 +10,7 @@ Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `tol` : Tolerance value for convergence (Nipals).
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
@@ -76,11 +76,11 @@ Xblnew = mblock(X[7:8, :], listbl)
 n = nro(Xbl[1]) 
 
 nlv = 3
-scal = :none
-#scal = :std
-#scal = [:none, :std, :none]
+scalx = :none
+#scalx = :std
+#scalx = [:none, :std, :none]
 bscal = :frob
-model = comdim(; nlv, bscal, scal)
+model = comdim(; nlv, bscal, scalx)
 fit!(model, Xbl)
 @names model 
 @names model.fitm
@@ -132,7 +132,7 @@ function comdim!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs.
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Column centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centrx = :mean, scalx = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
     sqrtw = sqrt.(weights.values)

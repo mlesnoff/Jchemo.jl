@@ -74,9 +74,9 @@ function mlr!(X::AbstractMatrix{Q}, Y::AbstractMatrix{Q}, weights::ProbabilityWe
         int = reshape(zeros(Q, q), 1, q)
     else
         # Centering
-        csx = cscale(X, weights; centr = :mean, scal = :none)
+        csx = cscale(X, weights; centrx = :mean, scalx = :none)
         transf!(csx, X)
-        csy = cscale(Y, weights; centr = :mean, scal = :none)
+        csy = cscale(Y, weights; centrx = :mean, scalx = :none)
         transf!(csy, Y)
         # End
         fweightr!(X, sqrtw)

@@ -12,7 +12,7 @@ Keyword arguments:
     before each X-deflation. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 # References
@@ -29,11 +29,11 @@ X = [1 2. missing 4 ; 4 missing 6 7 ;
 
 nlv = 3 
 tol = 1e-15
-scal = :none
-#scal = :std
+scalx = :none
+#scalx = :std
 gs = false
 #gs = true
-model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scal)
+model = pcanipalsmiss(; nlv, tol, gs, maxit = 500, scalx)
 fit!(model, X)
 @names model 
 @names fitm = model.fitm
@@ -82,7 +82,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
     centers = colmeanskip(X, weights)
     X .-= centers' 
     scales = ones(Q, p)
-    if par.scal != :none
+    if par.scalx != :none
         scales .= colstdskip(X, weights)
         X ./= scales'
     end

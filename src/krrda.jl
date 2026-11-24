@@ -42,8 +42,8 @@ tab(ytest)
 
 lb = 1e-5
 kern = :rbf ; gamma = .001 
-scal = :std
-model = krrda(; lb, kern, gamma, scal) 
+scalx = :std
+model = krrda(; lb, kern, gamma, scalx) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm 

@@ -34,9 +34,9 @@ function rrchol!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     sqrtw = sqrt.(weights.values)
     # Centering and scaling
     # No need to scale Y
-    csx = cscale(X; centr = :mean, scal = par.scalx)
+    csx = cscale(X; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y; centr = :mean, scal = :none)
+    csy = cscale(Y; centrx = :mean, scalx = :none)
     transf!(csy, Y)
     # End
     fweightr!(X, sqrtw)

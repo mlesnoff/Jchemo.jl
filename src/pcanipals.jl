@@ -12,7 +12,7 @@ Keyword arguments:
     before each X-deflation. 
 * `tol` : Tolerance value for stopping the iterations.
 * `maxit` : Maximum nb. of iterations.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
@@ -56,7 +56,7 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     sqrtw = sqrt.(weights.values)

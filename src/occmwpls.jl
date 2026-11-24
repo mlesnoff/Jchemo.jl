@@ -225,7 +225,7 @@ function occmwpls(X, Y; kwargs...)
         end
         u = findall(vscor .== minimum(vscor))[1] 
         nlv_emb[j] = res.nlv[u]
-        fitm_emb[j] = plskern(vX, Y; nlv = nlv_emb[j]) #, scal = par.scal)
+        fitm_emb[j] = plskern(vX, Y; nlv = nlv_emb[j]) #, scalx = par.scalx)
         # End
         fitm_occ[j] = occsdod(fitm_emb[j], vX; nlv = nlv_emb[j], typcut = par.typcut, 
             cri = par.cri, alpha = par.alpha, gamma = par.gamma)

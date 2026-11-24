@@ -94,7 +94,7 @@ function knnr(X, Y; kwargs...)
     Q = eltype(X) 
     par = recovkw(ParKnn{Q}, kwargs).par
     @assert in([:eucl, :mah, :sam, :cos, :cor])(par.metric) "Wrong value for argument 'metric'."
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     Knnr(X, Y, csx, par)    
 end
 

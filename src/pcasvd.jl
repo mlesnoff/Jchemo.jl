@@ -8,7 +8,7 @@ PCA by SVD factorization.
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
 Keyword arguments:
 * `nlv` : Nb. of principal components (PCs).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 Let us note D the (n, n) diagonal matrix of weights (`weights.values`) and X the centered matrix in metric D.
@@ -78,7 +78,7 @@ function pcasvd!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     # by default in LinearAlgebra.svd, "full = false" ==> [1:min(n, p)]
@@ -106,7 +106,7 @@ transf(object::Union{Pca, Pcanipals, Fda}, X) = fcscale(X, object.csx.centers, o
 function transf(object::Union{Pca, Pcanipals, Fda}, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     # Eventually to consider in the future (for all 'transf' funcions in Jchemo):
-    # To win time, could add a check on 'object.par.scal' if scaling.
+    # To win time, could add a check on 'object.par.scalx' if scaling.
     # If not, use fcenter instead of fcscale
     fcscale(X, object.csx.centers, object.csx.scales) * vcol(object.V, 1:nlv)
 end

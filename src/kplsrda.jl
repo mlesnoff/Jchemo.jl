@@ -42,8 +42,8 @@ tab(ytest)
 
 nlv = 15
 kern = :rbf ; gamma = .001 
-scal = :std
-model = kplsrda(; nlv, kern, gamma, scal) 
+scalx = :std
+model = kplsrda(; nlv, kern, gamma, scalx) 
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm 

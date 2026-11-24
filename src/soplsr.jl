@@ -55,9 +55,9 @@ ntot = ntrain + ntest
 nlv = 1
 #nlv = [2, 1, 2]
 #nlv = [2, 0, 1]
-scal = :none
-#scal = std
-model = soplsr(; nlv, scal)
+scalx = :none
+#scalx = std
+model = soplsr(; nlv, scalx)
 fit!(model, Xbltrain, ytrain)
 @names model 
 @names model.fitm
@@ -106,15 +106,15 @@ function soplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     end 
     par.nlv = nlv
     # Xbl: column scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :none, scal = par.scalx, bscal = :none)
+    fitm_bl = blockscal(Xbl, weights; centrx = :none, scalx = par.scalx, bscal = :none)
     transf!(fitm_bl, Xbl)
     # Y: scaling
-    csy = cscale(Y, weights; centr = :none, scal = par.scaly)
+    csy = cscale(Y, weights; centrx = :none, scalx = par.scaly)
     transf!(csy, Y)
     # End
     fitm = list(Jchemo.Plsr, nbl)
     fit = similar(Xbl[1], n, q)
-    # Below, if 'scal' = :std, object 'fit' is in scale 'scaled-Y' 
+    # Below, if 'scalx' = :std, object 'fit' is in scale 'scaled-Y' 
     # First block
     fitm[1] = plskern(Xbl[1], Y, weights; nlv = nlv[1], scalx = :none, scaly = :none)  
     T = fitm[1].T

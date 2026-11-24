@@ -97,11 +97,11 @@ function spcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwarg
     par = recovkw(ParSpcr{Q}, kwargs).par
     # Y centering (No need to scale Y)
     # X is centered and scale in spca
-    csy = cscale(Y, weights; centr = :mean, scal = :none)
+    csy = cscale(Y, weights; centrx = :mean, scalx = :none)
     transf!(csy, Y)
     # End
     fitm = spca!(X, weights; nlv = par.nlv, meth = par.meth, algo = par.algo, defl = par.defl, 
-        nvar = par.nvar, tol = par.tol, maxit = par.maxit, scal = par.scalx)
+        nvar = par.nvar, tol = par.tol, maxit = par.maxit, scalx = par.scalx)
     par.nlv = fitm.par.nlv
     theta = inv(fitm.T' * fweightr(fitm.T, fitm.weights.values)) * fitm.T' * fweightr(Y, fitm.weights.values)  # = C'
     Spcr(fitm, Matrix(theta'), csy, par) 

@@ -1,12 +1,13 @@
 # News
 
-## *Version 0.12.0 dev*
+## *Version 0.12.0*
 
 - Breaking changes 
     - Major internal changes for column centering and scaling. 
         Among new things, there are:
-        - For multiblock methods, allows different scaling between blocks.  
-        - Etc. In current development.
+        - For regression, X and Y are can be scaled independently.
+        - For mutibloc methods, the blocks can scaled independently.
+        See the helps of the functions.  
     - Functions implementing kernel regressions and discrimination: symbol values in argument
         'kern' has changed (see the help pages).
     - Functions **mwplsr**, **mwplsqda**: Internal changes, more compact outputs.

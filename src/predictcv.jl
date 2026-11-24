@@ -40,7 +40,7 @@ ntot = ntrain + ntest
 K = 3 ; rep = 10
 segm = segmkf(ntrain, K; rep)
 model = plskern()
-pars = mpar(scal = [:std])
+pars = mpar(scalx = [:std])
 rescv = gridcv(model, Xtrain, ytrain; segm, score = rmsep, pars, nlv = 0:10)
 res = rescv.res
 plotgrid(res.nlv, res.y1; step = 2, xlabel = "Nb. LVs", ylabel = "RMSEP").f
@@ -48,7 +48,7 @@ u = first(findall(res.y1 .== minimum(res.y1)))
 res[u, :]  # best model
 
 # Within-CV predictions for the best model
-model = plskern(nlv = res.nlv[u], scal = res.scal[u])
+model = plskern(nlv = res.nlv[u], scalx = res.scalx[u])
 respred = predictcv(model, Xtrain, ytrain; segm, score = rmsep) ; 
 @names respred
 matpred = respred.matpred

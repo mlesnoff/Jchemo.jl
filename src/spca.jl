@@ -14,7 +14,7 @@ Keyword arguments:
     (i.e. same nb. of variables for each PC), or a vector of length `nlv`.   
 * `tol` : Tolerance value for stopping the Nipals iterations.
 * `maxit` : Maximum nb. of Nipals iterations.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 sPCA-rSVD algorithm (regularized low rank matrix approximation) of Shen & Huang 2008. 
@@ -128,7 +128,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     sqrtw = sqrt.(weights.values)

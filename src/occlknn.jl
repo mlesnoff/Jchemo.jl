@@ -12,7 +12,7 @@ Keyword arguments:
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 The general principle is in two steps: 
@@ -34,7 +34,7 @@ function occlknn(X; kwargs...)
     n = nro(X)    
     Q = eltype(X)
     par = recovkw(ParOccknn{Q}, kwargs).par
-    csx = cscale(X; centr = :none, scal = par.scal)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     X = transf(csx, X)
     nsamp = min(par.nsamp, n)
     if nsamp == n

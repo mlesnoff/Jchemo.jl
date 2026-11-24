@@ -1,13 +1,13 @@
 """
-    outlknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none)
-    outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where {Q<:Float}
+    outlknn(X; metric::Symbol = :eucl, k::Int, algo::Function = sum, scalx::Symbol = :none)
+    outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scalx::Symbol = :none) where {Q<:Float}
 Compute a local kNN distance-based outlierness.
 * `X` : X-data (n, p).
 Keyword arguments:
 * `metric` : Metric used to compute the distances. See function `getknn`.
 * `k` : Nb. nearest neighbors to consider.
 * `algo` : Function summarizing the distances to the neighbors.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` as follows. 
@@ -60,24 +60,24 @@ f
 
 # With a preliminary PCA
 nlv = 3
-scal = :mad
-model = pcasph(; nlv, scal)
+scalx = :mad
+model = pcasph(; nlv, scalx)
 fit!(model, X)
 T = model.fitm.T
 metric = :eucl ; k = 15
-res = outlknn(T; metric, k, scal)
+res = outlknn(T; metric, k, scalx)
 f, ax = plotxy(1:n, res.d, typ; xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
 ```
 """ 
-function outlknn(X; metric = :eucl, k, algo::Function = sum, scal::Symbol = :none)
-    outlknn!(copy(ensure_mat(X)); k, metric, algo, scal)
+function outlknn(X; metric = :eucl, k, algo::Function = sum, scalx::Symbol = :none)
+    outlknn!(copy(ensure_mat(X)); k, metric, algo, scalx)
 end
 
-function outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where {Q<:Float}
+function outlknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scalx::Symbol = :none) where {Q<:Float}
     n = nro(X)
-    csx = cscale(X; centr = :none, scal)
+    csx = cscale(X; centrx = :none, scalx)
     transf!(csx, X)
     if k > n - 1 ; k = n - 1 ; end
     res = getknn(X, X; k = k + 1, metric)

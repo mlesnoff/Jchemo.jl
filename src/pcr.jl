@@ -80,10 +80,10 @@ function pcr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs
     par = recovkw(ParPcr, kwargs).par
     # Y centering (No need to scale Y)
     # X is centered and scale in pcasvd
-    csy = cscale(Y, weights; centr = :mean, scal = :none)
+    csy = cscale(Y, weights; centrx = :mean, scalx = :none)
     transf!(csy, Y)
     # End
-    fitm = pcasvd!(X, weights; nlv = par.nlv, scal = par.scalx)
+    fitm = pcasvd!(X, weights; nlv = par.nlv, scalx = par.scalx)
     par.nlv = fitm.par.nlv
     # Below, first term of the product is equal to Diagonal(1 ./ fitm.sv[1:nlv].^2) 
     # if T is D-orthogonal. This is the case for the actual version (pcasvd)

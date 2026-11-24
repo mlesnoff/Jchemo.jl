@@ -10,7 +10,7 @@ Keyword arguments:
 * `nlv` : Nb. global latent variables (LVs; = scores) to compute.
 * `tol` : Tolerance value for Nipals convergence.
 * `maxit` : Maximum number of iterations (Nipals).
-* `scal` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
+* `scalx` : Symbol, or a vector of symbols (of length equal to the number of blocks), defining
     the column scaling in each block (before the block scaling). Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD). If not a vector, the same value
     is applied to each block.
@@ -66,12 +66,12 @@ Xblnew = mblock(X[7:8, :], listbl)
 n = nro(Xbl[1]) 
 
 nlv = 3
-scal = :none
-#scal = std
-#scal = [:none, :std, :none]
+scalx = :none
+#scalx = std
+#scalx = [:none, :std, :none]
 bscal = :frob
 #bscal = :none
-model = cpca(; nlv, bscal, scal, tol = 1e-15)
+model = cpca(; nlv, bscal, scalx, tol = 1e-15)
 fit!(model, Xbl)
 @names model 
 @names fitm = model.fitm 
@@ -101,7 +101,7 @@ res.corx2t
 
 #### This CPCA can also be implemented with function 'pip'
 
-model1 = blockscal(; bscal, centr = :mean) ;
+model1 = blockscal(; bscal, centrx = :mean) ;
 model2 = mbconcat()
 model3 = pcasvd(; nlv) ;
 model = pip(model1, model2, model3)
@@ -120,7 +120,7 @@ transf(model, Xblnew)
 #### And a sparse CPCA as follows
 
 meth = :soft ; nvar = 2
-model1 = blockscal(; bscal, centr = :mean) ;
+model1 = blockscal(; bscal, centrx = :mean) ;
 model2 = mbconcat()
 model3 = spca(; nlv, meth, nvar) ;
 model = pip(model1, model2, model3)
@@ -165,7 +165,7 @@ function cpca!(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwargs...
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Column centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scal, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centrx = :mean, scalx = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Row metric
     sqrtw = sqrt.(weights.values)

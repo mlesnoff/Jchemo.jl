@@ -1,10 +1,10 @@
 """
-    outeucl(X; scal::Symbol = :none)
-    outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where {Q<:Float}
+    outeucl(X; scalx::Symbol = :none)
+    outeucl!(X::AbstractMatrix{Q}; scalx::Symbol = :none) where {Q<:Float}
 Compute outlierness from Euclidean distances to center.
 * `X` : X-data (n, p).
 Keyword arguments:
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 This function computes outlierness `d` of each observation (row) of `X` by the Euclidean distance between the observation and a 
@@ -24,22 +24,22 @@ X1 = randn(n, p)
 X2 = randn(m, p) .+ rand(1:3, p)'
 X = vcat(X1, X2)
 
-scal = :none
-#scal = :mad
-res = outeucl(X; scal) ;
+scalx = :none
+#scalx = :mad
+res = outeucl(X; scalx) ;
 @names res
 res.d    # outlierness 
 plotxy(1:ntot, res.d).f
 ```
 """ 
-function outeucl(X; scal::Symbol = :none)
-    outeucl!(copy(ensure_mat(X)); scal)
+function outeucl(X; scalx::Symbol = :none)
+    outeucl!(copy(ensure_mat(X)); scalx)
 end
 
-function outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where {Q<:Float}
+function outeucl!(X::AbstractMatrix{Q}; scalx::Symbol = :none) where {Q<:Float}
     centers = Jchemo.colmedspa(X)
-    scales = scale(X; scal)
-    if scal != :none
+    scales = scale(X; scalx)
+    if scalx != :none
         fscale!(X, scales)
     end
     csx = (centers = centers, scales)

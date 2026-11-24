@@ -112,10 +112,10 @@ function mbplswest!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWe
     nlv = min(n, ptot, par.nlv) # to do: consider if ptot should not be replaced by pmin = minimum(pbl)
     par.nlv = nlv
     # Xbl: column centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centrx = :mean, scalx = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     # Y: centering and scaling
-    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    csy = cscale(Y, weights; centrx = :mean, scalx = par.scaly)
     transf!(csy, Y)
     # Row metric
     sqrtw = sqrt.(weights.values)

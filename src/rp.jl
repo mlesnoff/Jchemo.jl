@@ -10,7 +10,7 @@ Keyword arguments:
 * `nlv` : Nb. dimensions on which `X` is projected.
 * `meth` : Method of random projection. Possible values are: `:gauss`, `:li`. See the respective functions 
     `rpmatgauss` and `rpmatli` for their keyword arguments.
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 # Examples
@@ -47,7 +47,7 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     p = nco(X)
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     if par.meth == :gauss

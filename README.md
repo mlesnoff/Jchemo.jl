@@ -32,7 +32,7 @@ Let us assume training data `{X, Y}`, and new data `Xnew` for which we want pred
 3) Function `predict` computes the predictions.   
 
 ```julia
-model = plskern(; nlv = 15, scal = :std)  # ';' (start of keyword arguments) is not mandotory here but used for syntax consistency   
+model = plskern(; nlv = 15, scalx = :std)  # ';' (start of keyword arguments) is not mandotory here but used for syntax consistency   
 fit!(model, X, Y)
 pred = predict(model Xnew).pred  # '.pred' is specified here since functio 'predict' can return several objects for some models 
 ```
@@ -48,15 +48,15 @@ We can check the contents of object `model`
 Alternative syntaxes to specify the keyword arguments are for instance 
 
 ```julia
-nlv = 15 ; scal = :std
-model = plskern(; nlv, scal)
+nlv = 15 ; scalx = :std
+model = plskern(; nlv, scalx)
 ```
 
 or 
 
 ```julia
 nlv = 15
-model = plskern(; nlv, scal = :std)
+model = plskern(; nlv, scalx = :std)
 ```
 
 After model fitting, the matrices of the PLS scores can be obtained from function `transf`
@@ -96,7 +96,7 @@ julia> @pars plskern
 
 Jchemo.ParPlsr
   nlv: Int64 1
-  scal: Bool false
+  scalx: Bool false
 ```
 
 *Multi-threading*
@@ -263,8 +263,8 @@ summary(model, Xtrain)
 For a preliminary scaling of the data before the PCA
 
 ```julia
-nlv = 15 ; scal = :std
-model = pcasvd(; nlv, scal)
+nlv = 15 ; scalx = :std
+model = pcasvd(; nlv, scalx)
 fit!(model, Xtrain, ytrain)
 ```
 

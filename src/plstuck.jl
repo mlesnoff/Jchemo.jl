@@ -92,7 +92,7 @@ function plstuck!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kw
     par.nlv = nlv
     # Column centering and scaling, and block scaling
     Xbl = [X, Y]
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = [par.scalx, par.scaly], bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centrx = :mean, scalx = [par.scalx, par.scaly], bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X .= Xbl[1]
     Y .= Xbl[2]

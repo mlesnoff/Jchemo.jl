@@ -110,7 +110,7 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     res = matW(X, y, weights)

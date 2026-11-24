@@ -12,7 +12,7 @@ Keyword arguments:
 * `prior` : Type of prior probabilities for class membership. Possible values are: `:unif` (uniform), 
     `:prop` (proportional), or a vector (of length equal to the number of classes) giving the prior weight for each class 
     (in case of vector, it must be sorted in the same order as `mlev(y)`).
-* `scal` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
+* `scalx` : Symbol defining the column scaling of `X`. Possible values are: `:none` (default), 
     `:std` (uncorrected STD), `:prt` (Pareto), and `:mad` (MAD).
 
 FDA by a weighted SVD factorization of the matrix of the class centers (after spherical transformaton). The function 
@@ -39,7 +39,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     # Centering and scaling
-    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    csx = cscale(X, weights; centrx = :mean, scalx = par.scalx)
     transf!(csx, X)
     # End
     res = matW(X, y, weights)
@@ -67,7 +67,7 @@ function fdasvd!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}
     Zct = ct * Ut
     nlv = min(par.nlv, n, p, nlev - 1)
     zweights = pweight(Q.(ni))
-    fitm = pcasvd(Zct, zweights; nlv, scal = :none)
+    fitm = pcasvd(Zct, zweights; nlv, scalx = :none)
     Pz = fitm.V
     Tcenters = Zct * Pz
     eig = (fitm.sv).^2 

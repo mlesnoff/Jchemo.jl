@@ -10,7 +10,7 @@ Keyword arguments:
 * `typcut` : Type of cutoff for outlierness `d`. Possible values are: `:mad`, `:q`. See Thereafter.
 * `cri` : When `typcut` = `:mad`, a constant. See thereafter.
 * `alpha` : When `typcut` = `:q`, a risk-I level. See thereafter.
-* `scal` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
+* `scalx` : Boolean. If `true`, each column of `X` is scaled such as in function `outstah`.
 * `seed` : Eventual seed for the `Random.MersenneTwister` generator used when simulating
     random projection directions. 
 
@@ -87,8 +87,8 @@ plotxyz(T[:, i], T[:, i + 1], T[:, i + 2], group; color, leg_title = "Type of ob
 #### End
 
 #### Fit the Occ model
-model = occstah(; nlv = 5000, cri = 2., scal = :std)
-#model = occstah(; nlv = 5000, cri = 2., scal = :std, seed = 1234)
+model = occstah(; nlv = 5000, cri = 2., scalx = :std)
+#model = occstah(; nlv = 5000, cri = 2., scalx = :std, seed = 1234)
 fit!(model, Xtrain_ref)
 @names model 
 @names fitm = model.fitm  
@@ -163,7 +163,7 @@ function occstah(X; kwargs...)
     @assert in(par.typcut, [:mad, :q]) "Argument 'typcut' must be :mad or :q."
     @assert 0 <= par.alpha <= 1 "Argument 'alpha' must ∈ [0, 1]."
     V = rand(MersenneTwister(par.seed), Q.(0:1), p, par.nlv)
-    res = outstah(X, V; scal = par.scal)
+    res = outstah(X, V; scalx = par.scalx)
     d = res.d
     if par.typcut == :mad
         cutoff_d = median(d) + par.cri * madv(d)

@@ -85,7 +85,7 @@ function lwplslda(X, y::Vector{String}; kwargs...)
         priors = aggsumv(weights.values, y).val
         fitm = plskern(X, dummy(Q, y).Y, weights; nlv = par.nlvdis, scalx = par.scalx)
     end
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     Lwplslda(fitm, X, y, csx, taby.n, priors, taby.lev, par)
 end
 

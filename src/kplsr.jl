@@ -98,9 +98,9 @@ function kplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwar
     nlv = par.nlv
     # Centering Y and scaling X, Y
     # No need to center X (what is centered is the kernel)
-    csx = cscale(X, weights; centr = :none, scal = par.scalx)
+    csx = cscale(X, weights; centrx = :none, scalx = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y, weights; centr = :mean, scal = par.scaly)
+    csy = cscale(Y, weights; centrx = :mean, scalx = par.scaly)
     transf!(csy, Y)
     # End    
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))

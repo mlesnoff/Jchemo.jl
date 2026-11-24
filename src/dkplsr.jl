@@ -44,9 +44,9 @@ Xtest = rmrow(X, s)
 ytest = rmrow(y, s)
 
 nlv = 20
-kern = :rbf ; gamma = 1e-1 ; scal = :none
-#gamma = 1e-4 ; scal = :std
-model = dkplsr(; nlv, kern, gamma, scal) ;
+kern = :rbf ; gamma = 1e-1 ; scalx = :none
+#gamma = 1e-4 ; scalx = :std
+model = dkplsr(; nlv, kern, gamma, scalx) ;
 fit!(model, Xtrain, ytrain)
 @names model
 @names fitm = model.fitm 
@@ -106,9 +106,9 @@ function dkplsr!(X::Matrix{Q}, Y::Matrix{Q}, weights::ProbabilityWeights{Q}; kwa
     par = recovkw(ParKplsr{Q}, kwargs).par
     @assert in([:rbf ; :pol])(par.kern) "Wrong value for argument 'kern'."
     # Scaling
-    csx = cscale(X, weights; centr = :none, scal = par.scalx)
+    csx = cscale(X, weights; centrx = :none, scalx = par.scalx)
     transf!(csx, X)
-    csy = cscale(Y, weights; centr = :none, scal = par.scaly)
+    csy = cscale(Y, weights; centrx = :none, scalx = par.scaly)
     transf!(csy, Y)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))

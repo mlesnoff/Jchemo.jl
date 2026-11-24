@@ -79,7 +79,7 @@ res.corx2t
 
 ## This MBPLSR can also be implemented with function 'pip'
 
-model1 = blockscal(; centr = :mean, bscal) ;
+model1 = blockscal(; centrx = :mean, bscal) ;
 model2 = mbconcat()
 model3 = plskern(; nlv) ;
 model = pip(model1, model2, model3)
@@ -100,7 +100,7 @@ predict(model, Xbltest).pred
 ## And a sparse MB PLSR as follows
 
 meth = :soft ; nvar = 2
-model1 = blockscal(; centr = :mean, bscal) ;
+model1 = blockscal(; centrx = :mean, bscal) ;
 model2 = mbconcat()
 model3 = splsr(; nlv, meth, nvar) ;
 model = pip(model1, model2, model3)
@@ -150,7 +150,7 @@ function mbplsr!(Xbl::Vector{Matrix{Q}}, Y::Matrix{Q}, weights::ProbabilityWeigh
     nlv = min(n, ptot, par.nlv)
     par.nlv = nlv
     # Xbl: column centering and scaling, and block scaling
-    fitm_bl = blockscal(Xbl, weights; centr = :mean, scal = par.scalx, bscal = par.bscal)
+    fitm_bl = blockscal(Xbl, weights; centrx = :mean, scalx = par.scalx, bscal = par.bscal)
     transf!(fitm_bl, Xbl)
     X = fconcat(Xbl)
     # End

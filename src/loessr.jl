@@ -58,7 +58,7 @@ function loessr(X, y; kwargs...)
     y = vec(y)    
     Q = eltype(X) 
     par = recovkw(ParLoessr{Q}, kwargs).par
-    csx = cscale(X; centr = :none, scal = par.scalx)
+    csx = cscale(X; centrx = :none, scalx = par.scalx)
     transf!(csx, X)
     fitm = Loess.loess(X, y; span = par.span, degree = par.degree) 
     Loessr(fitm, csx, par) 

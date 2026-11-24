@@ -67,11 +67,11 @@ Xbltrain = mblock(Xtrain, listbl)
 Xbltest = mblock(Xtest, listbl) 
 
 nlv = 15
-scal = :none
-#scal = std
+scalx = :none
+#scalx = std
 bscal = :none
 #bscal = :frob
-model = mbplsrda(; nlv, bscal, scal)
+model = mbplsrda(; nlv, bscal, scalx)
 fit!(model, Xbltrain, ytrain)
 @names model
 @names fitm = model.fitm 
