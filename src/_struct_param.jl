@@ -797,6 +797,7 @@ Base.@kwdef mutable struct ParOccmwpls{Q<:Float}
     alpha::Q = .025 
     gamma::Q = .5
     scalx::Symbol = :none
+    scaly::Symbol = :none
 end 
 
 

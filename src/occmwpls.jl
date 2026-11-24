@@ -213,7 +213,7 @@ function occmwpls(X, Y; kwargs...)
         vX = vcol(X, window[j])
         # Fit embedding model
         segm = segmkf(n, par.K; par.rep)
-        pars = mpar(scal = [par.scal], scaly = [par.scaly])
+        pars = mpar(scalx = [par.scalx], scaly = [par.scaly])
         model = plskern()
         res = gridcv(model, vX, Y; segm, score = rmsep, nlv = 0:par.nlv, pars).res
         if q == 1

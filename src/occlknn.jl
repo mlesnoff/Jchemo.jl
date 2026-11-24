@@ -34,10 +34,8 @@ function occlknn(X; kwargs...)
     n = nro(X)    
     Q = eltype(X)
     par = recovkw(ParOccknn{Q}, kwargs).par
-    xscales = colscal(X, weights, par.scal)
-    if par.scal != :none
-        X = fscale(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal = par.scal)
+    X = transf(csx, X)
     nsamp = min(par.nsamp, n)
     if nsamp == n
         s = 1:n
@@ -72,7 +70,7 @@ function occlknn(X; kwargs...)
         dstand_cut = d / cutoff_d, 
         pval_d = pval(e_cdf, d)
         )
-    Occlknn(d, e_cdf, cutoff_d, X, xscales, par)
+    Occlknn(d, e_cdf, cutoff_d, X, csx, par)
 end
 
 function predict(object::Occlknn, X)

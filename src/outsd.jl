@@ -46,7 +46,7 @@ function outsd(fitm; nlv::Int = nco(fitm.T))
     nlv = min(nlv, nco(fitm.T))
     T = vcol(fitm.T, 1:nlv)
     Q = eltype(T)
-    tscales = colstd(T, fitm.weights)
+    tscales = scale(T; scal = :std).scales
     centr = zeros(Q, 1, nlv)     # the center is defined as 0
     d2 = vec(eucl2(fscale(T, tscales), centr))   
     (d = sqrt.(d2), tscales)

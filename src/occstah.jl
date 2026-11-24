@@ -189,7 +189,7 @@ function predict(object::Occstah, X)
     vX = copy(ensure_mat(X))  # for fscale!
     m = nro(vX)
     res = object.res_stah
-    fscale!(vX, res.xscales)
+    fscale!(vX, res.csx.scales)
     T = vX * object.V
     fcscale!(T, res.mu, res.sigma)
     T .= abs.(T)
