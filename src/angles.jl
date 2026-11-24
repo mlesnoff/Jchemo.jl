@@ -109,9 +109,9 @@ function rv(X::AbstMatVec{Q}, Y::AbstMatVec{Q}, weights::ProbabilityWeights{Q}) 
     Y = copy(ensure_mat(Y))
     n, p = size(X)
     # Centering
-    fitmx = center(X, weights; typ = :mean)
+    fitmx = center(X, weights; centr = :mean)
     transf!(fitmx, X)
-    fitmy = center(Y, weights; typ = :mean)
+    fitmy = center(Y, weights; centr = :mean)
     transf!(fitmy, Y)
     # End
     sqrtw = sqrt.(weights.values)
