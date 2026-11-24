@@ -43,10 +43,8 @@ end
 
 function outstah!(X::AbstractMatrix{Q}, V::AbstractMatrix{Q}; scal::Symbol = :none) where {Q<:Float}
     n = nro(X)
-    xscales = colscal(X, scal)
-    if scal != :none
-        fscale!(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal)
+    transf!(csx, X)
     # Scaling V by colnorm(V) has no effect on d and T: T = X * fscale(V, colnorm(V))
     T = X * V  
     mu = colmed(T)
@@ -58,7 +56,7 @@ function outstah!(X::AbstractMatrix{Q}, V::AbstractMatrix{Q}; scal::Symbol = :no
     @inbounds for i in axes(X, 1)
         d[i] = maximum(vrow(T, i))
     end
-    (d = d, T, mu, sigma, xscales)
+    (d = d, T, mu, sigma, csx)
 end
 
 
