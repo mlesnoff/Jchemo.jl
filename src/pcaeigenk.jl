@@ -41,8 +41,8 @@ function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
     # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
@@ -53,6 +53,6 @@ function pcaeigenk!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     V = X' * fscale(vcol(res.vectors, 1:nlv), sv[1:nlv])
     T = X * V
     fweightr!(T, 1 ./ sqrtw) 
-    Pca(T, V, sv, cs, weights, par) 
+    Pca(T, V, sv, csx, weights, par) 
 end
 

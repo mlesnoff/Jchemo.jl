@@ -82,7 +82,7 @@ function predict(object::Occlknn, X)
     metric = object.par.metric
     algo = object.par.algo
     # kNN distance
-    res = getknn(object.X, fscale(X, object.cs.scales); k = k + 1, metric)
+    res = getknn(object.X, fscale(X, object.csx.scales); k = k + 1, metric)
     d = similar(X, m)
     nn = zeros(Int, k)
     @inbounds for i in eachindex(d)

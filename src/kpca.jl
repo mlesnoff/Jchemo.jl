@@ -72,8 +72,8 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<
     n = nro(X)
     nlv = min(par.nlv, n)
     # X scaling (the centering is done on the Gram matrix)
-    cs = cscale(X, weights; centr = :none, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :none, scal = par.scal)
+    transf!(csx, X)
     # End
     fkern = eval(Meta.parse(string("Jchemo.k", par.kern)))
     K = fkern(X, X; kwargs...)  
@@ -90,7 +90,7 @@ function kpca(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<
     sv = sqrt.(eig)
     V = fweightr(fscale(U, sv[1:nlv]), sqrtw)   # In the future: fscale!
     T = Kc * V       # T = Kc * V = D^(-1/2) * U * Delta
-    Kpca(X, Kt, T, V, sv, eig, DKt, vtot, cs, weights, kwargs, par)
+    Kpca(X, Kt, T, V, sv, eig, DKt, vtot, csx, weights, kwargs, par)
 end
 
 """ 
@@ -106,7 +106,7 @@ transf(object::Kpca, X) = transf(object, X, object.par.nlv)
 function transf(object::Kpca, X, nlv::Int)
     nlv = min(nlv, object.par.nlv)
     fkern = eval(Meta.parse(string("Jchemo.k", object.par.kern)))
-    K = fkern(fscale(X, object.cs.scales), object.X; object.kwargs...)
+    K = fkern(fscale(X, object.csx.scales), object.X; object.kwargs...)
     w = object.weights.values
     DKt = fweightr(K', w)
     vtot = sum(DKt; dims = 1)  # keep matrix format

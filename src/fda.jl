@@ -110,8 +110,8 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     @assert par.lb >= 0 "Argument 'lb' must ∈ [0, Inf[."
     n, p = size(X)
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
     # End
     res = matW(X, y, weights)
     ni = res.ni
@@ -138,7 +138,7 @@ function fda!(X::Matrix{Q}, y::Vector{String}, weights::ProbabilityWeights{Q}; k
     fscale!(V, norm_P)
     T = X * V
     Tcenters = zres.ct * V
-    Fda(T, V, Tcenters, eig, sstot, res.W, ni, priors, lev, cs, weights, par)
+    Fda(T, V, Tcenters, eig, sstot, res.W, ni, priors, lev, csx, weights, par)
 end
 
 """

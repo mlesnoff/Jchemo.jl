@@ -226,9 +226,9 @@ coef(object::Rosaplsr) = coef(object, object.par.nlv)
 
 function coef(object::Rosaplsr, nlv::Int)
     nlv = min(nlv, object.par.nlv)
-    nbl = length(object.fitm_bl.cs)
-    xcenters = reduce(vcat, [object.fitm_bl.cs[k].centers for k = 1:nbl])
-    xscales = reduce(vcat, [object.fitm_bl.cs[k].scales for k = 1:nbl])
+    nbl = length(object.fitm_bl.csx)
+    xcenters = reduce(vcat, [object.fitm_bl.csx[k].centers for k = 1:nbl])
+    xscales = reduce(vcat, [object.fitm_bl.csx[k].scales for k = 1:nbl])
     theta = vcol(object.C, 1:nlv)'  # coefs regression of Y on T
     Dy = Diagonal(object.csy.scales)
     B = fweightr(vcol(object.R, 1:nlv), 1 ./ xscales) * theta * Dy

@@ -56,8 +56,8 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
     # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
@@ -88,6 +88,6 @@ function pcanipals!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) whe
     fweightr!(T, 1 ./ sqrtw)    
     # Could recompute the scores by
     # X0 = copy(X) ; ... ; T = (1 ./ sqrtw) .* X0 * V 
-    Pcanipals(T, V, sv, cs, weights, niter, par)  
+    Pcanipals(T, V, sv, csx, weights, niter, par)  
 end
 

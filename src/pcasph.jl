@@ -69,8 +69,8 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     nlv = min(n, p, par.nlv)
     par.nlv = nlv
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
     # Sphere
     Xtt = fscale(X', rownorm(X))'    # X-data projected on the sphere (each row has norm = 1)
     fweightr!(Xtt, sqrt.(weights.values))
@@ -83,6 +83,6 @@ function pcasph!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where 
     T .= T[:, s]
     V .= V[:, s]
     sv .= sv[s]
-    Pca(T, V, sv, cs, weights, par) 
+    Pca(T, V, sv, csx, weights, par) 
 end
 

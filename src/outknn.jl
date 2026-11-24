@@ -54,11 +54,12 @@ f
 
 # With a preliminary PCA
 nlv = 3
-model = pcasph(; nlv)
+scal = :mad
+model = pcasph(; nlv, scal)
 fit!(model, X)
 T = model.fitm.T
 metric = :eucl ; k = 15
-res = outknn(T; metric, k, scal = :std)
+res = outknn(T; metric, k, scal)
 f, ax = plotxy(1:n, res.d, typ; xlabel = "Obs. index", ylabel = "Outlierness")
 text!(ax, 1:n, res.d; text = string.(1:n), fontsize = 10)
 f
@@ -70,17 +71,15 @@ end
 
 function outknn!(X::AbstractMatrix{Q}; metric::Symbol = :eucl, k::Int, algo::Function = sum, scal::Symbol = :none) where {Q<:Float}
     n = nro(X)
-    xscales = colscal(X, scal)
-    if scal != :none
-        fscale!(X, xscales)
-    end
+    csx = cscale(X; centr = :none, scal)
+    transf!(csx, X)
     if k > n - 1 ; k = n - 1 ; end
     res = getknn(X, X; k = k + 1, metric)
     d = similar(X, n)
     @inbounds for i in eachindex(d)
         d[i] = algo(res.d[i][2:end])
     end
-    (d = d, xscales)
+    (d = d, csx)
 end
 
 

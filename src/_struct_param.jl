@@ -1,11 +1,11 @@
 ############---- Preprocessing
 
 Base.@kwdef mutable struct ParCenter
-    typ::Symbol = :mean
+    centr::Symbol = :mean
 end 
 
 Base.@kwdef mutable struct ParScale
-    typ::Symbol = :std
+    scal::Symbol = :std
 end 
 
 Base.@kwdef mutable struct ParCscale

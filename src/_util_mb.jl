@@ -140,10 +140,10 @@ centr = :mean ; scal = :std ; bscal = :frob
 model = blockscal(; centr, scal, bscal)
 fit!(model, Xbl)
 @names fitm = model.fitm
-length(fitm.cs)
+length(fitm.csx)
 k = 1
-@show fitm.cs[k].centers
-@show fitm.cs[k].scales
+@show fitm.csx[k].centers
+@show fitm.csx[k].scales
 @show fitm.bscales
 # Data transformation
 vXbl = transf(model, Xbl) ; 
@@ -172,13 +172,13 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
         par.scal = [par.scal for k in eachindex(Xbl)]
     end
     # Compute centers, scales and bscale for each block
-    cs = list(Cscale{Q}, nbl) 
+    csx = list(Cscale{Q}, nbl) 
     bscales = ones(Q, nbl)
     for k in eachindex(Xbl)
         zX = copy(Xbl[k])
         # Block centers and scales 
-        cs[k] = cscale(zX, weights; centr = par.centr[k], scal = par.scal[k])
-        transf!(cs[k], zX)  # only required to compute bscal 
+        csx[k] = cscale(zX, weights; centr = par.centr[k], scal = par.scal[k])
+        transf!(csx[k], zX)  # only required to compute bscal 
         # Block scales
         if par.bscal == :frob
             bscales[k] = frob(zX, weights)
@@ -191,7 +191,7 @@ function blockscal(Xbl::Vector{Matrix{Q}}, weights::ProbabilityWeights{Q}; kwarg
             bscales[k] = sqrt(sum(colvar(zX, weights)))
         end        
     end
-    Blockscal(cs, bscales, par)
+    Blockscal(csx, bscales, par)
 end
 
 """ 
@@ -210,7 +210,7 @@ end
 
 function transf!(object::Blockscal, Xbl::Vector{Matrix{Q}}) where {Q<:Float} 
     @inbounds for k in eachindex(Xbl)
-        fcscale!(Xbl[k], object.cs[k].centers, object.cs[k].scales)
+        fcscale!(Xbl[k], object.csx[k].centers, object.csx[k].scales)
         Xbl[k] ./= object.bscales[k]
     end
 end

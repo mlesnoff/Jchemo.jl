@@ -180,7 +180,7 @@ function predict(object::Occknn, X)
     X = ensure_mat(X)
     m = nro(X)
     # kNN distance
-    res = getknn(object.X, fscale(X, object.cs.scales); k = object.par.k + 1, metric = object.par.metric) 
+    res = getknn(object.X, fscale(X, object.csx.scales); k = object.par.k + 1, metric = object.par.metric) 
     d = similar(X, m)
     @inbounds for i in eachindex(d)
         d[i] = object.par.algo(res.d[i][2:end])

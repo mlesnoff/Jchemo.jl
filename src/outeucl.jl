@@ -38,17 +38,13 @@ end
 
 function outeucl!(X::AbstractMatrix{Q}; scal::Symbol = :none) where {Q<:Float}
     centers = Jchemo.colmedspa(X)
-    scales = scale(X; scal = par.scal)
-    
+    scales = scale(X; scal)
     if scal != :none
-        fscale!(X, xscales)
+        fscale!(X, scales)
     end
-
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
-
-    d = vec(sqrt.(eucl2(X, xcenters')))
-    (d = d, cs)
+    csx = (centers = centers, scales)
+    d = vec(sqrt.(eucl2(X, centers')))
+    (d = d, csx)
 end
 
 

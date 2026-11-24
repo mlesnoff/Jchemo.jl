@@ -40,7 +40,7 @@ fitm = model.fitm ;
 @head xfit(fitm, X)
 @head xfit(fitm, X, 1)
 @head xfit(fitm, X, 0)
-fitm.xcenters
+colmean(X)
 xfit(fitm, Xnew)
 xfit(fitm, Xnew, 1)
 
@@ -57,7 +57,7 @@ fitm = model.fitm ;
 @head xfit(fitm, X)
 @head xresid(fitm, X)
 
-#### PLS
+#### Pls
 
 nlv = 3
 scal = :none
@@ -94,13 +94,13 @@ function xfit(object, nlv::Int = nco(object.T))
         n = nro(object.T)
         p = nro(object.V)
         @inbounds for i in axes(X, 1)
-            X = reshape(reduce(vcat, fill(object.cs.centers, n)), n, p)
+            X = reshape(reduce(vcat, fill(object.csx.centers, n)), n, p)
         end
     else
         X = vcol(object.T, 1:nlv) * vcol(object.V, 1:nlv)'
         # Coming back to the original location and scale
         fscale!(X, 1 ./ object.csx.scales)    
-        fcenter!(X, -object.cs.centers)
+        fcenter!(X, -object.csx.centers)
     end
     X
 end
@@ -113,14 +113,14 @@ function xfit!(object, X::Matrix{Q}, nlv::Int = nco(object.T)) where {Q<:Float}
     nlv = min(nlv, nco(object.T))
     if nlv == 0
         @inbounds for i in axes(X, 1)
-            X[i, :] .= object.cs.centers
+            X[i, :] .= object.csx.centers
         end
     else
         T = transf(object, X, nlv)
         mul!(X, T, vcol(object.V, 1:nlv)')
         # Coming back to the original location and scale
         fscale!(X, 1 ./ object.csx.scales)    
-        fcenter!(X, -object.cs.centers)
+        fcenter!(X, -object.csx.centers)
     end
     X
 end

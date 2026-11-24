@@ -121,9 +121,9 @@ function coef(object::Pcr)
     theta = object.C'
     Dy = Diagonal(object.csy.scales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
-    B = fweightr(object.fitm.V, 1 ./ object.fitm.cs.scales) * theta * Dy
+    B = fweightr(object.fitm.V, 1 ./ object.fitm.csx.scales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.csy.centers' .- object.fitm.cs.centers' * B
+    int = object.csy.centers' .- object.fitm.csx.centers' * B
     # End
     (B = B, int, nlv = object.par.nlv)
 end
@@ -134,9 +134,9 @@ function coef(object::Pcr, nlv::Int)
     theta = vcol(object.C, 1:nlv)'
     Dy = Diagonal(object.csy.scales)
     # Not used for Spcr (since R not computed; while for Pcr, R = V)
-    B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.cs.scales) * theta * Dy
+    B = fweightr(vcol(object.fitm.V, 1:nlv), 1 ./ object.fitm.csx.scales) * theta * Dy
     # In 'int': No correction is needed, since ycenters, xcenters and B are in the original scale 
-    int = object.csy.centers' .- object.fitm.cs.centers' * B
+    int = object.csy.centers' .- object.fitm.csx.centers' * B
     # End
     (B = B, int, nlv)
 end

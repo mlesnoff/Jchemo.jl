@@ -114,13 +114,13 @@ function umap(X; kwargs...)
         s = collect(1:n)
     end
     # X scaling 
-    cs = cscale(X; centr = :none, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X; centr = :none, scal = par.scal)
+    transf!(csx, X)
     # End
     # Note: UMAP.jl ==> the type of new_data must match the original data exactly ==> force to Matrix
     fitm = UMAP.fit(Matrix(X'), nlv; metric = par.metric, n_neighbors = par.n_neighbors, min_dist = par.min_dist)
     T = Matrix(fitm.embedding')
-    Umap(fitm, T, s, cs, par)
+    Umap(fitm, T, s, csx, par)
 end
 
 """ 
@@ -132,6 +132,6 @@ Compute latent variables (LVs; = scores) from a fitted model.
 function transf(object::Umap, X)
     Q = Float32  # see above
     X = Q.(ensure_mat(X))
-    Matrix(UMAP.transform(object.fitm, Matrix(fscale(X, object.cs.scales)')).embedding')
+    Matrix(UMAP.transform(object.fitm, Matrix(fscale(X, object.csx.scales)')).embedding')
 end
 

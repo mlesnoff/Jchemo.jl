@@ -47,8 +47,8 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:
     @assert in([:gauss, :li])(par.meth) "Wrong value for argument 'meth'."
     p = nco(X)
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
     # End
     if par.meth == :gauss
         V = rpmatgauss(p, par.nlv, Q)
@@ -56,7 +56,7 @@ function rp!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:
         V = rpmatli(p, par.nlv, Q; s = par.s)
     end 
     T = X * V
-    Rp(T, V, cs, par)
+    Rp(T, V, csx, par)
 end
 
 """ 
@@ -67,12 +67,12 @@ Compute scores T from a fitted model.
 * `X` : Matrix (m, p) for which scores T are computed.
 * `nlv` : Nb. scores to compute.
 """ 
-transf(object::Rp, X) = fcscale(X, object.cs.centers, object.cs.scales) * object.V
+transf(object::Rp, X) = fcscale(X, object.csx.centers, object.csx.scales) * object.V
 
 function transf(object::Rp, X, nlv::Int)
     X = ensure_mat(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
-    fcscale(X, object.cs.centers, object.cs.scales) * vcol(object.V, 1:nlv)
+    fcscale(X, object.csx.centers, object.csx.scales) * vcol(object.V, 1:nlv)
 end
 

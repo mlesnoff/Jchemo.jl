@@ -81,7 +81,7 @@ typeof(fitm)
 
 fitm.niter
 
-fitm.cs
+fitm.csx
 
 fitm.sel       # indexes of the selected variables  
 fitm.sellv     # indexes of the selected variables for each LV   
@@ -128,8 +128,8 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q
     nvar = par.nvar
     if length(nvar) == 1 ; nvar = fill(nvar, nlv) ; end
     # Centering and scaling
-    cs = cscale(X, weights; centr = :mean, scal = par.scal)
-    transf!(cs, X)
+    csx = cscale(X, weights; centr = :mean, scal = par.scal)
+    transf!(csx, X)
     # End
     sqrtw = sqrt.(weights.values)
     fweightr!(X, sqrtw)
@@ -159,7 +159,7 @@ function spca!(X::Matrix{Q}, weights::ProbabilityWeights{Q}; kwargs...) where {Q
         sellv[a] = findall(abs.(res.v) .> 0)
     end    
     sel = sort(unique(reduce(vcat, sellv)))
-    Spca(T, V, sv, beta, sel, sellv, cs, weights, niter, par) 
+    Spca(T, V, sv, beta, sel, sellv, csx, weights, niter, par) 
 end
 
 """ 
@@ -177,7 +177,7 @@ function transf(object::Spca, X, nlv::Int)
     m = nro(X)
     a = object.par.nlv
     nlv = isnothing(nlv) ? a : min(nlv, a)
-    zX = fcscale(X, object.cs.centers, object.cs.scales)
+    zX = fcscale(X, object.csx.centers, object.csx.scales)
     T = similar(X, m, nlv)
     defl = object.par.defl
     for a = 1:nlv
@@ -204,7 +204,7 @@ function Base.summary(object::Spca, X)
     nlv = nco(object.T)
     weights = object.weights
     sqrtw = sqrt.(weights.values)
-    X = fcscale(X, object.cs.centers, object.cs.scales)
+    X = fcscale(X, object.csx.centers, object.csx.scales)
     sstot = frob2(X, weights)
     TT = fweightr(object.T.^2, weights.values)
     tt = colsum(TT)

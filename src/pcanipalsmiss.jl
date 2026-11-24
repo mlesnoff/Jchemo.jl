@@ -1,8 +1,8 @@
 """
     pcanipalsmiss(; kwargs...)
-    pcanipals(X; kwargs...)
-    pcanipals(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
-    pcanipals!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    pcanipalsmiss(X; kwargs...)
+    pcanipalsmiss(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
+    pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeights{Q}; kwargs...) where {Q<:Float}
 PCA by NIPALS algorithm allowing missing data.
 * `X` : X-data (n, p). 
 * `weights` : Weights (n) of the observations. Must be of type `ProbabilityWeights` (see e.g., function `pweight`).
@@ -38,7 +38,7 @@ fit!(model, X)
 @names model 
 @names fitm = model.fitm
 fitm.niter
-fitm.cs
+fitm.csx
 fitm.sv
 fitm.V
 fitm.T
@@ -86,7 +86,7 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
         scales .= colstdskip(X, weights)
         X ./= scales'
     end
-    cs = (centers = centers, scales)
+    csx = (centers = centers, scales)
     # End
     sqrtw = sqrt.(weights.values)
     @. X = sqrtw * X
@@ -115,6 +115,6 @@ function pcanipalsmiss!(X::Matrix{Union{Missing, Q}}, weights::ProbabilityWeight
         end
     end
     @. T = (1 / sqrtw) * T
-    Pcanipals(T, V, sv, cs, weights, niter, par) 
+    Pcanipals(T, V, sv, csx, weights, niter, par) 
 end
 

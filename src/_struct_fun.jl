@@ -88,7 +88,7 @@ struct Pca{Q<:Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::Union{ParPca, ParPcapp, ParPcaout}
 end
@@ -97,7 +97,7 @@ struct Pcanipals{Q<:Float}
     T::Matrix{Q} 
     V::Matrix{Q}
     sv::Vector{Q}
-    cs::Union{Cscale{Q}, NamedTuple}      # pcanipals, pcanipalsmiss
+    csx::Union{Cscale{Q}, NamedTuple}      # pcanipals, pcanipalsmiss
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}    # pcanipals, pcanipalsmiss
     par::ParPcanipals
@@ -110,7 +110,7 @@ struct Spca{Q<:Float}
     beta::Matrix{Q}
     sel::Vector{Int}
     sellv::Vector{Vector{Int}}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     weights::ProbabilityWeights{Q}
     niter::Union{Nothing, Vector{Int}}
     par::ParSpca
@@ -129,7 +129,7 @@ struct Kpca{Q<:Float}
     eig::Vector{Q}    
     DKt::Matrix{Q}
     vtot::Matrix{Q}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     weights::ProbabilityWeights{Q}
     kwargs::Base.Pairs
     par::ParKpca
@@ -139,7 +139,7 @@ end
 struct Rp{Q<:Float}
     T::Matrix{Q}
     V::Union{Matrix, SparseArrays.SparseMatrixCSC}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     par::ParRp
 end
 
@@ -147,7 +147,7 @@ struct Umap{Q<:Float}
     fitm::UMAP.UMAPResult    
     T::Matrix{Q}
     s::Vector{Int}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     par::ParUmap
 end 
     
@@ -175,7 +175,7 @@ struct Fda{Q<:Float}
     ni::Vector{Int}
     priors::Vector{Q}
     lev::Vector{String}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     weights::ProbabilityWeights{Q}
     par::ParFda
 end
@@ -183,7 +183,7 @@ end
 # Multiblock
 
 struct Blockscal{Q<:Float}
-    cs::Vector{Cscale{Q}}
+    csx::Vector{Cscale{Q}}
     bscales::Vector{Q}
     par::ParBlock
 end
@@ -875,7 +875,7 @@ struct Occknn{Q<:Float}
     e_cdf::ECDF
     cutoff_d::Q
     X::Matrix{Q}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     par::ParOccknn
 end
 
@@ -884,7 +884,7 @@ struct Occlknn{Q<:Float}
     e_cdf::ECDF
     cutoff_d::Q
     X::Matrix{Q}
-    cs::Cscale{Q}
+    csx::Cscale{Q}
     par::ParOccknn
 end
 
