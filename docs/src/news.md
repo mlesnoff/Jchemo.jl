@@ -1,5 +1,11 @@
 # News
 
+## *Version 0.12.1 dev*
+
+- Modifications
+    - Code cleaning.
+
+
 ## *Version 0.12.0*
 
 - Breaking changes 
